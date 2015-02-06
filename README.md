@@ -14,7 +14,7 @@
 * Creating documentation
 ```
 #!r
-roxygen2::roxygenise()
+$ roxygen2::roxygenise() $ create man pages from code
 ```
 
 * How to run tests
