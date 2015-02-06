@@ -1,10 +1,10 @@
 Package: prime
 Type: Package
-Title: What the package does (short line)
+Title: Some math functions
 Version: 1.0
 Date: 2015-02-05
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Tiago Chedraoui Silva, Tiago Mendes
+Maintainer: Tiago C. Silva <tiagochst@gmail.com>
+Description: Only testing some packages
+License: GPL3
 Suggests: testthat
