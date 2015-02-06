@@ -21,6 +21,7 @@ $ devtools::test() # execute unit test
 
 * Writing tests
 [Guide](http://r-pkgs.had.co.nz/tests.html)
+[Paper](http://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf)
 * Documentation
 [Guide](https://support.rstudio.com/hc/en-us/articles/200532317-Writing-Package-Documentation)
 * Code review
