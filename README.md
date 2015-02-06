@@ -11,6 +11,12 @@
 * Configuration
 * Dependencies
 * Database configuration
+* Creating documentation
+```
+#!r
+roxygen2::roxygenise()
+```
+
 * How to run tests
 ```
 $ devtools::test() # execute unit test
