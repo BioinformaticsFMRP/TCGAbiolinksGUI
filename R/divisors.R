@@ -3,10 +3,10 @@
 #' @param x A number
 #' @return vector whit \code{x} list of divisors
 #' @examples
-#' di(72)
+#' divisor(72)
 #' divisor(50)
 #' \dontrun{
-#'    prime('a')
+#'    divisor('a')
 #' }
 #' @seealso \url{http://en.wikipedia.org/wiki/Divisor}
 
