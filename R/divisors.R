@@ -17,6 +17,5 @@ divisor <- function(number){
       list <- c(list, i)
     }
   }
-  a <- 1
   return(list)
 }
