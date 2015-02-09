@@ -46,12 +46,12 @@
 </head>
 <body>
   <script>
-  var tagList = ["1_46","1_59","1_82","1_90","1_107","1_112","1_128","1_141","1_162"];
-var sumTags = [1,1,1,0,1,1,1,1,1];
-var allTags = [[1,1,1,0,1,1,1,1,1]];
-var coverage = [[[8,1]]];
-var all_coverage = [[8,1]];
-var sumAllTraces = {"0":9,"1":8};
+  var tagList = ["1_46","1_49","1_61","1_66","1_76","1_93","1_96","1_129","2_46","2_59","2_82","2_90","2_107","2_112","2_128","2_141","2_162"];
+var sumTags = [0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1];
+var allTags = [[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1]];
+var coverage = [[[0,8],[9,0]]];
+var all_coverage = [[0,8],[9,0]];
+var sumAllTraces = {"0":17,"1":9};
 docolor = function(j, bb) {
 // $("#t_" + tagList[j]).css("backgroundColor", bb ? "lightgreen" : "lightpink");
     if(bb > 0) {
@@ -100,19 +100,40 @@ $( document ).ready(function() {
   </div>
   <h2>Summary</h2>
 <!-- html table generated in R 3.1.2 by xtable 1.7-4 package -->
-<!-- Thu Feb  5 16:39:59 2015 -->
+<!-- Fri Feb  6 21:39:18 2015 -->
 <table class="table table-bordered">
 <tr> <th>  </th> <th> Total # Tracepoints </th> <th> # Executed </th> <th> % Coverage </th>  </tr>
-  <tr> <td align="right"> 1 </td> <td> 9 </td> <td> 8 </td> <td>  89% </td> </tr>
+  <tr> <td align="right"> 1 </td> <td> 17 </td> <td> 9 </td> <td>  53% </td> </tr>
    </table>
 <h2>testthat Tests</h2>
 	<button type="button" class="btn btn-default" id="trace_all">All Tests</button>&nbsp;<button type='button' class='btn btn-default' id='run_1'>testprime.R</button>&nbsp;<h2>Resource Files</h2><div class="row">
        <div class="col-md-4">
-        <ul class="nav nav-pills nav-stacked" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tabs-1">prime.R</a><div id="progress-1" ></div></li>
+        <ul class="nav nav-pills nav-stacked" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tabs-1">divisors.R</a><div id="progress-1" ></div></li>
+<li class=""><a role="tab" data-toggle="tab" href="#tabs-2">prime.R</a><div id="progress-2" ></div></li>
 </ul>
     </div> 
     <div class="col-md-8">
-    <div class="tab-content"><div class="tab-pane active" id="tabs-1"><pre>#' @title Verify if a number is prime 
+    <div class="tab-content"><div class="tab-pane active" id="tabs-1"><pre>#' @title Return list with all divisors of the number 
+#' @description \code{prime} The function return a array list with all divisors of the number
+#' @param x A number
+#' @return vector whit \code{x} list of divisors
+#' @examples
+#' divisor(72)
+#' divisor(50)
+#' \dontrun{
+#'    divisor('a')
+#' }
+#' @seealso \url{http://en.wikipedia.org/wiki/Divisor}
+
+<span id="t_1_36">divisor</span> &lt;- function(number){
+  <span id="t_1_46">list</span> &lt;- <span id="t_1_49">vector()</span>
+  for(<span id="t_1_61">i</span> in 2:<span id="t_1_66">number</span>){
+    if((<span id="t_1_76">number</span> %% i) == 0){
+      <span id="t_1_93">list</span> &lt;- <span id="t_1_96">c(list, i)</span>
+    }
+  }
+  <span id="t_1_129">return(list)</span>
+}</pre></div><div class="tab-pane " id="tabs-2"><pre>#' @title Verify if a number is prime 
 #' @description \code{prime} verify if a number is prime
 #' @param x A number
 #' @return TRUE if \code{x} is prime, FALSE otherwise
@@ -123,22 +144,22 @@ $( document ).ready(function() {
 #'    prime('a')
 #' }
 #' @seealso \url{http://en.wikipedia.org/wiki/Prime_number}
-<span id="t_1_34">prime</span> &lt;- function(x){
-  if(<span id="t_1_46">is.na(x)</span>) {
-      <span id="t_1_59">stop("x must be a number")</span>
+<span id="t_2_34">prime</span> &lt;- function(x){
+  if(<span id="t_2_46">is.na(x)</span>) {
+      <span id="t_2_59">stop("x must be a number")</span>
   }
-  if(<span id="t_1_82">x</span>==2) <span id="t_1_90">return (TRUE)</span>
-  for(<span id="t_1_107">i</span> in 2:<span id="t_1_112">sqrt(x)</span>){
-    if(<span id="t_1_128">x</span> %% i == 0)
-      <span id="t_1_141">return (FALSE)</span>
+  if(<span id="t_2_82">x</span>==2) <span id="t_2_90">return (TRUE)</span>
+  for(<span id="t_2_107">i</span> in 2:<span id="t_2_112">sqrt(x)</span>){
+    if(<span id="t_2_128">x</span> %% i == 0)
+      <span id="t_2_141">return (FALSE)</span>
   }
-  <span id="t_1_162">return (TRUE)</span>
+  <span id="t_2_162">return (TRUE)</span>
 }</pre></div>
     </div>
     </div>
   </div>
   <div class="footer">
-    <p> Generated on2015-02-05 16:39:59 by <a href="http://www.mango-solutions.com/wp/products-services/r-services/r-packages/testcoverage/">testCoverage</a>.</p>
+    <p> Generated on2015-02-06 21:39:18 by <a href="http://www.mango-solutions.com/wp/products-services/r-services/r-packages/testcoverage/">testCoverage</a>.</p>
   </div>
   </div>
 </body> 
