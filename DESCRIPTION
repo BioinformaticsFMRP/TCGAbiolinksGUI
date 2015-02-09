@@ -8,3 +8,6 @@ Maintainer: Tiago C. Silva <tiagochst@gmail.com>
 Description: Only testing some packages
 License: GPL3
 Suggests: testthat
+Suggests: testthat,
+    knitr
+VignetteBuilder: knitr
