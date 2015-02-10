@@ -82,7 +82,7 @@ shinyUI(fluidPage(
            )
     )
   ),
-  fluidRow(column(3, verbatimTextOutput("value")))
+  fluidRow(column(5, offset = 4, verbatimTextOutput("value")))
   
   
 )
