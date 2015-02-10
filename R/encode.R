@@ -21,7 +21,7 @@ library(RCurl)
 library(rjson)
 
 # USER SELECTION - needs improvement
-search    = "bone chip"
+searchT   = "bone chip"
 type      = "experiment"
 #target    = c("control","transcription factor") # can be more than one
 target    = c("control")
@@ -33,7 +33,7 @@ assay     = c("ChIP-seq")
 assembly  = c("mm9")
 output    = "encodeDownload"
 
-iSearch   = search
+iSearch   = searchT
 iType     = type
 iTarget   = target
 iOut      = output

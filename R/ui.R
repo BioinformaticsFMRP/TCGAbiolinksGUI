@@ -1,59 +1,89 @@
 library("shiny")
 
 shinyUI(fluidPage(
-  titlePanel('Downloading ENCODE Data'),
-  sidebarLayout(
-    sidebarPanel(
-      # Copy the line below to make a text input box
-      textInput("text", label = h3("Search Term"), value = "Enter text..."),
   
-
-      hr(),
-     
-      #' @param assay - "ChIP-seq" "RIP-chip" "Repli-chip" 
-    checkboxGroupInput("assay", label = h3("Assay"), 
-                       choices = list("ChIP-seq", "RIP-chip", "Repli-chip"),
-                       selected = NULL),
+  tags$head(tags$style(HTML("
+    .shiny-text-output {
+      background-color:#fff;
+    }
+  "))),
+  
+  h1("Downloading", span("ENCODE Data", style = "font-weight: 300"), 
+     style = "font-family: 'Source Sans Pro';
+        color: #fff; text-align: center;
+        background-image: url('texturebg.png');
+        padding: 20px"),
+  br(),
+  
+  
+  fluidRow(
     
-    hr(),
-    fluidRow(column(3, verbatimTextOutput("assay"))),
-    
-    hr(),
- 
-    #' @param iTarget - "transcription factor" "RNA binding protein" "tag" "histone modification"
-    checkboxGroupInput("target", label = h3("Target"), 
-                       choices = list("transcription factor",  "RNA binding protein",  "histone modification","tag"),
-                       selected = NULL),
-    
-    hr(),
-    fluidRow(column(3, verbatimTextOutput("target"))),
-    
-    
-    #' @param iFType  - "bam" "bigWig" "bed_broadPeak" "broadPeak" "fastq"
-    checkboxGroupInput("ftype", label = h3("File Type"), 
-                       choices = list("bam","bigWig","bed_broadPeak","broadPeak","fastq"),
-                       selected = NULL),
-    
-    hr(),
-    fluidRow(column(3, verbatimTextOutput("ftype"))),
-    
-    #' @param iSample - "tissue" "primary cell"
-    checkboxGroupInput("sample", label = h3("Sample"), 
-                       choices = list("tissue","primary cell"),
-                       selected = NULL),
-    
-    hr(),
-    fluidRow(column(3, verbatimTextOutput("ftype"))),
-    #' @param assembly - "hg19" "mm9"
-    
-    
-    
-    hr(),
-    downloadButton('downloadData', 'Download')
-     
+    column(4,
+           wellPanel(
+             textInput("search", label = h3("Search Term"), value = "")
+           )
     ),
-    mainPanel(
-      tableOutput('table')
+    
+    column(4,
+           wellPanel(
+             
+             # @param assay - "ChIP-seq" "RIP-chip" "Repli-chip" 
+             checkboxGroupInput("assay", label = h3("Assay"), 
+                                choices = list("ChIP-seq", "RIP-chip", "Repli-chip"),
+                                selected = NULL)
+           )
+    ),
+    column(4,
+           wellPanel(
+             
+             # @param iTarget - "transcription factor" "RNA binding protein" "tag" "histone modification"
+             checkboxGroupInput("target", label = h3("Target"), 
+                                choices = list("transcription factor",  "RNA binding protein",  "histone modification","tag"),
+                                selected = NULL)
+           )
     )
-  )
-))
+  ),
+  
+  
+  fluidRow(
+    column(4,
+           wellPanel(
+             # @param iFType  - "bam" "bigWig" "bed_broadPeak" "broadPeak" "fastq"
+             checkboxGroupInput("ftype", label = h3("File Type"), 
+                                choices = list("bam","bigWig","bed_broadPeak","broadPeak","fastq"),
+                                selected = NULL)
+             
+           )
+    ),
+    
+    column(4,
+           wellPanel(
+             # @param iSample - "tissue" "primary cell"
+             checkboxGroupInput("sample", label = h3("Sample"), 
+                                choices = list("tissue","primary cell"),
+                                selected = NULL)
+           )
+    ),
+    
+    column(4,
+           wellPanel(
+                     # @param assembly - "hg19" "mm9"
+                     checkboxGroupInput("assembly", label = h3("Assembly"), 
+                                        choices = list("hg19","mm9"),
+                                        selected = NULL)
+           )
+    )
+  ),
+  
+  fluidRow(
+    column(12, 
+           wellPanel(align = "center", style = "background-color: #4187C5",   
+                     actionButton("downloadBt", "Download", icon=icon("download"))
+           )
+    )
+  ),
+  fluidRow(column(3, verbatimTextOutput("value")))
+  
+  
+)
+)

@@ -1,8 +1,24 @@
 shinyServer(function(input, output) {
-
-  # You can access the values of the widget (as a vector)
-  # with input$checkGroup, e.g.
-  output$assay <- renderPrint({ input$assay })
-  output$target <- renderPrint({ input$target })
-  
+   
+  getAssay    <- reactive({  input$assay    })
+  getTarget   <- reactive({  input$target   })
+  getFType    <- reactive({  input$ftype    })
+  getSample   <- reactive({  input$sample   })
+  getAssembly  <- reactive({ input$assembly })
+  getSearch   <- reactive({  input$search   })
+    
+  output$value <- renderPrint({ 
+    input$downloadBt # trigger this function by pressing download button
+    encodeDownload(isolate(getSearch()),
+                   "experiment",
+                   isolate(getTarget()),
+                   isolate(getSample()), 
+                   isolate(getFType()),
+                   isolate(getAssay()),
+                   isolate(getAssembly()),
+                   "encodeDownload"
+                   )
+    print("Downloaded")  
+  })
+    
 })
