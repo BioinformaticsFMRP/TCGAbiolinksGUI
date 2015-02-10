@@ -17,12 +17,18 @@ library(RCurl)
 library(rjson)
 
 # USER SELECTION - needs improvement
-searchTerm  = "bone chip"
-type        = "experiment"
-target      = "transcription factor" # can be more than one
-output      = "encodeDownload"
+search  = "bone chip"
+type    = "experiment"
+target  = "control" # can be more than one
+output  = "encodeDownload"
 
-encodeDownload <- function(search, type, target, output) {
+iSearch = search
+iType= type
+iTarget = target
+iOut = output
+
+
+encodeDownload <- function(iSearch, iType, iTarget, iOut) {
 
   # Constant parameters
   encodePath  = "https://www.encodeproject.org"
@@ -30,9 +36,9 @@ encodeDownload <- function(search, type, target, output) {
   format      = "format=json"
   frame       = "frame=embedded"
   
-  searchTerm  = paste ("searchTerm",  gsub(" ","+",search), sep="=")
-  type        = paste ("type", type, sep="=")
-  target      = paste ("target.investigated_as", target,sep="=")
+  searchTerm  = paste ("searchTerm",  gsub(" ","+",iSearch), sep="=")
+  type        = paste ("type", iType, sep="=")
+  target      = paste ("target.investigated_as", gsub(" ","%20",iTarget),sep="=")
   
   URLoptions <- paste (searchTerm, format, frame, target, type, sep="&")
   URL        <- paste (encodePath, paste( searchPath, URLoptions, sep="?"), sep="")
@@ -43,18 +49,25 @@ encodeDownload <- function(search, type, target, output) {
                 )
 
   # Output folder
-  dir.create(output)
+  dir.create(iOut)
   
   # Downloads all files from the search
   for (j in 1:length (data$'@graph')){ 
-    for (i in 1:length (data$'@graph'[[j]]$files)){
+      nbFiles <- length (data$'@graph'[[j]]$files) 
+      print(paste("Experiment ",j,": Downloading ", nbFiles, " files", sep = ""))
+    for (i in 1:nbFiles){
+      filePath <- data$'@graph'[[j]]$files[[i]]$href
       curl = getCurlHandle()
-      dn <- paste (encodeProject, data$'@graph'[[j]]$files[[i]]$href, sep = "")
-      getURL (dn, curl = curl)
-      dn <- getCurlInfo(curl)$redirect.url
-      rm(curl) # release the curl!
-      download.file( dn, paste("encodeDownload",unlist(strsplit(aux,"/"))[5],sep="/"), method="curl")
-      rm(dn)
+      getURL (paste (encodePath, filePath, sep = ""), curl = curl)
+      dn <- getCurlInfo(curl)$redirect.url # handling server redicrection
+      
+      # preparing to download
+      fileOut <- paste( iOut, unlist( strsplit( filePath, "/"))[4], sep = "/")
+      dir.create(fileOut)
+      fileOut <- paste( iOut, unlist( strsplit( filePath, "/"))[5], sep = "/")
+      #download.file( dn, fileOut, method = "curl")
+      download.file( dn, fileOut, quiet = TRUE, method = "auto")
+      rm(curl) 
     }
   }
 }
