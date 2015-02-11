@@ -10,21 +10,28 @@
 #' @param assembly - "hg19" "mm9"
 #' @param output - path to save files
 #' @examples
-#' encodeDownload("bone chip",
-#'                "experiment",
-#'                "transcription factor", 
-#'                "primary cell",
-#'                "bigWig",
-#'                "ChIP-seq",
-#'                "mm9",
-#'                "encodeDownload"
-#'                )
+#' \dontrun{
+#'    encodeDownloader("bone chip",
+#'                    "experiment",
+#'                    "transcription factor", 
+#'                    "primary cell",
+#'                    "bigWig",
+#'                    "ChIP-seq",
+#'                    "mm9",
+#'                    "encodeDownload"
+#'                    )
+#' }
 #' @seealso \url{https://www.encodeproject.org/search/}
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name encodeDownloader
 library(RCurl)
 library(rjson)
 
+#' Concatenate Target term for search
+#' Concatenate Target term for search
+#'
+#' @param list to concatenate
+#' @keywords internal
 formatTarget <- function(iTarget){
   if( !is.null(iTarget)) {
     return (paste(
@@ -38,6 +45,11 @@ formatTarget <- function(iTarget){
   return(NULL)
 }
 
+#' Concatenate Sample term for search
+#' Concatenate Sample term for search
+#'
+#' @param list to concatenate
+#' @keywords internal
 formatSample <- function(iSample){
   if (!is.null(iSample)) {
     return (paste(
@@ -50,6 +62,11 @@ formatSample <- function(iSample){
   return (NULL)
 }
 
+#' Concatenate Assay term for search
+#' Concatenate Assay term for search
+#'
+#' @param list to concatenate
+#' @keywords internal
 formatFType <- function(iFType){
   if (!is.null(iFType)) {
     return (paste(
@@ -63,6 +80,11 @@ formatFType <- function(iFType){
   return (NULL)
 } 
 
+#' Concatenate Assay term for search
+#' Concatenate Assay term for search
+#'
+#' @param list to concatenate
+#' @keywords internal
 formatAssay <- function(iAssay){
   if( !is.null(iAssay)) {
     return (paste(
@@ -76,6 +98,11 @@ formatAssay <- function(iAssay){
   return (NULL)
 }
 
+#' Concatenate Assembly term for search
+#' Concatenate Assembly term for search
+#'
+#' @param list to concatenate
+#' @keywords internal
 formatAssembly <- function(iAssembly){
   if(!is.null(iAssembly)){
     return (paste(
@@ -89,17 +116,27 @@ formatAssembly <- function(iAssembly){
   return(NULL)
 }
 
+
+#' Concatenate search term for search
+#' Concatenate search term for search
+#'
+#' @param list to concatenate
+#' @keywords internal
 formatSearch <- function(iSearch){
-  if(!is.null(iSearch)){
+  if(!is.null(iSearch))
     return (paste ("searchTerm",  gsub(" ","+",iSearch), sep="="))
-  }
   return (NULL)
 }
 
+
+#' Concatenate type term for search
+#' Concatenate type term for search
+#'
+#' @param list to concatenate
+#' @keywords internal
 formatType <- function(iType){
-  if(!is.null(iType)){
+  if(!is.null(iType))
     return (paste ("type", iType, sep="="))
-  }
   return (NULL)
 }
 
@@ -129,8 +166,8 @@ encodeDownloader <- function(iSearch, iType, iTarget,
                        paste( searchPath, URLoptions, sep="?"),
                        sep="")
   
-  data       <- fromJSON (
-    getURL (URL, dirlistonly = TRUE),
+  data       <- rjson::fromJSON (
+    RCurl::getURL (URL, dirlistonly = TRUE),
     unexpected.escape = "keep"
   )
   
@@ -144,9 +181,9 @@ encodeDownloader <- function(iSearch, iType, iTarget,
     
     for (i in 1:nbFiles){
       filePath <- data$'@graph'[[j]]$files[[i]]$href
-      curl <- getCurlHandle()
-      getURL (paste (encodePath, filePath, sep = ""), curl = curl)
-      dn <- getCurlInfo(curl)$redirect.url  # handling server redicrection
+      curl <- RCurl::getCurlHandle()
+      RCurl::getURL (paste (encodePath, filePath, sep = ""), curl = curl)
+      dn <- RCurl::getCurlInfo(curl)$redirect.url  # handling server redicrection
       
       # preparing to download - create project folder
       fileOut <- paste( iOut, 
@@ -168,4 +205,10 @@ encodeDownloader <- function(iSearch, iType, iTarget,
       rm(curl) 
     }
   }
+}
+
+
+encodeUi <- function() {
+  require(shiny)
+  shinyApp(  server = shinyServer, ui = shinyUI)
 }

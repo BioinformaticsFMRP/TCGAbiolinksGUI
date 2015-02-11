@@ -1,6 +1,10 @@
-library("shiny")
+#' @title  Client side 
+#' @description Client side - Download data from ENCODDE project
+#' @name encodeDownloaderUI
+#' @import shiny
+library(shiny)
 
-shinyUI(fluidPage(
+shinyUI <- fluidPage(
   
   tags$head(tags$style(HTML("
     .shiny-text-output {
@@ -12,6 +16,7 @@ shinyUI(fluidPage(
      style = "font-family: 'Source Sans Pro';
         color: #fff; text-align: center;
         background-image: url('texturebg.png');
+        background-color: #4187C5; 
         padding: 20px"),
   br(),
   
@@ -117,4 +122,3 @@ shinyUI(fluidPage(
   ),
   fluidRow(column(5, offset = 4, verbatimTextOutput("value")))
  )
-)

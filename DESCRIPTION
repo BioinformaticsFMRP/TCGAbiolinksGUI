@@ -6,6 +6,7 @@ Date: 2015-02-05
 Author: Tiago Chedraoui Silva, Tiago Mendes
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
 Description: Download data from ENCODE project
-License: GPL3
-Suggests: testthat,knitr,shiny,RCurl,rjson,rdoxygen2 
+License: GPL (>= 3)
+Suggests: testthat,knitr,roxygen2,devtools 
+Imports: shiny,RCurl,rjson
 VignetteBuilder: knitr

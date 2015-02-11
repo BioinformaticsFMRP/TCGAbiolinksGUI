@@ -1,6 +1,10 @@
-library("shiny")
+#' @title  Server side 
+#' @description Server side - Download data from ENCODDE project
+#' @name encodeDownloaderServer
+#' @import shiny
+library(shiny)
 
-shinyServer(function(input, output) {
+shinyServer <- function(input, output) {
   
   getAssay    <- reactive({  input$assay    })
   getTarget   <- reactive({  input$target   })
@@ -18,7 +22,7 @@ shinyServer(function(input, output) {
                        isolate(getFType()),
                        isolate(getAssay()),
                        isolate(getAssembly()),
-                       "encodeDownload"
+                       "../download"
       )
       print("Downloaded")  
     }else{
@@ -26,4 +30,4 @@ shinyServer(function(input, output) {
     }
     
   })
-})
+}

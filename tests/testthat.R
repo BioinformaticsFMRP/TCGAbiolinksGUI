@@ -1,3 +1,3 @@
 library(testthat)
 
-test_check("encode")
+test_check("encodeDownloader")
