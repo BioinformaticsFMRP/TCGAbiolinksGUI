@@ -148,8 +148,8 @@ encodeDownloader <- function(iSearch, iType, iTarget,
   # Constant parameters
   encodePath  <- "https://www.encodeproject.org"
   searchPath  <- "/search/"
-  format      <- "format<-json"
-  frame       <- "frame<-embedded"
+  format      <- "format=json"
+  frame       <- "frame=embedded"
   
   searchTerm <- formatSearch   ( iSearch  )
   type       <- formatType     ( iType    )
