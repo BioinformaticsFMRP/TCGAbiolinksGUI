@@ -10,21 +10,20 @@ shinyServer(function(input, output) {
   getSearch   <- reactive({  input$search   })
   
   output$value <- renderPrint({ 
-    if(input$downloadBt){ # trigger this function by pressing download button
-      print("Downloading")  # Does it work?
+    if(input$downloadBt){  # trigger this function by pressing download button
       encodeDownloader(isolate(getSearch()),
-                     "experiment",
-                     isolate(getTarget()),
-                     isolate(getSample()), 
-                     isolate(getFType()),
-                     isolate(getAssay()),
-                     isolate(getAssembly()),
-                     "encodeDownload"
+                       "experiment",
+                       isolate(getTarget()),
+                       isolate(getSample()), 
+                       isolate(getFType()),
+                       isolate(getAssay()),
+                       isolate(getAssembly()),
+                       "encodeDownload"
       )
       print("Downloaded")  
     }else{
       print("Not downloaded")
-    }    
+    }
+    
   })
-  
 })

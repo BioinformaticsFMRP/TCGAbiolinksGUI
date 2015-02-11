@@ -28,17 +28,28 @@ shinyUI(fluidPage(
            wellPanel(
              
              # @param assay - "ChIP-seq" "RIP-chip" "Repli-chip" 
-             checkboxGroupInput("assay", label = h3("Assay"), 
-                                choices = list("ChIP-seq", "RIP-chip", "Repli-chip"),
+             checkboxGroupInput("assay", 
+                                label = h3("Assay"), 
+                                choices = list("ChIP-seq",
+                                               "RNA-seq",
+                                               "RRBS",
+                                               "RIP-chip",
+                                               "DNase-seq",
+                                               "Repli-chip"),
                                 selected = NULL)
            )
     ),
     column(4,
            wellPanel(
              
-             # @param iTarget - "transcription factor" "RNA binding protein" "tag" "histone modification"
-             checkboxGroupInput("target", label = h3("Target"), 
-                                choices = list("transcription factor",  "RNA binding protein",  "histone modification","tag"),
+             # @param iTarget - "transcription factor" "tag" ...
+             checkboxGroupInput("target", 
+                                label = h3("Target"), 
+                                choices = list("transcription factor", 
+                                               "RNA binding protein",
+                                               "control",
+                                               "histone modification",
+                                               "tag"),
                                 selected = NULL)
            )
     )
@@ -48,9 +59,18 @@ shinyUI(fluidPage(
   fluidRow(
     column(4,
            wellPanel(
-             # @param iFType  - "bam" "bigWig" "bed_broadPeak" "broadPeak" "fastq"
-             checkboxGroupInput("ftype", label = h3("File Type"), 
-                                choices = list("bam","bigWig","bed_broadPeak","broadPeak","fastq"),
+             # @param iFType  - "bam" "bigWig" "bed_broadPeak" ...
+             checkboxGroupInput("ftype", 
+                                label = h3("File Type"), 
+                                choices = list("bam",
+                                               "bigWig",
+                                               "bed_broadPeak",
+                                               "broadPeak",
+                                               "narrowPeak",
+                                               "bed_narrowPeak",
+                                               "bed",
+                                               "bigBed",
+                                               "fastq"),
                                 selected = NULL)
              
            )
@@ -59,31 +79,42 @@ shinyUI(fluidPage(
     column(4,
            wellPanel(
              # @param iSample - "tissue" "primary cell"
-             checkboxGroupInput("sample", label = h3("Sample"), 
-                                choices = list("tissue","primary cell"),
+             checkboxGroupInput("sample", 
+                                label = h3("Sample"), 
+                                choices = list("tissue",
+                                               "stem cell",
+                                               "immortalized cell line",
+                                               "in vitro differentiated cells",
+                                               "induced pluripotent stem cell line",
+                                               "primary cell"),
                                 selected = NULL)
            )
     ),
     
     column(4,
            wellPanel(
-                     # @param assembly - "hg19" "mm9"
-                     checkboxGroupInput("assembly", label = h3("Assembly"), 
-                                        choices = list("hg19","mm9"),
-                                        selected = NULL)
+             # @param assembly - "hg19" "mm9"
+             checkboxGroupInput("assembly", 
+                                label = h3("Assembly"), 
+                                choices = list("hg19",
+                                               "dm3",
+                                               "mm9"),
+                                selected = NULL)
            )
     )
   ),
   
   fluidRow(
     column(12, 
-           wellPanel(align = "center", style = "background-color: #4187C5",   
-                     actionButton("downloadBt", "Download", icon=icon("download"))
+           wellPanel(align = "center", 
+                     style = "background-color: #4187C5",   
+                     actionButton("downloadBt",
+                                  "Download",
+                                  icon = icon("download")
+                     )
            )
     )
   ),
   fluidRow(column(5, offset = 4, verbatimTextOutput("value")))
-  
-  
-)
+ )
 )
