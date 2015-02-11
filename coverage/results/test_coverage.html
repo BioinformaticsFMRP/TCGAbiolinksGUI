@@ -46,12 +46,12 @@
 </head>
 <body>
   <script>
-  var tagList = ["1_46","1_49","1_61","1_66","1_76","1_93","1_96","1_129","2_46","2_59","2_82","2_90","2_107","2_112","2_128","2_141","2_162"];
-var sumTags = [0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1];
-var allTags = [[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1]];
-var coverage = [[[0,8],[9,0]]];
-var all_coverage = [[0,8],[9,0]];
-var sumAllTraces = {"0":17,"1":9};
+  var tagList = ["1_315","1_329","1_332","1_335","1_343","1_400","1_436","1_450","1_453","1_456","1_464","1_521","1_557","1_571","1_574","1_577","1_625","1_661","1_675","1_678","1_681","1_729","1_765","1_779","1_782","1_785","1_833","1_890","1_900","1_910","1_920","1_932","1_935","1_943","1_978","1_981","1_1009","1_1012","1_1026","1_1029","1_1043","1_1046","1_1060","1_1063","1_1077","1_1080","1_1096","1_1099","1_1159","1_1162","1_1170","1_1208","1_1211","1_1215","1_1253","1_1279","1_1284","1_1287","1_1301","1_1304","1_1307","1_1331","1_1334","1_1364","1_1369","1_1376","1_1379","1_1410","1_1413","1_1424","1_1427","1_1462","1_1465","1_1487","1_1490","1_1498","1_1501","1_1504","1_1555","1_1574","1_1577","1_1585","1_1588","1_1635","1_1645","1_1681","1_1712","1_1715","1_1753","2_29","2_32","2_36","2_53","2_56","2_60","2_77","2_80","2_84","2_101","2_104","2_108","2_125","2_128","2_132","2_149","2_152","2_156","2_181","2_188","2_198","2_211","2_214","2_217","2_237","2_240","2_254","2_257","2_271","2_274","2_288","2_291","2_305","2_308","2_332","2_351"];
+var sumTags = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+var allTags = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+var coverage = [[[27,62],[0,36],[0,0],[0,0]]];
+var all_coverage = [[27,62],[0,36],[0,0],[0,0]];
+var sumAllTraces = {"0":125,"1":27};
 docolor = function(j, bb) {
 // $("#t_" + tagList[j]).css("backgroundColor", bb ? "lightgreen" : "lightpink");
     if(bb > 0) {
@@ -99,67 +99,276 @@ $( document ).ready(function() {
     <h1>testCoverage Report <small></small></h1>
   </div>
   <h2>Summary</h2>
-<!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Feb 09 12:10:21 2015 -->
+<!-- html table generated in R 3.1.2 by xtable 1.7-4 package -->
+<!-- Wed Feb 11 00:50:04 2015 -->
 <table class="table table-bordered">
 <tr> <th>  </th> <th> Total # Tracepoints </th> <th> # Executed </th> <th> % Coverage </th>  </tr>
-  <tr> <td align="right"> 1 </td> <td> 17 </td> <td> 9 </td> <td>  53% </td> </tr>
+  <tr> <td align="right"> 1 </td> <td> 125 </td> <td> 27 </td> <td>  22% </td> </tr>
    </table>
 <h2>testthat Tests</h2>
-	<button type="button" class="btn btn-default" id="trace_all">All Tests</button>&nbsp;<button type='button' class='btn btn-default' id='run_1'>testprime.R</button>&nbsp;<h2>Resource Files</h2><div class="row">
+	<button type="button" class="btn btn-default" id="trace_all">All Tests</button>&nbsp;<button type='button' class='btn btn-default' id='run_1'>testEncodeDownloder.R</button>&nbsp;<h2>Resource Files</h2><div class="row">
        <div class="col-md-4">
-        <ul class="nav nav-pills nav-stacked" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tabs-1">divisors.R</a><div id="progress-1" ></div></li>
-<li class=""><a role="tab" data-toggle="tab" href="#tabs-2">prime.R</a><div id="progress-2" ></div></li>
+        <ul class="nav nav-pills nav-stacked" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tabs-1">encode.R</a><div id="progress-1" ></div></li>
+<li class=""><a role="tab" data-toggle="tab" href="#tabs-2">server.R</a><div id="progress-2" ></div></li>
+<li class=""><a role="tab" data-toggle="tab" href="#tabs-3">ui.R</a><div id="progress-3" ></div></li>
+<li class=""><a role="tab" data-toggle="tab" href="#tabs-4">www</a><div id="progress-4" ></div></li>
 </ul>
     </div> 
     <div class="col-md-8">
-    <div class="tab-content"><div class="tab-pane active" id="tabs-1"><pre>#' @title Return list with all divisors of the number 
-#' @description \code{prime} The function return a array list with all divisors of the number
-#' @param x A number
-#' @return vector whit \code{x} list of divisors
+    <div class="tab-content"><div class="tab-pane active" id="tabs-1"><pre>#' @title Download data from ENCODDE project
+#' @description
+#' @param searchTerm - bone chip
+#' @param iType -   "experiment" "publication" "software" ""antibody_lot" "web"
+#' @param iTarget - "transcription factor" "RNA binding protein" "tag" "histone modification"
+#' @param iSample - "tissue" "primary cell"
+#' @param iFType  - "bam" "bigWig" "bed_broadPeak" "broadPeak" "fastq"
+#' @param assay - "ChIP-seq" "RIP-chip" "Repli-chip" 
+#' @param assembly - "hg19" "mm9"
+#' @param output - path to save files
 #' @examples
-#' divisor(72)
-#' divisor(50)
-#' \dontrun{
-#'    divisor('a')
-#' }
-#' @seealso \url{http://en.wikipedia.org/wiki/Divisor}
+#' encodeDownload("bone chip",
+#'                "experiment",
+#'                "transcription factor", 
+#'                "encodeDownload"
+#'                )
+#' @seealso \url{https://www.encodeproject.org/search/}
+#' @seealso \url{https://www.encodeproject.org/help/rest-api/}
+#' 
+<span id="t_1_58">library(RCurl)</span>
+<span id="t_1_70">library(rjson)</span>
 
-<span id="t_1_36">divisor</span> &lt;- function(number){
-  <span id="t_1_46">list</span> &lt;- <span id="t_1_49">vector()</span>
-  for(<span id="t_1_61">i</span> in 2:<span id="t_1_66">number</span>){
-    if((<span id="t_1_76">number</span> %% i) == 0){
-      <span id="t_1_93">list</span> &lt;- <span id="t_1_96">c(list, i)</span>
+# USER SELECTION - needs improvement
+<span id="t_1_87">searchT</span>   = "bone chip"
+<span id="t_1_97">type</span>      = "experiment"
+#target    = c("control","transcription factor") # can be more than one
+<span id="t_1_110">target</span>    = <span id="t_1_113">c("control")</span>
+<span id="t_1_127">biosample</span> = <span id="t_1_130">c("primary cell")</span>
+#biosample = c("tissue", "primary cell")
+<span id="t_1_147">fType</span>     = <span id="t_1_150">c("bigWig")</span>
+<span id="t_1_164">fType</span>     = NULL
+<span id="t_1_174">assay</span>     = <span id="t_1_177">c("ChIP-seq")</span>
+<span id="t_1_191">assembly</span>  = <span id="t_1_194">c("mm9")</span>
+<span id="t_1_208">output</span>    = "encodeDownload"
+
+<span id="t_1_220">iSearch</span>   = searchT
+<span id="t_1_230">iType</span>     = type
+<span id="t_1_240">iTarget</span>   = target
+<span id="t_1_250">iOut</span>      = output
+<span id="t_1_260">iSample</span>   = biosample
+<span id="t_1_270">iFType</span>    = fType 
+<span id="t_1_280">iAssembly</span> = assembly
+<span id="t_1_290">iAssay</span>    = assay
+
+<span id="t_1_302">formatTarget</span> &lt;- function(iTarget){
+  if(!<span id="t_1_315">is.null(iTarget)</span>){
+    <span id="t_1_329">return (<span id="t_1_332">paste(<span id="t_1_335">paste ("target.investigated_as", <span id="t_1_343">gsub(" ","%20",iTarget)</span>,sep = "=")</span>, collapse = "&")</span>)</span>
+  }
+  <span id="t_1_400">return(NULL)</span>
+}
+
+<span id="t_1_423">formatSample</span> &lt;- function(iSample){
+  if(!<span id="t_1_436">is.null(iSample)</span>){
+     <span id="t_1_450">return (<span id="t_1_453">paste(<span id="t_1_456">paste ("replicates.library.biosample.biosample_type", <span id="t_1_464">gsub(" ", "%20", iSample)</span>, sep = "=")</span>, collapse = "&")</span>)</span>
+  }
+  <span id="t_1_521">return (NULL)</span>
+}
+
+<span id="t_1_544">formatFType</span> &lt;- function(iFType){
+  if(!<span id="t_1_557">is.null(iFType)</span>){
+    <span id="t_1_571">return (<span id="t_1_574">paste(<span id="t_1_577">paste ("files.file_format", iFType, sep = "=")</span>, collapse = "&")</span>)</span>
+  }
+  <span id="t_1_625">return (NULL)</span>
+} 
+
+<span id="t_1_648">formatAssay</span> &lt;- function(iAssay){
+  if(!<span id="t_1_661">is.null(iAssay)</span>){
+    <span id="t_1_675">return (<span id="t_1_678">paste(<span id="t_1_681">paste ("assay_term_name", iAssay, sep = "=")</span>, collapse = "&")</span>)</span>
+  }
+  <span id="t_1_729">return (NULL)</span>
+}
+
+<span id="t_1_752">formatAssembly</span> &lt;- function(iAssembly){
+  if(!<span id="t_1_765">is.null(iAssembly)</span>){
+    <span id="t_1_779">return (<span id="t_1_782">paste(<span id="t_1_785">paste ("assembly", iAssembly, sep = "=")</span>, collapse = "&")</span>)</span>
+  }
+  <span id="t_1_833">return(NULL)</span>
+}
+
+<span id="t_1_856">encodeDownload</span> &lt;- function(iSearch, iType, iTarget, iSample, iFType, iAssay, iAssembly, iOut) {
+  
+  # Constant parameters
+  <span id="t_1_890">encodePath</span>  = "https://www.encodeproject.org"
+  <span id="t_1_900">searchPath</span>  = "/search/"
+  <span id="t_1_910">format</span>      = "format=json"
+  <span id="t_1_920">frame</span>       = "frame=embedded"
+  
+  <span id="t_1_932">searchTerm</span>  = <span id="t_1_935">paste ("searchTerm",  <span id="t_1_943">gsub(" ","+",iSearch)</span>, sep="=")</span>
+  <span id="t_1_978">type</span>        = <span id="t_1_981">paste ("type", iType, sep="=")</span>
+  
+  <span id="t_1_1009">target</span>    = <span id="t_1_1012">formatTarget( iTarget)</span>
+  <span id="t_1_1026">biosample</span> = <span id="t_1_1029">formatSample( iSample)</span>
+  <span id="t_1_1043">fType</span>     = <span id="t_1_1046">formatFType( iFType)</span>  
+  <span id="t_1_1060">assay</span>     = <span id="t_1_1063">formatAssay( iAssay)</span>  
+  <span id="t_1_1077">assembly</span>  = <span id="t_1_1080">formatAssembly(iAssembly)</span>
+  
+  <span id="t_1_1096">URLoptions</span> &lt;- <span id="t_1_1099">paste (searchTerm, format, frame, target, type, biosample, fType, assay, assembly, sep="&")</span>
+  <span id="t_1_1159">URL</span>        &lt;- <span id="t_1_1162">paste (encodePath, <span id="t_1_1170">paste( searchPath, URLoptions, sep="?")</span>, sep="")</span>
+  
+  <span id="t_1_1208">data</span>       &lt;- <span id="t_1_1211">fromJSON (
+    <span id="t_1_1215">getURL (URL, dirlistonly = TRUE)</span>, 
+    unexpected.escape = "keep"
+  )</span>
+  
+  # Output folder
+  <span id="t_1_1253">dir.create(iOut, showWarnings = FALSE)</span>
+  
+  # Downloads all files from the search
+  for (<span id="t_1_1279">j</span> in 1:<span id="t_1_1284">length (<span id="t_1_1287">data</span>$'@graph')</span>){ 
+    <span id="t_1_1301">nbFiles</span> &lt;- <span id="t_1_1304">length (<span id="t_1_1307">data</span>$'@graph'[[j]]$files)</span> 
+    <span id="t_1_1331">print(<span id="t_1_1334">paste("Downloading experiment ",j, sep = "")</span>)</span>
+    for (<span id="t_1_1364">i</span> in 1:<span id="t_1_1369">nbFiles</span>){
+      <span id="t_1_1376">filePath</span> &lt;- <span id="t_1_1379">data</span>$'@graph'[[j]]$files[[i]]$href
+      <span id="t_1_1410">curl</span> = <span id="t_1_1413">getCurlHandle()</span>
+      <span id="t_1_1424">getURL (<span id="t_1_1427">paste (encodePath, filePath, sep = "")</span>, curl = curl)</span>
+      <span id="t_1_1462">dn</span> &lt;- <span id="t_1_1465">getCurlInfo(curl)</span>$redirect.url # handling server redicrection
+      
+      # preparing to download - create project folder
+      <span id="t_1_1487">fileOut</span> &lt;- <span id="t_1_1490">paste( iOut, <span id="t_1_1498">unlist( <span id="t_1_1501">strsplit( <span id="t_1_1504">data</span>$'@graph'[[j]]$'@id', "/")</span>)</span>[3], sep = "/")</span>
+      <span id="t_1_1555">dir.create(fileOut, showWarnings = FALSE)</span>
+      <span id="t_1_1574">fileOut</span> &lt;- <span id="t_1_1577">paste( fileOut, <span id="t_1_1585">unlist( <span id="t_1_1588">strsplit( filePath, "/")</span>)</span>[5], sep = "/")</span>
+      
+      # Did my user select a file format  
+      if(<span id="t_1_1635">is.null(iFType)</span> || <span id="t_1_1645">data</span>$'@graph'[[j]]$files[[i]]$file_format %in% iFType){
+        <span id="t_1_1681">download.file( dn, fileOut, quiet = TRUE, method = "curl")</span>
+        <span id="t_1_1712">print(<span id="t_1_1715">paste("Downloaded file: ", fileOut, sep = "")</span>)</span>
+      }
+      
+      <span id="t_1_1753">rm(curl)</span> 
     }
   }
-  <span id="t_1_129">return(list)</span>
-}</pre></div><div class="tab-pane " id="tabs-2"><pre>#' @title Verify if a number is prime 
-#' @description \code{prime} verify if a number is prime
-#' @param x A number
-#' @return TRUE if \code{x} is prime, FALSE otherwise
-#' @examples
-#' prime(4)
-#' prime(13)
-#' \dontrun{
-#'    prime('a')
-#' }
-#' @seealso \url{http://en.wikipedia.org/wiki/Prime_number}
-<span id="t_2_34">prime</span> &lt;- function(x){
-  if(<span id="t_2_46">is.na(x)</span>) {
-      <span id="t_2_59">stop("x must be a number")</span>
-  }
-  if(<span id="t_2_82">x</span>==2) <span id="t_2_90">return (TRUE)</span>
-  for(<span id="t_2_107">i</span> in 2:<span id="t_2_112">sqrt(x)</span>){
-    if(<span id="t_2_128">x</span> %% i == 0)
-      <span id="t_2_141">return (FALSE)</span>
-  }
-  <span id="t_2_162">return (TRUE)</span>
-}</pre></div>
+}</pre></div><div class="tab-pane " id="tabs-2"><pre><span id="t_2_1">library("shiny")</span>
+
+<span id="t_2_15">shinyServer(function(input, output) {
+  
+  <span id="t_2_29">getAssay</span>    &lt;- <span id="t_2_32">reactive({  <span id="t_2_36">input</span>$assay    })</span>
+  <span id="t_2_53">getTarget</span>   &lt;- <span id="t_2_56">reactive({  <span id="t_2_60">input</span>$target   })</span>
+  <span id="t_2_77">getFType</span>    &lt;- <span id="t_2_80">reactive({  <span id="t_2_84">input</span>$ftype    })</span>
+  <span id="t_2_101">getSample</span>   &lt;- <span id="t_2_104">reactive({  <span id="t_2_108">input</span>$sample   })</span>
+  <span id="t_2_125">getAssembly</span> &lt;- <span id="t_2_128">reactive({  <span id="t_2_132">input</span>$assembly })</span>
+  <span id="t_2_149">getSearch</span>   &lt;- <span id="t_2_152">reactive({  <span id="t_2_156">input</span>$search   })</span>
+  
+  output$value &lt;- <span id="t_2_181">renderPrint({ 
+    if(<span id="t_2_188">input</span>$downloadBt){ # trigger this function by pressing download button
+      <span id="t_2_198">print("Downloading")</span>  # Does it work?
+      <span id="t_2_211">encodeDownload(<span id="t_2_214">isolate(<span id="t_2_217">getSearch()</span>)</span>,
+                     "experiment",
+                     <span id="t_2_237">isolate(<span id="t_2_240">getTarget()</span>)</span>,
+                     <span id="t_2_254">isolate(<span id="t_2_257">getSample()</span>)</span>, 
+                     <span id="t_2_271">isolate(<span id="t_2_274">getFType()</span>)</span>,
+                     <span id="t_2_288">isolate(<span id="t_2_291">getAssay()</span>)</span>,
+                     <span id="t_2_305">isolate(<span id="t_2_308">getAssembly()</span>)</span>,
+                     "encodeDownload"
+      )</span>
+      <span id="t_2_332">print("Downloaded")</span>  
+    }else{
+      <span id="t_2_351">print("Not downloaded")</span>
+    }    
+  })</span>
+  
+})</span></pre></div><div class="tab-pane " id="tabs-3"><pre><span id="t_3_1">library("shiny")</span>
+
+<span id="t_3_15">shinyUI(<span id="t_3_18">fluidPage(
+  
+  <span id="t_3_23">tags</span>$head(<span id="t_3_29">tags</span>$style(<span id="t_3_35">HTML("
+    .shiny-text-output {
+      background-color:#fff;
+    }
+  ")</span>)),
+  
+  <span id="t_3_57">h1("Downloading", <span id="t_3_65">span("ENCODE Data", style = "font-weight: 300")</span>, 
+     style = "font-family: 'Source Sans Pro';
+        color: #fff; text-align: center;
+        background-image: url('texturebg.png');
+        padding: 20px")</span>,
+  <span id="t_3_97">br()</span>,
+  
+  
+  <span id="t_3_109">fluidRow(
+    
+    <span id="t_3_114">column(4,
+           <span id="t_3_123">wellPanel(
+             <span id="t_3_127">textInput("search", label = <span id="t_3_137">h3("Search Term")</span>, value = "")</span>
+           )</span>
+    )</span>,
+    
+    <span id="t_3_172">column(4,
+           <span id="t_3_181">wellPanel(
+             
+             # @param assay - "ChIP-seq" "RIP-chip" "Repli-chip" 
+             <span id="t_3_188">checkboxGroupInput("assay", label = <span id="t_3_198">h3("Assay")</span>, 
+                                choices = <span id="t_3_213">list("ChIP-seq", "RIP-chip", "Repli-chip")</span>,
+                                selected = NULL)</span>
+           )</span>
+    )</span>,
+    <span id="t_3_258">column(4,
+           <span id="t_3_267">wellPanel(
+             
+             # @param iTarget - "transcription factor" "RNA binding protein" "tag" "histone modification"
+             <span id="t_3_274">checkboxGroupInput("target", label = <span id="t_3_284">h3("Target")</span>, 
+                                choices = <span id="t_3_299">list("transcription factor",  "RNA binding protein",  "histone modification","tag")</span>,
+                                selected = NULL)</span>
+           )</span>
+    )</span>
+  )</span>,
+  
+  
+  <span id="t_3_356">fluidRow(
+    <span id="t_3_360">column(4,
+           <span id="t_3_369">wellPanel(
+             # @param iFType  - "bam" "bigWig" "bed_broadPeak" "broadPeak" "fastq"
+             <span id="t_3_375">checkboxGroupInput("ftype", label = <span id="t_3_385">h3("File Type")</span>, 
+                                choices = <span id="t_3_400">list("bam","bigWig","bed_broadPeak","broadPeak","fastq")</span>,
+                                selected = NULL)</span>
+             
+           )</span>
+    )</span>,
+    
+    <span id="t_3_457">column(4,
+           <span id="t_3_466">wellPanel(
+             # @param iSample - "tissue" "primary cell"
+             <span id="t_3_472">checkboxGroupInput("sample", label = <span id="t_3_482">h3("Sample")</span>, 
+                                choices = <span id="t_3_497">list("tissue","primary cell")</span>,
+                                selected = NULL)</span>
+           )</span>
+    )</span>,
+    
+    <span id="t_3_538">column(4,
+           <span id="t_3_547">wellPanel(
+                     # @param assembly - "hg19" "mm9"
+                     <span id="t_3_553">checkboxGroupInput("assembly", label = <span id="t_3_563">h3("Assembly")</span>, 
+                                        choices = <span id="t_3_578">list("hg19","mm9")</span>,
+                                        selected = NULL)</span>
+           )</span>
+    )</span>
+  )</span>,
+  
+  <span id="t_3_624">fluidRow(
+    <span id="t_3_628">column(12, 
+           <span id="t_3_637">wellPanel(align = "center", style = "background-color: #4187C5",   
+                     <span id="t_3_655">actionButton("downloadBt", "Download", icon=<span id="t_3_670">icon("download")</span>)</span>
+           )</span>
+    )</span>
+  )</span>,
+  <span id="t_3_702">fluidRow(<span id="t_3_705">column(5, offset = 4, <span id="t_3_720">verbatimTextOutput("value")</span>)</span>)</span>
+  
+  
+)</span>
+)</span></pre></div><div class="tab-pane " id="tabs-4"><pre></pre></div>
     </div>
     </div>
   </div>
   <div class="footer">
-    <p> Generated on2015-02-09 12:10:21 by <a href="http://www.mango-solutions.com/wp/products-services/r-services/r-packages/testcoverage/">testCoverage</a>.</p>
+    <p> Generated on2015-02-11 00:50:04 by <a href="http://www.mango-solutions.com/wp/products-services/r-services/r-packages/testcoverage/">testCoverage</a>.</p>
   </div>
   </div>
 </body> 

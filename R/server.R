@@ -1,3 +1,5 @@
+library("shiny")
+
 shinyServer(function(input, output) {
   
   getAssay    <- reactive({  input$assay    })
@@ -9,6 +11,7 @@ shinyServer(function(input, output) {
   
   output$value <- renderPrint({ 
     if(input$downloadBt){ # trigger this function by pressing download button
+      print("Downloading")  # Does it work?
       encodeDownload(isolate(getSearch()),
                      "experiment",
                      isolate(getTarget()),
