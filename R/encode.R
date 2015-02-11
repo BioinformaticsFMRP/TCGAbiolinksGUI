@@ -35,11 +35,11 @@ library(rjson)
 formatTarget <- function(iTarget){
   if( !is.null(iTarget)) {
     return (paste(
-                  paste ("target.investigated_as",
-                           gsub(" ","%20",iTarget),
-                           sep = "="
-                         ), 
-                  collapse = "&")
+                  "target.investigated_as",
+                  gsub(" ","%20",iTarget),
+                  sep = "=",
+                  collapse = "&"
+                  )
             )
   }
   return(NULL)
@@ -53,9 +53,9 @@ formatTarget <- function(iTarget){
 formatSample <- function(iSample){
   if (!is.null(iSample)) {
     return (paste(
-                  paste ("replicates.library.biosample.biosample_type",
-                         gsub(" ", "%20", iSample),
-                         sep = "="),
+                  "replicates.library.biosample.biosample_type",
+                  gsub(" ", "%20", iSample),
+                  sep = "=",
                   collapse = "&")
             )
   }
@@ -70,10 +70,9 @@ formatSample <- function(iSample){
 formatFType <- function(iFType){
   if (!is.null(iFType)) {
     return (paste(
-                  paste (
-                         "files.file_format",
-                         iFType,
-                         sep = "="),
+                  "files.file_format",
+                  iFType,
+                  sep = "=",
                   collapse = "&")
             )
   }
@@ -88,11 +87,10 @@ formatFType <- function(iFType){
 formatAssay <- function(iAssay){
   if( !is.null(iAssay)) {
     return (paste(
-              paste (
-                    "assay_term_name",
-                    iAssay,
-                    sep = "="),
-              collapse = "&")
+                  "assay_term_name",
+                  iAssay,
+                  sep = "=",
+                collapse = "&")
             )
   }
   return (NULL)
@@ -106,10 +104,9 @@ formatAssay <- function(iAssay){
 formatAssembly <- function(iAssembly){
   if(!is.null(iAssembly)){
     return (paste(
-                paste (
-                    "assembly",
-                    iAssembly,
-                    sep = "="),
+                  "assembly",
+                  iAssembly,
+                  sep = "=",
                 collapse = "&")
             )
   }
