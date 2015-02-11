@@ -87,7 +87,15 @@ test_that("A null parameter returns NULL", {
   expect_equal(formatSearch(NULL),NULL)
 })
 
+# Type 
+test_that("Parameter type should have the prefix type=  ", {
+  expect_equal(formatType("experiment"), "type=experiment")
+})
 
+
+test_that("A null parameter returns NULL", {
+  expect_equal(formatType(NULL),NULL)
+})
 
 
 

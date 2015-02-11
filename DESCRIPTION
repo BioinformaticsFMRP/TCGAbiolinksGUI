@@ -1,13 +1,11 @@
-Package: prime
+Package: encodeDownloader
 Type: Package
-Title: Some math functions
+Title: Encode Downloader
 Version: 1.0
 Date: 2015-02-05
 Author: Tiago Chedraoui Silva, Tiago Mendes
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
-Description: Only testing some packages
+Description: Download data from ENCODE project
 License: GPL3
-Suggests: testthat
-Suggests: testthat,
-    knitr
+Suggests: testthat,knitr,shiny,RCurl,rjson,rdoxygen2 
 VignetteBuilder: knitr

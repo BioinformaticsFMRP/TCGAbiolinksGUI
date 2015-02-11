@@ -12,7 +12,7 @@ shinyServer(function(input, output) {
   output$value <- renderPrint({ 
     if(input$downloadBt){ # trigger this function by pressing download button
       print("Downloading")  # Does it work?
-      encodeDownload(isolate(getSearch()),
+      encodeDownloader(isolate(getSearch()),
                      "experiment",
                      isolate(getTarget()),
                      isolate(getSample()), 

@@ -1,5 +1,5 @@
 #' @title Download data from ENCODDE project
-#' @description
+#' @description Downloads data from ENCODE project
 #' @param searchTerm - bone chip
 #' @param iType -   "experiment" "publication" "software" ""antibody_lot" "web"
 #' @param iTarget - "transcription factor" "RNA binding protein" "tag" "histone modification"
@@ -16,7 +16,7 @@
 #'                )
 #' @seealso \url{https://www.encodeproject.org/search/}
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
-#' 
+#' @name encodeDownloader
 library(RCurl)
 library(rjson)
 
@@ -64,12 +64,12 @@ formatSearch <- function(iSearch){
 
 formatType <- function(iType){
   if(!is.null(iType)){
-    paste ("type", iType, sep="=")
+    return (paste ("type", iType, sep="="))
   }
   return (NULL)
 }
 
-encodeDownload <- function(iSearch, iType, iTarget, iSample, iFType, iAssay, iAssembly, iOut) {
+encodeDownloader <- function(iSearch, iType, iTarget, iSample, iFType, iAssay, iAssembly, iOut) {
   
   # Constant parameters
   encodePath  = "https://www.encodeproject.org"
@@ -84,7 +84,7 @@ encodeDownload <- function(iSearch, iType, iTarget, iSample, iFType, iAssay, iAs
   fType      = formatFType    ( iFType   )  
   assay      = formatAssay    ( iAssay   )  
   assembly   = formatAssembly ( iAssembly)
-  
+
   URLoptions <- paste (searchTerm, format, frame, target, type, biosample, fType, assay, assembly, sep="&")
   URL        <- paste (encodePath, paste( searchPath, URLoptions, sep="?"), sep="")
   
@@ -94,12 +94,13 @@ encodeDownload <- function(iSearch, iType, iTarget, iSample, iFType, iAssay, iAs
   )
   
   # Output folder
-  dir.create(iOut, showWarnings = FALSE)
+  dir.create (iOut, showWarnings = FALSE)
   
   # Downloads all files from the search
   for (j in 1:length (data$'@graph')){ 
     nbFiles <- length (data$'@graph'[[j]]$files) 
-    print(paste("Downloading experiment ",j, sep = ""))
+    print(paste("Downloading experiment ", j, sep = ""))
+    
     for (i in 1:nbFiles){
       filePath <- data$'@graph'[[j]]$files[[i]]$href
       curl = getCurlHandle()
@@ -108,15 +109,15 @@ encodeDownload <- function(iSearch, iType, iTarget, iSample, iFType, iAssay, iAs
       
       # preparing to download - create project folder
       fileOut <- paste( iOut, unlist( strsplit( data$'@graph'[[j]]$'@id', "/"))[3], sep = "/")
-      dir.create(fileOut, showWarnings = FALSE)
+      dir.create (fileOut, showWarnings = FALSE)
       fileOut <- paste( fileOut, unlist( strsplit( filePath, "/"))[5], sep = "/")
       
-      # Did my user select a file format  
+      # Did the user select a file format  
       if(is.null(iFType) || data$'@graph'[[j]]$files[[i]]$file_format %in% iFType){
         download.file( dn, fileOut, quiet = TRUE, method = "curl")
         print(paste("Downloaded file: ", fileOut, sep = ""))
       }
-      
+
       rm(curl) 
     }
   }

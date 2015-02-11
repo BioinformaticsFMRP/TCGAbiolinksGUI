@@ -46,12 +46,12 @@
 </head>
 <body>
   <script>
-  var tagList = ["1_315","1_329","1_332","1_335","1_343","1_400","1_436","1_450","1_453","1_456","1_464","1_521","1_557","1_571","1_574","1_577","1_625","1_661","1_675","1_678","1_681","1_729","1_765","1_779","1_782","1_785","1_833","1_890","1_900","1_910","1_920","1_932","1_935","1_943","1_978","1_981","1_1009","1_1012","1_1026","1_1029","1_1043","1_1046","1_1060","1_1063","1_1077","1_1080","1_1096","1_1099","1_1159","1_1162","1_1170","1_1208","1_1211","1_1215","1_1253","1_1279","1_1284","1_1287","1_1301","1_1304","1_1307","1_1331","1_1334","1_1364","1_1369","1_1376","1_1379","1_1410","1_1413","1_1424","1_1427","1_1462","1_1465","1_1487","1_1490","1_1498","1_1501","1_1504","1_1555","1_1574","1_1577","1_1585","1_1588","1_1635","1_1645","1_1681","1_1712","1_1715","1_1753","2_29","2_32","2_36","2_53","2_56","2_60","2_77","2_80","2_84","2_101","2_104","2_108","2_125","2_128","2_132","2_149","2_152","2_156","2_181","2_188","2_198","2_211","2_214","2_217","2_237","2_240","2_254","2_257","2_271","2_274","2_288","2_291","2_305","2_308","2_332","2_351"];
-var sumTags = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-var allTags = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
-var coverage = [[[27,62],[0,36],[0,0],[0,0]]];
-var all_coverage = [[27,62],[0,36],[0,0],[0,0]];
-var sumAllTraces = {"0":125,"1":27};
+  var tagList = ["1_97","1_111","1_114","1_117","1_125","1_182","1_218","1_232","1_235","1_238","1_246","1_303","1_339","1_353","1_356","1_359","1_407","1_443","1_457","1_460","1_463","1_511","1_547","1_561","1_564","1_567","1_615","1_651","1_665","1_668","1_676","1_722","1_758","1_772","1_805","1_862","1_872","1_882","1_892","1_904","1_907","1_921","1_924","1_938","1_941","1_955","1_958","1_972","1_975","1_989","1_992","1_1006","1_1009","1_1025","1_1028","1_1088","1_1091","1_1099","1_1137","1_1140","1_1144","1_1182","1_1208","1_1213","1_1216","1_1230","1_1233","1_1236","1_1260","1_1263","1_1293","1_1298","1_1305","1_1308","1_1339","1_1342","1_1353","1_1356","1_1391","1_1394","1_1416","1_1419","1_1427","1_1430","1_1433","1_1484","1_1503","1_1506","1_1514","1_1517","1_1564","1_1574","1_1610","1_1641","1_1644","1_1682","2_29","2_32","2_36","2_53","2_56","2_60","2_77","2_80","2_84","2_101","2_104","2_108","2_125","2_128","2_132","2_149","2_152","2_156","2_181","2_188","2_198","2_211","2_214","2_217","2_237","2_240","2_254","2_257","2_271","2_274","2_288","2_291","2_305","2_308","2_332","2_351"];
+var sumTags = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+var allTags = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+var coverage = [[[32,64],[0,36],[0,0],[0,0]]];
+var all_coverage = [[32,64],[0,36],[0,0],[0,0]];
+var sumAllTraces = {"0":132,"1":32};
 docolor = function(j, bb) {
 // $("#t_" + tagList[j]).css("backgroundColor", bb ? "lightgreen" : "lightpink");
     if(bb > 0) {
@@ -100,10 +100,10 @@ $( document ).ready(function() {
   </div>
   <h2>Summary</h2>
 <!-- html table generated in R 3.1.2 by xtable 1.7-4 package -->
-<!-- Wed Feb 11 00:50:04 2015 -->
+<!-- Wed Feb 11 01:08:05 2015 -->
 <table class="table table-bordered">
 <tr> <th>  </th> <th> Total # Tracepoints </th> <th> # Executed </th> <th> % Coverage </th>  </tr>
-  <tr> <td align="right"> 1 </td> <td> 125 </td> <td> 27 </td> <td>  22% </td> </tr>
+  <tr> <td align="right"> 1 </td> <td> 132 </td> <td> 32 </td> <td>  24% </td> </tr>
    </table>
 <h2>testthat Tests</h2>
 	<button type="button" class="btn btn-default" id="trace_all">All Tests</button>&nbsp;<button type='button' class='btn btn-default' id='run_1'>testEncodeDownloder.R</button>&nbsp;<h2>Resource Files</h2><div class="row">
@@ -137,113 +137,104 @@ $( document ).ready(function() {
 <span id="t_1_58">library(RCurl)</span>
 <span id="t_1_70">library(rjson)</span>
 
-# USER SELECTION - needs improvement
-<span id="t_1_87">searchT</span>   = "bone chip"
-<span id="t_1_97">type</span>      = "experiment"
-#target    = c("control","transcription factor") # can be more than one
-<span id="t_1_110">target</span>    = <span id="t_1_113">c("control")</span>
-<span id="t_1_127">biosample</span> = <span id="t_1_130">c("primary cell")</span>
-#biosample = c("tissue", "primary cell")
-<span id="t_1_147">fType</span>     = <span id="t_1_150">c("bigWig")</span>
-<span id="t_1_164">fType</span>     = NULL
-<span id="t_1_174">assay</span>     = <span id="t_1_177">c("ChIP-seq")</span>
-<span id="t_1_191">assembly</span>  = <span id="t_1_194">c("mm9")</span>
-<span id="t_1_208">output</span>    = "encodeDownload"
-
-<span id="t_1_220">iSearch</span>   = searchT
-<span id="t_1_230">iType</span>     = type
-<span id="t_1_240">iTarget</span>   = target
-<span id="t_1_250">iOut</span>      = output
-<span id="t_1_260">iSample</span>   = biosample
-<span id="t_1_270">iFType</span>    = fType 
-<span id="t_1_280">iAssembly</span> = assembly
-<span id="t_1_290">iAssay</span>    = assay
-
-<span id="t_1_302">formatTarget</span> &lt;- function(iTarget){
-  if(!<span id="t_1_315">is.null(iTarget)</span>){
-    <span id="t_1_329">return (<span id="t_1_332">paste(<span id="t_1_335">paste ("target.investigated_as", <span id="t_1_343">gsub(" ","%20",iTarget)</span>,sep = "=")</span>, collapse = "&")</span>)</span>
+<span id="t_1_84">formatTarget</span> &lt;- function(iTarget){
+  if(!<span id="t_1_97">is.null(iTarget)</span>){
+    <span id="t_1_111">return (<span id="t_1_114">paste(<span id="t_1_117">paste ("target.investigated_as", <span id="t_1_125">gsub(" ","%20",iTarget)</span>,sep = "=")</span>, collapse = "&")</span>)</span>
   }
-  <span id="t_1_400">return(NULL)</span>
+  <span id="t_1_182">return(NULL)</span>
 }
 
-<span id="t_1_423">formatSample</span> &lt;- function(iSample){
-  if(!<span id="t_1_436">is.null(iSample)</span>){
-     <span id="t_1_450">return (<span id="t_1_453">paste(<span id="t_1_456">paste ("replicates.library.biosample.biosample_type", <span id="t_1_464">gsub(" ", "%20", iSample)</span>, sep = "=")</span>, collapse = "&")</span>)</span>
+<span id="t_1_205">formatSample</span> &lt;- function(iSample){
+  if(!<span id="t_1_218">is.null(iSample)</span>){
+    <span id="t_1_232">return (<span id="t_1_235">paste(<span id="t_1_238">paste ("replicates.library.biosample.biosample_type", <span id="t_1_246">gsub(" ", "%20", iSample)</span>, sep = "=")</span>, collapse = "&")</span>)</span>
   }
-  <span id="t_1_521">return (NULL)</span>
+  <span id="t_1_303">return (NULL)</span>
 }
 
-<span id="t_1_544">formatFType</span> &lt;- function(iFType){
-  if(!<span id="t_1_557">is.null(iFType)</span>){
-    <span id="t_1_571">return (<span id="t_1_574">paste(<span id="t_1_577">paste ("files.file_format", iFType, sep = "=")</span>, collapse = "&")</span>)</span>
+<span id="t_1_326">formatFType</span> &lt;- function(iFType){
+  if(!<span id="t_1_339">is.null(iFType)</span>){
+    <span id="t_1_353">return (<span id="t_1_356">paste(<span id="t_1_359">paste ("files.file_format", iFType, sep = "=")</span>, collapse = "&")</span>)</span>
   }
-  <span id="t_1_625">return (NULL)</span>
+  <span id="t_1_407">return (NULL)</span>
 } 
 
-<span id="t_1_648">formatAssay</span> &lt;- function(iAssay){
-  if(!<span id="t_1_661">is.null(iAssay)</span>){
-    <span id="t_1_675">return (<span id="t_1_678">paste(<span id="t_1_681">paste ("assay_term_name", iAssay, sep = "=")</span>, collapse = "&")</span>)</span>
+<span id="t_1_430">formatAssay</span> &lt;- function(iAssay){
+  if(!<span id="t_1_443">is.null(iAssay)</span>){
+    <span id="t_1_457">return (<span id="t_1_460">paste(<span id="t_1_463">paste ("assay_term_name", iAssay, sep = "=")</span>, collapse = "&")</span>)</span>
   }
-  <span id="t_1_729">return (NULL)</span>
+  <span id="t_1_511">return (NULL)</span>
 }
 
-<span id="t_1_752">formatAssembly</span> &lt;- function(iAssembly){
-  if(!<span id="t_1_765">is.null(iAssembly)</span>){
-    <span id="t_1_779">return (<span id="t_1_782">paste(<span id="t_1_785">paste ("assembly", iAssembly, sep = "=")</span>, collapse = "&")</span>)</span>
+<span id="t_1_534">formatAssembly</span> &lt;- function(iAssembly){
+  if(!<span id="t_1_547">is.null(iAssembly)</span>){
+    <span id="t_1_561">return (<span id="t_1_564">paste(<span id="t_1_567">paste ("assembly", iAssembly, sep = "=")</span>, collapse = "&")</span>)</span>
   }
-  <span id="t_1_833">return(NULL)</span>
+  <span id="t_1_615">return(NULL)</span>
 }
 
-<span id="t_1_856">encodeDownload</span> &lt;- function(iSearch, iType, iTarget, iSample, iFType, iAssay, iAssembly, iOut) {
+<span id="t_1_638">formatSearch</span> &lt;- function(iSearch){
+  if(!<span id="t_1_651">is.null(iSearch)</span>){
+    <span id="t_1_665">return (<span id="t_1_668">paste ("searchTerm",  <span id="t_1_676">gsub(" ","+",iSearch)</span>, sep="=")</span>)</span> 
+  }
+  <span id="t_1_722">return (NULL)</span>
+}
+
+<span id="t_1_745">formatType</span> &lt;- function(iType){
+  if(!<span id="t_1_758">is.null(iType)</span>){
+    <span id="t_1_772">paste ("type", iType, sep="=")</span>
+  }
+  <span id="t_1_805">return (NULL)</span>
+}
+
+<span id="t_1_828">encodeDownload</span> &lt;- function(iSearch, iType, iTarget, iSample, iFType, iAssay, iAssembly, iOut) {
   
   # Constant parameters
-  <span id="t_1_890">encodePath</span>  = "https://www.encodeproject.org"
-  <span id="t_1_900">searchPath</span>  = "/search/"
-  <span id="t_1_910">format</span>      = "format=json"
-  <span id="t_1_920">frame</span>       = "frame=embedded"
+  <span id="t_1_862">encodePath</span>  = "https://www.encodeproject.org"
+  <span id="t_1_872">searchPath</span>  = "/search/"
+  <span id="t_1_882">format</span>      = "format=json"
+  <span id="t_1_892">frame</span>       = "frame=embedded"
   
-  <span id="t_1_932">searchTerm</span>  = <span id="t_1_935">paste ("searchTerm",  <span id="t_1_943">gsub(" ","+",iSearch)</span>, sep="=")</span>
-  <span id="t_1_978">type</span>        = <span id="t_1_981">paste ("type", iType, sep="=")</span>
+  <span id="t_1_904">searchTerm</span> = <span id="t_1_907">formatSearch   ( iSearch  )</span> 
+  <span id="t_1_921">type</span>       = <span id="t_1_924">formatType     ( iType    )</span>
+  <span id="t_1_938">target</span>     = <span id="t_1_941">formatTarget   ( iTarget  )</span>
+  <span id="t_1_955">biosample</span>  = <span id="t_1_958">formatSample   ( iSample  )</span>
+  <span id="t_1_972">fType</span>      = <span id="t_1_975">formatFType    ( iFType   )</span>  
+  <span id="t_1_989">assay</span>      = <span id="t_1_992">formatAssay    ( iAssay   )</span>  
+  <span id="t_1_1006">assembly</span>   = <span id="t_1_1009">formatAssembly ( iAssembly)</span>
   
-  <span id="t_1_1009">target</span>    = <span id="t_1_1012">formatTarget( iTarget)</span>
-  <span id="t_1_1026">biosample</span> = <span id="t_1_1029">formatSample( iSample)</span>
-  <span id="t_1_1043">fType</span>     = <span id="t_1_1046">formatFType( iFType)</span>  
-  <span id="t_1_1060">assay</span>     = <span id="t_1_1063">formatAssay( iAssay)</span>  
-  <span id="t_1_1077">assembly</span>  = <span id="t_1_1080">formatAssembly(iAssembly)</span>
+  <span id="t_1_1025">URLoptions</span> &lt;- <span id="t_1_1028">paste (searchTerm, format, frame, target, type, biosample, fType, assay, assembly, sep="&")</span>
+  <span id="t_1_1088">URL</span>        &lt;- <span id="t_1_1091">paste (encodePath, <span id="t_1_1099">paste( searchPath, URLoptions, sep="?")</span>, sep="")</span>
   
-  <span id="t_1_1096">URLoptions</span> &lt;- <span id="t_1_1099">paste (searchTerm, format, frame, target, type, biosample, fType, assay, assembly, sep="&")</span>
-  <span id="t_1_1159">URL</span>        &lt;- <span id="t_1_1162">paste (encodePath, <span id="t_1_1170">paste( searchPath, URLoptions, sep="?")</span>, sep="")</span>
-  
-  <span id="t_1_1208">data</span>       &lt;- <span id="t_1_1211">fromJSON (
-    <span id="t_1_1215">getURL (URL, dirlistonly = TRUE)</span>, 
+  <span id="t_1_1137">data</span>       &lt;- <span id="t_1_1140">fromJSON (
+    <span id="t_1_1144">getURL (URL, dirlistonly = TRUE)</span>, 
     unexpected.escape = "keep"
   )</span>
   
   # Output folder
-  <span id="t_1_1253">dir.create(iOut, showWarnings = FALSE)</span>
+  <span id="t_1_1182">dir.create(iOut, showWarnings = FALSE)</span>
   
   # Downloads all files from the search
-  for (<span id="t_1_1279">j</span> in 1:<span id="t_1_1284">length (<span id="t_1_1287">data</span>$'@graph')</span>){ 
-    <span id="t_1_1301">nbFiles</span> &lt;- <span id="t_1_1304">length (<span id="t_1_1307">data</span>$'@graph'[[j]]$files)</span> 
-    <span id="t_1_1331">print(<span id="t_1_1334">paste("Downloading experiment ",j, sep = "")</span>)</span>
-    for (<span id="t_1_1364">i</span> in 1:<span id="t_1_1369">nbFiles</span>){
-      <span id="t_1_1376">filePath</span> &lt;- <span id="t_1_1379">data</span>$'@graph'[[j]]$files[[i]]$href
-      <span id="t_1_1410">curl</span> = <span id="t_1_1413">getCurlHandle()</span>
-      <span id="t_1_1424">getURL (<span id="t_1_1427">paste (encodePath, filePath, sep = "")</span>, curl = curl)</span>
-      <span id="t_1_1462">dn</span> &lt;- <span id="t_1_1465">getCurlInfo(curl)</span>$redirect.url # handling server redicrection
+  for (<span id="t_1_1208">j</span> in 1:<span id="t_1_1213">length (<span id="t_1_1216">data</span>$'@graph')</span>){ 
+    <span id="t_1_1230">nbFiles</span> &lt;- <span id="t_1_1233">length (<span id="t_1_1236">data</span>$'@graph'[[j]]$files)</span> 
+    <span id="t_1_1260">print(<span id="t_1_1263">paste("Downloading experiment ",j, sep = "")</span>)</span>
+    for (<span id="t_1_1293">i</span> in 1:<span id="t_1_1298">nbFiles</span>){
+      <span id="t_1_1305">filePath</span> &lt;- <span id="t_1_1308">data</span>$'@graph'[[j]]$files[[i]]$href
+      <span id="t_1_1339">curl</span> = <span id="t_1_1342">getCurlHandle()</span>
+      <span id="t_1_1353">getURL (<span id="t_1_1356">paste (encodePath, filePath, sep = "")</span>, curl = curl)</span>
+      <span id="t_1_1391">dn</span> &lt;- <span id="t_1_1394">getCurlInfo(curl)</span>$redirect.url # handling server redicrection
       
       # preparing to download - create project folder
-      <span id="t_1_1487">fileOut</span> &lt;- <span id="t_1_1490">paste( iOut, <span id="t_1_1498">unlist( <span id="t_1_1501">strsplit( <span id="t_1_1504">data</span>$'@graph'[[j]]$'@id', "/")</span>)</span>[3], sep = "/")</span>
-      <span id="t_1_1555">dir.create(fileOut, showWarnings = FALSE)</span>
-      <span id="t_1_1574">fileOut</span> &lt;- <span id="t_1_1577">paste( fileOut, <span id="t_1_1585">unlist( <span id="t_1_1588">strsplit( filePath, "/")</span>)</span>[5], sep = "/")</span>
+      <span id="t_1_1416">fileOut</span> &lt;- <span id="t_1_1419">paste( iOut, <span id="t_1_1427">unlist( <span id="t_1_1430">strsplit( <span id="t_1_1433">data</span>$'@graph'[[j]]$'@id', "/")</span>)</span>[3], sep = "/")</span>
+      <span id="t_1_1484">dir.create(fileOut, showWarnings = FALSE)</span>
+      <span id="t_1_1503">fileOut</span> &lt;- <span id="t_1_1506">paste( fileOut, <span id="t_1_1514">unlist( <span id="t_1_1517">strsplit( filePath, "/")</span>)</span>[5], sep = "/")</span>
       
       # Did my user select a file format  
-      if(<span id="t_1_1635">is.null(iFType)</span> || <span id="t_1_1645">data</span>$'@graph'[[j]]$files[[i]]$file_format %in% iFType){
-        <span id="t_1_1681">download.file( dn, fileOut, quiet = TRUE, method = "curl")</span>
-        <span id="t_1_1712">print(<span id="t_1_1715">paste("Downloaded file: ", fileOut, sep = "")</span>)</span>
+      if(<span id="t_1_1564">is.null(iFType)</span> || <span id="t_1_1574">data</span>$'@graph'[[j]]$files[[i]]$file_format %in% iFType){
+        <span id="t_1_1610">download.file( dn, fileOut, quiet = TRUE, method = "curl")</span>
+        <span id="t_1_1641">print(<span id="t_1_1644">paste("Downloaded file: ", fileOut, sep = "")</span>)</span>
       }
       
-      <span id="t_1_1753">rm(curl)</span> 
+      <span id="t_1_1682">rm(curl)</span> 
     }
   }
 }</pre></div><div class="tab-pane " id="tabs-2"><pre><span id="t_2_1">library("shiny")</span>
@@ -368,7 +359,7 @@ $( document ).ready(function() {
     </div>
   </div>
   <div class="footer">
-    <p> Generated on2015-02-11 00:50:04 by <a href="http://www.mango-solutions.com/wp/products-services/r-services/r-packages/testcoverage/">testCoverage</a>.</p>
+    <p> Generated on2015-02-11 01:08:05 by <a href="http://www.mango-solutions.com/wp/products-services/r-services/r-packages/testcoverage/">testCoverage</a>.</p>
   </div>
   </div>
 </body> 
