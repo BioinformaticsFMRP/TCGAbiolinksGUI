@@ -171,39 +171,44 @@ encodeDownloader <- function(iSearch, iType, iTarget,
     unexpected.escape = "keep"
   )
   
-  # Output folder
-  dir.create (iOut, showWarnings = FALSE)
+  if (data$total > 0){
+    # Output folder
+    dir.create (iOut, showWarnings = FALSE)
   
-  # Downloads all files from the search
-  for (j in 1:length (data$'@graph')){
-    nbFiles <- length (data$'@graph'[[j]]$files)
-    print(paste("Downloading experiment ", j, sep = ""))
+    # Downloads all files from the search
+    for (j in 1:length (data$'@graph')){
+      nbFiles <- length (data$'@graph'[[j]]$files)
+      print(paste("Downloading experiment ", j, sep = ""))
     
-    for (i in 1:nbFiles){
-      filePath <- data$'@graph'[[j]]$files[[i]]$href
-      curl <- RCurl::getCurlHandle()
-      RCurl::getURL (paste (encodePath, filePath, sep = ""), curl = curl)
-      dn <- RCurl::getCurlInfo(curl)$redirect.url  # handling server redicrection
+      for (i in 1:nbFiles){
+        filePath <- data$'@graph'[[j]]$files[[i]]$href
+        curl <- RCurl::getCurlHandle()
+        RCurl::getURL (paste (encodePath, filePath, sep = ""), curl = curl)
+        dn <- RCurl::getCurlInfo(curl)$redirect.url  # handling server redicrection
       
-      # preparing to download - create project folder
-      fileOut <- paste( iOut, 
+        # preparing to download - create project folder
+        fileOut <- paste( iOut, 
                         unlist( strsplit( data$'@graph'[[j]]$'@id', "/"))[3],
                         sep = "/")
-      dir.create (fileOut, showWarnings = FALSE)
-      fileOut <- paste( fileOut, 
-                        unlist( strsplit( filePath, "/"))[5], 
-                        sep = "/")
+        dir.create (fileOut, showWarnings = FALSE)
+        fileOut <- paste( fileOut, 
+                          unlist( strsplit( filePath, "/"))[5], 
+                          sep = "/")
       
-      # Did the user select a file format  
-      if(is.null(iFType) || 
-           data$'@graph'[[j]]$files[[i]]$file_format %in% iFType
-         ){
-        download.file( dn, fileOut, quiet = TRUE, method = "curl")
-        print(paste("Downloaded file: ", fileOut, sep = ""))
+        # Did the user select a file format  
+        if(is.null(iFType) || 
+             data$'@graph'[[j]]$files[[i]]$file_format %in% iFType
+          ){
+          download.file( dn, fileOut, quiet = TRUE, method = "curl")
+          print(paste("Downloaded file: ", fileOut, sep = ""))
+        }
+      
+        rm(curl) 
       }
-      
-      rm(curl) 
     }
+    print("Downloaded")  
+  } else { 
+      print(data$notification)
   }
 }
 

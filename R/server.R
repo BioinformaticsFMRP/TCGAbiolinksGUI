@@ -24,9 +24,8 @@ shinyServer <- function(input, output) {
                        isolate(getAssembly()),
                        "../download"
       )
-      print("Downloaded")  
     }else{
-      print("Not downloaded")
+      print("")
     }
     
   })
