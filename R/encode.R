@@ -1,32 +1,3 @@
-#' @title Download data from ENCODDE project
-#' @description Downloads data from ENCODE project
-#' @param searchTerm - bone chip
-#' @param iType -   "experiment" "publication" "software" ""antibody_lot" "web"
-#' @param iTarget - "transcription factor" "RNA binding protein" 
-#'                  "tag" "histone modification"
-#' @param iSample - "tissue" "primary cell"
-#' @param iFType  - "bam" "bigWig" "bed_broadPeak" "broadPeak" "fastq"
-#' @param assay - "ChIP-seq" "RIP-chip" "Repli-chip" 
-#' @param assembly - "hg19" "mm9"
-#' @param output - path to save files
-#' @examples
-#' \dontrun{
-#'    encodeDownloader("bone chip",
-#'                    "experiment",
-#'                    "transcription factor", 
-#'                    "primary cell",
-#'                    "bigWig",
-#'                    "ChIP-seq",
-#'                    "mm9",
-#'                    "encodeDownload"
-#'                    )
-#' }
-#' @seealso \url{https://www.encodeproject.org/search/}
-#' @seealso \url{https://www.encodeproject.org/help/rest-api/}
-#' @name encodeDownloader
-library(RCurl)
-library(rjson)
-
 #' Concatenate Target term for search
 #' Concatenate Target term for search
 #'
@@ -137,6 +108,32 @@ formatType <- function(iType){
   return (NULL)
 }
 
+#' @title Download data from ENCODDE project
+#' @description Downloads data from ENCODE project
+#' @param iSearch - bone chip
+#' @param iType -   "experiment" "publication" "software" ""antibody_lot" "web"
+#' @param iTarget - "transcription factor" "RNA binding protein" 
+#'                  "tag" "histone modification"
+#' @param iSample - "tissue" "primary cell"
+#' @param iFType  - "bam" "bigWig" "bed_broadPeak" "broadPeak" "fastq"
+#' @param iAssay - "ChIP-seq" "RIP-chip" "Repli-chip" 
+#' @param iAssembly - "hg19" "mm9"
+#' @param iOut - path to save files
+#' @examples
+#' \dontrun{
+#'    encodeDownloader("bone chip",
+#'                    "experiment",
+#'                    "transcription factor", 
+#'                    "primary cell",
+#'                    "bigWig",
+#'                    "ChIP-seq",
+#'                    "mm9",
+#'                    "encodeDownload"
+#'                    )
+#' }
+#' @seealso \url{https://www.encodeproject.org/search/}
+#' @seealso \url{https://www.encodeproject.org/help/rest-api/}
+#' @name encodeDownloader
 encodeDownloader <- function(iSearch, iType, iTarget,
                              iSample, iFType, iAssay,
                              iAssembly, iOut)
@@ -215,8 +212,9 @@ encodeDownloader <- function(iSearch, iType, iTarget,
   }
 }
 
-
+#' Calls UI interface
+#' Calls UI interface
+#' @keywords internal
 encodeUi <- function() {
-  require(shiny)
   shinyApp(  server = shinyServer, ui = shinyUI)
 }

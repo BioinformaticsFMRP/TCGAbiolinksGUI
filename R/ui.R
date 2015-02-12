@@ -1,8 +1,7 @@
 #' @title  Client side 
 #' @description Client side - Download data from ENCODDE project
 #' @name encodeDownloaderUI
-#' @import shiny
-library(shiny)
+#' @keywords internal
 
 shinyUI <- fluidPage(
   

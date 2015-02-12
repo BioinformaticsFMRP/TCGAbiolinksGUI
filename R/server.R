@@ -1,9 +1,9 @@
 #' @title  Server side 
 #' @description Server side - Download data from ENCODDE project
 #' @name encodeDownloaderServer
-#' @import shiny
-library(shiny)
-
+#' @keywords internal
+#' @param input - input signal
+#' @param output - output signal
 shinyServer <- function(input, output) {
   
   getAssay    <- reactive({  input$assay    })
