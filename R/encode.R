@@ -164,7 +164,10 @@ encodeDownloader <- function(iSearch, iType, iTarget,
                        sep="")
   
   data       <- rjson::fromJSON (
-    RCurl::getURL (URL, dirlistonly = TRUE),
+    RCurl::getURL (URL, 
+                   dirlistonly = TRUE,
+                   .opts = list(ssl.verifypeer = FALSE)
+                   ),
     unexpected.escape = "keep"
   )
   
@@ -180,7 +183,10 @@ encodeDownloader <- function(iSearch, iType, iTarget,
       for (i in 1:nbFiles){
         filePath <- data$'@graph'[[j]]$files[[i]]$href
         curl <- RCurl::getCurlHandle()
-        RCurl::getURL (paste (encodePath, filePath, sep = ""), curl = curl)
+        RCurl::getURL (paste (encodePath, filePath, sep = ""), 
+                       curl = curl, 
+                       .opts = list(ssl.verifypeer = FALSE)
+                       )
         dn <- RCurl::getCurlInfo(curl)$redirect.url  # handling server redicrection
       
         # preparing to download - create project folder
