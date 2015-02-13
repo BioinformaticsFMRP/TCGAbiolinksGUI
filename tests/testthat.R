@@ -1,3 +1,3 @@
 library(testthat)
 
-test_check("encodeDownloader")
+test_check("biOMICs")

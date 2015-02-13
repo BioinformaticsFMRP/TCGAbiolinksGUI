@@ -1,8 +1,7 @@
-Package: encodeDownloader
-Type: Package
-Title: Encode Downloader
-Version: 1.0
-Date: 2015-02-05
+Package: biOMICs
+Title: biOMICs
+Version: 0.1
+Date: 2015-02-13
 Author: Tiago Chedraoui Silva, Tiago Mendes
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
 Description: Download data from ENCODE project
