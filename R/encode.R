@@ -179,14 +179,7 @@ encodeDownloader <- function(iSearch, iType, iTarget,
     
       for (i in 1:nbFiles){
         filePath <- data$'@graph'[[j]]$files[[i]]$href
-        curl <- RCurl::getCurlHandle()
-        RCurl::getURL (paste (encodePath, filePath, sep = ""), 
-                       curl = curl, 
-                       .opts = list(ssl.verifypeer = FALSE)
-                       )
-        dn <- RCurl::getCurlInfo(curl)$redirect.url  # handling server redicrection
-      
-        # preparing to download - create project folder
+        dn <- paste (encodePath, filePath, sep = "")
         fileOut <- paste( iOut, 
                         unlist( strsplit( data$'@graph'[[j]]$'@id', "/"))[3],
                         sep = "/")
@@ -199,11 +192,10 @@ encodeDownloader <- function(iSearch, iType, iTarget,
         if(is.null(iFType) || 
              data$'@graph'[[j]]$files[[i]]$file_format %in% iFType
           ){
-          download.file( dn, fileOut, quiet = TRUE, method = "curl")
+          download( dn, fileOut, quiet = TRUE)
           print(paste("Downloaded file: ", fileOut, sep = ""))
         }
       
-        rm(curl) 
       }
     }
     print("Downloaded")  
