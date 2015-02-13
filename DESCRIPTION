@@ -8,5 +8,5 @@ Maintainer: Tiago C. Silva <tiagochst@gmail.com>
 Description: Download data from ENCODE project
 License: GPL (>= 3)
 Suggests: testthat,knitr,roxygen2,devtools 
-Imports: shiny,downloader,RCurl,rjson
+Imports: shiny,downloader,RCurl,rjson,reutils
 VignetteBuilder: knitr

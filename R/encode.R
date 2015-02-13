@@ -207,6 +207,6 @@ encodeDownloader <- function(iSearch, iType, iTarget,
 #' Calls UI interface
 #' Calls UI interface
 #' @keywords internal
-encodeUi <- function() {
-  shinyApp(  server = shinyServer, ui = shinyUI)
+encodeApp <- function() {
+  shinyApp(  server = encodeServer, ui = encodeUI)
 }
