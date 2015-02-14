@@ -23,7 +23,7 @@ eGeo <- function(...) {
 #' @param iOut - path to save files
 #' @examples
 #' \dontrun{
-#'    geoDownloader ("'(h1[All Fields] AND RRBS[All Fields]) 
+#'    geoDownloader ("'(h1[All Fields] AND RRBS[All Fields])
 #'                    AND roadmap epigenomics[Project] AND "gsm"[Filter]',
 #                     "path_to_download_folder"
 #'                    )
@@ -34,28 +34,28 @@ eGeo <- function(...) {
 #' @name geoDownloader
 geoDownloader <- function(iQuery, iOut)
   {
-  
+
   # Constant parameters
   roadmapURL  <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gds&term="
   optionRet    <- "retmax=5000"
   optionHist   <- "usehistory=y"
 
-  pmids <- esearch(iQuery, "gds", retmax =  100000)
+  pmids <- esearch(iQuery, "gds", retmax = 10000)
   content <- content(esummary(pmids), "parsed")
-  ftps <- lapply(content, function(x)  x$FTPLink) 
+  ftps <- lapply(content, function(x)  x$FTPLink)
   dir.create (iOUt, showWarnings = FALSE)
 
   for(ftp in ftps){
     dirName <- unlist( strsplit(ftp,"/"))
-    dirName <- paste(iOut,dirName[length(dirName)],sep="/")
+    dirName <- paste(iOut,tail(dirName,n=1),sep="/")
     dir.create (dirName, showWarnings = FALSE)
-    file <- unlist( strsplit(getURL(paste(ftp,"suppl/",sep=""))," "))
-    file <- file[length(file)]                          
+    file <- unlist( strsplit(getURL(paste0(ftp,"suppl/"))," "))
+    file <- file[length(file)]
     fileName <- strsplit(file,"\n")[[1]]
-    download.file(paste(ftp,"suppl/",fileName,sep=""), paste(dirName,fileName,sep="/"))
+    download.file(paste0(ftp,"suppl/",fileName), paste0(dirName,fileName))
   }
-  print("Downloaded")  
- 
+  print("Downloaded")
+
 }
 
 #' Calls UI interface

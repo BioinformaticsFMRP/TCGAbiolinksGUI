@@ -175,11 +175,11 @@ encodeDownloader <- function(iSearch, iType, iTarget,
     # Downloads all files from the search
     for (j in 1:length (data$'@graph')){
       nbFiles <- length (data$'@graph'[[j]]$files)
-      print(paste("Downloading experiment ", j, sep = ""))
+      print(paste0("Downloading experiment ", j))
     
       for (i in 1:nbFiles){
         filePath <- data$'@graph'[[j]]$files[[i]]$href
-        dn <- paste (encodePath, filePath, sep = "")
+        dn <- paste0 (encodePath, filePath)
         fileOut <- paste( iOut, 
                         unlist( strsplit( data$'@graph'[[j]]$'@id', "/"))[3],
                         sep = "/")
@@ -193,7 +193,7 @@ encodeDownloader <- function(iSearch, iType, iTarget,
              data$'@graph'[[j]]$files[[i]]$file_format %in% iFType
           ){
           download( dn, fileOut, quiet = TRUE)
-          print(paste("Downloaded file: ", fileOut, sep = ""))
+          print(paste0 ("Downloaded file: ", fileOut))
         }
       
       }

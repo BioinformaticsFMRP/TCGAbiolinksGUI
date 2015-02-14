@@ -2,10 +2,21 @@ Package: biOMICs
 Title: biOMICs
 Version: 0.1
 Date: 2015-02-13
-Author: Tiago Chedraoui Silva, Tiago Mendes
+Author:
+  Tiago Chedraoui Silva <tiagochst@gmail.com>,
+  Tiago Mendes <tmendesilva@gmail.com>
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
 Description: Download data from ENCODE project
 License: GPL (>= 3)
-Suggests: testthat,knitr,roxygen2,devtools 
-Imports: shiny,downloader,RCurl,rjson,reutils
+Suggests:
+  testthat,
+  knitr,
+  roxygen2,
+  devtools
+Imports:
+  shiny,
+  downloader,
+  RCurl,
+  rjson,
+  reutils
 VignetteBuilder: knitr
