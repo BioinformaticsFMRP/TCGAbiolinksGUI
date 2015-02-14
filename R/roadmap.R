@@ -34,28 +34,25 @@ eGeo <- function(...) {
 #' @name geoDownloader
 geoDownloader <- function(iQuery, iOut)
   {
-
   # Constant parameters
   roadmapURL  <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gds&term="
-  optionRet    <- "retmax=5000"
-  optionHist   <- "usehistory=y"
+  optionRet   <- "retmax=5000"
+  optionHist  <- "usehistory=y"
 
-  pmids <- esearch(iQuery, "gds", retmax = 10000)
-  content <- content(esummary(pmids), "parsed")
-  ftps <- lapply(content, function(x)  x$FTPLink)
+  pmids   <- esearch (iQuery, "gds", retmax = 10000)
+  content <- content (esummary(pmids), "parsed")
+  ftps    <- lapply  (content, function(x)  x$FTPLink)
   dir.create (iOUt, showWarnings = FALSE)
 
   for(ftp in ftps){
-    dirName <- unlist( strsplit(ftp,"/"))
-    dirName <- paste(iOut,tail(dirName,n=1),sep="/")
-    dir.create (dirName, showWarnings = FALSE)
-    file <- unlist( strsplit(getURL(paste0(ftp,"suppl/"))," "))
-    file <- file[length(file)]
-    fileName <- strsplit(file,"\n")[[1]]
-    download.file(paste0(ftp,"suppl/",fileName), paste0(dirName,fileName))
+    dirName <- tail (unlist (strsplit (ftp,"/")), n = 1)
+    outPath <- paste (iOut, dirName , sep = "/")
+    dir.create (outPath, showWarnings = FALSE)
+    filePath <- unlist (strsplit (getURL (paste0 (ftp, "suppl/"))," "))
+    fileName <- strsplit (tail (filePath, n = 1),"\n")[[1]]
+    download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName))
   }
   print("Downloaded")
-
 }
 
 #' Calls UI interface
