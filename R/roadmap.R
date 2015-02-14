@@ -5,12 +5,12 @@
 #' @keywords internal
 eGeo <- function(...) {
   input_list <- list(...)
-  output_list <- lapply(X=input_list, function(x) {
+  output_list <- lapply (X = input_list, function(x) {
     if(length(x) > 2){
-      paste(x[[3]],paste(paste(x[[1]],x[[2]],sep="["),NULL,sep="]"))
+      paste( x[[3]], paste( paste (x[[1]], x[[2]], sep = "["), NULL, sep = "]"))
     }
     else{
-      paste(paste(NULL,x[[1]],sep="("),NULL,sep=")")
+      paste( paste( NULL, x[[1]], sep = "("), NULL, sep = ")")
     }
   })
   output_list <- paste(output_list,collapse=" ")
@@ -40,24 +40,30 @@ geoDownloader <- function(iQuery, iOut)
   optionHist  <- "usehistory=y"
 
   pmids   <- esearch (iQuery, "gds", retmax = 10000)
-  content <- content (esummary(pmids), "parsed")
-  ftps    <- lapply  (content, function(x)  x$FTPLink)
-  dir.create (iOUt, showWarnings = FALSE)
+  if(pmids@.xData$no_errors()){
+    info <- content (esummary(pmids), "parsed")
+    nbFiles <<- length(info)
+    ftps    <- lapply  (info, function(x)  x$FTPLink)
+    dir.create (iOut, showWarnings = FALSE)
 
-  for(ftp in ftps){
-    dirName <- tail (unlist (strsplit (ftp,"/")), n = 1)
-    outPath <- paste (iOut, dirName , sep = "/")
-    dir.create (outPath, showWarnings = FALSE)
-    filePath <- unlist (strsplit (getURL (paste0 (ftp, "suppl/"))," "))
-    fileName <- strsplit (tail (filePath, n = 1),"\n")[[1]]
-    download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName))
+    nbFilesDownloaded  <<- 0
+    for(ftp in ftps){
+      dirName <- tail (unlist (strsplit (ftp,"/")), n = 1)
+      outPath <- paste (iOut, dirName , sep = "/")
+      dir.create (outPath, showWarnings = FALSE)
+      filePath <- unlist (strsplit (getURL (paste0 (ftp, "suppl/"))," "))
+      fileName <- strsplit (tail (filePath, n = 1),"\n")[[1]]
+      #download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName))
+    }
+    print("Downloaded")
+  } else {
+    print("No file found")
   }
-  print("Downloaded")
 }
 
 #' Calls UI interface
 #' Calls UI interface
 #' @keywords internal
-roadmapApp <- function() {
-  shinyApp(  server = roadmapServer, ui = roadmapUI)
+biOMICsApp <- function() {
+  shinyApp(  server = biOMICsServer, ui = biOMICsUI)
 }

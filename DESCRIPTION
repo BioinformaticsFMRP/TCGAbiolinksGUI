@@ -18,5 +18,7 @@ Imports:
   downloader,
   RCurl,
   rjson,
-  reutils
+  reutils,
+  Leaflet,
+  shinydashboard
 VignetteBuilder: knitr
