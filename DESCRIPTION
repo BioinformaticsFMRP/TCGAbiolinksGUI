@@ -19,6 +19,7 @@ Imports:
   RCurl,
   rjson,
   reutils,
-  Leaflet,
-  shinydashboard
+  shinydashboard,
+  XML
 VignetteBuilder: knitr
+LazyData: yes
