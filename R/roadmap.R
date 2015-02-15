@@ -33,7 +33,7 @@ eGeo <- function(...) {
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 #' @name geoDownloader
 geoDownloader <- function(iQuery, iOut)
-  {
+{
   # Constant parameters
   roadmapURL  <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gds&term="
   optionRet   <- "retmax=5000"
@@ -41,23 +41,26 @@ geoDownloader <- function(iQuery, iOut)
 
   pmids   <- esearch (iQuery, "gds", retmax = 10000)
   if(pmids@.xData$no_errors()){
-    info <- content (esummary(pmids), "parsed")
-    nbFiles <<- length(info)
-    ftps    <- lapply  (info, function(x)  x$FTPLink)
-    dir.create (iOut, showWarnings = FALSE)
+    if(xmlToList(pmids@.xData$get_content())$Count != ")"){
+      info <- content (esummary(pmids), "parsed")
+      nbFiles <<- length(info)
+      ftps    <- lapply  (info, function(x)  x$FTPLink)
+      dir.create (iOut, showWarnings = FALSE)
 
-    nbFilesDownloaded  <<- 0
-    for(ftp in ftps){
-      dirName <- tail (unlist (strsplit (ftp,"/")), n = 1)
-      outPath <- paste (iOut, dirName , sep = "/")
-      dir.create (outPath, showWarnings = FALSE)
-      filePath <- unlist (strsplit (getURL (paste0 (ftp, "suppl/"))," "))
-      fileName <- strsplit (tail (filePath, n = 1),"\n")[[1]]
-      #download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName))
+      nbFilesDownloaded  <<- 0
+      for(ftp in ftps){
+        dirName <- tail (unlist (strsplit (ftp,"/")), n = 1)
+        outPath <- paste (iOut, dirName , sep = "/")
+        dir.create (outPath, showWarnings = FALSE)
+        filePath <- unlist (strsplit (getURL (paste0 (ftp, "suppl/"))," "))
+        fileName <- strsplit (tail (filePath, n = 1),"\n")[[1]]
+        #download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName))
+        nbFilesDownloaded <<- nbFilesDownloaded + 1
+      }
+      print("Downloaded")
+    } else {
+      print("No file found")
     }
-    print("Downloaded")
-  } else {
-    print("No file found")
   }
 }
 
