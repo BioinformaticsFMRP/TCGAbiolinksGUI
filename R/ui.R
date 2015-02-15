@@ -1,4 +1,4 @@
-header <- dashboardHeader(
+.header <- dashboardHeader(
   title = "biOMICs",
   dropdownMenu(type = "messages",
                messageItem(
@@ -52,7 +52,7 @@ header <- dashboardHeader(
 
 )
 
-sidebar <-  dashboardSidebar(
+.sidebar <-  dashboardSidebar(
   sidebarMenu(
     menuItem("Encode", tabName = "encode", icon = icon("download")),
     menuItem("Roadmap", tabName = "roadmap", icon = icon("download"),badgeLabel = "new", badgeColor = "green")
@@ -60,7 +60,7 @@ sidebar <-  dashboardSidebar(
   )
 )
 
-body <-  dashboardBody(
+.body <-  dashboardBody(
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "biOMICS.css")
   ),
@@ -216,7 +216,7 @@ body <-  dashboardBody(
 #'
 biOMICsUI <- dashboardPage(
   skin = "blue",
-  header,
-  sidebar,
-  body
+  .header,
+  .sidebar,
+  .body
 )

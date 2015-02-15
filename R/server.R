@@ -20,8 +20,8 @@ biOMICsServer <- function(input, output) {
       )
       print(query)
       geoDownloader(query,"../download")
-      print(paste0("Found: ", nbFiles," files."))
-      print(paste0("Downloaded: ", nbFilesDownloaded," files."))
+      print(paste0("Found: ", g_nbFiles," files."))
+      print(paste0("Downloaded: ", g_filesDownloaded," files."))
     }else{
       print("")
     }
@@ -54,7 +54,7 @@ biOMICsServer <- function(input, output) {
 
   output$rmapProgressBox <- renderValueBox({
     valueBox(
-      paste0(0 + (100*nbFilesDownloaded)/nbFiles, "%"), "Progress", icon = icon("list"),
+      paste0(0 + (100 * g_filesDownloaded)/g_nbFiles, "%"), "Progress", icon = icon("list"),
       color = "yellow"
     )
   })
