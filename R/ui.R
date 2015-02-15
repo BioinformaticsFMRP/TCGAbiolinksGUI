@@ -50,14 +50,14 @@ header <- dashboardHeader(
                )
   )
 
-  )
+)
 
 sidebar <-  dashboardSidebar(
   sidebarMenu(
     menuItem("Encode", tabName = "encode", icon = icon("download")),
     menuItem("Roadmap", tabName = "roadmap", icon = icon("download"),badgeLabel = "new", badgeColor = "green")
 
-    )
+  )
 )
 
 body <-  dashboardBody(
@@ -72,25 +72,28 @@ body <-  dashboardBody(
               column(4,
                      box(title = "Advanced search",width = NULL, status = "warning",
                          solidHeader = TRUE, collapsible = TRUE,
-                         textInput("search", label = "Search Term", value = ""),
-                         textInput("project", label ="Project", value = "roadmap epigenomics"),
-                         textInput("type", label = "Type", value = "gsm")
+                         textInput("rmapSearch", label = "Search Term", value = ""),
+                         textInput("rmapProject", label ="Project", value = "roadmap epigenomics"),
+                         textInput("rmapType", label = "Type", value = "gsm")
                      )
               ),
               column(6,
 
                      box(
                        title = "Results", width = NULL, background = "light-blue",
-                       verbatimTextOutput("nbresult")
+                       verbatimTextOutput("rmapReturn")
                      )
               )
             ),
+            fluidRow( box(width = 4, actionButton("count", "Increment progress"))
+            ),
+            fluidRow( valueBoxOutput("rmapProgressBox")),
 
             fluidRow(
               column(12,
                      wellPanel(align = "center",
                                style = "background-color: #4187C5",
-                               actionButton("downloadBt",
+                               actionButton("rmapDownloadBt",
                                             "Download",
                                             icon = icon("download")
                                )
@@ -105,7 +108,7 @@ body <-  dashboardBody(
 
               column(4,
                      wellPanel(
-                       textInput("search", label = h3("Search Term"), value = "")
+                       textInput("encodeSearch", label = h3("Search Term"), value = "")
                      )
               ),
 
@@ -113,7 +116,7 @@ body <-  dashboardBody(
                      wellPanel(
 
                        # @param assay - "ChIP-seq" "RIP-chip" "Repli-chip"
-                       checkboxGroupInput("assay",
+                       checkboxGroupInput("encodeAssay",
                                           label = h3("Assay"),
                                           choices = list("ChIP-seq",
                                                          "RNA-seq",
@@ -128,7 +131,7 @@ body <-  dashboardBody(
                      wellPanel(
 
                        # @param iTarget - "transcription factor" "tag" ...
-                       checkboxGroupInput("target",
+                       checkboxGroupInput("encodeTarget",
                                           label = h3("Target"),
                                           choices = list("transcription factor",
                                                          "RNA binding protein",
@@ -145,7 +148,7 @@ body <-  dashboardBody(
               column(4,
                      wellPanel(
                        # @param iFType  - "bam" "bigWig" "bed_broadPeak" ...
-                       checkboxGroupInput("ftype",
+                       checkboxGroupInput("encodeFtype",
                                           label = h3("File Type"),
                                           choices = list("bam",
                                                          "bigWig",
@@ -164,7 +167,7 @@ body <-  dashboardBody(
               column(4,
                      wellPanel(
                        # @param iSample - "tissue" "primary cell"
-                       checkboxGroupInput("sample",
+                       checkboxGroupInput("encodeSample",
                                           label = h3("Sample"),
                                           choices = list("tissue",
                                                          "stem cell",
@@ -179,7 +182,7 @@ body <-  dashboardBody(
               column(4,
                      wellPanel(
                        # @param assembly - "hg19" "mm9"
-                       checkboxGroupInput("assembly",
+                       checkboxGroupInput("encodeAssembly",
                                           label = h3("Assembly"),
                                           choices = list("hg19",
                                                          "dm3",
@@ -193,7 +196,7 @@ body <-  dashboardBody(
               column(12,
                      wellPanel(align = "center",
                                style = "background-color: #4187C5",
-                               actionButton("downloadBt",
+                               actionButton("encodeDownloadBt",
                                             "Download",
                                             icon = icon("download")
                                )
