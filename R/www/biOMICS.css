@@ -16,3 +16,8 @@ body > .header .logo {
   font-weight: bold;
   font-size: 24px;
 }
+
+pre {
+  background-color:  #3C8DBC;
+  color: #ffffff;
+}

@@ -6,24 +6,28 @@
 #' @param output - output signal
 biOMICsServer <- function(input, output) {
 
+  source("globals.R")
   # ROADMAP TAB
   getRmapProject <- reactive ({ c(input$rmapProject,"Project","AND") })
   getRmapSearch  <- reactive ({ c(input$rmapSearch,NULL,NULL)        })
   getRmapType    <- reactive ({ c(input$rmapType,"Filter","AND")     })
 
+
+  output$savedFiles <- renderUI({
+    if(input$rmapDownloadBt)  valueBoxOutput("rmapProgressBox", width = NULL)
+  })
+
+
   output$rmapReturn <- renderPrint({
+
     if(input$rmapDownloadBt){  # trigger this function by pressing download button
       query <- eGeo(
                     isolate (getRmapSearch ()),
                     isolate (getRmapProject()),
                     isolate (getRmapType   ())
       )
-      print(query)
+      #print(query)
       geoDownloader(query,"../download")
-      print(paste0("Found: ", g_nbFiles," files."))
-      print(paste0("Downloaded: ", g_filesDownloaded," files."))
-    }else{
-      print("")
     }
   })
 
@@ -34,6 +38,7 @@ biOMICsServer <- function(input, output) {
   getEncodeSample   <- reactive({  input$sample   })
   getEncodeAssembly <- reactive({  input$assembly })
   getEncodeSearch   <- reactive({  input$search   })
+  getNbFiles        <- reactive({  result$g_nbFiles  })
 
 
   output$value <- renderPrint({
@@ -47,15 +52,24 @@ biOMICsServer <- function(input, output) {
                        isolate(getEncodeAssembly()),
                        "../download"
       )
-    }else{
-      print("")
+      getNbFiles()
     }
   })
 
-  output$rmapProgressBox <- renderValueBox({
+
+  output$savedPath <- renderValueBox({
     valueBox(
-      paste0(0 + (100 * g_filesDownloaded)/g_nbFiles, "%"), "Progress", icon = icon("list"),
-      color = "yellow"
+      h4(paste0("../downloads/")), "Output directory", icon = icon("folder-open"),
+      color = "blue", width = 4
+    )
+  })
+  output$rmapProgressBox <- renderValueBox({
+  color <- "green"
+  if(getNbFiles() == 0) color <- "red"
+
+  valueBox(
+      paste0(getNbFiles()), "Files saved", icon = icon("cloud-download"),
+      color = color, width = 4
     )
   })
 }

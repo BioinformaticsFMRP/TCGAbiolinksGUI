@@ -42,10 +42,9 @@ geoDownloader <- function(iQuery, iOut)
   # search on geo databse(gds) for iQuery
   pmids <- reutils::esearch (iQuery, "gds", retmax = 10000)
   if (pmids@.xData$no_errors()) {
+    nbFiles  <- as.numeric (XML::xmlToList (pmids@.xData$get_content())$Count)
 
-    g_nbFiles <- as.numeric (XML::xmlToList (pmids@.xData$get_content())$Count)
-
-    if (g_nbFiles > 0 ){ # Found more than one result?
+    if (nbFiles  > 0 ){ # Found more than one result?
 
       # create directory to save the file
       dir.create (iOut, showWarnings = FALSE)
@@ -53,7 +52,7 @@ geoDownloader <- function(iQuery, iOut)
       # Download files
       info <- reutils::content (reutils::esummary(pmids), "parsed")
       ftps <- lapply  (info, function(x)  x$FTPLink)
-      g_filesDownloaded <-0
+      f <- c()
       for(ftp in ftps){
         dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
         outPath <- paste (iOut, dirName , sep = "/")
@@ -62,15 +61,10 @@ geoDownloader <- function(iQuery, iOut)
         # get file in the ftp
         filePath <- unlist (strsplit (RCurl::getURL (paste0 (ftp, "suppl/"))," "))
         fileName <- strsplit (tail (filePath, n = 1),"\n")[[1]]
-
+        print(paste0 ("Download: ",ftp,"suppl/",fileName))
         #download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName))
-
-        g_filesDownloaded <- g_filesDownloaded + 1
-
       }
-      print("Downloaded")
-    } else {
-      print("No file found")
+      result$g_nbFiles <- nbFiles
     }
   }
 }

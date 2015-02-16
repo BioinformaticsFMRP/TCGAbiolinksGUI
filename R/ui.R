@@ -69,37 +69,30 @@
     tabItem(tabName = "roadmap",
 
             fluidRow(
-              column(4,
+              column(8,
                      box(title = "Advanced search",width = NULL, status = "warning",
-                         solidHeader = TRUE, collapsible = TRUE,
+                         solidHeader = TRUE, collapsible = FALSE,
                          textInput("rmapSearch", label = "Search Term", value = ""),
-                         textInput("rmapProject", label ="Project", value = "roadmap epigenomics"),
-                         textInput("rmapType", label = "Type", value = "gsm")
+                         textInput("rmapProject", label = "Project", value = "roadmap epigenomics"),
+                         textInput("rmapType", label = "Type", value = "gsm"),
+                         actionButton("rmapDownloadBt",
+                                      "Download",
+                                      style = "background-color: #F39C12;color: #FFFFFF;
+                                      margin-left: auto;margin-right: auto;width: 100%",
+                                      icon = icon("download"))
                      )
               ),
-              column(6,
-
-                     box(
-                       title = "Results", width = NULL, background = "light-blue",
-                       verbatimTextOutput("rmapReturn")
-                     )
-              )
+              column(4,
+                     uiOutput("savedFiles"),
+                     valueBoxOutput("savedPath", width = NULL))
             ),
-            fluidRow( box(width = 4, actionButton("count", "Increment progress"))
-            ),
-            fluidRow( valueBoxOutput("rmapProgressBox")),
-
             fluidRow(
-              column(12,
-                     wellPanel(align = "center",
-                               style = "background-color: #4187C5",
-                               actionButton("rmapDownloadBt",
-                                            "Download",
-                                            icon = icon("download")
-                               )
-                     )
-              )
+              box(
+                title = "Results", width = NULL, background = "light-blue",
+                verbatimTextOutput("rmapReturn")
+                )
             )
+
     ),
 
     # Second tab content
@@ -204,7 +197,6 @@
               )
             ),
             fluidRow(column(5, offset = 4, verbatimTextOutput("value")))
-
     )
   )
 )

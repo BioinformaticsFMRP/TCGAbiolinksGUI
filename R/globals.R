@@ -1,1 +1,1 @@
-utils::globalVariables(c("g_nbFiles","g_filesDownloaded"))
+result <- reactiveValues(g_nbFiles = 0, g_downloaded = 1)
