@@ -20,21 +20,35 @@ biOMICsServer <- function(input, output,session) {
     }
   })
 
+
     output$statusBox <- renderUI({
-      if(input$rmapDownloadBt){
-        valueBoxOutput("statusBoxText", width = NULL)
-      }
+      invalidateLater(1000, session)
+      valueBoxOutput("statusBoxText", width = NULL)
     })
 
   output$statusBoxText <- renderValueBox({
+    if(result$downloading == 2){
     valueBox(
-      h4(paste0("Downloading ",getNbFiles(), " files")), "Status", icon = icon("fa fa-spinner fa-spin"),
+      #h4(paste0("Downloaded  ",getNbFiles(), " files")), "Status", icon = icon("fa fa-spinner fa-spin"),
+      h4(paste0("Downloaded files")), "Status", icon = icon("check-circle"),
       color = "green"
-    )
+    )} else if (result$downloading == 1) {
+      valueBox(
+        h4(paste0("Idle")), "Status", icon = icon("stop"),
+        color = "red"
+      )
+    } else {
+      valueBox(
+        h4(paste0("Downloaded  ",getNbFiles(), " files")), "Status", icon = icon("fa fa-spinner fa-spin"),
+        color = "yellow"
+      )
+
+    }
   })
 
   output$tbl <- DT::renderDataTable({
     if(input$rmapDownloadBt){  # trigger this function by pressing download button
+      result$downloading <- 2
       query <- eGeo(
                     isolate (getRmapSearch ()),
                     isolate (getRmapProject()),

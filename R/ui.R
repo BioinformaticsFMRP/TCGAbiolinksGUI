@@ -36,16 +36,16 @@
   ),
 
   dropdownMenu(type = "tasks", badgeStatus = "success",
-               taskItem(value = 90, color = "green",
+               taskItem(value = 40, color = "green",
                         "Documentation"
                ),
-               taskItem(value = 17, color = "aqua",
-                        "Project X"
+               taskItem(value = 70, color = "aqua",
+                        "Project roadmap"
                ),
-               taskItem(value = 75, color = "yellow",
-                        "Server deployment"
+               taskItem(value = 30, color = "yellow",
+                        "UI roadmap"
                ),
-               taskItem(value = 80, color = "red",
+               taskItem(value = 5, color = "red",
                         "Overall project"
                )
   )
@@ -86,14 +86,12 @@
                      valueBoxOutput("savedPath", width = NULL),
                      uiOutput("statusBox"),
                      uiOutput("savedFiles"))
-
             ),
             fluidRow(
               column(1),
               column(10, DT::dataTableOutput('tbl')),
               column(1)
             )
-
     ),
 
     # Second tab content

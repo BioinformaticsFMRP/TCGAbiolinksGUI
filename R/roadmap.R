@@ -32,6 +32,9 @@ eGeo <- function(...) {
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/geo/info/geo_paccess.html}
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 #' @name geoDownloader
+#'  Ex: Mais de um arquivo
+#'  iQuery <- "((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]"
+#'  iQuery <- "((h1 cell RRBS) AND gsm[Filter]) AND roadmap epigenomics[Project]"
 geoDownloader <- function(iQuery, iOut)
 {
   # Constant parameters
@@ -43,7 +46,8 @@ geoDownloader <- function(iQuery, iOut)
   pmids <- reutils::esearch (iQuery, "gds", retmax = 10000)
   if (pmids@.xData$no_errors()) {
     nbFiles  <- as.numeric (XML::xmlToList (pmids@.xData$get_content())$Count)
-
+    result$g_nbFiles <- nbFiles
+    result$downloading <- 3
     if (nbFiles  > 0 ){ # Found more than one result?
 
       # create directory to save the file
@@ -51,25 +55,35 @@ geoDownloader <- function(iQuery, iOut)
 
       # Download files
       info <- reutils::content (reutils::esummary(pmids), "parsed")
-      ftps <- lapply  (info, function(x)  x$FTPLink)
-      link <- c()
-      count <- 1
-      for(ftp in ftps){
 
-        dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
-        outPath <- paste (iOut, dirName , sep = "/")
-        dir.create (outPath, showWarnings = FALSE)
-
-        # get file in the ftp
-        filePath <- unlist (strsplit (RCurl::getURL (paste0 (ftp, "suppl/"))," "))
-        fileName <- strsplit (tail (filePath, n = 1),"\n")[[1]]
-        link <- c(link,paste0 ("Download: ",ftp,"suppl/",fileName))
-        print(paste0 ("Downloading ", count, " of ", nbFiles, ":", ftp, "suppl/", fileName))
-        #download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName))
-        count <- count + 1
+      if( nbFiles >1)
+        ftps <- lapply  (info, function(x)  x$FTPLink)
+      else{
+        ftps <- info$FTPLink
       }
-      result$g_nbFiles <- nbFiles
-      df <- data.frame(link)
+
+      #ftpsSRA <- lapply  (info$ ExtRelations.ExtRelation.TargetFTPLink, function(x)  x)
+      link <- c()
+      count <- 0
+
+      for(ftp in ftps){
+        if(!is.na(ftp)){
+          count <- count + 1
+          dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
+          outPath <- paste (iOut, dirName , sep = "/")
+          dir.create (outPath, showWarnings = FALSE)
+
+          # get file in the ftp
+          filePath <- unlist (strsplit (RCurl::getURL (paste0 (ftp, "suppl/"),ftp.use.epsv = FALSE, dirlistonly = TRUE)," "))
+          fileName <- as.list(strsplit (tail (filePath, n = 1),"\n")[[1]]) # remove \n from name
+          link <- c(link,lapply (fileName, function(x)  paste0 (ftp,"suppl/",x)))
+          lapply(fileName, function(x) print(paste0 ("Downloading ", count, " of ", nbFiles, ":", ftp, "suppl/", x)))
+          #lapply  (fileName, function(x)  download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName)))
+
+        }
+      }
+      result$g_nbFiles <- nrow(df)
+      df <- do.call(rbind.data.frame, link)
       names(df) <- paste0("Files downloaded into:", getwd(),"/",iOut)
       result$df <- df
 
