@@ -48,7 +48,7 @@ biOMICsServer <- function(input, output,session) {
 
   output$tbl <- DT::renderDataTable({
     if(input$rmapDownloadBt){  # trigger this function by pressing download button
-      result$downloading <- 2
+      result$downloading <- 3
       query <- eGeo(
                     isolate (getRmapSearch ()),
                     isolate (getRmapProject()),

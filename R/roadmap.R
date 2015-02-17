@@ -35,6 +35,7 @@ eGeo <- function(...) {
 #'  Ex: Mais de um arquivo
 #'  iQuery <- "((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]"
 #'  iQuery <- "((h1 cell RRBS) AND gsm[Filter]) AND roadmap epigenomics[Project]"
+#'  iQuery <- "((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]"
 geoDownloader <- function(iQuery, iOut)
 {
   # Constant parameters
@@ -46,21 +47,14 @@ geoDownloader <- function(iQuery, iOut)
   pmids <- reutils::esearch (iQuery, "gds", retmax = 10000)
   if (pmids@.xData$no_errors()) {
     nbFiles  <- as.numeric (XML::xmlToList (pmids@.xData$get_content())$Count)
-    result$g_nbFiles <- nbFiles
-    result$downloading <- 3
     if (nbFiles  > 0 ){ # Found more than one result?
 
-      # create directory to save the file
-      dir.create (iOut, showWarnings = FALSE)
 
-      # Download files
-      info <- reutils::content (reutils::esummary(pmids), "parsed")
+      dir.create (iOut, showWarnings = FALSE)  # create directory to save files
+      info <- reutils::content (reutils::esummary(pmids), "parsed") # get files info
 
-      if( nbFiles >1)
-        ftps <- lapply  (info, function(x)  x$FTPLink)
-      else{
-        ftps <- info$FTPLink
-      }
+      if (nbFiles >1) ftps <- lapply  (info, function(x)  x$FTPLink)
+      else ftps <- info$FTPLink
 
       #ftpsSRA <- lapply  (info$ ExtRelations.ExtRelation.TargetFTPLink, function(x)  x)
       link <- c()
@@ -69,6 +63,8 @@ geoDownloader <- function(iQuery, iOut)
       for(ftp in ftps){
         if(!is.na(ftp)){
           count <- count + 1
+
+          # create folder for experiment
           dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
           outPath <- paste (iOut, dirName , sep = "/")
           dir.create (outPath, showWarnings = FALSE)
@@ -79,12 +75,11 @@ geoDownloader <- function(iQuery, iOut)
           link <- c(link,lapply (fileName, function(x)  paste0 (ftp,"suppl/",x)))
           lapply(fileName, function(x) print(paste0 ("Downloading ", count, " of ", nbFiles, ":", ftp, "suppl/", x)))
           #lapply  (fileName, function(x)  download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName)))
-
         }
       }
+      df <- do.call (rbind.data.frame, link)
       result$g_nbFiles <- nrow(df)
-      df <- do.call(rbind.data.frame, link)
-      names(df) <- paste0("Files downloaded into:", getwd(),"/",iOut)
+      names(df) <- paste0 ("Files downloaded into:", getwd(),"/",iOut)
       result$df <- df
 
     }
