@@ -27,15 +27,14 @@ eGeo <- function(...) {
 #'                    AND roadmap epigenomics[Project] AND "gsm"[Filter]',
 #                     "path_to_download_folder"
 #'                    )
+#'  iQuery <- "((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]"
+#'  iQuery <- "((h1 cell RRBS) AND gsm[Filter]) AND roadmap epigenomics[Project]"
+#'  iQuery <- "((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]"
 #' }
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/geo/info/download.html}
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/geo/info/geo_paccess.html}
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 #' @name geoDownloader
-#'  Ex: Mais de um arquivo
-#'  iQuery <- "((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]"
-#'  iQuery <- "((h1 cell RRBS) AND gsm[Filter]) AND roadmap epigenomics[Project]"
-#'  iQuery <- "((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]"
 geoDownloader <- function(iQuery, iOut)
 {
   # Constant parameters
