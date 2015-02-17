@@ -52,8 +52,10 @@ geoDownloader <- function(iQuery, iOut)
       # Download files
       info <- reutils::content (reutils::esummary(pmids), "parsed")
       ftps <- lapply  (info, function(x)  x$FTPLink)
-      f <- c()
+      link <- c()
+      count <- 1
       for(ftp in ftps){
+
         dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
         outPath <- paste (iOut, dirName , sep = "/")
         dir.create (outPath, showWarnings = FALSE)
@@ -61,10 +63,16 @@ geoDownloader <- function(iQuery, iOut)
         # get file in the ftp
         filePath <- unlist (strsplit (RCurl::getURL (paste0 (ftp, "suppl/"))," "))
         fileName <- strsplit (tail (filePath, n = 1),"\n")[[1]]
-        print(paste0 ("Download: ",ftp,"suppl/",fileName))
+        link <- c(link,paste0 ("Download: ",ftp,"suppl/",fileName))
+        print(paste0 ("Downloading ", count, " of ", nbFiles, ":", ftp, "suppl/", fileName))
         #download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName))
+        count <- count + 1
       }
       result$g_nbFiles <- nbFiles
+      df <- data.frame(link)
+      names(df) <- paste0("Files downloaded into:", getwd(),"/",iOut)
+      result$df <- df
+
     }
   }
 }

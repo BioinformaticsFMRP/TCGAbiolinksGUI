@@ -4,7 +4,8 @@
 #' @keywords internal
 #' @param input - input signal
 #' @param output - output signal
-biOMICsServer <- function(input, output) {
+#' debugging options(shiny.error=browser)
+biOMICsServer <- function(input, output,session) {
 
   source("globals.R")
   # ROADMAP TAB
@@ -14,12 +15,25 @@ biOMICsServer <- function(input, output) {
 
 
   output$savedFiles <- renderUI({
-    if(input$rmapDownloadBt)  valueBoxOutput("rmapProgressBox", width = NULL)
+    if(input$rmapDownloadBt){
+      valueBoxOutput("rmapProgressBox", width = NULL)
+    }
   })
 
+    output$statusBox <- renderUI({
+      if(input$rmapDownloadBt){
+        valueBoxOutput("statusBoxText", width = NULL)
+      }
+    })
 
-  output$rmapReturn <- renderPrint({
+  output$statusBoxText <- renderValueBox({
+    valueBox(
+      h4(paste0("Downloading ",getNbFiles(), " files")), "Status", icon = icon("fa fa-spinner fa-spin"),
+      color = "green"
+    )
+  })
 
+  output$tbl <- DT::renderDataTable({
     if(input$rmapDownloadBt){  # trigger this function by pressing download button
       query <- eGeo(
                     isolate (getRmapSearch ()),
@@ -28,7 +42,9 @@ biOMICsServer <- function(input, output) {
       )
       #print(query)
       geoDownloader(query,"../download")
+      if(!is.null(result$df)) DT::datatable(result$df)
     }
+
   })
 
   # ENCODE TAB

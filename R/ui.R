@@ -83,14 +83,15 @@
                      )
               ),
               column(4,
-                     uiOutput("savedFiles"),
-                     valueBoxOutput("savedPath", width = NULL))
+                     valueBoxOutput("savedPath", width = NULL),
+                     uiOutput("statusBox"),
+                     uiOutput("savedFiles"))
+
             ),
             fluidRow(
-              box(
-                title = "Results", width = NULL, background = "light-blue",
-                verbatimTextOutput("rmapReturn")
-                )
+              column(1),
+              column(10, DT::dataTableOutput('tbl')),
+              column(1)
             )
 
     ),
