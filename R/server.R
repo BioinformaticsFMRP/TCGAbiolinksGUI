@@ -71,7 +71,7 @@ biOMICsServer <- function(input, output,session) {
   getNbFiles        <- reactive({  result$g_nbFiles  })
 
 
-  output$value <- renderPrint({
+  output$tblEncode <- DT::renderDataTable({
     if(input$encodeDownloadBt){  # trigger this function by pressing download button
       encodeDownloader(isolate(getEncodeSearch()),
                        "experiment",
@@ -82,7 +82,7 @@ biOMICsServer <- function(input, output,session) {
                        isolate(getEncodeAssembly()),
                        "../download"
       )
-      getNbFiles()
+      if(!is.null(result$df)) DT::datatable(result$df)
     }
   })
 
@@ -93,6 +93,15 @@ biOMICsServer <- function(input, output,session) {
       color = "blue", width = 4
     )
   })
+
+  output$savedPath2 <- renderValueBox({
+    valueBox(
+      h4(paste0("../downloads/")), "Output directory", icon = icon("folder-open"),
+      color = "blue"
+    )
+  })
+
+
   output$rmapProgressBox <- renderValueBox({
   color <- "green"
   if(getNbFiles() == 0) color <- "red"

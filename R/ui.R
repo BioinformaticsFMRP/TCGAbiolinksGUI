@@ -97,105 +97,73 @@
     # Second tab content
     tabItem(tabName = "encode",
             fluidRow(
-
-              column(4,
-                     wellPanel(
-                       textInput("encodeSearch", label = h3("Search Term"), value = "")
+              column(8,
+                     box(title = "Advanced search",width = NULL, status = "warning",
+                         solidHeader = TRUE, collapsible = TRUE,
+                         textInput("encodeSearch", label = "Search Term", value = ""),
+                         selectInput('encodeAssay', 'Assay filter',
+                                     list("ChIP-seq",
+                                          "RNA-seq",
+                                          "RRBS",
+                                          "RIP-chip",
+                                          "DNase-seq",
+                                          "Repli-chip"),
+                                     multiple = TRUE, selectize = TRUE),
+                         # @param iTarget - "transcription factor" "tag" ...
+                         selectInput("encodeTarget",
+                                     label =  "Target filter",
+                                     choices = list("transcription factor",
+                                                    "RNA binding protein",
+                                                    "control",
+                                                    "histone modification",
+                                                    "tag"),
+                                     multiple = TRUE, selectize = TRUE),
+                         # @param iFType  - "bam" "bigWig" "bed_broadPeak" ...
+                         selectInput("encodeFtype",
+                                     label = "File Type filter",
+                                     choices = list("bam",
+                                                    "bigWig",
+                                                    "bed_broadPeak",
+                                                    "broadPeak",
+                                                    "narrowPeak",
+                                                    "bed_narrowPeak",
+                                                    "bed",
+                                                    "bigBed",
+                                                    "fastq"),
+                                     multiple = TRUE, selectize = TRUE),
+                         # @param iSample - "tissue" "primary cell"
+                         selectInput("encodeSample",
+                                     label = "Sample filter",
+                                     choices = list("tissue",
+                                                    "stem cell",
+                                                    "immortalized cell line",
+                                                    "in vitro differentiated cells",
+                                                    "induced pluripotent stem cell line",
+                                                    "primary cell"),
+                                     multiple = TRUE, selectize = TRUE),
+                         # @param assembly - "hg19" "mm9"
+                         selectInput("encodeAssembly",
+                                     label ="Assembly Filter",
+                                     choices = list("hg19",
+                                                    "dm3",
+                                                    "mm9"),
+                                     multiple = TRUE, selectize = TRUE),
+                         actionButton("encodeDownloadBt",
+                                      "Download",
+                                      style = "background-color: #F39C12;color: #FFFFFF;
+                                      margin-left: auto;margin-right: auto;width: 100%",
+                                      icon = icon("download"))
                      )
               ),
-
               column(4,
-                     wellPanel(
-
-                       # @param assay - "ChIP-seq" "RIP-chip" "Repli-chip"
-                       checkboxGroupInput("encodeAssay",
-                                          label = h3("Assay"),
-                                          choices = list("ChIP-seq",
-                                                         "RNA-seq",
-                                                         "RRBS",
-                                                         "RIP-chip",
-                                                         "DNase-seq",
-                                                         "Repli-chip"),
-                                          selected = NULL)
-                     )
-              ),
-              column(4,
-                     wellPanel(
-
-                       # @param iTarget - "transcription factor" "tag" ...
-                       checkboxGroupInput("encodeTarget",
-                                          label = h3("Target"),
-                                          choices = list("transcription factor",
-                                                         "RNA binding protein",
-                                                         "control",
-                                                         "histone modification",
-                                                         "tag"),
-                                          selected = NULL)
-                     )
+                     valueBoxOutput("savedPath2", width = NULL)
               )
             ),
-
-
             fluidRow(
-              column(4,
-                     wellPanel(
-                       # @param iFType  - "bam" "bigWig" "bed_broadPeak" ...
-                       checkboxGroupInput("encodeFtype",
-                                          label = h3("File Type"),
-                                          choices = list("bam",
-                                                         "bigWig",
-                                                         "bed_broadPeak",
-                                                         "broadPeak",
-                                                         "narrowPeak",
-                                                         "bed_narrowPeak",
-                                                         "bed",
-                                                         "bigBed",
-                                                         "fastq"),
-                                          selected = NULL)
-
-                     )
-              ),
-
-              column(4,
-                     wellPanel(
-                       # @param iSample - "tissue" "primary cell"
-                       checkboxGroupInput("encodeSample",
-                                          label = h3("Sample"),
-                                          choices = list("tissue",
-                                                         "stem cell",
-                                                         "immortalized cell line",
-                                                         "in vitro differentiated cells",
-                                                         "induced pluripotent stem cell line",
-                                                         "primary cell"),
-                                          selected = NULL)
-                     )
-              ),
-
-              column(4,
-                     wellPanel(
-                       # @param assembly - "hg19" "mm9"
-                       checkboxGroupInput("encodeAssembly",
-                                          label = h3("Assembly"),
-                                          choices = list("hg19",
-                                                         "dm3",
-                                                         "mm9"),
-                                          selected = NULL)
-                     )
-              )
-            ),
-
-            fluidRow(
-              column(12,
-                     wellPanel(align = "center",
-                               style = "background-color: #4187C5",
-                               actionButton("encodeDownloadBt",
-                                            "Download",
-                                            icon = icon("download")
-                               )
-                     )
-              )
-            ),
-            fluidRow(column(5, offset = 4, verbatimTextOutput("value")))
+              column(1),
+              column(10, DT::dataTableOutput('tblEncode')),
+              column(1)
+            )
     )
   )
 )

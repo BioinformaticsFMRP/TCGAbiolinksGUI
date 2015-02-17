@@ -50,7 +50,10 @@ geoDownloader <- function(iQuery, iOut)
 
 
       dir.create (iOut, showWarnings = FALSE)  # create directory to save files
-      info <- reutils::content (reutils::esummary(pmids), "parsed") # get files info
+
+      suppressWarnings({
+        info <- reutils::content (reutils::esummary(pmids), "parsed") # get files info
+      })
 
       if (nbFiles >1) ftps <- lapply  (info, function(x)  x$FTPLink)
       else ftps <- info$FTPLink
@@ -73,7 +76,7 @@ geoDownloader <- function(iQuery, iOut)
           fileName <- as.list(strsplit (tail (filePath, n = 1),"\n")[[1]]) # remove \n from name
           link <- c(link,lapply (fileName, function(x)  paste0 (ftp,"suppl/",x)))
           lapply(fileName, function(x) print(paste0 ("Downloading ", count, " of ", nbFiles, ":", ftp, "suppl/", x)))
-          #lapply  (fileName, function(x)  download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName)))
+          lapply  (fileName, function(x)  download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName)))
         }
       }
       df <- do.call (rbind.data.frame, link)
