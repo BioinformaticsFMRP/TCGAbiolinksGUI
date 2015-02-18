@@ -76,7 +76,8 @@ geoDownloader <- function(iQuery, iOut)
           fileName <- as.list(strsplit (tail (filePath, n = 1),"\n")[[1]]) # remove \n from name
           link <- c(link,lapply (fileName, function(x)  paste0 (ftp,"suppl/",x)))
           lapply(fileName, function(x) print(paste0 ("Downloading ", count, " of ", nbFiles, ":", ftp, "suppl/", x)))
-          lapply  (fileName, function(x)  download.file (paste0 (ftp,"suppl/",fileName), paste0 (dirName, fileName)))
+
+          lapply  (fileName, function(x)  downloader::download(paste0 (ftp,"suppl/",x), paste0 (outPath,"/",x)))
         }
       }
       df <- do.call (rbind.data.frame, link)
