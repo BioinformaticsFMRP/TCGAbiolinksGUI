@@ -9,6 +9,8 @@
 
 * Summary of set up
 Download the package [here](https://bitbucket.org/biomics/biomics/downloads) and install with the following command:
+
+```
 #!r
 install.packages(path_to_file, repos = NULL, type="source")
 ```
