@@ -73,7 +73,7 @@ geoDownloader <- function(iQuery, iOut)
 
           # get file in the ftp
           filePath <- unlist (strsplit (RCurl::getURL (paste0 (ftp, "suppl/"),ftp.use.epsv = FALSE, dirlistonly = TRUE)," "))
-          fileName <- as.list(strsplit (tail (filePath, n = 1),"\n")[[1]]) # remove \n from name
+          fileName <- as.list(strsplit (tail (filePath, n = 1),"\r*\n")[[1]]) # remove \n from name
           link <- c(link,lapply (fileName, function(x)  paste0 (ftp,"suppl/",x)))
           lapply(fileName, function(x) print(paste0 ("Downloading ", count, " of ", nbFiles, ":", ftp, "suppl/", x)))
 
