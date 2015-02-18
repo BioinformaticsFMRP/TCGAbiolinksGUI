@@ -2,15 +2,20 @@
 
 ### What is this repository for? ###
 
-* Quick summary: Testing dev packages and learning package structure
+* Quick summary: biomics package
 * Version: 0.1
 
 ### How do I get set up? ###
 
 * Summary of set up
+Download the package [here](https://bitbucket.org/biomics/biomics/downloads) and install with the following command:
+#!r
+install.packages(path_to_file, repos = NULL, type="source")
+```
 * Configuration
 * Dependencies
 * Database configuration
+
 * Creating documentation
 ```
 #!r
@@ -35,5 +40,5 @@ $ devtools::test() # execute unit test
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
+* Repo owner or admin: Tiago C. Silva (tiagochst [at] gmail.com)
 * Other community or team contact
