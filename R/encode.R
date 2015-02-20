@@ -91,7 +91,7 @@
 #'                    "bigWig",
 #'                    "ChIP-seq",
 #'                    "mm9",
-#'                    "encodeDownload"
+#'                    "diretory_name_to_save_files"
 #'                    )
 #' }
 #' @seealso \url{https://www.encodeproject.org/search/}
