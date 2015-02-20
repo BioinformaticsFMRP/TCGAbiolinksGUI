@@ -145,7 +145,7 @@ encodeDownloader <- function (iSearch, iType, iTarget,
         fileOut <- paste (iOut,
                           unlist( strsplit( data$'@graph'[[j]]$'@id', "/"))[3],
                           sep = "/")
-        dir.create (fileOut, showWarnings = FALSE)
+        if(!file.exists(fileOut)) dir.create (fileOut, showWarnings = FALSE)
         fileOut <- paste (fileOut,
                           unlist (strsplit (filePath, "/"))[5],
                           sep = "/")
