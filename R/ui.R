@@ -168,11 +168,9 @@
   )
 )
 
-#' @title  Client side
-#' @description Client side - Download data from roadmap project
-#' @name biOMICsUI
-#' @keywords internal
-#'
+# @title  Client side
+# @description Client side - Download data from roadmap project
+# @keywords internal
 .biOMICsUI <- dashboardPage(
   skin = "blue",
   .header,

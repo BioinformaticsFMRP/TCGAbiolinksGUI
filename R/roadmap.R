@@ -1,9 +1,19 @@
-#' Create query from UI to be used with esearch - not completed
-#' Create query from UI to be used with esearch - not completed
-#'
-#' @param List of parameters parameter = (Term,Fild,Connector)
-#' @keywords internal
-eGeo <- function(...) {
+# Create query from UI to be used with esearch - not completed
+# Create query from UI to be used with esearch - not completed
+# @param List of parameters parameter = (Term,Field,Connector)
+#        First parameter should contain the terms,
+#        Field NULL which means all fields and connector NULL
+#        For roadmap one parameter should be c ("roadmap epigenomics","Project","AND"),
+#        For samples: c ("gsm","Filter","AND") )
+# @examples
+# \dontrun{
+#  eGeo(
+#    c ("h1 cell RRBS",NULL,NULL),
+#    c ("roadmap epigenomics","Project","AND"),
+#    c ("gsm","Filter","AND") )
+# }
+# @keywords internal
+.eGeo <- function(...) {
   input_list <- list(...)
   output_list <- lapply (X = input_list, function(x) {
     if(length(x) > 2){
@@ -19,6 +29,8 @@ eGeo <- function(...) {
 
 #' @title Download data from GEO database
 #' @description Download data from GEO database using reutils library
+#'              Input should be a GEO query, you can you this site
+#'              to create the query  http://www.ncbi.nlm.nih.gov/gds/advanced
 #' @param iQuery - GEO query - build it with http://www.ncbi.nlm.nih.gov/gds/advanced
 #' @param iOut - path to save files
 #' @examples
@@ -83,15 +95,24 @@ geoDownloader <- function(iQuery, iOut)
         }
       }
       df <- do.call (rbind.data.frame, link)
-      result$g_nbFiles <- nrow(df)
+      .result$g_nbFiles <- nrow(df)
       names(df) <- paste0 ("Files downloaded into:", getwd(),"/",iOut)
-      result$df <- df
+      .result$df <- df
     }
   }
 }
 
-#' Calls UI interface
-#' Calls UI interface
+
+#' @title biOMICs interface
+#' @description Calls UI interface
+#' @examples
+#' \dontrun{
+#'    biOMICsApp()
+#' }
+#' @seealso \url{https://www.encodeproject.org/search/}
+#' @seealso \url{https://www.encodeproject.org/help/rest-api/}
+#' @name biOMICsApp
+
 #' @keywords internal
 biOMICsApp <- function() {
   shinyApp (server = .biOMICsServer, ui = .biOMICsUI)

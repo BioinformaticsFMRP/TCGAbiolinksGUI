@@ -162,7 +162,7 @@ encodeDownloader <- function (iSearch, iType, iTarget,
       }
     }
     names(df) <- paste0 ("Files downloaded into:", getwd(),"/",iOut)
-    result$df <- df
+    .result$df <- df
   } else {
     print (data$notification)
   }

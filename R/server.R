@@ -1,10 +1,8 @@
-#' @title  Server side
-#' @description Server side - Download data from roadmap project
-#' @name geoServer
-#' @keywords internal
-#' @param input - input signal
-#' @param output - output signal
-#' debugging options(shiny.error=browser)
+# @title  Server side
+# @description Server side - Download data from roadmap project
+# @param input - input signal
+# @param output - output signal
+# @keywords internal
 .biOMICsServer <- function(input, output,session) {
 
   source("globals.R")
@@ -27,12 +25,12 @@
     })
 
   output$statusBoxText <- renderValueBox({
-    if(result$downloading == 2){
+    if(.result$downloading == 2){
     valueBox(
       #h4(paste0("Downloaded  ",getNbFiles(), " files")), "Status", icon = icon("fa fa-spinner fa-spin"),
       h4(paste0("Downloaded files")), "Status", icon = icon("check-circle"),
       color = "green"
-    )} else if (result$downloading == 1) {
+    )} else if (.result$downloading == 1) {
       valueBox(
         h4(paste0("Idle")), "Status", icon = icon("stop"),
         color = "red"
@@ -48,15 +46,15 @@
 
   output$tbl <- DT::renderDataTable({
     if(input$rmapDownloadBt){  # trigger this function by pressing download button
-      result$downloading <- 3
-      query <- eGeo(
+      .result$downloading <- 3
+      query <- .eGeo(
                     isolate (getRmapSearch ()),
                     isolate (getRmapProject()),
                     isolate (getRmapType   ())
       )
       #print(query)
       geoDownloader(query,"../download")
-      if(!is.null(result$df)) DT::datatable(result$df)
+      if(!is.null(.result$df)) DT::datatable(.result$df)
     }
 
   })
@@ -68,7 +66,7 @@
   getEncodeSample   <- reactive({  input$sample   })
   getEncodeAssembly <- reactive({  input$assembly })
   getEncodeSearch   <- reactive({  input$search   })
-  getNbFiles        <- reactive({  result$g_nbFiles  })
+  getNbFiles        <- reactive({  .result$g_nbFiles  })
 
 
   output$tblEncode <- DT::renderDataTable({
@@ -82,7 +80,7 @@
                        isolate(getEncodeAssembly()),
                        "../download"
       )
-      if(!is.null(result$df)) DT::datatable(result$df)
+      if(!is.null(.result$df)) DT::datatable(.result$df)
     }
   })
 
