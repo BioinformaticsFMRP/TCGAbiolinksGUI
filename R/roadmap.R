@@ -44,12 +44,12 @@ geoDownloader <- function(iQuery, iOut)
 
   # search on geo databse(gds) for iQuery
   pmids <- reutils::esearch (iQuery, "gds", retmax = 10000)
+
   if (pmids@.xData$no_errors()) {
     nbFiles  <- as.numeric (XML::xmlToList (pmids@.xData$get_content())$Count)
+
     if (nbFiles  > 0 ){ # Found more than one result?
-
-
-      dir.create (iOut, showWarnings = FALSE)  # create directory to save files
+      if(!file.exists(iOut)) dir.create (iOut, showWarnings = FALSE)  # create directory to save files
 
       suppressWarnings({
         info <- reutils::content (reutils::esummary(pmids), "parsed") # get files info
@@ -71,9 +71,11 @@ geoDownloader <- function(iQuery, iOut)
           outPath <- paste (iOut, dirName , sep = "/")
           dir.create (outPath, showWarnings = FALSE)
 
-          # get file in the ftp
+          # get files names in the ftp
           filePath <- unlist (strsplit (RCurl::getURL (paste0 (ftp, "suppl/"),ftp.use.epsv = FALSE, dirlistonly = TRUE)," "))
-          fileName <- as.list(strsplit (tail (filePath, n = 1),"\r*\n")[[1]]) # remove \n from name
+          fileName <- as.list(strsplit (tail (filePath, n = 1),"\r*\n")[[1]]) # remove \r\n from name
+
+          # Used for UI and debug
           link <- c(link,lapply (fileName, function(x)  paste0 (ftp,"suppl/",x)))
           lapply(fileName, function(x) print(paste0 ("Downloading ", count, " of ", nbFiles, ":", ftp, "suppl/", x)))
 
@@ -84,7 +86,6 @@ geoDownloader <- function(iQuery, iOut)
       result$g_nbFiles <- nrow(df)
       names(df) <- paste0 ("Files downloaded into:", getwd(),"/",iOut)
       result$df <- df
-
     }
   }
 }
@@ -93,5 +94,5 @@ geoDownloader <- function(iQuery, iOut)
 #' Calls UI interface
 #' @keywords internal
 biOMICsApp <- function() {
-  shinyApp(  server = biOMICsServer, ui = biOMICsUI)
+  shinyApp (server = .biOMICsServer, ui = .biOMICsUI)
 }

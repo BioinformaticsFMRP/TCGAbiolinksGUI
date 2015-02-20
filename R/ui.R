@@ -54,8 +54,8 @@
 
 .sidebar <-  dashboardSidebar(
   sidebarMenu(
-    menuItem("Encode", tabName = "encode", icon = icon("download")),
-    menuItem("Roadmap", tabName = "roadmap", icon = icon("download"),badgeLabel = "new", badgeColor = "green")
+    menuItem ("Encode" , tabName = "encode" , icon = icon("download")),
+    menuItem ("Roadmap", tabName = "roadmap", icon = icon("download"), badgeLabel = "new", badgeColor = "green")
 
   )
 )
@@ -173,7 +173,7 @@
 #' @name biOMICsUI
 #' @keywords internal
 #'
-biOMICsUI <- dashboardPage(
+.biOMICsUI <- dashboardPage(
   skin = "blue",
   .header,
   .sidebar,

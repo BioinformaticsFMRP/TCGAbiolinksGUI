@@ -5,7 +5,7 @@
 #' @param input - input signal
 #' @param output - output signal
 #' debugging options(shiny.error=browser)
-biOMICsServer <- function(input, output,session) {
+.biOMICsServer <- function(input, output,session) {
 
   source("globals.R")
   # ROADMAP TAB
