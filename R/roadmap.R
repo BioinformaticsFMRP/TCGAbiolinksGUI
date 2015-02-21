@@ -112,8 +112,8 @@ geoDownloader <- function(iQuery, iOut)
 #' @seealso \url{https://www.encodeproject.org/search/}
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name biOMICsApp
-
 #' @keywords internal
 biOMICsApp <- function() {
-  shinyApp (server = .biOMICsServer, ui = .biOMICsUI)
+  app <- shinyApp (server = .biOMICsServer, ui = .biOMICsUI)
+  runApp(app)
 }
