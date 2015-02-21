@@ -103,17 +103,3 @@ geoDownloader <- function(iQuery, iOut)
 }
 
 
-#' @title biOMICs interface
-#' @description Calls UI interface
-#' @examples
-#' \dontrun{
-#'    biOMICsApp()
-#' }
-#' @seealso \url{https://www.encodeproject.org/search/}
-#' @seealso \url{https://www.encodeproject.org/help/rest-api/}
-#' @name biOMICsApp
-#' @keywords internal
-biOMICsApp <- function() {
-  app <- shinyApp (server = .biOMICsServer, ui = .biOMICsUI)
-  runApp(app)
-}

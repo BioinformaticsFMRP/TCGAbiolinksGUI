@@ -5,7 +5,8 @@
 # @keywords internal
 .biOMICsServer <- function(input, output,session) {
 
-  source("globals.R")
+  .result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
+
   # ROADMAP TAB
   getRmapProject <- reactive ({ c(input$rmapProject,"Project","AND") })
   getRmapSearch  <- reactive ({ c(input$rmapSearch,NULL,NULL)        })
