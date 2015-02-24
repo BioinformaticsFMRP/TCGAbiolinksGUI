@@ -139,10 +139,10 @@
         tcga <- tcgaBarCode()
         filter <- filterTcgaBarCode()
         validate(
-          need(tcga != NULL, "Please upload file with TCGA bar codes")
+          need(!is.null(tcga), "Please upload file with TCGA bar codes")
           )
         validate(
-          need(filter != NULL, "Please upload file with filtered bar codes")
+          need(!is.null(filter), "Please upload file with filtered bar codes")
         )
 
         barCode  <- .getBarCode (tcga, filter)
