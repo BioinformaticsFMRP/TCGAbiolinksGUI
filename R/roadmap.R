@@ -1,19 +1,19 @@
-# Create query from UI to be used with esearch - not completed
-# Create query from UI to be used with esearch - not completed
-# @param List of parameters parameter = (Term,Field,Connector)
-#        First parameter should contain the terms,
-#        Field NULL which means all fields and connector NULL
-#        For roadmap one parameter should be c ("roadmap epigenomics","Project","AND"),
-#        For samples: c ("gsm","Filter","AND") )
-# @examples
-# \dontrun{
-#  eGeo(
-#    c ("h1 cell RRBS",NULL,NULL),
-#    c ("roadmap epigenomics","Project","AND"),
-#    c ("gsm","Filter","AND") )
-# }
-# @keywords internal
-.eGeo <- function(...) {
+#' Create query from UI to be used with esearch - not completed
+#' Create query from UI to be used with esearch - not completed
+#' @param List of parameters parameter = (Term,Field,Connector)
+#'        First parameter should contain the terms,
+#'        Field NULL which means all fields and connector NULL
+#'        For roadmap one parameter should be c ("roadmap epigenomics","Project","AND"),
+#'        For samples: c ("gsm","Filter","AND") )
+#' @examples
+#' \dontrun{
+#'  eGeo(
+#'    c ("h1 cell RRBS",NULL,NULL),
+#'    c ("roadmap epigenomics","Project","AND"),
+#'    c ("gsm","Filter","AND") )
+#' }
+#' @keywords internal
+eGeo <- function(...) {
   input_list <- list(...)
   output_list <- lapply (X = input_list, function(x) {
     if(length(x) > 2){
@@ -117,7 +117,7 @@ geoDownloader <- function(iQuery, iOut)
           lapply  (iFiles,
                     function(x){
                       if(file.exists(x))
-                        gunzip(x, remove = FALSE)
+                        R.utils::gunzip(x, remove = FALSE)
                     }
           )
     } else {
@@ -157,5 +157,5 @@ geoDownloader <- function(iQuery, iOut)
 # @keywords internal
 .mkdir <- function (iOut){
   if(!file.exists(iOut))
-    dir.create (iOut, showWarnings = FALSE)  # create directory to save files
+    dir.create (iOut, showWarnings = TRUE)  # create directory to save files
 }

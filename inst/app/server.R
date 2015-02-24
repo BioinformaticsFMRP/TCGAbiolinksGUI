@@ -6,12 +6,14 @@
 .biOMICsServer <- function(input, output,session) {
 
   .result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
+  setwd(Sys.getenv("HOME"))
+  rmapFolder   <- paste0(Sys.getenv("HOME"),"/GEO")
+  encodeFolder <- paste0(Sys.getenv("HOME"),"/ENCODE")
 
   # ROADMAP TAB
   getRmapProject <- reactive ({ c(input$rmapProject,"Project","AND") })
   getRmapSearch  <- reactive ({ c(input$rmapSearch,NULL,NULL)        })
   getRmapType    <- reactive ({ c(input$rmapType,"Filter","AND")     })
-
 
   output$savedFiles <- renderUI({
     if(input$rmapDownloadBt){
@@ -48,13 +50,13 @@
   output$tbl <- DT::renderDataTable({
     if(input$rmapDownloadBt){  # trigger this function by pressing download button
       .result$downloading <- 3
-      query <- .eGeo(
+      query <- eGeo(
                     isolate (getRmapSearch ()),
                     isolate (getRmapProject()),
                     isolate (getRmapType   ())
       )
       #print(query)
-      geoDownloader(query,"../download")
+      geoDownloader(query,rmapFolder)
       if(!is.null(.result$df)) DT::datatable(.result$df)
     }
 
@@ -79,7 +81,7 @@
                        isolate(getEncodeFType()),
                        isolate(getEncodeAssay()),
                        isolate(getEncodeAssembly()),
-                       "../download"
+                       encodeFolder
       )
       if(!is.null(.result$df)) DT::datatable(.result$df)
     }
@@ -88,14 +90,14 @@
 
   output$savedPath <- renderValueBox({
     valueBox(
-      h4(paste0("../downloads/")), "Output directory", icon = icon("folder-open"),
+      h4(paste0(encodeFolder), "Output directory", icon = icon("folder-open"),
       color = "blue", width = 4
     )
   })
 
   output$savedPath2 <- renderValueBox({
     valueBox(
-      h4(paste0("../downloads/")), "Output directory", icon = icon("folder-open"),
+      h4(paste0(rmapFolder), "Output directory", icon = icon("folder-open"),
       color = "blue"
     )
   })

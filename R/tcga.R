@@ -6,5 +6,5 @@
       if (grepl(i,j)) files <- paste0 (files," ", j)
     }
   }
-  files <- gsub(" ", ",", trim(files))
+  files <- gsub(" ", ",", gdata::trim(files))
 }

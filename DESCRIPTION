@@ -22,6 +22,7 @@ Imports:
   downloader,
   gdata,
   RCurl,
+  R.utils,
   rjson,
   reutils,
   XML
