@@ -61,7 +61,7 @@ geoDownloader <- function(iQuery, iOut)
     nbFiles  <- as.numeric (XML::xmlToList (pmids@.xData$get_content())$Count)
 
     if (nbFiles  > 0 ){ # Found more than one result?
-      if(!file.exists(iOut)) dir.create (iOut, showWarnings = FALSE)  # create directory to save files
+      .mkdir(iOut)
 
       suppressWarnings({
         info <- reutils::content (reutils::esummary(pmids), "parsed") # get files info
@@ -82,7 +82,7 @@ geoDownloader <- function(iQuery, iOut)
           # create folder for experiment
           dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
           outPath <- paste (iOut, dirName , sep = "/")
-          dir.create (outPath, showWarnings = FALSE)
+          .mkdir (outPath)
 
           # get list of files names in the ftp
           fileName <- .getFileNames(ftp)
@@ -113,8 +113,16 @@ geoDownloader <- function(iQuery, iOut)
 # Uncompress a list of files - it does not remove the compressed file
 # @keywords internal
 .uncompress <- function(iFiles){
-   if(!is.null(iFiles))
-    lapply  (iFiles, function(x) gunzip(x, remove = FALSE))
+  if (!is.null(iFiles)){
+          lapply  (iFiles,
+                    function(x){
+                      if(file.exists(x))
+                        gunzip(x, remove = FALSE)
+                    }
+          )
+    } else {
+      return(NULL)
+    }
 }
 
 # Show ftp links downloaded
@@ -143,4 +151,11 @@ geoDownloader <- function(iQuery, iOut)
               )
     # remove \r\n from name
     fileName <- as.list(strsplit (tail (filePath, n = 1),"\r*\n")[[1]])
+}
+
+# Create directory
+# @keywords internal
+.mkdir <- function (iOut){
+  if(!file.exists(iOut))
+    dir.create (iOut, showWarnings = FALSE)  # create directory to save files
 }
