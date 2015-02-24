@@ -184,7 +184,9 @@
                                      'text/plain'
                                    )),
                          downloadButton("getTcgaBarCode",
-                                      "Download")
+                                      "Download",
+                                      class = "btn-block btn-warning"
+                                      )
 
                      )),
               column(1)

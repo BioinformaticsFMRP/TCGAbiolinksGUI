@@ -21,3 +21,15 @@ pre {
   background-color:  #3C8DBC;
   color: #ffffff;
 }
+
+.shiny-progress .bar {
+  background-color: #FF0000;
+  .opacity = 0.8;
+}
+.shiny-progress .progress {
+  height:7px;
+}
+
+.btn.btn-warning {
+   color: #fff;
+}

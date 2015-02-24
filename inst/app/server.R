@@ -136,7 +136,16 @@
       # This function should write data to a file given to it by
       # the argument 'file'.
       content = function(filename) {
-        barCode  <- .getBarCode (tcgaBarCode(), filterTcgaBarCode())
+        tcga <- tcgaBarCode()
+        filter <- filterTcgaBarCode()
+        validate(
+          need(tcga != NULL, "Please upload file with TCGA bar codes")
+          )
+        validate(
+          need(filter != NULL, "Please upload file with filtered bar codes")
+        )
+
+        barCode  <- .getBarCode (tcga, filter)
         fileConn <- file(filename)
         writeLines (barCode, fileConn)
         close (fileConn)
