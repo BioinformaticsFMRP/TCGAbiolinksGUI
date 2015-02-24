@@ -71,7 +71,8 @@ geoDownloader <- function(iQuery, iOut)
       else ftps <- info$FTPLink
 
       #ftpsSRA <- lapply  (info$ ExtRelations.ExtRelation.TargetFTPLink, function(x)  x)
-      link <- c()
+      link <- list()
+      compresssedFiles <- c()
       count <- 0
 
       for(ftp in ftps){
@@ -83,23 +84,63 @@ geoDownloader <- function(iQuery, iOut)
           outPath <- paste (iOut, dirName , sep = "/")
           dir.create (outPath, showWarnings = FALSE)
 
-          # get files names in the ftp
-          filePath <- unlist (strsplit (RCurl::getURL (paste0 (ftp, "suppl/"),ftp.use.epsv = FALSE, dirlistonly = TRUE)," "))
-          fileName <- as.list(strsplit (tail (filePath, n = 1),"\r*\n")[[1]]) # remove \r\n from name
+          # get list of files names in the ftp
+          fileName <- .getFileNames(ftp)
 
-          # Used for UI and debug
-          link <- c(link,lapply (fileName, function(x)  paste0 (ftp,"suppl/",x)))
-          lapply(fileName, function(x) print(paste0 ("Downloading ", count, " of ", nbFiles, ":", ftp, "suppl/", x)))
+          lapply (fileName,
+                  function(x){
+                    ftpLink <- paste0 (ftp, "suppl/", x)
+                    file    <- paste0 (outPath, "/", x)
+                    if (!file.exists(file)){
+                      print(paste0 ("Downloading ", count, " of ", nbFiles, ":",ftpLink ))
+                      downloader::download(ftpLink, file)
+                      compresssedFiles <- c(compresssedFiles, file)
+                    }
+                    link <- c(link, ftpLink)
+                  }
+          )
 
-          lapply  (fileName, function(x)  downloader::download(paste0 (ftp,"suppl/",x), paste0 (outPath,"/",x)))
         }
       }
-      df <- do.call (rbind.data.frame, link)
-      .result$g_nbFiles <- nrow(df)
-      names(df) <- paste0 ("Files downloaded into:", getwd(),"/",iOut)
-      .result$df <- df
+
+      .prepareInfoTable(link,iOut)
+      .uncompress(compresssedFiles)
+
     }
   }
 }
 
+# Uncompress a list of files - it does not remove the compressed file
+# @keywords internal
+.uncompress <- function(iFiles){
+   if(!is.null(iFiles))
+    lapply  (iFiles, function(x) gunzip(x, remove = FALSE))
+}
 
+# Show ftp links downloaded
+# @keywords internal
+.prepareInfoTable <- function(iLink,iOut){
+  if(length(iLink) > 0 ){
+    df <- do.call (rbind.data.frame, iLink)
+    .result$g_nbFiles <- nrow(df)
+    names(df) <- paste0 ("Files downloaded into:", getwd(),"/",iOut)
+    .result$df <- df
+  }
+}
+
+# Get all files in the ftp folder
+# @keywords internal
+.getFileNames <- function(ftp){
+  filePath <- unlist (
+                strsplit(
+                  RCurl::getURL(
+                    paste0 (ftp, "suppl/"),
+                    ftp.use.epsv = FALSE,
+                    dirlistonly = TRUE
+                    ),
+                  " "
+                )
+              )
+    # remove \r\n from name
+    fileName <- as.list(strsplit (tail (filePath, n = 1),"\r*\n")[[1]])
+}
