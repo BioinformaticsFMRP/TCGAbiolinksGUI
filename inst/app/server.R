@@ -110,4 +110,37 @@
       color = color, width = 4
     )
   })
+
+
+
+  # TCGA
+  tcgaBarCode  <- reactive({
+  inFile <- input$file1
+  if (is.null(inFile))
+    return(NULL)
+  read.csv(inFile$datapath, header = TRUE)
+  })
+
+  filterTcgaBarCode  <- reactive({
+    inFile <- input$file2
+    if (is.null(inFile))
+      return(NULL)
+     read.table(inFile$datapath, header = FALSE)
+  })
+
+    output$getTcgaBarCode <- downloadHandler(
+
+      # This function returns a string which tells the client
+      # browser what name to use when saving the file.
+      filename = "barCode.txt",
+      # This function should write data to a file given to it by
+      # the argument 'file'.
+      content = function(filename) {
+        barCode  <- .getBarCode (tcgaBarCode(), filterTcgaBarCode())
+        fileConn <- file(filename)
+        writeLines (barCode, fileConn)
+        close (fileConn)
+      }
+    )
+
 }

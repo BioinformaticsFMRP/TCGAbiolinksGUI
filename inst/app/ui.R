@@ -55,7 +55,8 @@
 .sidebar <-  dashboardSidebar(
   sidebarMenu(
     menuItem ("Encode" , tabName = "encode" , icon = icon("download")),
-    menuItem ("Roadmap", tabName = "roadmap", icon = icon("download"), badgeLabel = "new", badgeColor = "green")
+    menuItem ("Roadmap", tabName = "roadmap", icon = icon("download")),
+    menuItem ("TCGA"   , tabName = "tcga"   , icon = icon("database"), badgeLabel = "new", badgeColor = "green")
 
   )
 )
@@ -162,6 +163,30 @@
             fluidRow(
               column(1),
               column(10, DT::dataTableOutput('tblEncode')),
+              column(1)
+            )
+    ),
+    tabItem(tabName = "tcga",
+            fluidRow(
+              column(1),
+              column(10,
+                     box(title = "Get bar code", width = NULL, status = "warning",
+                         solidHeader = TRUE, collapsible = FALSE,
+                         fileInput('file1', 'Upload TCGA file',
+                                   accept = c(
+                                     'text/csv',
+                                     'text/comma-separated-values',
+                                     '.csv'
+                                   )
+                         ),
+                         fileInput('file2', 'Upload barcode filter',
+                                   accept = c(
+                                     'text/plain'
+                                   )),
+                         downloadButton("getTcgaBarCode",
+                                      "Download")
+
+                     )),
               column(1)
             )
     )
