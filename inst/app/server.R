@@ -5,12 +5,15 @@
 # @keywords internal
 .biOMICsServer <- function(input, output,session) {
 
-  source("globals.R")
+  .result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
+  setwd(Sys.getenv("HOME"))
+  rmapFolder   <- paste0(Sys.getenv("HOME"),"/GEO")
+  encodeFolder <- paste0(Sys.getenv("HOME"),"/ENCODE")
+
   # ROADMAP TAB
   getRmapProject <- reactive ({ c(input$rmapProject,"Project","AND") })
   getRmapSearch  <- reactive ({ c(input$rmapSearch,NULL,NULL)        })
   getRmapType    <- reactive ({ c(input$rmapType,"Filter","AND")     })
-
 
   output$savedFiles <- renderUI({
     if(input$rmapDownloadBt){
@@ -47,13 +50,13 @@
   output$tbl <- DT::renderDataTable({
     if(input$rmapDownloadBt){  # trigger this function by pressing download button
       .result$downloading <- 3
-      query <- .eGeo(
+      query <- eGeo(
                     isolate (getRmapSearch ()),
                     isolate (getRmapProject()),
                     isolate (getRmapType   ())
       )
       #print(query)
-      geoDownloader(query,"../download")
+      geoDownloader(query,rmapFolder)
       if(!is.null(.result$df)) DT::datatable(.result$df)
     }
 
@@ -78,7 +81,7 @@
                        isolate(getEncodeFType()),
                        isolate(getEncodeAssay()),
                        isolate(getEncodeAssembly()),
-                       "../download"
+                       encodeFolder
       )
       if(!is.null(.result$df)) DT::datatable(.result$df)
     }
@@ -87,14 +90,14 @@
 
   output$savedPath <- renderValueBox({
     valueBox(
-      h4(paste0("../downloads/")), "Output directory", icon = icon("folder-open"),
+      h4(paste0(encodeFolder), "Output directory", icon = icon("folder-open"),
       color = "blue", width = 4
     )
   })
 
   output$savedPath2 <- renderValueBox({
     valueBox(
-      h4(paste0("../downloads/")), "Output directory", icon = icon("folder-open"),
+      h4(paste0(rmapFolder), "Output directory", icon = icon("folder-open"),
       color = "blue"
     )
   })
@@ -109,4 +112,46 @@
       color = color, width = 4
     )
   })
+
+
+
+  # TCGA
+  tcgaBarCode  <- reactive({
+  inFile <- input$file1
+  if (is.null(inFile))
+    return(NULL)
+  read.csv(inFile$datapath, header = TRUE)
+  })
+
+  filterTcgaBarCode  <- reactive({
+    inFile <- input$file2
+    if (is.null(inFile))
+      return(NULL)
+     read.table(inFile$datapath, header = FALSE)
+  })
+
+    output$getTcgaBarCode <- downloadHandler(
+
+      # This function returns a string which tells the client
+      # browser what name to use when saving the file.
+      filename = "barCode.txt",
+      # This function should write data to a file given to it by
+      # the argument 'file'.
+      content = function(filename) {
+        tcga <- tcgaBarCode()
+        filter <- filterTcgaBarCode()
+        validate(
+          need(!is.null(tcga), "Please upload file with TCGA bar codes")
+          )
+        validate(
+          need(!is.null(filter), "Please upload file with filtered bar codes")
+        )
+
+        barCode  <- .getBarCode (tcga, filter)
+        fileConn <- file(filename)
+        writeLines (barCode, fileConn)
+        close (fileConn)
+      }
+    )
+
 }

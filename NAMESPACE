@@ -1,3 +1,4 @@
 exportPattern("^[[:alpha:]]+")
 import(shiny)
 import(shinydashboard)
+import(DT)

@@ -10,7 +10,8 @@ Description: Download data from ENCODE project
 License: GPL (>= 3)
 Depends:
   R (>= 3.0),
-  shinydashboard (>= 0.2.2)
+  shinydashboard (>= 0.2.2),
+  DT
 Suggests:
   testthat,
   knitr,
@@ -19,10 +20,10 @@ Suggests:
 Imports:
   shiny (>= 0.11.1),
   downloader,
+  gdata,
   RCurl,
+  R.utils,
   rjson,
   reutils,
-  XML,
-  DT
+  XML
 VignetteBuilder: knitr
-LazyData: yes
