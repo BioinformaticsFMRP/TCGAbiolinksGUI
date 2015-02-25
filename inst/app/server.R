@@ -90,14 +90,14 @@
 
   output$savedPath <- renderValueBox({
     valueBox(
-      h4(paste0(encodeFolder), "Output directory", icon = icon("folder-open"),
+      h4(encodeFolder), "Output directory", icon = icon("folder-open"),
       color = "blue", width = 4
     )
   })
 
   output$savedPath2 <- renderValueBox({
     valueBox(
-      h4(paste0(rmapFolder), "Output directory", icon = icon("folder-open"),
+      h4(rmapFolder), "Output directory", icon = icon("folder-open"),
       color = "blue"
     )
   })
