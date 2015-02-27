@@ -4,9 +4,8 @@
 
 .sidebar <-  dashboardSidebar(
   sidebarMenu(
-    menuItem ("Encode" , tabName = "encode" , icon = icon("download")),
-    menuItem ("Roadmap", tabName = "roadmap", icon = icon("download")),
-    menuItem ("Roadmap table", tabName = "roadmap_table", icon = icon("download")),
+    menuItem ("Encode" , tabName = "encode" , icon = icon("database")),
+    menuItem ("Roadmap", tabName = "roadmap", icon = icon("database")),
     menuItem ("TCGA"   , tabName = "tcga"   , icon = icon("database"), badgeLabel = "new", badgeColor = "green")
   )
 )
@@ -67,27 +66,6 @@
               column(1),
               column(10, dataTableOutput('rmapSearchtbl')),
               column(1)
-            )
-    ),
-    tabItem(tabName = "roadmap_table",
-
-            fluidRow(
-              column(1),
-              column(10, dataTableOutput('rmaptbl')),
-              column(1)
-            ),
-            fluidRow(
-              column(4),
-              column(4,
-                     actionButton("rmapTableDownloadBt",
-                                  "Download selected rows",
-                                  style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 100%",
-                                  icon = icon("download")),
-                     textOutput('rmapTableLink')
-              ),
-              column(4)
-
             )
     ),
     # Second tab content

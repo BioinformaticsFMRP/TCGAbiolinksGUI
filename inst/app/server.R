@@ -53,18 +53,6 @@
       }
   })
 
-  output$rmapTableLink <- renderText({
-    if(input$rmapTableDownloadBt){
-      link <- c()
-      accession <- unlist(input$allRows)
-      for (i in seq(1,length(accession), by = 6)){
-        index <- which(roadmap$summary$X..GEO.Accession ==  accession[i])
-        link <- c(link,as.character(roadmap$summary$GEO.FTP[index]))
-      }
-      geoDownloaderLinks(link,rmapFolder)
-    }}
-  )
-
   output$rmapSearchLink <-  renderText({
     if(input$rmapSearchDownloadBt){
       link <- c()
@@ -122,18 +110,6 @@
                             table.rows('.selected').data().toArray());
       });
 
-    }"
-  )
-
-  output$rmaptbl <- renderDataTable(
-    roadmap$summary[c(1:5,8)],
-    options = list(pageLength = 10,scrollX = TRUE, jQueryUI= TRUE, pagingType = "full",lengthMenu = c(10, 50, 100, -1)),
-    callback = "function(table) {
-      table.on('click.dt', 'tr', function() {
-        $(this).toggleClass('selected');
-        Shiny.onInputChange('allRows',
-                            table.rows('.selected').data().toArray());
-      });
     }"
   )
 
@@ -202,8 +178,6 @@
       color = color, width = 4
     )
   })
-
-
 
   # TCGA
   tcgaBarCode  <- reactive({
