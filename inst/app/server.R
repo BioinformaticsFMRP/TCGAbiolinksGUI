@@ -15,8 +15,14 @@
   getRmapSearch  <- reactive ({ c(input$rmapSearch,NULL,NULL)        })
   getRmapType    <- reactive ({ c(input$rmapType,"Filter","AND")     })
 
+  #   output$savedFiles <- renderUI({
+  #     if(input$rmapDownloadBt){
+  #       valueBoxOutput("rmapProgressBox", width = NULL)
+  #     }
+  #   })
+
   output$savedFiles <- renderUI({
-    if(input$rmapDownloadBt){
+    if(input$rmapSearchDownloadBt){
       valueBoxOutput("rmapProgressBox", width = NULL)
     }
   })
@@ -51,26 +57,73 @@
     if(input$rmapTableDownloadBt){
       link <- c()
       accession <- unlist(input$allRows)
-      for (i in seq(1,length(accession),by=6)){
+      for (i in seq(1,length(accession), by = 6)){
         index <- which(roadmap$summary$X..GEO.Accession ==  accession[i])
         link <- c(link,as.character(roadmap$summary$GEO.FTP[index]))
       }
-      #print(link)
       geoDownloaderLinks(link,rmapFolder)
     }}
   )
 
-  output$tbl <- renderDataTable({
-    if(input$rmapSearchBt){
-      for(i in seq_along(roadmap$summary$Experiment)){
-        if(roadmap$summary$Experiment[i]  %in% selected){
-          if(roadmap$summary$Sample.Name[i]  %in% selected2){
-            #print(roadmap$summary$GEO.FTP[i])
+  output$rmapSearchLink <-  renderText({
+    if(input$rmapSearchDownloadBt){
+      link <- c()
+      accession <- unlist(input$allRows)
+      for (i in seq(1,length(accession), by = 6)){
+        index <- which(roadmap$summary$X..GEO.Accession ==  accession[i])
+        link <- c(link,as.character(roadmap$summary$GEO.FTP[index]))
+      }
+      geoDownloaderLinks(link,rmapFolder)
+    }}
+  )
+
+  output$rmapSearchtbl <- renderDataTable({
+    indexes <- c()
+    if (input$rmapSearchBt){
+      link <- c()
+      # improve using subset - subset(data,selection,projection)
+      for (i in seq_along(roadmap$summary$Experiment)){
+        if (is.null(input$rmapExpFilter)
+            || roadmap$summary$Experiment[i]  %in% input$rmapExpFilter){
+          if (is.null(input$rmapSamplesFilter)
+              || roadmap$summary$Sample.Name[i]  %in% input$rmapSamplesFilter){
+            link <- c(link,as.character(roadmap$summary$GEO.FTP[index]))
+            indexes <- c(indexes,i)
+
+            #print(as.character(roadmap$summary$GEO.FTP[i]))
+            #print(as.character(roadmap$summary$X..GEO.Accession [i]))
           }
         }
       }
     }
-  })
+    roadmap$summary[indexes,c(1:5,8)]
+  },
+  options = list(pageLength = 10,
+                 scrollX = TRUE,
+                 jQueryUI= TRUE,
+                 pagingType = "full",
+                 lengthMenu = c(10, 50, 100, -1),
+                 language.emptyTable = "No results found",
+                 "dom" = 'T<"clear">lfrtip',
+                 "oTableTools" = list(
+                   "sSelectedClass"= "selected",
+                   "sRowSelect"= "os",
+                   "sSwfPath" = "//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.2.3/swf/copy_csv_xls.swf",
+                   "aButtons" = list(
+                     list("sExtends" = "collection",
+                          "sButtonText" = "Save",
+                          "aButtons" = c("csv","xls")
+                     )
+                   )
+                 )
+  ), callback = "function(table) {
+      table.on('click.dt', 'tr', function() {
+        Shiny.onInputChange('allRows',
+                            table.rows('.selected').data().toArray());
+      });
+
+    }"
+  )
 
   output$rmaptbl <- renderDataTable(
     roadmap$summary[c(1:5,8)],
@@ -78,28 +131,26 @@
     callback = "function(table) {
       table.on('click.dt', 'tr', function() {
         $(this).toggleClass('selected');
-        Shiny.onInputChange('rows',
-                            table.rows('.selected').indexes().toArray());
         Shiny.onInputChange('allRows',
                             table.rows('.selected').data().toArray());
       });
     }"
   )
 
-  output$tbl <- renderDataTable({
-    if(input$rmapDownloadBt){  # trigger this function by pressing download button
-      .result$downloading <- 3
-      query <- eGeo(
-        isolate (getRmapSearch ()),
-        isolate (getRmapProject()),
-        isolate (getRmapType   ())
-      )
-      #print(query)
-      geoDownloader(query,rmapFolder)
-      if(!is.null(.result$df)) .result$df
-    }
-
-  })
+  #   output$tbl <- renderDataTable({
+  #     if(input$rmapDownloadBt){  # trigger this function by pressing download button
+  #       .result$downloading <- 3
+  #       query <- eGeo(
+  #         isolate (getRmapSearch ()),
+  #         isolate (getRmapProject()),
+  #         isolate (getRmapType   ())
+  #       )
+  #       #print(query)
+  #       geoDownloader(query,rmapFolder)
+  #       if(!is.null(.result$df)) .result$df
+  #     }
+  #
+  #   })
 
 
   # ENCODE TAB
@@ -110,7 +161,6 @@
   getEncodeAssembly <- reactive({  input$assembly })
   getEncodeSearch   <- reactive({  input$search   })
   getNbFiles        <- reactive({  .result$g_nbFiles  })
-
 
   output$tblEncode <- renderDataTable({
     if(input$encodeDownloadBt){  # trigger this function by pressing download button

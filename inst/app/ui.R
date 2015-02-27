@@ -12,24 +12,30 @@
 )
 
 .body <-  dashboardBody(
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "biOMICS.css")
+
+  tagList(
+    singleton(tags$head(tags$script(src='//cdnjs.cloudflare.com/ajax/libs/datatables/1.10.5/js/jquery.dataTables.min.js',type='text/javascript'))),
+    singleton(tags$head(tags$link(href='//cdn.datatables.net/tabletools/2.2.3/css/dataTables.tableTools.css',rel='stylesheet',type='text/css'))),
+    singleton(tags$head(tags$link(href='//cdn.datatables.net/1.10.5/css/jquery.dataTables.css',rel='stylesheet',type='text/css'))),
+    singleton(tags$head(tags$script(src='//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.min.js',type='text/javascript'))),
+    singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "biOMICS.css")))
   ),
   tabItems(
     # First tab content
     tabItem(tabName = "roadmap",
 
             fluidRow(
+
               column(8,
                      box(title = "Advanced search",width = NULL, status = "warning",
                          solidHeader = TRUE, collapsible = FALSE,
-                         textInput("rmapSearch", label = "Search Term", value = ""),
+                         #textInput("rmapSearch", label = "Search Term", value = ""),
                          #textInput("rmapProject", label = "Project", value = "roadmap epigenomics"),
                          #textInput("rmapType", label = "Type", value = "gsm"),
-                         selectInput('rmapExp', 'Experiments filter',
+                         selectInput('rmapExpFilter', 'Experiments filter',
                                      roadmap$exp,
                                      multiple = TRUE, selectize = TRUE),
-                         selectInput('rmapSamples', 'Samples filter',
+                         selectInput('rmapSamplesFilter', 'Samples filter',
                                      roadmap$samples,
                                      multiple = TRUE, selectize = TRUE),
                          actionButton("rmapSearchBt",
@@ -37,11 +43,18 @@
                                       style = "background-color: #F39C12;color: #FFFFFF;
                                       margin-left: auto;margin-right: auto;width: 49%",
                                       icon = icon("search")),
-                         actionButton("rmapDownloadBt",
-                                      "Download",
+                         actionButton("rmapSearchDownloadBt",
+                                      "Download selected rows",
                                       style = "background-color: #F39C12;color: #FFFFFF;
                                       margin-left: auto;margin-right: auto;width: 49%",
-                                      icon = icon("download"))
+                                      icon = icon("download"))#,
+                         #actionButton("rmapDownloadBt",
+                         #             "Download",
+                         #              style = "background-color: #F39C12;color: #FFFFFF;
+                         #             margin-left: auto;margin-right: auto;width: 49%",
+                         #            icon = icon("download"))
+
+                         ,textOutput('rmapSearchLink')
                      )
 
               ),
@@ -49,6 +62,11 @@
                      valueBoxOutput("savedPath", width = NULL),
                      uiOutput("statusBox"),
                      uiOutput("savedFiles"))
+            ),
+            fluidRow(
+              column(1),
+              column(10, dataTableOutput('rmapSearchtbl')),
+              column(1)
             )
     ),
     tabItem(tabName = "roadmap_table",
@@ -61,12 +79,12 @@
             fluidRow(
               column(4),
               column(4,
-              actionButton("rmapTableDownloadBt",
-                           "Download selected rows",
-                           style = "background-color: #F39C12;color: #FFFFFF;
+                     actionButton("rmapTableDownloadBt",
+                                  "Download selected rows",
+                                  style = "background-color: #F39C12;color: #FFFFFF;
                                       margin-left: auto;margin-right: auto;width: 100%",
-                           icon = icon("download")),
-              textOutput('rmapTableLink')
+                                  icon = icon("download")),
+                     textOutput('rmapTableLink')
               ),
               column(4)
 
@@ -161,9 +179,9 @@
                                      'text/plain'
                                    )),
                          downloadButton("getTcgaBarCode",
-                                      "Download",
-                                      class = "btn-block btn-warning"
-                                      )
+                                        "Download",
+                                        class = "btn-block btn-warning"
+                         )
 
                      )),
               column(1)
