@@ -124,7 +124,7 @@ geoDownloader <- function(iQuery, iOut)
 #   )
 # }
 # @keywords internal
-geoDownloaderLinks <- function(iFTPs, iOut){
+.geoDownloaderLinks <- function(iFTPs, iOut){
   nbFiles <- length(iFTPs)
   if (nbFiles > 0){ # Found more than one result?
     .mkdir(iOut)

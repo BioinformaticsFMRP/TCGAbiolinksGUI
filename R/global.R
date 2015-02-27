@@ -2,11 +2,9 @@
 # @description Global variables used to update shiny
 # @keywords internal
 .result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
-roadmapSamples <- NULL
-roadmapExp <- NULL
 
 .onLoad <- function (libname, pkgname){
-  load(file = "inst/extdata/roadmap.RData")
+  load(file = system.file("extdata/roadmap.RData",package="biOMICs"))
 }
 
 .updateRoadmap <- function (){
@@ -18,12 +16,12 @@ roadmapExp <- NULL
     finf <- file.info(roadmapSummaryFile, extra_cols = FALSE)
     if (nrow(finf[difftime(Sys.time(), finf[,"mtime"], units = "days") > 1 , 1:4]) == 2){
       print("file needs update")
-      download("http://www.ncbi.nlm.nih.gov/geo/roadmap/epigenomics/?view=samples&sort=acc&mode=csv",
+      downloader::download("http://www.ncbi.nlm.nih.gov/geo/roadmap/epigenomics/?view=samples&sort=acc&mode=csv",
                roadmapSummaryFile)
     }
   } else{
     print("no file")
-    download("http://www.ncbi.nlm.nih.gov/geo/roadmap/epigenomics/?view=samples&sort=acc&mode=csv",
+    downloader::download("http://www.ncbi.nlm.nih.gov/geo/roadmap/epigenomics/?view=samples&sort=acc&mode=csv",
              roadmapSummaryFile)
   }
 
