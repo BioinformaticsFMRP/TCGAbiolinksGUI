@@ -10,8 +10,7 @@ Description: Download data from ENCODE project
 License: GPL (>= 3)
 Depends:
   R (>= 3.0),
-  shinydashboard (>= 0.2.2),
-  DT
+  shinydashboard (>= 0.2.2)
 Suggests:
   testthat,
   knitr,

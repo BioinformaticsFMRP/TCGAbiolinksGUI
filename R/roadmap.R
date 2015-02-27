@@ -85,11 +85,12 @@ geoDownloader <- function(iQuery, iOut)
           .mkdir (outPath)
 
           # get list of files names in the ftp
+          ftp <- paste0 (ftp, "suppl/")
           fileName <- .getFileNames(ftp)
 
           lapply (fileName,
                   function(x){
-                    ftpLink <- paste0 (ftp, "suppl/", x)
+                    ftpLink <- paste0 (ftp, x)
                     file    <- paste0 (outPath, "/", x)
                     if (!file.exists(file)){
                       print(paste0 ("Downloading ", count, " of ", nbFiles, ":",ftpLink ))
@@ -110,19 +111,63 @@ geoDownloader <- function(iQuery, iOut)
   }
 }
 
+geoDownloaderLinks <- function(iLinks, iOut)
+{
+
+  nbFiles  <- length(iLinks)
+  if (nbFiles  > 0 ){ # Found more than one result?
+    .mkdir(iOut)
+    compresssedFiles <- c()
+    count <- 0
+
+    for(ftp in iLinks){
+      if(!is.na(ftp)){
+        count <- count + 1
+
+        # create folder for experiment
+        dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
+        outPath <- paste (iOut, dirName , sep = "/")
+        .mkdir (outPath)
+        # get list of files names in the ftp
+        fileName <- .getFileNames(ftp)
+        print(fileName)
+        lapply (fileName,
+                function(x){
+                  ftpLink <- paste0 (ftp, "suppl/", x)
+                  file    <- paste0 (outPath, "/", x)
+                  print(file)
+                  if (!file.exists(file)){
+                    print(paste0 ("Downloading ", count, " of ", nbFiles, ":",ftpLink ))
+                    downloader::download(ftpLink, file)
+                    compresssedFiles <- c(compresssedFiles, file)
+                  }
+                  link <- c(link, ftpLink)
+                }
+        )
+
+      }
+    }
+
+    .prepareInfoTable(link,iOut)
+    .uncompress(compresssedFiles)
+
+  }
+}
+
+
 # Uncompress a list of files - it does not remove the compressed file
 # @keywords internal
 .uncompress <- function(iFiles){
   if (!is.null(iFiles)){
-          lapply  (iFiles,
-                    function(x){
-                      if(file.exists(x))
-                        R.utils::gunzip(x, remove = FALSE)
-                    }
-          )
-    } else {
-      return(NULL)
-    }
+    lapply  (iFiles,
+             function(x){
+               if(file.exists(x))
+                 R.utils::gunzip(x, remove = FALSE)
+             }
+    )
+  } else {
+    return(NULL)
+  }
 }
 
 # Show ftp links downloaded
@@ -139,18 +184,19 @@ geoDownloader <- function(iQuery, iOut)
 # Get all files in the ftp folder
 # @keywords internal
 .getFileNames <- function(ftp){
+  print(ftp)
   filePath <- unlist (
-                strsplit(
-                  RCurl::getURL(
-                    paste0 (ftp, "suppl/"),
-                    ftp.use.epsv = FALSE,
-                    dirlistonly = TRUE
-                    ),
-                  " "
-                )
-              )
-    # remove \r\n from name
-    fileName <- as.list(strsplit (tail (filePath, n = 1),"\r*\n")[[1]])
+    strsplit(
+      RCurl::getURL(
+        ftp,
+        ftp.use.epsv = FALSE,
+        dirlistonly = TRUE
+      ),
+      " "
+    )
+  )
+  # remove \r\n from name
+  fileName <- as.list(strsplit (tail (filePath, n = 1),"\r*\n")[[1]])
 }
 
 # Create directory

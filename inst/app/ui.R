@@ -1,63 +1,13 @@
 .header <- dashboardHeader(
-  title = "biOMICs",
-  dropdownMenu(type = "messages",
-               messageItem(
-                 from = "Sales Dept",
-                 message = "Sales are steady this month."
-               ),
-               messageItem(
-                 from = "New User",
-                 message = "How do I register?",
-                 icon = icon("question"),
-                 time = "13:45"
-               ),
-               messageItem(
-                 from = "Support",
-                 message = "The new server is ready.",
-                 icon = icon("life-ring"),
-                 time = "2014-12-01"
-               )
-  ),
-  dropdownMenu(type = "notifications",
-               notificationItem(
-                 text = "5 new users today",
-                 icon("users")
-               ),
-               notificationItem(
-                 text = "12 items delivered",
-                 icon("truck"),
-                 status = "success"
-               ),
-               notificationItem(
-                 text = "Server load at 86%",
-                 icon = icon("exclamation-triangle"),
-                 status = "warning"
-               )
-  ),
-
-  dropdownMenu(type = "tasks", badgeStatus = "success",
-               taskItem(value = 40, color = "green",
-                        "Documentation"
-               ),
-               taskItem(value = 70, color = "aqua",
-                        "Project roadmap"
-               ),
-               taskItem(value = 30, color = "yellow",
-                        "UI roadmap"
-               ),
-               taskItem(value = 5, color = "red",
-                        "Overall project"
-               )
-  )
-
+  title = "biOMICs"
 )
 
 .sidebar <-  dashboardSidebar(
   sidebarMenu(
     menuItem ("Encode" , tabName = "encode" , icon = icon("download")),
     menuItem ("Roadmap", tabName = "roadmap", icon = icon("download")),
+    menuItem ("Roadmap table", tabName = "roadmap_table", icon = icon("download")),
     menuItem ("TCGA"   , tabName = "tcga"   , icon = icon("database"), badgeLabel = "new", badgeColor = "green")
-
   )
 )
 
@@ -74,27 +24,54 @@
                      box(title = "Advanced search",width = NULL, status = "warning",
                          solidHeader = TRUE, collapsible = FALSE,
                          textInput("rmapSearch", label = "Search Term", value = ""),
-                         textInput("rmapProject", label = "Project", value = "roadmap epigenomics"),
-                         textInput("rmapType", label = "Type", value = "gsm"),
+                         #textInput("rmapProject", label = "Project", value = "roadmap epigenomics"),
+                         #textInput("rmapType", label = "Type", value = "gsm"),
+                         selectInput('rmapExp', 'Experiments filter',
+                                     roadmap$exp,
+                                     multiple = TRUE, selectize = TRUE),
+                         selectInput('rmapSamples', 'Samples filter',
+                                     roadmap$samples,
+                                     multiple = TRUE, selectize = TRUE),
+                         actionButton("rmapSearchBt",
+                                      "search",
+                                      style = "background-color: #F39C12;color: #FFFFFF;
+                                      margin-left: auto;margin-right: auto;width: 49%",
+                                      icon = icon("search")),
                          actionButton("rmapDownloadBt",
                                       "Download",
                                       style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 100%",
+                                      margin-left: auto;margin-right: auto;width: 49%",
                                       icon = icon("download"))
                      )
+
               ),
               column(4,
                      valueBoxOutput("savedPath", width = NULL),
                      uiOutput("statusBox"),
                      uiOutput("savedFiles"))
-            ),
-            fluidRow(
-              column(1),
-              column(10, DT::dataTableOutput('tbl')),
-              column(1)
             )
     ),
+    tabItem(tabName = "roadmap_table",
 
+            fluidRow(
+              column(1),
+              column(10, dataTableOutput('rmaptbl')),
+              column(1)
+            ),
+            fluidRow(
+              column(4),
+              column(4,
+              actionButton("rmapTableDownloadBt",
+                           "Download selected rows",
+                           style = "background-color: #F39C12;color: #FFFFFF;
+                                      margin-left: auto;margin-right: auto;width: 100%",
+                           icon = icon("download")),
+              textOutput('rmapTableLink')
+              ),
+              column(4)
+
+            )
+    ),
     # Second tab content
     tabItem(tabName = "encode",
             fluidRow(
@@ -162,7 +139,7 @@
             ),
             fluidRow(
               column(1),
-              column(10, DT::dataTableOutput('tblEncode')),
+              column(10, dataTableOutput('tblEncode')),
               column(1)
             )
     ),
