@@ -71,28 +71,25 @@ geoDownloader <- function(iQuery, iOut)
       else ftps <- info$FTPLink
 
       #ftpsSRA <- lapply  (info$ ExtRelations.ExtRelation.TargetFTPLink, function(x)  x)
-
-      for(ftp in ftps){
-        if(!is.na(ftp)){
-
-          # create folder for experiment
-          dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
-          outPath <- paste (iOut, dirName , sep = "/")
-          .mkdir (outPath)
-
-          # get list of files names in the ftp
-          ftp <- paste0 (ftp, "suppl/")
-          fileName <- .getFileNames(ftp)
-          ret <- .downloadFromGEO(ftp,fileName,outPath)
-        }
-      }
-
-      .prepareInfoTable(ret$link,iOut)
-      .uncompress(ret$compresssedFiles)
-
+      .geoDownloaderLinks(ftps)
     }
   }
 }
+# Download all files of ftp directory
+# Download all files of ftp directory
+# @param iFTP: ftp directory adress
+#        iFileName - list of files in the ftp path (use .getFileNames to get the list)
+#        iOut - folder where files will be downloaded
+# @return ret$link - return list of ftplinks downloaded
+#         ret$compressedFiles - compressed files downloaded
+# @examples
+# \dontrun{
+#  .downloadFromGEO (
+#   "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/",
+#    c ("GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz","GSM409307_UCSD.H1.H3K4me1.LL228.wig.gz"),
+#    "path_to_folder_GSM409307" )
+# }
+# @keywords internal
 .downloadFromGEO <- function(iFTP, iFileName,iOut){
   link <- list()
   compresssedFiles <- c()
@@ -113,26 +110,38 @@ geoDownloader <- function(iQuery, iOut)
 
 }
 
-geoDownloaderLinks <- function(iLinks, iOut)
-{
-
-  nbFiles  <- length(iLinks)
-  if (nbFiles  > 0 ){ # Found more than one result?
+# Download a files from a list o ftp directory and uncompress it
+# Download a files from a list o ftp directory and uncompress it
+# @param iFTPs: list of ftp directory adress
+#        iOut - folder where files will be downloaded
+# @examples
+# \dontrun{
+#  geoDownloaderLinks (
+#     c("ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/",
+#       "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409312/suppl/"
+#       ),
+#     "path_to_folder_GSM409307"
+#   )
+# }
+# @keywords internal
+geoDownloaderLinks <- function(iFTPs, iOut){
+  nbFiles <- length(iFTPs)
+  if (nbFiles > 0){ # Found more than one result?
     .mkdir(iOut)
 
-    for(ftp in iLinks){
-      if(!is.na(ftp)){
+    for (ftp in iFTPs){
+      if (!is.na(ftp)){
         # create folder for experiment
         dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
-        outPath <- paste (iOut, dirName , sep = "/")
+        outPath <- paste (iOut, dirName, sep = "/")
         .mkdir (outPath)
         # get list of files names in the ftp
-        fileName <- .getFileNames(ftp)
-        ret <- .downloadFromGEO(ftp,fileName,outPath)
+        fileName <- .getFileNames (ftp)
+        ret      <- .downloadFromGEO (ftp,fileName,outPath)
       }
     }
-    .prepareInfoTable(ret$link,iOut)
-    .uncompress(ret$compresssedFiles)
+    .prepareInfoTable (ret$link,iOut)
+    .uncompress (ret$compresssedFiles)
   }
 }
 
@@ -162,7 +171,7 @@ geoDownloaderLinks <- function(iLinks, iOut)
   }
 }
 
-# Get all files in the ftp folder
+# Get all files in the ftp directory
 # @keywords internal
 .getFileNames <- function(ftp){
   print(ftp)
