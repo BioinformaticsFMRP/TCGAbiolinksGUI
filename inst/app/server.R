@@ -49,10 +49,8 @@
 
   output$rmapTableLink <- renderText({
     if(input$rmapTableDownloadBt){
-      print("Downloading")
       link <- c()
       accession <- unlist(input$allRows)
-    print(length(accession))
       for (i in seq(1,length(accession),by=6)){
         index <- which(roadmap$summary$X..GEO.Accession ==  accession[i])
         link <- c(link,as.character(roadmap$summary$GEO.FTP[index]))

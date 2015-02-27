@@ -71,13 +71,9 @@ geoDownloader <- function(iQuery, iOut)
       else ftps <- info$FTPLink
 
       #ftpsSRA <- lapply  (info$ ExtRelations.ExtRelation.TargetFTPLink, function(x)  x)
-      link <- list()
-      compresssedFiles <- c()
-      count <- 0
 
       for(ftp in ftps){
         if(!is.na(ftp)){
-          count <- count + 1
 
           # create folder for experiment
           dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
@@ -87,28 +83,34 @@ geoDownloader <- function(iQuery, iOut)
           # get list of files names in the ftp
           ftp <- paste0 (ftp, "suppl/")
           fileName <- .getFileNames(ftp)
-
-          lapply (fileName,
-                  function(x){
-                    ftpLink <- paste0 (ftp, x)
-                    file    <- paste0 (outPath, "/", x)
-                    if (!file.exists(file)){
-                      print(paste0 ("Downloading ", count, " of ", nbFiles, ":",ftpLink ))
-                      downloader::download(ftpLink, file)
-                      compresssedFiles <- c(compresssedFiles, file)
-                    }
-                    link <- c(link, ftpLink)
-                  }
-          )
-
+          ret <- .downloadFromGEO(ftp,fileName,outPath)
         }
       }
 
-      .prepareInfoTable(link,iOut)
-      .uncompress(compresssedFiles)
+      .prepareInfoTable(ret$link,iOut)
+      .uncompress(ret$compresssedFiles)
 
     }
   }
+}
+.downloadFromGEO <- function(iFTP, iFileName,iOut){
+  link <- list()
+  compresssedFiles <- c()
+  lapply (iFileName,
+          function(x){
+            ftpLink <- paste0 (iFTP, x)
+            file    <- paste0 (iOut, "/", x)
+            if (!file.exists(file)){
+              downloader::download(ftpLink, file)
+              compresssedFiles <- c(compresssedFiles, file)
+            }
+            link <- c(link, ftpLink)
+          }
+  )
+  ret <- NULL
+  ret$link <- link
+  ret$compresssedFiles <- compresssedFiles
+
 }
 
 geoDownloaderLinks <- function(iLinks, iOut)
@@ -117,43 +119,22 @@ geoDownloaderLinks <- function(iLinks, iOut)
   nbFiles  <- length(iLinks)
   if (nbFiles  > 0 ){ # Found more than one result?
     .mkdir(iOut)
-    compresssedFiles <- c()
-    count <- 0
 
     for(ftp in iLinks){
       if(!is.na(ftp)){
-        count <- count + 1
-
         # create folder for experiment
         dirName <- tail (unlist (strsplit (ftp,"/")), n = 1) # get experiment Name
         outPath <- paste (iOut, dirName , sep = "/")
         .mkdir (outPath)
         # get list of files names in the ftp
         fileName <- .getFileNames(ftp)
-        print(fileName)
-        lapply (fileName,
-                function(x){
-                  ftpLink <- paste0 (ftp, "suppl/", x)
-                  file    <- paste0 (outPath, "/", x)
-                  print(file)
-                  if (!file.exists(file)){
-                    print(paste0 ("Downloading ", count, " of ", nbFiles, ":",ftpLink ))
-                    downloader::download(ftpLink, file)
-                    compresssedFiles <- c(compresssedFiles, file)
-                  }
-                  link <- c(link, ftpLink)
-                }
-        )
-
+        ret <- .downloadFromGEO(ftp,fileName,outPath)
       }
     }
-
-    .prepareInfoTable(link,iOut)
-    .uncompress(compresssedFiles)
-
+    .prepareInfoTable(ret$link,iOut)
+    .uncompress(ret$compresssedFiles)
   }
 }
-
 
 # Uncompress a list of files - it does not remove the compressed file
 # @keywords internal
