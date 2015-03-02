@@ -75,7 +75,7 @@
             || roadmap$summary$Experiment[i]  %in% input$rmapExpFilter){
           if (is.null(input$rmapSamplesFilter)
               || roadmap$summary$Sample.Name[i]  %in% input$rmapSamplesFilter){
-            link <- c(link,as.character(roadmap$summary$GEO.FTP[index]))
+            link <- c(link,as.character(roadmap$summary$GEO.FTP[i]))
             indexes <- c(indexes,i)
 
             #print(as.character(roadmap$summary$GEO.FTP[i]))
