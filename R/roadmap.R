@@ -92,23 +92,17 @@ geoDownloader <- function(iQuery, iOut)
 # }
 # @keywords internal
 downloadFromGEO <- function(iFTP, iFileName,iOut){
-  link <- list()
   compresssedFiles <- c()
-  lapply (iFileName,
-          function(x){
-            ftpLink <- paste0 (iFTP, x)
-            file    <- paste0 (iOut, "/", x)
-            if (!file.exists(file)){
-              downloader::download(ftpLink, file)
-              compresssedFiles <- c(compresssedFiles, file)
-            }
-            link <- c(link, ftpLink)
-          }
+  compresssedFiles <- lapply (iFileName,
+                              function(x){
+                                ftpLink <- paste0 (iFTP, x)
+                                file    <- paste0 (iOut, "/", x)
+                                if (!file.exists(file))
+                                  downloader::download(ftpLink, file)
+                                compresssedFiles <- c(compresssedFiles, file)
+                              }
   )
-  ret <- NULL
-  ret$link <- link
-  ret$compresssedFiles <- compresssedFiles
-
+  return (compresssedFiles)
 }
 
 # Download a files from a list o ftp directory and uncompress it
@@ -138,11 +132,13 @@ geoDownloaderLinks <- function(iFTPs, iOut){
         mkdir (outPath)
         # get list of files names in the ftp
         fileName <- getFileNames (ftp)
-        ret      <- downloadFromGEO (ftp,fileName,outPath)
+        compresssedFiles <- downloadFromGEO (ftp,fileName,outPath)
+        print("Uncompressing")
+        uncompress (compresssedFiles)
+
       }
     }
-    prepareInfoTable (ret$link,iOut)
-    uncompress (ret$compresssedFiles)
+    #prepareInfoTable (ret$link,iOut)
   }
 }
 
@@ -152,8 +148,10 @@ uncompress <- function(iFiles){
   if (!is.null(iFiles)){
     lapply  (iFiles,
              function(x){
-               if(file.exists(x))
-                 R.utils::gunzip(x, remove = FALSE)
+               if(file.exists(x) & tools::file_ext(x)=="gz"){
+                   R.utils::gunzip(x, remove = FALSE, skip = TRUE, ext="gz")
+                   print(paste0("Uncompressed: ",x))
+               }
              }
     )
   } else {
@@ -166,9 +164,9 @@ uncompress <- function(iFiles){
 prepareInfoTable <- function(iLink,iOut){
   if(length(iLink) > 0 ){
     df <- do.call (rbind.data.frame, iLink)
-    .result$g_nbFiles <- nrow(df)
+    result$g_nbFiles <- nrow(df)
     names(df) <- paste0 ("Files downloaded into:", getwd(),"/",iOut)
-    .result$df <- df
+    result$df <- df
   }
 }
 

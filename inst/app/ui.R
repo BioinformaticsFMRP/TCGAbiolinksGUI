@@ -45,7 +45,7 @@ body <-  dashboardBody(
                          actionButton("rmapSearchBt",
                                       "search",
                                       style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 50%",
+                                      margin-left: auto;margin-right: auto;width: 49%",
                                       icon = icon("search")),
                          actionButton("rmapSearchDownloadBt",
                                       "Download selected rows",
