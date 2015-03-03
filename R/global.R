@@ -1,14 +1,14 @@
 # @title Reactive global variables
 # @description Global variables used to update shiny
 # @keywords internal
-.result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
+result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
 
 .onAttach <- function (libname, pkgname){
-  .updateRoadmap()
+  updateRoadmap()
   load(file = system.file("extdata/roadmap.RData", package="biOMICs"), .GlobalEnv)
 }
 
-.updateRoadmap <- function (){
+updateRoadmap <- function (){
   #get raodmap data
   roadmapSummaryFile <- system.file("extdata/roadmap.RData", package="biOMICs")
   dataDirecotry <- system.file("extdata", package="biOMICs")
@@ -42,7 +42,8 @@
 #' @seealso \url{https://www.encodeproject.org/search/}
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name biOMICsApp
-#' @keywords internal
+#' @import shiny shinydashboard
+#' @export
 biOMICsApp <- function() {
   shiny::runApp (system.file ('app', package = 'biOMICs'))
 }

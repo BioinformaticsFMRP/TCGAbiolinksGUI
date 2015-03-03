@@ -1,4 +1,4 @@
-.formatTarget <- function(iTarget){
+formatTarget <- function(iTarget){
   if (!is.null(iTarget)) {
     return (paste(
       "target.investigated_as",
@@ -11,7 +11,7 @@
   return (NULL)
 }
 
-.formatSample <- function(iSample){
+formatSample <- function(iSample){
   if (!is.null(iSample)) {
     return (paste(
       "replicates.library.biosample.biosample_type",
@@ -23,7 +23,7 @@
   return (NULL)
 }
 
-.formatFType <- function(iFType){
+formatFType <- function(iFType){
   if (!is.null(iFType)) {
     return (paste(
       "files.file_format",
@@ -35,7 +35,7 @@
   return (NULL)
 }
 
-.formatAssay <- function(iAssay){
+formatAssay <- function(iAssay){
   if (!is.null(iAssay)) {
     return (paste(
       "assay_term_name",
@@ -47,7 +47,7 @@
   return (NULL)
 }
 
-.formatAssembly <- function(iAssembly){
+formatAssembly <- function(iAssembly){
   if (!is.null(iAssembly)){
     return (paste(
       "assembly",
@@ -59,13 +59,13 @@
   return (NULL)
 }
 
-.formatSearch <- function(iSearch){
+formatSearch <- function(iSearch){
   if (!is.null(iSearch))
     return (paste ("searchTerm",  gsub(" ","+",iSearch), sep="="))
   return (NULL)
 }
 
-.formatType <- function(iType){
+formatType <- function(iType){
   if (!is.null(iType))
     return (paste ("type", iType, sep="="))
   return (NULL)
@@ -97,6 +97,7 @@
 #' @seealso \url{https://www.encodeproject.org/search/}
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name encodeDownloader
+#' @export
 encodeDownloader <- function (iSearch, iType, iTarget,
                              iSample, iFType, iAssay,
                              iAssembly, iOut)
@@ -107,13 +108,13 @@ encodeDownloader <- function (iSearch, iType, iTarget,
   format      <- "format=json"
   frame       <- "frame=embedded"
 
-  searchTerm <- .formatSearch   ( iSearch  )
-  type       <- .formatType     ( iType    )
-  target     <- .formatTarget   ( iTarget  )
-  biosample  <- .formatSample   ( iSample  )
-  fType      <- .formatFType    ( iFType   )
-  assay      <- .formatAssay    ( iAssay   )
-  assembly   <- .formatAssembly ( iAssembly)
+  searchTerm <- formatSearch   ( iSearch  )
+  type       <- formatType     ( iType    )
+  target     <- formatTarget   ( iTarget  )
+  biosample  <- formatSample   ( iSample  )
+  fType      <- formatFType    ( iFType   )
+  assay      <- formatAssay    ( iAssay   )
+  assembly   <- formatAssembly ( iAssembly)
 
   URLoptions <- paste (searchTerm, format, frame, target,
                        type, biosample, fType, assay, assembly,
@@ -161,8 +162,8 @@ encodeDownloader <- function (iSearch, iType, iTarget,
         df <- rbind(df, data.frame(dn))
       }
     }
-    names(df) <- paste0 ("Files downloaded into:", getwd(),"/",iOut)
-    .result$df <- df
+    names(df) <- paste0 ("Files downloaded into:", getwd(),"/", iOut)
+    result$df <- df
   } else {
     print (data$notification)
   }

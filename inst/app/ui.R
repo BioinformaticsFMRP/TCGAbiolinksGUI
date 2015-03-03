@@ -1,8 +1,8 @@
-.header <- dashboardHeader(
+header <- dashboardHeader(
   title = "biOMICs"
 )
 
-.sidebar <-  dashboardSidebar(
+sidebar <-  dashboardSidebar(
   sidebarMenu(
     menuItem ("Encode" , tabName = "encode" , icon = icon("database")),
     menuItem ("Roadmap", tabName = "roadmap", icon = icon("database")),
@@ -10,7 +10,7 @@
   )
 )
 
-.body <-  dashboardBody(
+body <-  dashboardBody(
 
   tagList(
     singleton(tags$head(tags$script(src='//cdnjs.cloudflare.com/ajax/libs/datatables/1.10.5/js/jquery.dataTables.min.js',type='text/javascript'))),
@@ -37,6 +37,8 @@
                          selectInput('rmapSamplesFilter', 'Samples filter',
                                      roadmap$samples,
                                      multiple = TRUE, selectize = TRUE),
+
+                         actionButton("selectDir","Select directory"),
                          actionButton("rmapSearchBt",
                                       "search",
                                       style = "background-color: #F39C12;color: #FFFFFF;
@@ -171,9 +173,9 @@
 # @title  Client side
 # @description Client side - Download data from roadmap project
 # @keywords internal
-.biOMICsUI <- dashboardPage(
+biOMICsUI <- dashboardPage(
   skin = "blue",
-  .header,
-  .sidebar,
-  .body
+  header,
+  sidebar,
+  body
 )

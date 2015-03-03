@@ -3,11 +3,11 @@
 # @param input - input signal
 # @param output - output signal
 # @keywords internal
-.biOMICsServer <- function(input, output,session) {
+biOMICsServer <- function(input, output, session) {
 
-  .result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
+  result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
   setwd(Sys.getenv("HOME"))
-  rmapFolder   <- paste0(Sys.getenv("HOME"),"/GEO")
+  rmapDir   <- paste0(Sys.getenv("HOME"),"/GEO")
   encodeFolder <- paste0(Sys.getenv("HOME"),"/ENCODE")
 
   # ROADMAP TAB
@@ -26,7 +26,12 @@
       valueBoxOutput("rmapProgressBox", width = NULL)
     }
   })
-
+  observe({
+    if(input$selectDir){
+      rmapDir <<- tcltk::tk_choose.dir(getwd(), "Choose a suitable folder to save the files")
+      output$rmapDir <- renderPrint({ rmapDir})
+    }
+  })
 
   output$statusBox <- renderUI({
     invalidateLater(1000, session)
@@ -34,12 +39,12 @@
   })
 
   output$statusBoxText <- renderValueBox({
-    if(.result$downloading == 2){
+    if(result$downloading == 2){
       valueBox(
         #h4(paste0("Downloaded  ",getNbFiles(), " files")), "Status", icon = icon("fa fa-spinner fa-spin"),
         h4(paste0("Downloaded files")), "Status", icon = icon("check-circle"),
         color = "green"
-      )} else if (.result$downloading == 1) {
+      )} else if (result$downloading == 1) {
         valueBox(
           h4(paste0("Idle")), "Status", icon = icon("stop"),
           color = "red"
@@ -61,7 +66,7 @@
         index <- which(roadmap$summary$X..GEO.Accession ==  accession[i])
         link <- c(link,as.character(roadmap$summary$GEO.FTP[index]))
       }
-      geoDownloaderLinks(link,rmapFolder)
+      geoDownloaderLinks(link,rmapDir)
     }}
   )
 
@@ -77,9 +82,6 @@
               || roadmap$summary$Sample.Name[i]  %in% input$rmapSamplesFilter){
             link <- c(link,as.character(roadmap$summary$GEO.FTP[i]))
             indexes <- c(indexes,i)
-
-            #print(as.character(roadmap$summary$GEO.FTP[i]))
-            #print(as.character(roadmap$summary$X..GEO.Accession [i]))
           }
         }
       }
@@ -113,22 +115,6 @@
     }"
   )
 
-  #   output$tbl <- renderDataTable({
-  #     if(input$rmapDownloadBt){  # trigger this function by pressing download button
-  #       .result$downloading <- 3
-  #       query <- eGeo(
-  #         isolate (getRmapSearch ()),
-  #         isolate (getRmapProject()),
-  #         isolate (getRmapType   ())
-  #       )
-  #       #print(query)
-  #       geoDownloader(query,rmapFolder)
-  #       if(!is.null(.result$df)) .result$df
-  #     }
-  #
-  #   })
-
-
   # ENCODE TAB
   getEncodeAssay    <- reactive({  input$assay    })
   getEncodeTarget   <- reactive({  input$target   })
@@ -136,7 +122,7 @@
   getEncodeSample   <- reactive({  input$sample   })
   getEncodeAssembly <- reactive({  input$assembly })
   getEncodeSearch   <- reactive({  input$search   })
-  getNbFiles        <- reactive({  .result$g_nbFiles  })
+  getNbFiles        <- reactive({  result$g_nbFiles  })
 
   output$tblEncode <- renderDataTable({
     if(input$encodeDownloadBt){  # trigger this function by pressing download button
@@ -149,21 +135,22 @@
                        isolate(getEncodeAssembly()),
                        encodeFolder
       )
-      if(!is.null(.result$df)) .result$df
+      if(!is.null(result$df)) result$df
     }
   })
 
 
   output$savedPath <- renderValueBox({
+    input$selectDir
     valueBox(
-      h4(encodeFolder), "Output directory", icon = icon("folder-open"),
+      h4(rmapDir), "Output directory", icon = icon("folder-open"),
       color = "blue", width = 4
     )
   })
 
   output$savedPath2 <- renderValueBox({
     valueBox(
-      h4(rmapFolder), "Output directory", icon = icon("folder-open"),
+      h4(encodeFolder), "Output directory", icon = icon("folder-open"),
       color = "blue"
     )
   })
@@ -211,7 +198,7 @@
         need(!is.null(filter), "Please upload file with filtered bar codes")
       )
 
-      barCode  <- .getBarCode (tcga, filter)
+      barCode  <- getBarCode (tcga, filter)
       fileConn <- file(filename)
       writeLines (barCode, fileConn)
       close (fileConn)
