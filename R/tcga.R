@@ -1,4 +1,4 @@
-.getBarCode <- function(TCGAList, filterList){
+getBarCode <- function(TCGAList, filterList){
   TCGAList <- TCGAList[,2]
   files <- NULL
   for (i in unlist (filterList)) {
