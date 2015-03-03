@@ -37,25 +37,22 @@ body <-  dashboardBody(
                          selectInput('rmapSamplesFilter', 'Samples filter',
                                      roadmap$samples,
                                      multiple = TRUE, selectize = TRUE),
-
-                         actionButton("selectDir","Select directory"),
+                         actionButton("selectDir",
+                                      "Select directory",
+                                      style = "background-color: #F39C12;color: #FFFFFF;
+                                      margin-left: auto;margin-right: auto;width: 100%",
+                                      icon = icon("folder")),
                          actionButton("rmapSearchBt",
                                       "search",
                                       style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 49%",
+                                      margin-left: auto;margin-right: auto;width: 50%",
                                       icon = icon("search")),
                          actionButton("rmapSearchDownloadBt",
                                       "Download selected rows",
                                       style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 49%",
-                                      icon = icon("download"))#,
-                         #actionButton("rmapDownloadBt",
-                         #             "Download",
-                         #              style = "background-color: #F39C12;color: #FFFFFF;
-                         #             margin-left: auto;margin-right: auto;width: 49%",
-                         #            icon = icon("download"))
-
-                         ,textOutput('rmapSearchLink')
+                                      margin-left: auto;margin-right: auto;width: 50%",
+                                      icon = icon("download")),
+                         textOutput('rmapSearchLink')
                      )
 
               ),

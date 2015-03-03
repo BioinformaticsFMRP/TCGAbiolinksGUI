@@ -10,16 +10,10 @@ biOMICsServer <- function(input, output, session) {
   rmapDir   <- paste0(Sys.getenv("HOME"),"/GEO")
   encodeFolder <- paste0(Sys.getenv("HOME"),"/ENCODE")
 
-  # ROADMAP TAB
+  # ------------------------- ROADMAP TAB -------------------------
   getRmapProject <- reactive ({ c(input$rmapProject,"Project","AND") })
   getRmapSearch  <- reactive ({ c(input$rmapSearch,NULL,NULL)        })
   getRmapType    <- reactive ({ c(input$rmapType,"Filter","AND")     })
-
-  #   output$savedFiles <- renderUI({
-  #     if(input$rmapDownloadBt){
-  #       valueBoxOutput("rmapProgressBox", width = NULL)
-  #     }
-  #   })
 
   output$savedFiles <- renderUI({
     if(input$rmapSearchDownloadBt){
@@ -33,10 +27,19 @@ biOMICsServer <- function(input, output, session) {
     }
   })
 
+  output$savedPath <- renderValueBox({
+    input$selectDir
+    valueBox(
+      h4(rmapDir), "Output directory", icon = icon("folder-open"),
+      color = "blue", width = 4
+    )
+  })
+
   output$statusBox <- renderUI({
     invalidateLater(1000, session)
     valueBoxOutput("statusBoxText", width = NULL)
   })
+
 
   output$statusBoxText <- renderValueBox({
     if(result$downloading == 2){
@@ -115,7 +118,7 @@ biOMICsServer <- function(input, output, session) {
     }"
   )
 
-  # ENCODE TAB
+  # ------------------------- ENCODE TAB -------------------------
   getEncodeAssay    <- reactive({  input$assay    })
   getEncodeTarget   <- reactive({  input$target   })
   getEncodeFType    <- reactive({  input$ftype    })
@@ -140,13 +143,6 @@ biOMICsServer <- function(input, output, session) {
   })
 
 
-  output$savedPath <- renderValueBox({
-    input$selectDir
-    valueBox(
-      h4(rmapDir), "Output directory", icon = icon("folder-open"),
-      color = "blue", width = 4
-    )
-  })
 
   output$savedPath2 <- renderValueBox({
     valueBox(
@@ -166,7 +162,7 @@ biOMICsServer <- function(input, output, session) {
     )
   })
 
-  # TCGA
+  # ------------------------- TCGA ----------------------
   tcgaBarCode  <- reactive({
     inFile <- input$file1
     if (is.null(inFile))
