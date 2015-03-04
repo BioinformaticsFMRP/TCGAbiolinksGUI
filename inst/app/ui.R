@@ -24,10 +24,10 @@ body <-  dashboardBody(
     tabItem(tabName = "roadmap",
 
             fluidRow(
-              column(1),
-              column(10,
+              column(9, dataTableOutput('rmapSearchtbl')),
+              column(3,
                      box(title = "Advanced search",width = NULL, status = "warning",
-                         solidHeader = TRUE, collapsible = FALSE,
+                         solidHeader = FALSE, collapsible = FALSE,
                          #textInput("rmapSearch", label = "Search Term", value = ""),
                          #textInput("rmapProject", label = "Project", value = "roadmap epigenomics"),
                          #textInput("rmapType", label = "Type", value = "gsm"),
@@ -40,30 +40,26 @@ body <-  dashboardBody(
                          actionButton("selectDir",
                                       "Select directory",
                                       style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 33%",
+                                      margin-left: auto;margin-right: auto;width: 100%",
                                       icon = icon("folder")),
-
+                         #verbatimTextOutput("rmapDir"),
                          actionButton("rmapSearchBt",
                                       "search",
                                       style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 33%",
+                                      margin-left: auto;margin-right: auto;width: 100%",
                                       icon = icon("search")),
                          actionButton("rmapSearchDownloadBt",
-                                      "Download selected rows",
+                                      "Download selected",
                                       style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 33%",
+                                      margin-left: auto;margin-right: auto;width: 100%",
                                       icon = icon("download")),
-                         verbatimTextOutput("rmapDir"),
+
                          textOutput('rmapSearchLink')
                      )
-              ),
-              column(1)
+                     #valueBoxOutput("savedPath", width = NULL)
 
-              ),
-            fluidRow(
-              column(1),
-              column(10, dataTableOutput('rmapSearchtbl')),
-              column(1)
+              )
+
             )
     ),
     # Second tab content
