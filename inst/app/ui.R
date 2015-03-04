@@ -24,8 +24,8 @@ body <-  dashboardBody(
     tabItem(tabName = "roadmap",
 
             fluidRow(
-
-              column(8,
+              column(1),
+              column(10,
                      box(title = "Advanced search",width = NULL, status = "warning",
                          solidHeader = TRUE, collapsible = FALSE,
                          #textInput("rmapSearch", label = "Search Term", value = ""),
@@ -40,27 +40,26 @@ body <-  dashboardBody(
                          actionButton("selectDir",
                                       "Select directory",
                                       style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 100%",
+                                      margin-left: auto;margin-right: auto;width: 33%",
                                       icon = icon("folder")),
+
                          actionButton("rmapSearchBt",
                                       "search",
                                       style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 49%",
+                                      margin-left: auto;margin-right: auto;width: 33%",
                                       icon = icon("search")),
                          actionButton("rmapSearchDownloadBt",
                                       "Download selected rows",
                                       style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 50%",
+                                      margin-left: auto;margin-right: auto;width: 33%",
                                       icon = icon("download")),
+                         verbatimTextOutput("rmapDir"),
                          textOutput('rmapSearchLink')
                      )
+              ),
+              column(1)
 
               ),
-              column(4,
-                     valueBoxOutput("savedPath", width = NULL),
-                     uiOutput("statusBox"),
-                     uiOutput("savedFiles"))
-            ),
             fluidRow(
               column(1),
               column(10, dataTableOutput('rmapSearchtbl')),

@@ -23,15 +23,16 @@ biOMICsServer <- function(input, output, session) {
   observe({
     if(input$selectDir){
       rmapDir <<- tcltk::tk_choose.dir(getwd(), "Choose a suitable folder to save the files")
-      output$rmapDir <- renderPrint({ rmapDir})
     }
+    output$rmapDir <- renderText({ paste0("Saving files in: ", rmapDir)})
   })
 
+  #output$rmapPath <- renderPrint({ rmapDir})
   output$savedPath <- renderValueBox({
     input$selectDir
     valueBox(
       h4(rmapDir), "Output directory", icon = icon("folder-open"),
-      color = "blue", width = 4
+      color = "blue"
     )
   })
 
