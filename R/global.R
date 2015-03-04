@@ -43,7 +43,7 @@ updateRoadmap <- function (){
 #' @seealso \url{https://www.encodeproject.org/search/}
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name biOMICsApp
-#' @import shiny shinydashboard
+#' @import shiny shinydashboard tcltk
 #' @export
 biOMICsApp <- function() {
   gui <<- TRUE
@@ -65,9 +65,9 @@ is.linux <- function() {
 
 setOptionsProgressBar <- function(title, label){
   if(is.linux() || is.mac() )
-    opb <- pboptions(type="tk", title = iTitle, label = iLabel)
+    opb <- pbapply::pboptions(type="tk", title = title, label = label)
   if(is.windows)
-    opb <- pboptions(type="win", title = iTitle, label = iLabel)
+    opb <- pbapply::pboptions(type="win", title = title, label = label)
   else
-    opb <- pboptions(type="txt", char="+", title = iTitle, label = iLabel)
+    opb <- pbapply::pboptions(type="txt", char="+", title = title, label = label)
 }

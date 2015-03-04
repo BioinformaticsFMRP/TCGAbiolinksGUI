@@ -91,8 +91,8 @@ geoDownloader <- function(iQuery, iOut)
 #' @keywords internal
 downloadFromGEO <- function(iFTP, iFileName,iOut){
   compresssedFiles <- c()
-  if(gui) setOptionsProgressBar()
-  compresssedFiles <- pblapply (iFileName,
+  if(gui) setOptionsProgressBar(title = "Roadmap data", label = "Downloading")
+  compresssedFiles <- pbapply::pblapply (iFileName,
                               function(x){
                                 ftpLink <- paste0 (iFTP, x)
                                 file    <- paste0 (iOut, "/", x)
@@ -145,7 +145,7 @@ geoDownloaderLinks <- function(iFTPs, iOut){
 #' @keywords internal
 uncompress <- function(iFiles){
   if (!is.null(iFiles)){
-    pblapply  (iFiles,
+    pbapply::pblapply  (iFiles,
              function(x){
                if(file.exists(x) & tools::file_ext(x)=="gz"){
                    R.utils::gunzip(x, remove = FALSE, skip = TRUE, ext="gz")

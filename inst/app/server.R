@@ -1,8 +1,8 @@
-# @title  Server side
-# @description Server side - Download data from roadmap project
-# @param input - input signal
-# @param output - output signal
-# @keywords internal
+#' @title  Server side
+#' @description Server side - Download data from roadmap project
+#' @param input - input signal
+#' @param output - output signal
+#' @keywords internal
 biOMICsServer <- function(input, output, session) {
 
   result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
