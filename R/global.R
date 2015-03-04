@@ -2,6 +2,7 @@
 # @description Global variables used to update shiny
 # @keywords internal
 result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
+gui <- FALSE
 
 .onAttach <- function (libname, pkgname){
   updateRoadmap()
@@ -45,5 +46,28 @@ updateRoadmap <- function (){
 #' @import shiny shinydashboard
 #' @export
 biOMICsApp <- function() {
+  gui <<- TRUE
   shiny::runApp (system.file ('app', package = 'biOMICs'))
+}
+
+
+is.windows <- function() {
+  Sys.info()["sysname"] == "Windows"
+}
+
+is.mac <- function() {
+  Sys.info()["sysname"] == "Darwin"
+}
+
+is.linux <- function() {
+  Sys.info()["sysname"] == "Linux"
+}
+
+setOptionsProgressBar <- function(title, label){
+  if(is.linux() || is.mac() )
+    opb <- pboptions(type="tk", title = iTitle, label = iLabel)
+  if(is.windows)
+    opb <- pboptions(type="win", title = iTitle, label = iLabel)
+  else
+    opb <- pboptions(type="txt", char="+", title = iTitle, label = iLabel)
 }

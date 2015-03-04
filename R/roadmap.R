@@ -71,29 +71,28 @@ geoDownloader <- function(iQuery, iOut)
       if (nbFiles >1) ftps <- lapply  (info, function(x)  x$FTPLink)
       else ftps <- info$FTPLink
 
-      #ftpsSRA <- lapply  (info$ ExtRelations.ExtRelation.TargetFTPLink, function(x)  x)
       geoDownloaderLinks(ftps)
     }
   }
 }
-# Download all files of ftp directory
-# Download all files of ftp directory
-# @param iFTP: ftp directory adress
-#        iFileName - list of files in the ftp path (use .getFileNames to get the list)
-#        iOut - folder where files will be downloaded
-# @return ret$link - return list of ftplinks downloaded
-#         ret$compressedFiles - compressed files downloaded
-# @examples
-# \dontrun{
-#  .downloadFromGEO (
-#   "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/",
-#    c ("GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz","GSM409307_UCSD.H1.H3K4me1.LL228.wig.gz"),
-#    "path_to_folder_GSM409307" )
-# }
-# @keywords internal
+#' Download all files of ftp directory
+#' Download all files of ftp directory
+#' @param iFTP: ftp directory adress
+#'        iFileName - list of files in the ftp path (use .getFileNames to get the list)
+#'        iOut - folder where files will be downloaded
+#' @return compressedFiles - compressed files downloaded
+#' @examples
+#' \dontrun{
+#'  downloadFromGEO (
+#'   "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/",
+#'    c ("GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz","GSM409307_UCSD.H1.H3K4me1.LL228.wig.gz"),
+#'    "path_to_folder_GSM409307" )
+#' }
+#' @keywords internal
 downloadFromGEO <- function(iFTP, iFileName,iOut){
   compresssedFiles <- c()
-  compresssedFiles <- lapply (iFileName,
+  if(gui) setOptionsProgressBar()
+  compresssedFiles <- pblapply (iFileName,
                               function(x){
                                 ftpLink <- paste0 (iFTP, x)
                                 file    <- paste0 (iOut, "/", x)
@@ -105,20 +104,20 @@ downloadFromGEO <- function(iFTP, iFileName,iOut){
   return (compresssedFiles)
 }
 
-# Download a files from a list o ftp directory and uncompress it
-# Download a files from a list o ftp directory and uncompress it
-# @param iFTPs: list of ftp directory adress
-#        iOut - folder where files will be downloaded
-# @examples
-# \dontrun{
-#  geoDownloaderLinks (
-#     c("ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/",
-#       "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409312/suppl/"
-#       ),
-#     "path_to_folder_GSM409307"
-#   )
-# }
-# @keywords internal
+#' Download a files from a list o ftp directory and uncompress it
+#' Download a files from a list o ftp directory and uncompress it
+#' @param iFTPs: list of ftp directory adress
+#'        iOut - folder where files will be downloaded
+#' @examples
+#' \dontrun{
+#'  geoDownloaderLinks (
+#'     c("ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/",
+#'       "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409312/suppl/"
+#'       ),
+#'     "path_to_folder_GSM409307"
+#'   )
+#' }
+#' @keywords internal
 geoDownloaderLinks <- function(iFTPs, iOut){
   nbFiles <- length(iFTPs)
   if (nbFiles > 0){ # Found more than one result?
@@ -142,11 +141,11 @@ geoDownloaderLinks <- function(iFTPs, iOut){
   }
 }
 
-# Uncompress a list of files - it does not remove the compressed file
-# @keywords internal
+#' Uncompress a list of files - it does not remove the compressed file
+#' @keywords internal
 uncompress <- function(iFiles){
   if (!is.null(iFiles)){
-    lapply  (iFiles,
+    pblapply  (iFiles,
              function(x){
                if(file.exists(x) & tools::file_ext(x)=="gz"){
                    R.utils::gunzip(x, remove = FALSE, skip = TRUE, ext="gz")
@@ -159,8 +158,8 @@ uncompress <- function(iFiles){
   }
 }
 
-# Show ftp links downloaded
-# @keywords internal
+#' Show ftp links downloaded
+#' @keywords internal
 prepareInfoTable <- function(iLink,iOut){
   if(length(iLink) > 0 ){
     df <- do.call (rbind.data.frame, iLink)
@@ -170,8 +169,8 @@ prepareInfoTable <- function(iLink,iOut){
   }
 }
 
-# Get all files in the ftp directory
-# @keywords internal
+#' Get all files in the ftp directory
+#' @keywords internal
 getFileNames <- function(ftp){
   print(ftp)
   filePath <- unlist (
@@ -188,8 +187,8 @@ getFileNames <- function(ftp){
   fileName <- as.list(strsplit (tail (filePath, n = 1),"\r*\n")[[1]])
 }
 
-# Create directory
-# @keywords internal
+#' Create directory
+#' @keywords internal
 mkdir <- function (iOut){
   if(!file.exists(iOut))
     dir.create (iOut, showWarnings = TRUE)  # create directory to save files
