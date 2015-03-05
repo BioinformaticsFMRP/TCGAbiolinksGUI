@@ -89,7 +89,7 @@ geoDownloader <- function(iQuery, iOut)
 #'    "path_to_folder_GSM409307" )
 #' }
 #' @keywords internal
-downloadFromGEO <- function(iFTP, iFileName,iOut){
+downloadFromGEO <- function(iFTP, iFileName,iOut, gui = FALSE){
   compresssedFiles <- c()
   if(gui) setOptionsProgressBar(title = "Roadmap data", label = "Downloading")
   compresssedFiles <- pbapply::pblapply (iFileName,
@@ -118,7 +118,7 @@ downloadFromGEO <- function(iFTP, iFileName,iOut){
 #'   )
 #' }
 #' @keywords internal
-geoDownloaderLinks <- function(iFTPs, iOut){
+geoDownloaderLinks <- function(iFTPs, iOut, gui = FALSE){
   nbFiles <- length(iFTPs)
   if (nbFiles > 0){ # Found more than one result?
     mkdir(iOut)
@@ -131,7 +131,7 @@ geoDownloaderLinks <- function(iFTPs, iOut){
         mkdir (outPath)
         # get list of files names in the ftp
         fileName <- getFileNames (ftp)
-        compresssedFiles <- downloadFromGEO (ftp,fileName,outPath)
+        compresssedFiles <- downloadFromGEO (ftp,fileName,outPath, gui)
         print("Uncompressing")
         uncompress (compresssedFiles)
 

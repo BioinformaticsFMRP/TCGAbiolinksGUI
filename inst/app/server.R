@@ -27,7 +27,6 @@ biOMICsServer <- function(input, output, session) {
     output$rmapDir <- renderText({rmapDir})
   })
 
-  #output$rmapPath <- renderPrint({ rmapDir})
   output$savedPath <- renderValueBox({
     input$selectDir
     valueBox(
@@ -70,7 +69,7 @@ biOMICsServer <- function(input, output, session) {
         index <- which(roadmap$summary$X..GEO.Accession ==  accession[i])
         link <- c(link,as.character(roadmap$summary$GEO.FTP[index]))
       }
-      geoDownloaderLinks(link,rmapDir)
+      geoDownloaderLinks(link,rmapDir, TRUE)
     }}
   )
 

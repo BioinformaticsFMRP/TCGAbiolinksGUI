@@ -42,7 +42,7 @@ body <-  dashboardBody(
                                       style = "background-color: #F39C12;color: #FFFFFF;
                                       margin-left: auto;margin-right: auto;width: 100%",
                                       icon = icon("folder")),
-                         #verbatimTextOutput("rmapDir"),
+                         verbatimTextOutput("rmapDir"),
                          actionButton("rmapSearchBt",
                                       "search",
                                       style = "background-color: #F39C12;color: #FFFFFF;
@@ -56,8 +56,6 @@ body <-  dashboardBody(
 
                          textOutput('rmapSearchLink')
                      )
-                     #valueBoxOutput("savedPath", width = NULL)
-
               )
 
             )
