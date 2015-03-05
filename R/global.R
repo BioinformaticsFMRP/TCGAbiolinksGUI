@@ -64,10 +64,10 @@ is.linux <- function() {
 }
 
 setOptionsProgressBar <- function(title, label){
-  if(is.linux() || is.mac() )
-    opb <- pbapply::pboptions(type="tk", title = title, label = label)
-  else if(is.windows())
-    opb <- pbapply::pboptions(type="win", title = title, label = label)
-  else
+  #if(is.linux() || is.mac() )
+  #  opb <- pbapply::pboptions(type="tk", title = title, label = label)
+  #else if(is.windows())
+  #  opb <- pbapply::pboptions(type="win", title = title, label = label)
+  #else
     opb <- pbapply::pboptions(type="txt", char="+", title = title, label = label)
 }

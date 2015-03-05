@@ -118,13 +118,14 @@ downloadFromGEO <- function(iFTP, iFileName,iOut, gui = FALSE){
 #'   )
 #' }
 #' @keywords internal
+#' @export
 geoDownloaderLinks <- function(iFTPs, iOut, gui = FALSE){
   nbFiles <- length(iFTPs)
   if (nbFiles > 0){ # Found more than one result?
     mkdir(iOut)
 
     for (ftp in iFTPs){
-      if (!is.na(ftp)){
+      if (ftp!=""){
         # create folder for experiment
         dirName <- tail (unlist (strsplit (ftp,"/")), n = 2)[1] # get experiment Name
         outPath <- paste (iOut, dirName, sep = "/")
