@@ -25,5 +25,6 @@ Imports:
   rjson,
   reutils,
   XML,
-  tcltk
+  tcltk,
+  pbapply
 VignetteBuilder: knitr

@@ -1,8 +1,8 @@
-# @title  Server side
-# @description Server side - Download data from roadmap project
-# @param input - input signal
-# @param output - output signal
-# @keywords internal
+#' @title  Server side
+#' @description Server side - Download data from roadmap project
+#' @param input - input signal
+#' @param output - output signal
+#' @keywords internal
 biOMICsServer <- function(input, output, session) {
 
   result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading = 1)
@@ -23,15 +23,15 @@ biOMICsServer <- function(input, output, session) {
   observe({
     if(input$selectDir){
       rmapDir <<- tcltk::tk_choose.dir(getwd(), "Choose a suitable folder to save the files")
-      output$rmapDir <- renderPrint({ rmapDir})
     }
+    output$rmapDir <- renderText({rmapDir})
   })
 
   output$savedPath <- renderValueBox({
     input$selectDir
     valueBox(
       h4(rmapDir), "Output directory", icon = icon("folder-open"),
-      color = "blue", width = 4
+      color = "blue"
     )
   })
 
@@ -69,7 +69,7 @@ biOMICsServer <- function(input, output, session) {
         index <- which(roadmap$summary$X..GEO.Accession ==  accession[i])
         link <- c(link,as.character(roadmap$summary$GEO.FTP[index]))
       }
-      geoDownloaderLinks(link,rmapDir)
+      geoDownloaderLinks(link,rmapDir, TRUE)
     }}
   )
 
