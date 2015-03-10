@@ -75,6 +75,101 @@ geoDownloader <- function(iQuery, iOut)
     }
   }
 }
+
+#' @title Verify user input
+#' @description Verify user input existis in roadmap
+#' @param input - user input of samples
+#' @param list - roadmap list of experiments or samples
+#' @examples
+#' \dontrun{
+#'  validateInput(samples,roadmap$samplesList)
+#' }
+#' @keywords internal
+validateInput  <- function (input = NULL, list = NULL) {
+  for(i in seq_along(input)){
+    if(!(input[i] %in% list)){
+      print(paste0("ERROR: ",
+                   input[i],
+                   " does not exists in roadmap")
+      )
+      print(
+        paste0(
+          "Possible values can be seen in objects: ",
+          "roadmap$experimentList and roadmap$samplesLis "
+        )
+      )
+      #print(list)
+    }
+  }
+}
+
+#' @title Filter roadmap data
+#' @description Select data from roadmap
+#' @param samples - list of samples
+#' @param experiments - list of experiments
+#' @examples
+#' \dontrun{
+#'    link <- filterRmapData (
+#'     samples = c("H1 cell line","H9 cell line"),
+#'     experiments = c("RRBS","H4K91ac")
+#'    )
+#' }
+#' @return List of ftp to download data
+#' @export
+filterRmapData <- function (samples = NULL, experiments = NULL){
+  # Load ROAMP table if it doesn't exists
+  if(!exists("roadmap"))
+    load(file = system.file("extdata/roadmap.RData", package="biOMICs"), .GlobalEnv)
+
+  if(!is.null(samples)) validateInput(samples,roadmap$samplesList)
+  if(!is.null(experiments)) validateInput(experiments,roadmap$experimentList)
+  # get list of ftps
+  # use outer in order to combine each element of x and y
+  if(!is.null(samples) &&  !is.null(experiments)){
+    link <- unlist(
+      outer( X = samples,
+             Y = experiments,
+             Vectorize(
+               function(x,y){
+                 as.character(
+                   roadmap$summary$GEO.FTP[ roadmap$summary$Sample.Name == x
+                                            & roadmap$summary$Experiment == y
+                                            ]
+                 )
+               }
+             )
+      )
+    )
+  }
+  else if(!is.null(samples)){
+    link <- unlist(
+      lapply(samples,
+             function(x){
+               as.character(
+                 roadmap$summary$GEO.FTP[
+                   roadmap$summary$Sample.Name == x
+                   ]
+               )
+             }
+      )
+    )
+  }
+  else if(!is.null(experiments)){
+    link <- unlist(
+      lapply(experiments,
+             function(x){
+               as.character(
+                 roadmap$summary$GEO.FTP[
+                   roadmap$summary$Sample.Name == x
+                   ]
+               )
+             }
+      )
+    )
+  }
+  invisible(link)
+}
+
 #' Download all files of ftp directory
 #' Download all files of ftp directory
 #' @param iFTP: ftp directory adress
@@ -93,13 +188,13 @@ downloadFromGEO <- function(iFTP, iFileName,iOut, gui = FALSE){
   compresssedFiles <- c()
   if(gui) setOptionsProgressBar(title = "Roadmap data", label = "Downloading")
   compresssedFiles <- pbapply::pblapply (iFileName,
-                              function(x){
-                                ftpLink <- paste0 (iFTP, x)
-                                file    <- paste0 (iOut, "/", x)
-                                if (!file.exists(file))
-                                  downloader::download(ftpLink, file)
-                                compresssedFiles <- c(compresssedFiles, file)
-                              }
+                                         function(x){
+                                           ftpLink <- paste0 (iFTP, x)
+                                           file    <- paste0 (iOut, "/", x)
+                                           if (!file.exists(file))
+                                             downloader::download(ftpLink, file)
+                                           compresssedFiles <- c(compresssedFiles, file)
+                                         }
   )
   return (compresssedFiles)
 }
@@ -147,12 +242,12 @@ geoDownloaderLinks <- function(iFTPs, iOut, gui = FALSE){
 uncompress <- function(iFiles){
   if (!is.null(iFiles)){
     pbapply::pblapply  (iFiles,
-             function(x){
-               if(file.exists(x) & tools::file_ext(x)=="gz"){
-                   R.utils::gunzip(x, remove = FALSE, skip = TRUE, ext="gz")
-                   print(paste0("Uncompressed: ",x))
-               }
-             }
+                        function(x){
+                          if(file.exists(x) & tools::file_ext(x)=="gz"){
+                            R.utils::gunzip(x, remove = FALSE, skip = TRUE, ext="gz")
+                            print(paste0("Uncompressed: ",x))
+                          }
+                        }
     )
   } else {
     return(NULL)

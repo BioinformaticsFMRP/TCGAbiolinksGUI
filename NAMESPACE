@@ -3,6 +3,7 @@
 export(biOMICsApp)
 export(eGeo)
 export(encodeDownloader)
+export(filterRmapData)
 export(geoDownloader)
 export(geoDownloaderLinks)
 import(shiny)
