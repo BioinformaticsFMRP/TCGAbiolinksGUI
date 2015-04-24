@@ -1,12 +1,12 @@
 Package: biOMICs
 Title: biOMICs
 Version: 0.1
-Date: 2015-02-13
+Date: 2015-04-22
 Author:
   Tiago Chedraoui Silva <tiagochst@gmail.com>,
   Tiago Mendes <tmendesilva@gmail.com>
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
-Description: Download data from ENCODE project
+Description: Search for data in TCGA, Roadmap and ENCODE
 License: GPL (>= 3)
 Depends:
   R (>= 3.0),
@@ -26,5 +26,8 @@ Imports:
   reutils,
   XML,
   tcltk,
-  pbapply
+  pbapply,
+  rols,
+  stringr,
+  plyr
 VignetteBuilder: knitr
