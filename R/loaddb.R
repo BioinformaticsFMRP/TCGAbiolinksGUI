@@ -43,7 +43,6 @@ load.roadmap <- function(){
 
 
 load.biosamples <- function(biomicsEnv){
-  library(downloader)
   downloader::download(url = "https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=28842439", destfile = 'roadmaptab.tsv')
   downloader::download(url = "https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=514976736", destfile = 'encodetab.tsv')
   downloader::download(url = "https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=0", destfile = 'tcgatab.tsv')
@@ -75,6 +74,7 @@ load.platforms <- function(biomicsEnv ){
   if (file.exists('platformstab.tsv')) {file.remove('platformstab.tsv')}
 }
 
+#' @import downloader XML plyr stringr
 load.tcga <- function(biomicsEnv){
   # get tcga platforms
   tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
@@ -120,5 +120,94 @@ load.tcga <- function(biomicsEnv){
   }
   close(pb)
   biomicsEnv$tcga.db <- tcga.db
-  rm(tcga.db)
+}
+
+
+# save as: list (list(barcodes)) or collapse (paste0(barcode, collapse = ","))?
+load.tcga.barcode <- function(){
+  # todo considere next page =/
+  # comparar com sdrf
+  # for each tcga.db id get barcodes
+  message("Downloading TCGA barcodes")
+  start.time <- Sys.time()
+  pb <- txtProgressBar(min = 0, max = nrow(tcga.db), style = 3)
+  for(j in 1:nrow(tcga.db)){
+  #for(j in c(5)){
+    tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?query="
+    tcga.query <- paste0("FileInfo&Archive[@id=",tcga.db[j,'id'],"]&roleName=fileCollection")
+    # metadata files ignore barcodes
+    if(length(grep(".*(aux|mage).*",tcga.db[j,'name']))>0){
+      print(paste("Continued for:",j))
+      next
+    }
+    # search if a file with same serial index and revision have barcodes
+    # if it has we should copy it!
+    rev <- tcga.db[j,"revision"]
+    index <- tcga.db[j,"serialIndex"]
+    bname<- tcga.db[j,"baseName"]
+    aux <- subset(tcga.db,
+                  revision == rev & serialIndex == index & baseName==bname & deployStatus!="Available",
+                  select = c(deployLocation,deployStatus)
+                  )
+
+    if(nrow(aux)>0){
+      print("Found barcode before")
+      tcga.db[j,"deployStatus"] <- aux[1,"deployStatus"]
+      next
+    }
+    next.url <- paste0(tcga.root,tcga.query)
+    while(!is.na(next.url)){
+      print(next.url)
+      downloader::download(next.url,"tcga.html",quiet =T)
+      regex <- '<table summary="Data Summary".*</a></td></tr></table>'
+      html <- readLines("tcga.html")
+      files <- readHTMLTable(toString(str_match(html,regex)[6,]),
+                             header = T,
+                             stringsAsFactors = FALSE)$'NULL'
+      colnames(files) <- files[1,]
+      files <- files[-1,1:5]
+      idx <- grep("(README|CHANGES|DESCRIPTION|MANIFEST).*",files$name)
+      if(length(idx > 0)){files <- files[-idx,]}
+      pat <- "*(TCGA)-([A-Z0-9]{2})-([A-Z0-9]{4})-(0[1-9]|[1-2][0-9])([A-Z])-(0[1-9]|[1-9][0-9])([DGHRTWX])-([A-Z0-9]{4})-([A-Z0-9]{2})*"
+      barcode <- str_match(files$name,pat)[,1]
+      #message("Found in name")
+      #print(barcode)
+      if(all(is.na(barcode))){
+        for(i in 1:nrow( files )){
+          tcga.query <- paste0("BiospecimenBarcode&FileInfo[@id=",files[i,"id"],"]&roleName=biospecimenBarcodeCollection")
+          next.url <- paste0(tcga.root,tcga.query)
+          downloader::download(next.url,"tcga.html",quiet =T)
+          regex <- '<table summary="Data Summary".*</a></td></tr></table>'
+          barcode.html <- readLines("tcga.html")
+          table <- str_match(barcode.html,regex)
+          idx <- which(!is.na(table))
+          if(length(idx>0)){
+            barcode.table <- readHTMLTable(toString(table[idx,]),
+                                           header = T,
+                                           stringsAsFactors = FALSE)$'NULL'
+            colnames(barcode.table) <- barcode.table[1,]
+            barcode.table <- barcode.table[-1,1:8]
+            #print(barcode.table$barcode)
+            files[[i,5]] <- list(barcode.table$barcode)
+          }
+        }
+        barcode <- unique(unlist(files[,5]))
+      }
+      # get next table
+      next.regex <-"http://tcga-data.nci.nih.gov/tcgadccws/GetHTML.*Next"
+      next.url <- str_match(html,next.regex)[6,]
+      next.url <- gsub("amp;","",gsub('\">Next',"",next.url))
+      if(exists("all.barcode")){
+        all.barcode <- c(all.barcode,barcode)
+      } else {
+        all.barcode <- barcode
+      }
+    }
+    #tcga.db[[j,"deployStatus"]] <- list(barcode)
+    tcga.db[j,"deployStatus"] <- paste0(all.barcode, collapse = ",")
+    rm(all.barcode)
+    setTxtProgressBar(pb, j)
+    print(Sys.time()-start.time)
+  }
+  close(pb)
 }
