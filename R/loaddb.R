@@ -74,3 +74,51 @@ load.platforms <- function(biomicsEnv ){
   biomicsEnv$platforms <- data.frame(lapply(platforms, as.character), stringsAsFactors=FALSE)
   if (file.exists('platformstab.tsv')) {file.remove('platformstab.tsv')}
 }
+
+load.tcga <- function(biomicsEnv){
+  # get tcga platforms
+  tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
+  tcga.query <- "query=Platform"
+  next.url <- paste0(tcga.root,tcga.query)
+  downloader::download(next.url,"tcga.html",quiet =T)
+  regex <- '<table summary="Data Summary".*</a></td></tr></table>'
+  html <- readLines("tcga.html")
+  platform.table <- readHTMLTable(toString(str_match(html,regex)[6,]),
+                                  header = T,
+                                  stringsAsFactors = FALSE)$'NULL'
+  colnames(platform.table) <- platform.table[1,]
+  platform.table <- platform.table[-1,1:4]
+
+  # get all compressed archives
+  message("Downloading TCGA database")
+  tcga.query <- paste0("query=Archive[isLatest=1]")
+  next.url <- paste0(tcga.root,tcga.query)
+  pb <- txtProgressBar(min = 0, max = 32, style = 3)
+  i <- 0
+  while(!is.na(next.url)){
+    downloader::download(next.url,"tcga.html",quiet=T)
+    html <- readLines("tcga.html")
+    table <- readHTMLTable(toString(str_match(html,regex)[6,]),
+                           header = T,
+                           stringsAsFactors = FALSE)$'NULL'
+    colnames(table) <-table[1,]
+    table <- table[-1,1:9]
+
+    if(exists("tcga.db")) {
+      tcga.db <- rbind(tcga.db,table)
+    } else {
+      tcga.db <- table
+    }
+    # get next table
+    next.regex <-"http://tcga-data.nci.nih.gov/tcgadccws/GetHTML.*Next"
+    next.url <- str_match(html,next.regex)[6,]
+    next.url <- gsub("amp;","",gsub('\">Next',"",next.url))
+
+    # update progress bar
+    i <- i + 1
+    setTxtProgressBar(pb, i)
+  }
+  close(pb)
+  biomicsEnv$tcga.db <- tcga.db
+  rm(tcga.db)
+}
