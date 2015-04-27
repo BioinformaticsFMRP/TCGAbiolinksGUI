@@ -196,7 +196,9 @@ show.results <- function(){
   # Select the database rows
   enc.result   <- encode.db [is.element(encode.db$biosample   ,enc.samples ),]
   rmap.result  <- roadmap.db[is.element(roadmap.db$Sample.Name,rmap.samples),]
-  tcga.result  <- tcga.db   [is.element(tcga.db$Disease ,unlist(strsplit(tcga.samples,split = " - ")) ),]
+  disease <- sapply(strsplit(tcga.samples,split = " - "),function(x){x[1]})
+  idx <- unique(unlist(sapply(disease,function(x) {grep(x,tcga.db$baseName)})))
+  tcga.result  <- tcga.db   [idx,]
 
   # Select experiments
   if(!exper == 'all'){
@@ -204,11 +206,16 @@ show.results <- function(){
     idx <- apply(sapply(platforms[platforms$Standard == exper, 2], function(x){grepl(pattern = x, enc.result$assay)}),1,any)
     enc.result <- enc.result[idx,]
 
-    idx <- apply(sapply(platforms[platforms$Standard == exper, 2], function(x){grepl(pattern = x, rmap.result$Experiments)}),1,any)
+    idx <- apply(sapply(platforms[platforms$Standard == exper, 2], function(x){grepl(pattern = x, rmap.result$Experiment)}),1,any)
     rmap.result <- rmap.result[idx,]
 
-    idx <- apply(sapply(platforms[platforms$Standard == exper, 2], function(x){grepl(pattern = x, tcga.result$Platform)}),1,any)
-    tcga.result <- tcga.result[idx,]
+    idx <- apply(sapply(platforms[platforms$Standard == exper, 2], function(x){grepl(pattern = x, tcga.result$baseName)}),1,any)
+    if(length(idx)>0){
+      tcga.result <- tcga.result[idx,]
+    } else {
+      tcga.result <-  tcga.result[1:nrow(tcga.result),]
+    }
+
   }
 
   message("============ Summary of results found ==============")
@@ -221,7 +228,13 @@ show.results <- function(){
   message(paste0("|ROADMAP: " , length(rmap.samples)))
 
   message("--------------- Number of samples ------------------")
-  message(paste0("|TCGA   : " , nrow(tcga.result)))
+  if(nrow(tcga.result) > 0) {
+    n.barcode <- sum(sapply(tcga.result$deployStatus,function(x){length(unlist(str_split(x,",")))}))
+  } else {
+    n.barcode <- 0
+  }
+  message(paste0("|TCGA Archives: " , nrow(tcga.result)))
+  message(paste0("|     Barcodes: " , n.barcode))
   message(paste0("|ENCODE : " , nrow(enc.result)))
   message(paste0("|ROADMAP: " , nrow(rmap.result)))
   message("====================================================")
@@ -230,11 +243,11 @@ show.results <- function(){
   # Preparing the output table
   colnames(rmap.result)[1:3] <- c("ID","Sample","Experiment")
   colnames(enc.result) [1:3] <- c("ID","Sample","Experiment")
-  colnames(tcga.result) [c(1,4,12)] <- c("ID","Sample","Experiment")
+  colnames(tcga.result) [c(5,2,7)] <- c("ID","Sample","Experiment")
 
   results <- rbind(enc.result[1:3],
                    rmap.result[1:3],
-                   tcga.result[c(1,4,12)]
+                   tcga.result[c(5,2,7)]
   )
   results$database <- c(rep("encode",  nrow(enc.result)),
                         rep("roadmap", nrow(rmap.result)),
