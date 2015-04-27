@@ -136,7 +136,7 @@ load.tcga.barcode <- function(){
     tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?query="
     tcga.query <- paste0("FileInfo&Archive[@id=",tcga.db[j,'id'],"]&roleName=fileCollection")
     # metadata files ignore barcodes
-    if(length(grep(".*(aux|mage).*",tcga.db[j,'name']))>0){
+    if(length(grep(".*(aux|mage-tab).*",tcga.db[j,'name']))>0){
       print(paste("Continued for:",j))
       next
     }
@@ -168,6 +168,13 @@ load.tcga.barcode <- function(){
       files <- files[-1,1:5]
       idx <- grep("(README|CHANGES|DESCRIPTION|MANIFEST).*",files$name)
       if(length(idx > 0)){files <- files[-idx,]}
+      if(nrow(files) == 0) {
+        next.url <- NA
+        if(!exists("all.barcode")){
+          all.barcode <- ""
+        }
+        next
+      }
       pat <- "*(TCGA)-([A-Z0-9]{2})-([A-Z0-9]{4})-(0[1-9]|[1-2][0-9])([A-Z])-(0[1-9]|[1-9][0-9])([DGHRTWX])-([A-Z0-9]{4})-([A-Z0-9]{2})*"
       barcode <- str_match(files$name,pat)[,1]
       #message("Found in name")
