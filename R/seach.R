@@ -197,9 +197,7 @@ show.results <- function(){
   enc.result   <- encode.db [is.element(encode.db$biosample   ,enc.samples ),]
   rmap.result  <- roadmap.db[is.element(roadmap.db$Sample.Name,rmap.samples),]
   disease <- sapply(strsplit(tcga.samples,split = " - "),function(x){x[1]})
-  idx <- unique(unlist(sapply(disease,function(x) {grep(x,tcga.db$baseName)})))
-  tcga.result  <- tcga.db   [idx,]
-
+  tcga.result  <- tcga.db   [is.element(tcga.db$Disease,disease),]
   # Select experiments
   if(!exper == 'all'){
     message("Filtering by experiment")
@@ -210,6 +208,7 @@ show.results <- function(){
     rmap.result <- rmap.result[idx,]
 
     idx <- apply(sapply(platforms[platforms$Standard == exper, 2], function(x){grepl(pattern = x, tcga.result$baseName)}),1,any)
+
     if(length(idx)>0){
       tcga.result <- tcga.result[idx,]
     } else {
@@ -238,21 +237,31 @@ show.results <- function(){
   message(paste0("|ENCODE : " , nrow(enc.result)))
   message(paste0("|ROADMAP: " , nrow(rmap.result)))
   message("====================================================")
-
+  message("Some summary images were saved in searchSummary folder")
 
   # Preparing the output table
   colnames(rmap.result)[1:3] <- c("ID","Sample","Experiment")
   colnames(enc.result) [1:3] <- c("ID","Sample","Experiment")
-  colnames(tcga.result) [c(5,2,7)] <- c("ID","Sample","Experiment")
+  colnames(tcga.result) [c(5,11,10)] <- c("ID","Sample","Experiment")
 
   results <- rbind(enc.result[1:3],
                    rmap.result[1:3],
-                   tcga.result[c(5,2,7)]
+                   tcga.result[c(5,11,10)]
   )
   results$database <- c(rep("encode",  nrow(enc.result)),
                         rep("roadmap", nrow(rmap.result)),
                         rep("tcga",    nrow(tcga.result))
   )
+
+  dir.create("searchSummary", showWarnings = F)
+  # % Experiments per database
+  g <- ggplot(results, aes(factor(database), fill = Experiment)) + geom_bar(position = "fill")
+  ggsave(g, file="searchSummary/experiments.pdf")
+
+  # % Samples per database
+  g <- ggplot(results, aes(factor(database), fill = Sample)) + geom_bar(position = "fill")
+  ggsave(g, file="searchSummary/samples.pdf")
+
   return(results)
 
 }
@@ -266,5 +275,23 @@ is.experiment <- function(experiment){
     message(paste0('ERROR: ', experiment, ' is not an experiment.\nUse:'))
     print(unique(platforms$Standard))
     return(FALSE)
+  }
+}
+
+# Using the name create two collumns Platform and Disease
+tcga.db.addCol <- function(x){
+  tcga.db$Platform <- ""
+  tcga.db$Disease <- ""
+  diseases <- sapply(strsplit(biosample.tcga$biosample,split = " - "),function(x){x[1]})
+  for(i in seq_along(diseases)){
+    idx <- grep(diseases[i],tcga.db$baseName)
+    tcga.db[idx,]$Disease <- diseases[i]
+  }
+
+  for(i in seq_along(platform.table$name)){
+    idx <- grep(platform.table[i,]$name,tcga.db$baseName)
+    if(length(idx)>0){
+      tcga.db[idx,]$Platform <- platform.table[i,]$name
+    }
   }
 }
