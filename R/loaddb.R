@@ -74,9 +74,12 @@ load.platforms <- function(biomicsEnv ){
   if (file.exists('platformstab.tsv')) {file.remove('platformstab.tsv')}
 }
 
-#' @import downloader XML plyr stringr
 load.tcga <- function(biomicsEnv){
-  # get tcga platforms
+  downloader::download(url = "https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=1340244739", destfile = 'tcga.tsv')
+  tcga.db <- read.delim(file = 'tcga.tsv', sep = '\t' )
+  biomicsEnv$tcga.db <- data.frame(lapply(tcga.db, as.character), stringsAsFactors=FALSE)
+  if (file.exists('tcga.tsv')) {file.remove('tcga.tsv')}
+
   tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
   tcga.query <- "query=Platform"
   next.url <- paste0(tcga.root,tcga.query)
@@ -87,9 +90,16 @@ load.tcga <- function(biomicsEnv){
                                   header = T,
                                   stringsAsFactors = FALSE)$'NULL'
   colnames(platform.table) <- platform.table[1,]
-  platform.table <- platform.table[-1,1:4]
+  biomicsEnv$platform.table <- platform.table[-1,1:4]
+  if (file.exists('tcga.html')) {file.remove('tcga.html')}
 
+}
+
+#' @import downloader XML plyr stringr
+create.tcga.table <- function(biomicsEnv){
   # get all compressed archives
+  tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
+  regex <- '<table summary="Data Summary".*</a></td></tr></table>'
   message("Downloading TCGA database")
   tcga.query <- paste0("query=Archive[isLatest=1]")
   next.url <- paste0(tcga.root,tcga.query)
@@ -218,3 +228,23 @@ load.tcga.barcode <- function(){
   }
   close(pb)
 }
+
+
+# Using the name create two collumns Platform and Disease
+tcga.db.addCol <- function(x){
+  tcga.db$Platform <- ""
+  tcga.db$Disease <- ""
+  diseases <- sapply(strsplit(biosample.tcga$biosample,split = " - "),function(x){x[1]})
+  for(i in seq_along(diseases)){
+    idx <- grep(diseases[i],tcga.db$baseName)
+    tcga.db[idx,]$Disease <- diseases[i]
+  }
+
+  for(i in seq_along(platform.table$name)){
+    idx <- grep(platform.table[i,]$name,tcga.db$baseName)
+    if(length(idx)>0){
+      tcga.db[idx,]$Platform <- platform.table[i,]$name
+    }
+  }
+}
+

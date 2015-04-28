@@ -242,11 +242,11 @@ show.results <- function(){
   # Preparing the output table
   colnames(rmap.result)[1:3] <- c("ID","Sample","Experiment")
   colnames(enc.result) [1:3] <- c("ID","Sample","Experiment")
-  colnames(tcga.result) [c(5,11,10)] <- c("ID","Sample","Experiment")
+  colnames(tcga.result) [c(5,12,11)] <- c("ID","Sample","Experiment")
 
   results <- rbind(enc.result[1:3],
                    rmap.result[1:3],
-                   tcga.result[c(5,11,10)]
+                   tcga.result[c(5,12,11)]
   )
   results$database <- c(rep("encode",  nrow(enc.result)),
                         rep("roadmap", nrow(rmap.result)),
@@ -256,11 +256,11 @@ show.results <- function(){
   dir.create("searchSummary", showWarnings = F)
   # % Experiments per database
   g <- ggplot(results, aes(factor(database), fill = Experiment)) + geom_bar(position = "fill")
-  ggsave(g, file="searchSummary/experiments.pdf")
+  ggsave(g, file="searchSummary/experiments.pdf", height=14,scale=1.5)
 
   # % Samples per database
   g <- ggplot(results, aes(factor(database), fill = Sample)) + geom_bar(position = "fill")
-  ggsave(g, file="searchSummary/samples.pdf")
+  ggsave(g, file="searchSummary/samples.pdf", height=14,scale=1.5)
 
   return(results)
 
@@ -275,23 +275,5 @@ is.experiment <- function(experiment){
     message(paste0('ERROR: ', experiment, ' is not an experiment.\nUse:'))
     print(unique(platforms$Standard))
     return(FALSE)
-  }
-}
-
-# Using the name create two collumns Platform and Disease
-tcga.db.addCol <- function(x){
-  tcga.db$Platform <- ""
-  tcga.db$Disease <- ""
-  diseases <- sapply(strsplit(biosample.tcga$biosample,split = " - "),function(x){x[1]})
-  for(i in seq_along(diseases)){
-    idx <- grep(diseases[i],tcga.db$baseName)
-    tcga.db[idx,]$Disease <- diseases[i]
-  }
-
-  for(i in seq_along(platform.table$name)){
-    idx <- grep(platform.table[i,]$name,tcga.db$baseName)
-    if(length(idx)>0){
-      tcga.db[idx,]$Platform <- platform.table[i,]$name
-    }
   }
 }
