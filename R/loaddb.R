@@ -74,6 +74,7 @@ load.platforms <- function(biomicsEnv ){
   if (file.exists('platformstab.tsv')) {file.remove('platformstab.tsv')}
 }
 
+#' @import XML  stringr
 load.tcga <- function(biomicsEnv){
   downloader::download(url = "https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=1340244739", destfile = 'tcga.tsv')
   tcga.db <- read.delim(file = 'tcga.tsv', sep = '\t' )
