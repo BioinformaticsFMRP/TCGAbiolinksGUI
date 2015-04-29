@@ -177,6 +177,7 @@ biOMICs.search  <- function(term, experiment = 'all'){
 }
 
 # show the results to the user
+#' @import ggplot2
 show.results <- function(){
   # Get the samples that matches the result of the query
   # Databases were matched manually to systems
@@ -242,17 +243,17 @@ show.results <- function(){
   # Preparing the output table
   colnames(rmap.result)[1:3] <- c("ID","Sample","Experiment")
   colnames(enc.result) [1:3] <- c("ID","Sample","Experiment")
-  colnames(tcga.result) [c(5,12,11)] <- c("ID","Sample","Experiment")
+  colnames(tcga.result) [c(8,12,11)] <- c("ID","Sample","Experiment")
 
   results <- rbind(enc.result[1:3],
                    rmap.result[1:3],
-                   tcga.result[c(5,12,11)]
+                   tcga.result[c(8,12,11)]
   )
-  results$database <- c(rep("encode",  nrow(enc.result)),
+  database <- c(rep("encode",  nrow(enc.result)),
                         rep("roadmap", nrow(rmap.result)),
                         rep("tcga",    nrow(tcga.result))
   )
-
+  results <- cbind(database,results)
   dir.create("searchSummary", showWarnings = F)
   # % Experiments per database
   g <- ggplot(results, aes(factor(database), fill = Experiment)) + geom_bar(position = "fill")
