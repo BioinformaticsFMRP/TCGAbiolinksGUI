@@ -2,11 +2,12 @@
 # internal: used by biOMICs.search
 systemSearch <- function(term){
   #print (term)
+  env <- as.environment("package:biOMICs")
   if(!success){
     found <- intersect(term, systems$BTO)
     if(length(found) > 0){
-      success <<- T
-      solution <<- found
+      env$success <- T
+      env$solution <- found
       print(solution)
       return()
     }else{
@@ -47,51 +48,51 @@ map.to.bto <- function(term){
 
 
 is.mapped <- function(term){
-
+  env <- as.environment("package:biOMICs")
 
   # search in search cache
   if(exists("search.cache")){
-    idx <- grep(term, search.cache[,1])
+    idx <- grep(term, search.cache[,1], ignore.case = T)
     if(length(idx)> 0){
       message("found in cache")
       res <- search.cache[idx[1],2]
-      success <<- T
-      solution <<- res
+      env$success <- T
+      env$solution <- res
       return ()
     }
   }
   # search in roamap
   # Could be - Accession, Sample.Name, Experiment
-  idx <- grep(term, biosample.roadmap$biosample)
+  idx <- grep(term, biosample.roadmap$biosample, ignore.case = T)
   if(length(idx)> 0){
     message("found in roadmap")
     res <- biosample.roadmap[idx[1],]$BTO
     if(!is.na(res)){
-      success <<- T
-      solution <<- c(res)
+      env$success <- T
+      env$solution <- c(res)
       return ()
     }
   }
   # search in encode
-  idx <- grep(term, biosample.encode$biosample)
+  idx <- grep(term, biosample.encode$biosample, ignore.case = T)
 
   if(length(idx)> 0){
     message("found in encode")
     res <- biosample.encode[idx[1],]$BTO
     if(!is.na(res)){
-      success <<- T
-      solution <<- res
+      env$success <- T
+      env$solution <- res
       return ()
     }
 
   }
   # search in tcga
 
-  idx <- grep(term, biosample.tcga$biosample)
+  idx <- grep(term, biosample.tcga$biosample, ignore.case = T)
   if(length(idx) > 0){
     res <- biosample.tcga[idx[1],]$BTO
-    success <<- T
-    solution <<- res
+    env$success <- T
+    env$solution <- res
     return ()
   }
 }
@@ -103,13 +104,19 @@ is.mapped <- function(term){
 #' @import rols
 #' @export
 biOMICs.search  <- function(term, experiment = 'all'){
+  env <- as.environment("package:biOMICs")
   message(paste("biOMICS is searching for:", term, "\nSearching..."))
   start.time <- Sys.time()
-  success <<- F
-  solution <<- NA
-  exper <<- experiment
+  env$success <- F
+  env$solution <- NA
+  env$exper <- experiment
 
-  # Step 0: verify if experiment is valid.
+  # Step 0: verify if term is valid.
+  if(!is.valid.term(term)){
+    return()
+  }
+
+  # Step 0.5: verify if experiment is valid.
   if(!is.experiment(exper)){
     return()
   }
@@ -123,7 +130,7 @@ biOMICs.search  <- function(term, experiment = 'all'){
   if(!success){
     message("Not found in the cache, searching in the ontology...")
     # Term has not been mapped before.
-    ont <<- 'BTO'
+    env$ont <- 'BTO'
     query <- rols::olsQuery(term, ont, exact = T)
 
     if(length(query) > 0){
@@ -167,9 +174,9 @@ biOMICs.search  <- function(term, experiment = 'all'){
 
   if(success){
     if(!exists("search.cache")){
-      search.cache <<- rbind(c(term,solution[1]))
+      env$search.cache <- rbind(c(term,solution[1]))
     } else {
-      search.cache <<- rbind(search.cache,c(term,solution[1]))
+      env$search.cache <- rbind(search.cache,c(term,solution[1]))
     }
   }
 
@@ -202,14 +209,16 @@ show.results <- function(){
   # Select experiments
   if(!exper == 'all'){
     message("Filtering by experiment")
-    idx <- apply(sapply(platforms[platforms$Standard == exper, 2], function(x){grepl(pattern = x, enc.result$assay)}),1,any)
+    idx <- apply(sapply(platforms[grep(exper, platforms$Standard, ignore.case = T), 2],
+                        function(x){grepl(x, enc.result$assay, ignore.case = T )}),1,any)
     enc.result <- enc.result[idx,]
 
-    idx <- apply(sapply(platforms[platforms$Standard == exper, 2], function(x){grepl(pattern = x, rmap.result$Experiment)}),1,any)
+    idx <- apply(sapply(platforms[grep(exper, platforms$Standard, ignore.case = T), 2],
+                        function(x){grepl(x, rmap.result$Experiment, ignore.case = T)}),1,any)
     rmap.result <- rmap.result[idx,]
 
-    idx <- apply(sapply(platforms[platforms$Standard == exper, 2], function(x){grepl(pattern = x, tcga.result$baseName)}),1,any)
-
+    idx <- apply(sapply(platforms[grep(exper, platforms$Standard, ignore.case = T), 2],
+                        function(x){grepl(x, tcga.result$baseName, ignore.case = T)}),1,any)
     if(length(idx)>0){
       tcga.result <- tcga.result[idx,]
     } else {
@@ -250,8 +259,8 @@ show.results <- function(){
                    tcga.result[c(8,12,11)]
   )
   database <- c(rep("encode",  nrow(enc.result)),
-                        rep("roadmap", nrow(rmap.result)),
-                        rep("tcga",    nrow(tcga.result))
+                rep("roadmap", nrow(rmap.result)),
+                rep("tcga",    nrow(tcga.result))
   )
   results <- cbind(database,results)
   dir.create("searchSummary", showWarnings = F)
@@ -269,12 +278,22 @@ show.results <- function(){
 
 is.experiment <- function(experiment){
   v <- c(unique(platforms$Standard), 'all')
-  if(is.element(experiment, v)){
+  if((length(grep(experiment, v, ignore.case = T)) > 0) & (nchar(experiment) > 3)){
     return (TRUE)
   }
   else{
-    message(paste0('ERROR: ', experiment, ' is not an experiment.\nUse:'))
+    message(paste0('ERROR: ', experiment, ' is not an experiment or has less than 3 characters.\nUse:'))
     print(unique(platforms$Standard))
+    return (FALSE)
+  }
+}
+
+is.valid.term <- function(term){
+  if(nchar(term) >= 3){
+    return(TRUE)
+  }
+  else{
+    message(paste0('ERROR: ', term, ' is not valid. Specify a term of at least 3 characters'))
     return(FALSE)
   }
 }
