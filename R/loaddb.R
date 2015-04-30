@@ -130,6 +130,8 @@ create.tcga.table <- function(biomicsEnv){
     setTxtProgressBar(pb, i)
   }
   close(pb)
+  # removing protected files (approx. 20% of files)
+  tcga.db <-  tcga.db[-grep("4yeo",tcga.db$deployLocation),]
   biomicsEnv$tcga.db <- tcga.db
 }
 
@@ -232,7 +234,7 @@ load.tcga.barcode <- function(){
 
 
 # Using the name create two collumns Platform and Disease
-tcga.db.addCol <- function(x){
+tcga.db.addCol <- function(){
   tcga.db$Platform <- ""
   tcga.db$Disease <- ""
   diseases <- sapply(strsplit(biosample.tcga$biosample,split = " - "),function(x){x[1]})
