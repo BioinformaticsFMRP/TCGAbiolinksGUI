@@ -850,5 +850,4 @@ heatmap.plus.sm <- function (x, Rowv = NULL, Colv = if (symm) "Rowv" else NULL,
   retval$colorTable <- data.frame(low = retval$breaks[-length(retval$breaks)],
                                   high = retval$breaks[-1], color = retval$col)
   invisible(retval)
-
 }

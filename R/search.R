@@ -272,7 +272,7 @@ show.results <- function(){
 
 is.experiment <- function(experiment){
   v <- c(unique(platforms$Standard), 'all')
-  if((length(grep(experiment, v, ignore.case = T)) > 0) & (nchar(experiment) > 3)){
+  if((length(grep(experiment, v, ignore.case = T)) > 0) & (nchar(experiment) >= 3)){
     return (TRUE)
   }
   else{

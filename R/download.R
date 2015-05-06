@@ -1,9 +1,7 @@
 #' @export
-biOMICs.download <- function(lines){
-
-  encode.url <- "https://www.encodeproject.org/"
-  tcga.url <- "https://tcga-data.nci.nih.gov"
-  json <- "/?format=JSON"
+biOMICs.download <- function(lines,
+                             enc.file.type = NULL,
+                             rmap.file.type=NULL){
 
   encode.lines <- subset(lines, database == 'encode')
   rmap.lines <- subset(lines, database == 'roadmap')
@@ -11,12 +9,12 @@ biOMICs.download <- function(lines){
 
   #--------------   download Encode
   if(dim(encode.lines)[1] >0){
-    ENCODEDownload(encode.lines)
+    ENCODEDownload(encode.lines,enc.file.type)
   }
 
   #--------------   download ROADMAP
   if(dim(rmap.lines)[1] > 0){
-    ROADMAPDownload(rmap.lines)
+    ROADMAPDownload(rmap.lines, rmap.file.type)
   }
   #---------------- download TCGA
   # TODO: add filters, folder to save
@@ -26,46 +24,60 @@ biOMICs.download <- function(lines){
   }
 }
 
-ENCODEDownload <- function(lines){
-  for (i in 1:dim(encode.lines)[1]){
-    id <-  encode.lines$ID[i]
+ENCODEDownload <- function(lines,type = NULL){
+  encode.url <- "https://www.encodeproject.org/"
+  json <- "/?format=JSON"
+  for (i in 1:dim(lines)[1]){
+    id <-  lines$ID[i]
     url <- paste0(encode.url, 'experiments/', id, json)
 
-    print(url)
+    #print(url)
     #get list of files
     item <- rjson::fromJSON (
       RCurl::getURL(url, dirlistonly = TRUE,
                     .opts = list(ssl.verifypeer = FALSE))
     )[['files']]
 
+    files <- sapply(item,function(x){x$href})
+
+    if(!is.null(type)){
+      idx <- unlist(lapply(type,function(x){grep(x,files)}))
+      files <- files[idx]
+    }
+
     #download files
-    for (j in 1:length(item)){
+    for (j in seq_along(item)){
       file <- item[[j]]$href
       link <- paste0(encode.url, file)
 
       fileout <- unlist(strsplit(link, "/"))
       fileout <- fileout[length(fileout)]
 
-      print(link)
       downloader::download(link, fileout)
     }
   }
 
 }
-ROADMAPDownload <- function (lines){
+#' @import RCurl
+ROADMAPDownload <- function (lines,type=NULL){
 
   for (i in 1:dim(lines)[1]){
-    id <-  roadmap$ID[i]
+    id <-  lines$ID[i]
     url <- roadmap.db[roadmap.db$X..GEO.Accession == id,]$GEO.FTP
-
+    if(url == ""){next}
     #get list of files in roadmap FTP
     filenames <- getURL(url, ftp.use.epsv = FALSE, dirlistonly = TRUE)
     filenames <- strsplit(filenames, "\r\n")
     filenames <- unlist(filenames)
 
+    if(!is.null(type)){
+      idx <- unlist(lapply(type,function(x){grep(x,filenames)}))
+      filenames <- filenames[idx]
+    }
+
     #download files
-    for(j in 1:length(filenames)){
-      downloader::download(paste0(url,filenames[j]), filenames[j])
+    for(j in seq_along(filenames)){
+      #downloader::download(paste0(url,filenames[j]), filenames[j])
     }
   }
 }
