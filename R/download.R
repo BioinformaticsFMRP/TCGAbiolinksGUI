@@ -58,13 +58,17 @@ ENCODEDownload <- function(lines,type = NULL){
   }
 
 }
+
+#' @export
 #' @import RCurl
-ROADMAPDownload <- function (lines,type=NULL){
+ROADMAPDownload <- function (lines,type=NULL,path="."){
+
+  dir.create(path,showWarnings = F)
 
   for (i in 1:dim(lines)[1]){
     id <-  lines$ID[i]
     url <- roadmap.db[roadmap.db$X..GEO.Accession == id,]$GEO.FTP
-    if(url == ""){next}
+    if(length(url) == 0){next}
     #get list of files in roadmap FTP
     filenames <- getURL(url, ftp.use.epsv = FALSE, dirlistonly = TRUE)
     filenames <- strsplit(filenames, "\r\n")
@@ -74,10 +78,39 @@ ROADMAPDownload <- function (lines,type=NULL){
       idx <- unlist(lapply(type,function(x){grep(x,filenames)}))
       filenames <- filenames[idx]
     }
-
+    files <- paste0(path,"/",basename(filenames[j]))
     #download files
-    for(j in seq_along(filenames)){
-      #downloader::download(paste0(url,filenames[j]), filenames[j])
+    print(files)
+    for(j in seq_along(files)){
+      print(url)
+      print(files)
+
+      #downloader::download(paste0(url,filenames[j]), files[j])
+    }
+  }
+}
+
+#' @export
+#' @import RCurl
+get.roadmap <- function (lines,type=NULL,path="."){
+print(path)
+  dir.create(path,showWarnings = F,recursive =T)
+
+  for (i in 1:dim(lines)[1]){
+    url <- lines[i,]$GEO.FTP
+    if(length(url) == 0){next}
+    filenames <- getFileNames(url)
+    if(!is.null(type)){
+      idx <- unlist(lapply(type,function(x){grep(x,filenames)}))
+      filenames <- filenames[idx]
+    }
+    files <- paste0(url,filenames)
+    #download files
+    print(files)
+    for(j in seq_along(files)){
+      aux <- paste0(path,"/",basename(files[j]))
+      if(!file.exists(aux)){
+      downloader::download(files[j],aux))
     }
   }
 }
