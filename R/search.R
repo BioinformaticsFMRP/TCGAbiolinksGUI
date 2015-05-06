@@ -101,7 +101,7 @@ is.mapped <- function(term){
 #' @description
 #'  Search a term using an ontology in the TCGA, ENCODE, ROADMAP databases
 #' @param term Term to be searched
-#' @import rols
+#' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
 biOMICs.search  <- function(term, experiment = 'all'){
   env <- as.environment("package:biOMICs")
