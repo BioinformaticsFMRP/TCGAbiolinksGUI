@@ -9,49 +9,6 @@ getBarCode <- function(TCGAList, filterList){
   files <- gsub(" ", ",", gdata::trim(files))
 }
 
-#' @title TCGA query
-#'
-#' @description  Crossfinding of file locations for downloading (TCGADownload)
-#' @param tumor tumor code between "acc"  "blca" "brca" "cesc" "chol" "cntl" "coad" "dlbc" "esca" "fppp" "gbm"
-#'                                 "hnsc" "kich" "kirc" "kirp" "laml" "lcml" "lgg"  "lihc" "lnnh" "luad" "lusc"
-#'                                 "meso" "misc" "ov"   "paad" "pcpg" "prad" "read" "sarc" "skcm" "stad" "tgct"
-#'                                 "thca" "thym" "ucec" "ucs"  "uvm"
-#'
-#' @param platform platform code between  "clin"                                "bio"
-#'                                        "biotab"                              "diagnostic_images"
-#'                                        "pathology_reports"                   "tissue_images"
-#'                                        "illuminahiseq_mirnaseq"              "genome_wide_snp_6"
-#'                                        "humanmethylation450"                 "mda_rppa_core"
-#'                                        "illuminahiseq_rnaseqv2"              "illuminaga_dnaseq_curated"
-#'                                        "illuminaga_dnaseq_automated"         "illuminaga_dnaseq_cont_automated"
-#'                                        "mixed_dnaseq_curated"                "illuminaga_mirnaseq"
-#'                                        "illuminahiseq_dnaseqc"               "illuminahiseq_wgbs"
-#'                                        "illuminahiseq_rnaseq"                "illuminahiseq_totalrnaseqv2"
-#'                                        "illuminaga_dnaseq"                   "humanmethylation27"
-#'                                        "agilentg4502a_07_3"                  "illuminahiseq_dnaseq_automated"
-#'                                        "illuminahiseq_dnaseq_cont_automated" "miRNASeq"
-#'                                        "microsat_i"                          "illuminaga_rnaseq"
-#'                                        "illuminaga_rnaseqv2"                 "RNASeq"
-#'                                        "solid_dnaseq"                        "mixed_dnaseq_automated"
-#'                                        "minbio"                              "abi"
-#'                                        "ht_hg-u133a"                         "hg-cgh-244a"
-#'                                        "hg-cgh-415k_g4124a"                  "humanhap550"
-#'                                        "illuminadnamethylation_oma002_cpi"   "illuminadnamethylation_oma003_cpi"
-#'                                        "huex-1_0-st-v2"                      "agilentg4502a_07_1"
-#'                                        "agilentg4502a_07_2"                  "h-mirna_8x15k"
-#'                                        "h-mirna_8x15kv2"                     "mixed_dnaseq_cont"
-#'                                        "mixed_dnaseq"                        "mixed_dnaseq_cont_curated"
-#'                                        "hg-u133_plus_2"                      " "
-#'                                        "human1mduo"                          "cgh-1x1m_g4447a"
-#'                                        "illuminaga_mrna_dge"                 "solid_dnaseq_curated"
-#'
-#' @param added.since Date to search for files (since)
-#' @param added.up.to Date to search for files (up.to)
-#' @param level level 1 2 3
-#' @param listSample list of barcodes to be considered in the search
-#' @example inst/examples/queryExamples.R
-#' @seealso TCGADownload
-#' @export
 #' @import downloader
 TCGAQuery <- function(tumor=NULL,
                       platform=NULL,

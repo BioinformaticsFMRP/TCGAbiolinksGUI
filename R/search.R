@@ -246,11 +246,11 @@ show.results <- function(){
   # Preparing the output table
   colnames(rmap.result)[1:3] <- c("ID","Sample","Experiment")
   colnames(enc.result) [1:3] <- c("ID","Sample","Experiment")
-  colnames(tcga.result) [c(8,12,11)] <- c("ID","Sample","Experiment")
+  colnames(tcga.result) [c(7,11,10)] <- c("ID","Sample","Experiment")
 
   results <- rbind(enc.result[1:3],
                    rmap.result[1:3],
-                   tcga.result[c(8,12,11)]
+                   tcga.result[c(7,11,10)]
   )
   database <- c(rep("encode",  nrow(enc.result)),
                 rep("roadmap", nrow(rmap.result)),

@@ -15,12 +15,13 @@ biOMICs.download <- function(lines){
   }
 
   #--------------   download ROADMAP
-  if(dim(roadmap.lines)[1] > 0){
-    ROADMAPDownload(roadmap.lines)
+  if(dim(rmap.lines)[1] > 0){
+    ROADMAPDownload(rmap.lines)
   }
   #---------------- download TCGA
   # TODO: add filters, folder to save
   if(dim(tcga.lines)[1] > 0){
+    tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
     TCGADownload(tcga.lines,path="TCGA")
   }
 }
