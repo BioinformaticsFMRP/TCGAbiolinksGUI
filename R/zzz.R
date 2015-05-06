@@ -13,7 +13,7 @@
     biomicsEnv$roadmap.db <- load.roadmap()
     load.tcga(biomicsEnv)
     save(biosample.encode,biosample.roadmap,biosample.tcga,
-         encode.db,platforms,roadmap.db,systems,tcga.db,platform.table,
+         encode.db,platforms,roadmap.db,systems,tcga.db,platform.table,disease.table,
          file = paste0(system.file("extdata", package="biOMICs"),"/biomics.rda")
     )
   }

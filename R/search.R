@@ -237,13 +237,7 @@ show.results <- function(){
   message(paste0("|ROADMAP: " , length(rmap.samples)))
 
   message("--------------- Number of samples ------------------")
-  if(nrow(tcga.result) > 0) {
-    n.barcode <- sum(sapply(tcga.result$deployStatus,function(x){length(unlist(str_split(x,",")))}))
-  } else {
-    n.barcode <- 0
-  }
   message(paste0("|TCGA Archives: " , nrow(tcga.result)))
-  message(paste0("|     Barcodes: " , n.barcode))
   message(paste0("|ENCODE : " , nrow(enc.result)))
   message(paste0("|ROADMAP: " , nrow(rmap.result)))
   message("====================================================")
