@@ -332,31 +332,6 @@ calculate.pvalues <- function (values,idx1,idx2,paired=TRUE,exact=TRUE,mc.cores=
 
   return(data.frame(w.p.values,w.p.values.adj))
 }
-calculate.pvalues2 <- function (values,idx1,idx2,paired=TRUE){
-  # Apply Wilcoxon test in order to calculate the p-values
-  w.p.values <- unlist(mclapply(values,function(probe) {
-    x <- coin::wilcoxsign_test(as.matrix(probe[idx1]) ~ as.matrix(probe[idx2]),
-                               zero.method="Wilcoxon",
-                               dist="exact")
-    z <- coin::pvalue(x)
-    return(z)
-  }, mc.cores=detectCores()))
-  print(w.p.values)
-  ##Plot a histogram
-  png(filename="histogram_pvalues.png")
-  hist(w.p.values)
-  dev.off()
-  ##Calculate the adjusted p-values by using the Benjamini-Hochberg (BH) method
-  w.p.values.adj <- p.adjust(w.p.values,method="BH")
-  print(length(w.p.values.adj))
-
-  png(filename="histogram_pvalues_adj.png")
-  ##Plot a histogram
-  hist(w.p.values.adj)
-  dev.off()
-
-  return(data.frame(w.p.values,w.p.values.adj))
-}
 
 #' @title Volcano plot
 #' @description

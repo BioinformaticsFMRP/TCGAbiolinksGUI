@@ -29,5 +29,13 @@ Imports:
   pbapply,
   rols,
   stringr,
-  plyr
+  plyr,
+  GGally,
+  GenomicRanges,
+  biomaRt,
+  exactRankTests,
+  ggplot2,
+  gplots,
+  matlab,
+  survival
 VignetteBuilder: knitr

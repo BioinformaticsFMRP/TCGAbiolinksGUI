@@ -2,7 +2,7 @@
 # internal: used by biOMICs.search
 systemSearch <- function(term){
   #print (term)
-  env <- as.environment("package:biOMICs")
+  env <- as.environment("package:biomics")
   if(!success){
     found <- intersect(term, systems$BTO)
     if(length(found) > 0){
@@ -48,7 +48,7 @@ map.to.bto <- function(term){
 
 
 is.mapped <- function(term){
-  env <- as.environment("package:biOMICs")
+  env <- as.environment("package:biomics")
 
   # search in search cache
   if(exists("search.cache")){
@@ -80,7 +80,7 @@ is.mapped <- function(term){
     message("found in encode")
     res <- biosample.encode[idx[1],]$BTO
     if(!is.na(res)){
-      env$success <- T
+      env$success <-T
       env$solution <- res
       return ()
     }
@@ -90,6 +90,7 @@ is.mapped <- function(term){
 
   idx <- grep(term, biosample.tcga$biosample, ignore.case = T)
   if(length(idx) > 0){
+    message("found in TCGA")
     res <- biosample.tcga[idx[1],]$BTO
     env$success <- T
     env$solution <- res
@@ -104,7 +105,7 @@ is.mapped <- function(term){
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
 biomics.search  <- function(term, experiment = 'all'){
-  env <- as.environment("package:biOMICs")
+  env <- as.environment("package:biomics")
   message(paste("biOMICS is searching for:", term, "\nSearching..."))
   start.time <- Sys.time()
   env$success <- F
@@ -293,10 +294,53 @@ is.valid.term <- function(term){
 }
 
 #------------------------ Roadmap search
-
+#' @title Roadmap search
+#' @description
+#'    Searches in the roadmap database
+#' @param accession GEO sample accession Ex: GSM409307
+#' @param sample Example:
+#' \tabular{ll}{
+#'H1 cell line                     \tab heart, fetal day96 U  \cr
+#'IMR90 cell line                  \tab kidney, fetal day122 U\cr
+#'CD34 primary cells               \tab lung, fetal day122 U  \cr
+#'CD34 mobilized primary cells     \tab heart, fetal day101 U \cr
+#'kidney, fetal day82 F            \tab lung, fetal day101 U  \cr
+#'breast, luminal epithelial cells \tab CD3 primary cells     \cr
+#'breast, myoepithelial cells      \tab CD19 primary cells    \cr
+#'breast, stem cells               \tab ES-WA7 cell line      \cr
+#'brain, fetal day122 M            \tab ES-I3 cell line       \cr
+#'adrenal gland, fetal day96 U     \tab CD34 cultured cells
+#'}
+#' @param experiment Examples:
+#'\tabular{llll}{
+#'H3K4me1        \tab smRNA-Seq              \tab H2BK20ac \tab H4K91ac                     \cr
+#'H3K4me3        \tab MeDIP-Seq              \tab H3K14ac  \tab Exon array                  \cr
+#'H3K36me3       \tab H3K27ac                \tab H3K23ac  \tab H2BK5ac                     \cr
+#'H3K9ac         \tab DNase hypersensitivity \tab H3K4ac   \tab H3K23me2                    \cr
+#'MRE-Seq        \tab H3K18ac                \tab H3K4me2  \tab RRBS                        \cr
+#'ChIP-Seq input \tab H4K5ac                 \tab H3K56ac  \tab Digital genomic footprinting\cr
+#'H3K9me3        \tab H2AK5ac                \tab H3K79me1 \tab H3K9me1                     \cr
+#'H3K27me3       \tab H2BK120ac              \tab H3K79me2 \tab H2A.Z                       \cr
+#'Bisulfite-Seq  \tab H2BK12ac               \tab H4K20me1 \tab H3T11ph                     \cr
+#'mRNA-Seq       \tab H2BK15ac               \tab H4K8ac   \tab H2AK9ac
+#'}
+#' @param cemter Example:
+#' \tabular{l}{
+#'UCSD                    \cr
+#'UCSF-UBC                \cr
+#'Broad                   \cr
+#'University of Washington
+#'}
+#' @param embargo.end.date Example: 2010-05-03
+#' @param NA.Accession Example: NA000020967.1
 #' @export
+#' @return Dataframe with the results of the query
+#'\tabular{llllll}{
+#'  GSM409307 \tab H1 cell line \tab H3K4me1 \tab UCSD \tab
+#'  ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/ \tab 2010-05-03
+#'}
 roadmap.search <- function(
-  GEO.Accession = NULL,
+  accession = NULL,
   sample = NULL,
   experiment = NULL,
   NA.Accession = NULL,
@@ -316,7 +360,7 @@ roadmap.search <- function(
     id <- apply(id, 1,any)
     db <-  db[id,]
   }
-  if(!is.null(GEO.Accession)){
+  if(!is.null(accession)){
     id <- sapply(GEO.Accession, function(x){db$X..GEO.Accession == x})
     id <- apply(id, 1,any)
     db <-  db[id,]
@@ -343,8 +387,64 @@ roadmap.search <- function(
 
 
 #------------------------ Encode search
-
+#' @title Encode search
+#' @description
+#'    Searches in the encode database
+#' @param accession GEO sample accession Ex: ENCSR337VPD
+#' @param biosample Example:
+#'\tabular{lllll}{
+#'  hepatocyte             \tab GM12878    \tab induced pluripotent stem cell \tab kidney    \tab Daoy                    \cr
+#'  neural progenitor cell \tab A673       \tab bipolar spindle neuron        \tab heart     \tab A172                    \cr
+#'  K562                   \tab Karpas-422 \tab adipose tissue                \tab liver     \tab LHCN-M2                 \cr
+#'  A549                   \tab MM.1S      \tab adrenal gland                 \tab testis    \tab skeletal muscle myoblast\cr
+#'  brain                  \tab HT1080     \tab female gonad                  \tab RPMI-7951 \tab myotube                 \cr
+#'  spleen                 \tab SK-N-DZ    \tab lung                          \tab M059J     \tab H7-hESC                 \cr
+#'  pancreas               \tab SK-MEL-5   \tab sigmoid colon                 \tab H4        \tab astrocyte               \cr
+#'  HepG2                  \tab NCI-H460   \tab small intestine               \tab SJSA1     \tab HeLa-S3
+#'}
+#' @param assay Example:
+#'\tabular{ll}{
+#'  RAMPAGE                                    \tab RRBS                                                \cr
+#'  ChIP-seq                                   \tab FAIRE-seq                                           \cr
+#'  RNA-seq                                    \tab Repli-seq                                           \cr
+#'  shRNA knockdown followed by RNA-seq        \tab DNA methylation profiling by array assay            \cr
+#'  DNase-seq                                  \tab protein sequencing by tandem mass spectrometry assay\cr
+#'  iCLIP                                      \tab Switchgear                                          \cr
+#'  ChIA-PET                                   \tab CAGE                                                \cr
+#'  MeDIP-seq assay                            \tab RIP-chip                                            \cr
+#'  MRE-seq                                    \tab Repli-chip                                          \cr
+#'  RNA profiling by array assay               \tab whole-genome shotgun bisulfite sequencing           \cr
+#'  RNA-PET                                    \tab MNase-seq                                           \cr
+#'  5C                                         \tab DNA-PET                                             \cr
+#'  comparative genomic hybridization by array \tab RIP-seq
+#'}
+#' @param lab Example:
+#' \tabular{lllll}{
+#'Thomas Gingeras, CSHL    \tab John Stamatoyannopoulos, UW \tab Kevin Struhl, HMS    \tab Gregory Crawford, Duke       \tab David Gilbert, FSU      \cr
+#'Kevin White, UChicago    \tab Barbara Wold, Caltech       \tab Peggy Farnham, USC   \tab Morgan Giddings, UNC         \tab Ali Mortazavi, UCI      \cr
+#'Michael Snyder, Stanford \tab Gene Yeo, UCSD              \tab Job Dekker, UMass    \tab Scott Tenenbaum, SUNY-Albany \tab Ross Hardison, PennState\cr
+#'Brenton Graveley, UConn  \tab Bradley Bernstein, Broad    \tab Vishwanath Iyer, UTA \tab Piero Carninci, RIKEN        \tab Bing Ren, UCSD          \cr
+#'Richard Myers, HAIB      \tab Yijun Ruan, GIS             \tab Jason Lieb, UNC      \tab Sherman Weissman, Yale       \tab Joe Ecker, Salk
+#'}
+#' @param target Target Example:
+#'\tabular{lllll}{
+#'  Control                     \tab SERBP1 \tab FAM120A \tab DDX27  \tab RPLP0 \cr
+#'  rabbit-IgG-control          \tab RRP9   \tab EIF3D   \tab CSTF2  \tab RPL23A\cr
+#'  Non-specific target control \tab RPS19  \tab EFTUD2  \tab BCLAF1 \tab RCC2  \cr
+#'  XRN2                        \tab PRPF8  \tab EEF2    \tab BCCIP  \tab RBM27 \cr
+#'  UCHL5                       \tab PES1   \tab DDX55   \tab UPF2   \tab PSIP1 \cr
+#'  TFIP11                      \tab PA2G4  \tab DDX52   \tab TROVE2 \tab PKM   \cr
+#'  SUPV3L1                     \tab NONO   \tab DDX51   \tab RPS5   \tab PHF6  \cr
+#'  SRP68                       \tab GEMIN5 \tab DDX28   \tab RPS2   \tab NUSAP1
+#'}
+#' @param description Description of the sample
+#' @param organism The organism that the sample belongs to
+#'\tabular{l}{
+#'Homo sapiens \cr Mus musculus \cr Drosophila melanogaster
+#'}
+#' @import ggplot2
 #' @export
+#' @return Dataframe with the query result
 encode.search <- function(
   accession=NULL,
   biosample=NULL,
