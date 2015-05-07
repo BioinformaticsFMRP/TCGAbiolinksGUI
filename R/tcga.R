@@ -9,6 +9,7 @@ getBarCode <- function(TCGAList, filterList){
   files <- gsub(" ", ",", gdata::trim(files))
 }
 
+#' @export
 #' @import downloader
 tcga.search <- function(tumor=NULL,
                       platform=NULL,
