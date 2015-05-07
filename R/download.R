@@ -16,12 +16,13 @@ biOMICs.download <- function(lines,
 
   #--------------   download Encode
   if(dim(encode.lines)[1] >0){
-    ENCODEDownload(encode.lines,enc.file.type)
+    encode.lines <- subset(encode.db, encode.db$accession == encode.lines$ID)
+    encode.download(encode.lines,enc.file.type)
   }
 
   #--------------   download ROADMAP
   if(dim(rmap.lines)[1] > 0){
-    rmap.lines <- subset(roadmap.db, roadmap.db$X..GEO.Accession %in% rmap.lines$ID)
+    rmap.lines <- subset(roadmap.db, roadmap.db$X..GEO.Accession == rmap.lines$ID)
     roadmap.download(rmap.lines,rmap.file.type)
   }
   #---------------- download TCGA
@@ -32,14 +33,28 @@ biOMICs.download <- function(lines,
   }
 }
 
-ENCODEDownload <- function(lines,type = NULL){
+#' @title Download encode data
+#' @description Download encode data previously selected using the encode.search function
+#' @param lines encode.search output
+#' @param path Folder to save the file
+#' @param type extesion of files to be downloaded
+#' @export
+#' @importFrom rjson fromJSON
+#' @importFrom RCurl getURL
+#' @importFrom downloader download
+encode.download <- function(lines,
+                            type = NULL,
+                            path="."
+){
+  dir.create(path, showWarnings = F, recursive =T)
+
   encode.url <- "https://www.encodeproject.org/"
   json <- "/?format=JSON"
+
   for (i in 1:dim(lines)[1]){
-    id <-  lines$ID[i]
+    id <-  lines$accession[i]
     url <- paste0(encode.url, 'experiments/', id, json)
 
-    #print(url)
     #get list of files
     item <- rjson::fromJSON (
       RCurl::getURL(url, dirlistonly = TRUE,
@@ -52,15 +67,10 @@ ENCODEDownload <- function(lines,type = NULL){
       idx <- unlist(lapply(type,function(x){grep(x,files)}))
       files <- files[idx]
     }
-
     #download files
-    for (j in seq_along(item)){
-      file <- item[[j]]$href
-      link <- paste0(encode.url, file)
-
-      fileout <- unlist(strsplit(link, "/"))
-      fileout <- fileout[length(fileout)]
-
+    for (j in seq_along(files)){
+      link <- paste0(encode.url, files[j])
+      fileout <- file.path(path,id,basename(link))
       downloader::download(link, fileout)
     }
   }
@@ -71,6 +81,7 @@ ENCODEDownload <- function(lines,type = NULL){
 #' @description Download roadmap data previously selected using the roadmap.search function
 #' @param lines roadmap.search output
 #' @param path Folder to save the file
+#' @param type extesion of files to be downloaded
 #' @export
 #' @import RCurl
 roadmap.download <- function (lines,

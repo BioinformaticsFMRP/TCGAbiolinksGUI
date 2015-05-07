@@ -339,3 +339,59 @@ roadmap.search <- function(
   return(db)
 }
 
+
+
+
+#------------------------ Encode search
+
+#' @export
+encode.search <- function(
+  accession=NULL,
+  biosample=NULL,
+  assay=NULL,
+  lab=NULL,
+  target=NULL,
+  description=NULL,
+  organism=NULL
+){
+
+  #roadmap.verify.input(GEO.Accession,sample,experiment,center,embargo.end.date)
+
+  db <- encode.db
+  if(!is.null(biosample)){
+    id <- sapply(biosample, function(x){db$biosample == x} )
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(assay)){
+    id <- sapply(assay, function(x){db$assay == x})
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(accession)){
+    id <- sapply(accession, function(x){db$accession == x})
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(lab)){
+    id <- sapply(lab, function(x){db$lab == x})
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(target)){
+    id <- sapply(target, function(x){db$target == x})
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(organism)){
+    id <- sapply(organism, function(x){db$organism == x})
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(description)){
+    id <- grep(description, db$description,ignore.case = FALSE)
+    db <-  db[id,]
+  }
+  return(db)
+}
+
