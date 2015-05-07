@@ -103,7 +103,7 @@ is.mapped <- function(term){
 #' @param term Term to be searched
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
-biOMICs.search  <- function(term, experiment = 'all'){
+biomics.search  <- function(term, experiment = 'all'){
   env <- as.environment("package:biOMICs")
   message(paste("biOMICS is searching for:", term, "\nSearching..."))
   start.time <- Sys.time()

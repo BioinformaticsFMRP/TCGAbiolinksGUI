@@ -1,11 +1,11 @@
 
 .onAttach <- function (libname, pkgname){
 
-  file = system.file("extdata/biomics.rda", package="biOMICs")
+  file = system.file("extdata/biomics.rda", package="biomics")
   if(file.exists(file)){
-    load(file,envir = as.environment("package:biOMICs"))
+    load(file,envir = as.environment("package:biomics"))
   } else {
-    biomicsEnv <- as.environment("package:biOMICs")
+    biomicsEnv <- as.environment("package:biomics")
     load.biosamples(biomicsEnv)
     load.systems(biomicsEnv)
     load.platforms(biomicsEnv)
@@ -14,7 +14,7 @@
     load.tcga(biomicsEnv)
     save(biosample.encode,biosample.roadmap,biosample.tcga,
          encode.db,platforms,roadmap.db,systems,tcga.db,platform.table,disease.table,
-         file = paste0(system.file("extdata", package="biOMICs"),"/biomics.rda")
+         file = paste0(system.file("extdata", package="biomics"),"/biomics.rda")
     )
   }
 

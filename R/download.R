@@ -1,11 +1,11 @@
-#' @title biOMICs.download
+#' @title biomics.download
 #' @description Download data previously selected using the biomics.search function
 #' @param lines biomics.search output
 #' @param enc.file.type Extension to be downloaed from encode database
 #' @param rmap.file.type Extension to be downloaed from roadmap database
-#' @seealso biOMICs.search
+#' @seealso biomics.search
 #' @export
-biOMICs.download <- function(lines,
+biomics.download <- function(lines,
                              enc.file.type = NULL,
                              rmap.file.type=NULL
 ){
@@ -39,9 +39,6 @@ biOMICs.download <- function(lines,
 #' @param path Folder to save the file
 #' @param type extesion of files to be downloaded
 #' @export
-#' @importFrom rjson fromJSON
-#' @importFrom RCurl getURL
-#' @importFrom downloader download
 encode.download <- function(lines,
                             type = NULL,
                             path="."
