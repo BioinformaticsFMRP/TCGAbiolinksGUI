@@ -268,7 +268,6 @@ prepareInfoTable <- function(iLink,iOut){
 #' Get all files in the ftp directory
 #' @keywords internal
 getFileNames <- function(ftp){
-  print(ftp)
   filePath <- unlist (
     strsplit(
       RCurl::getURL(

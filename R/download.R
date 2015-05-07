@@ -121,13 +121,16 @@ get.roadmap <- function (lines,
       filenames <- filenames[idx]
     }
     files <- paste0(url,filenames)
-    name <- str_replace_all(lines[i,]$Sample.Name, "[^[:alnum:]]", "_")
-    dir.create(paste0(path,"/",lines[i,]$Experiment,"/",name),
-               showWarnings = F, recursive =T)
+    name.sample <- str_replace_all(lines[i,]$Sample.Name, "[^[:alnum:]]", "_")
+    name.experiment <- str_replace_all(lines[i,]$Experiment, "[^[:alnum:]]", "_")
+    folder <- paste0(path,"/",name.experiment,"/",name.sample)
+    dir.create(folder,showWarnings = F, recursive =T)
     #download files
+
     for(j in seq_along(files)){
-      aux <- paste0(path,"/",basename(files[j]))
+      aux <- paste0(folder,"/",basename(files[j]))
       if(!file.exists(aux)){
+        message(paste0("Downloading: ", aux))
         downloader::download(files[j],aux)
       }
     }
