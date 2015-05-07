@@ -295,7 +295,7 @@ is.valid.term <- function(term){
 #------------------------ Roadmap search
 
 #' @export
-search.roadmap <- function(
+roadmap.search <- function(
   GEO.Accession = NULL,
   sample = NULL,
   experiment = NULL,

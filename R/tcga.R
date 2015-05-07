@@ -10,7 +10,7 @@ getBarCode <- function(TCGAList, filterList){
 }
 
 #' @import downloader
-TCGAQuery <- function(tumor=NULL,
+tcga.search <- function(tumor=NULL,
                       platform=NULL,
                       added.since=NULL,
                       added.up.to=NULL,
@@ -144,13 +144,7 @@ TCGAQuery <- function(tumor=NULL,
   return(x)
 }
 
-#'@title TCGAUpdate
-#'
-#'@description replace the dataFolders.rda matrix with the
-#'             new matrix from "The Cancer Genome Atlas" ftp
-#'@author Davide
-#'@seealso TCGAQuery
-#'@export
+#@description get the arhive info from tcga api
 getArchive <- function(id){
   tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
   tcga.query <- paste0("query=Archive&FileInfo[@id=",id,"]&roleName=archiveCollection")

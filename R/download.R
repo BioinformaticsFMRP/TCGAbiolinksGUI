@@ -105,7 +105,7 @@ ROADMAPDownload <- function (lines,
 #' @param path Folder to save the file
 #' @export
 #' @import RCurl
-get.roadmap <- function (lines,
+roadmap.download <- function (lines,
                          type=NULL,
                          path="."
 ){
@@ -147,7 +147,7 @@ get.roadmap <- function (lines,
 #' }
 #' @export
 #' @import downloader
-TCGADownload <- function(data=NULL,path=".")
+tcga.download <- function(data=NULL, path=".")
 {
   dir.create(path,showWarnings = F)
   root <- "https://tcga-data.nci.nih.gov"

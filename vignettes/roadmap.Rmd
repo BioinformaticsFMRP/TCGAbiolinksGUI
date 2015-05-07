@@ -25,7 +25,7 @@ This document describes how to search/download roadmap data using biomics packag
 
 ```{r, eval = FALSE}
 # get all H1 cell line and IMR90 cell line from platforms H3K4me1 H3K4me3
-query <- search.roadmap(sample     = c("H1 cell line","IMR90 cell line"),
+query <- roadmap.search(sample     = c("H1 cell line","IMR90 cell line"),
                           experiment = c("H3K4me1","H3K4me3")
                           )
 ```
@@ -37,7 +37,7 @@ You can easily download roadmap data using the `get.roadmap` function.
  
 ```{r, eval = FALSE}
 # get all bed sampples from the query and save into rmap folder
-get.roadmap(query,type="bed",path="rmap") 
+roadmap.download(query,type="bed",path="rmap") 
 ```
 
 Obs: The function will structure the folders to save the data as:
