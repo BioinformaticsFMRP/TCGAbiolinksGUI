@@ -21,7 +21,8 @@ biOMICs.download <- function(lines,
 
   #--------------   download ROADMAP
   if(dim(rmap.lines)[1] > 0){
-    ROADMAPDownload(rmap.lines, rmap.file.type)
+    rmap.lines <- subset(roadmap.db, roadmap.db$X..GEO.Accession %in% lines$ID)
+    roadmap.download(rmap.lines,rmap.file.type)
   }
   #---------------- download TCGA
   # TODO: add filters, folder to save
@@ -64,39 +65,6 @@ ENCODEDownload <- function(lines,type = NULL){
     }
   }
 
-}
-
-#' @import RCurl
-ROADMAPDownload <- function (lines,
-                             type=NULL,
-                             path="."
-){
-
-  dir.create(path,showWarnings = F)
-
-  for (i in 1:dim(lines)[1]){
-    id <-  lines$ID[i]
-    url <- roadmap.db[roadmap.db$X..GEO.Accession == id,]$GEO.FTP
-    if(length(url) == 0){next}
-    #get list of files in roadmap FTP
-    filenames <- getURL(url, ftp.use.epsv = FALSE, dirlistonly = TRUE)
-    filenames <- strsplit(filenames, "\r\n")
-    filenames <- unlist(filenames)
-
-    if(!is.null(type)){
-      idx <- unlist(lapply(type,function(x){grep(x,filenames)}))
-      filenames <- filenames[idx]
-    }
-    files <- paste0(path,"/",basename(filenames[j]))
-    #download files
-    print(files)
-    for(j in seq_along(files)){
-      print(url)
-      print(files)
-
-      #downloader::download(paste0(url,filenames[j]), files[j])
-    }
-  }
 }
 
 #' @title Download roadmap data
