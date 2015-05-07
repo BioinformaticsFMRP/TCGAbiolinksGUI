@@ -121,7 +121,9 @@ get.roadmap <- function (lines,
       filenames <- filenames[idx]
     }
     files <- paste0(url,filenames)
-
+    name <- str_replace_all(lines[i,]$Sample.Name, "[^[:alnum:]]", "_")
+    dir.create(paste0(path,"/",lines[i,]$Experiment,"/",name),
+               showWarnings = F, recursive =T)
     #download files
     for(j in seq_along(files)){
       aux <- paste0(path,"/",basename(files[j]))
