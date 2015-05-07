@@ -21,7 +21,7 @@ biOMICs.download <- function(lines,
 
   #--------------   download ROADMAP
   if(dim(rmap.lines)[1] > 0){
-    rmap.lines <- subset(roadmap.db, roadmap.db$X..GEO.Accession %in% lines$ID)
+    rmap.lines <- subset(roadmap.db, roadmap.db$X..GEO.Accession %in% rmap.lines$ID)
     roadmap.download(rmap.lines,rmap.file.type)
   }
   #---------------- download TCGA
