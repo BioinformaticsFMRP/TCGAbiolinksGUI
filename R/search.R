@@ -291,3 +291,51 @@ is.valid.term <- function(term){
     return(FALSE)
   }
 }
+
+#------------------------ Roadmap search
+
+#' @export
+search.roadmap <- function(
+  GEO.Accession = NULL,
+  sample = NULL,
+  experiment = NULL,
+  NA.Accession = NULL,
+  center = NULL,
+  embargo.end.date = NULL
+){
+  #roadmap.verify.input(GEO.Accession,sample,experiment,center,embargo.end.date)
+
+  db <- roadmap.db
+  if(!is.null(sample)){
+    id <- sapply(sample, function(x){db$Sample.Name == x} )
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(experiment)){
+    id <- sapply(experiment, function(x){db$Experiment == x})
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(GEO.Accession)){
+    id <- sapply(GEO.Accession, function(x){db$X..GEO.Accession == x})
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(center)){
+    id <- sapply(center, function(x){db$Center == x})
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(embargo.end.date)){
+    id <- sapply(embargo.end.date, function(x){db$Embargo.end.date == x})
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  if(!is.null(NA.Accession)){
+    id <- sapply(NA.Accession, function(x){db$NA.Accession == x})
+    id <- apply(id, 1,any)
+    db <-  db[id,]
+  }
+  return(db)
+}
+

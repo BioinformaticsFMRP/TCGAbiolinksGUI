@@ -1,7 +1,14 @@
+#' @title biOMICs.download
+#' @description Download data previously selected using the biomics.search function
+#' @param lines biomics.search output
+#' @param enc.file.type Extension to be downloaed from encode database
+#' @param rmap.file.type Extension to be downloaed from roadmap database
+#' @seealso biOMICs.search
 #' @export
 biOMICs.download <- function(lines,
                              enc.file.type = NULL,
-                             rmap.file.type=NULL){
+                             rmap.file.type=NULL
+){
 
   encode.lines <- subset(lines, database == 'encode')
   rmap.lines <- subset(lines, database == 'roadmap')
@@ -59,9 +66,11 @@ ENCODEDownload <- function(lines,type = NULL){
 
 }
 
-#' @export
 #' @import RCurl
-ROADMAPDownload <- function (lines,type=NULL,path="."){
+ROADMAPDownload <- function (lines,
+                             type=NULL,
+                             path="."
+){
 
   dir.create(path,showWarnings = F)
 
@@ -90,11 +99,18 @@ ROADMAPDownload <- function (lines,type=NULL,path="."){
   }
 }
 
+#' @title Download roadmap data
+#' @description Download roadmap data previously selected using the roadmap.search function
+#' @param lines roadmap.search output
+#' @param path Folder to save the file
 #' @export
 #' @import RCurl
-get.roadmap <- function (lines,type=NULL,path="."){
-print(path)
-  dir.create(path,showWarnings = F,recursive =T)
+get.roadmap <- function (lines,
+                         type=NULL,
+                         path="."
+){
+
+  dir.create(path, showWarnings = F, recursive =T)
 
   for (i in 1:dim(lines)[1]){
     url <- lines[i,]$GEO.FTP
@@ -105,16 +121,16 @@ print(path)
       filenames <- filenames[idx]
     }
     files <- paste0(url,filenames)
+
     #download files
-    print(files)
     for(j in seq_along(files)){
       aux <- paste0(path,"/",basename(files[j]))
       if(!file.exists(aux)){
-      downloader::download(files[j],aux))
+        downloader::download(files[j],aux)
+      }
     }
   }
 }
-
 #' @title TCGA Download
 #' @description Download data previously selected using the TCGAQuery function
 #' @param data TCGAQUery output
