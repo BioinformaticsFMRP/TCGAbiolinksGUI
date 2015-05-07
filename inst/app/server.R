@@ -66,8 +66,8 @@ biOMICsServer <- function(input, output, session) {
       link <- c()
       accession <- unlist(input$allRows)
       for (i in seq(1,length(accession), by = 6)){
-        index <- which(roadmap$summary$X..GEO.Accession ==  accession[i])
-        link <- c(link,as.character(roadmap$summary$GEO.FTP[index]))
+        index <- which(roadmap.db$X..GEO.Accession ==  accession[i])
+        link <- c(link,as.character(roadmap.db$GEO.FTP[index]))
       }
       geoDownloaderLinks(link,rmapDir, TRUE)
     }}
@@ -78,18 +78,18 @@ biOMICsServer <- function(input, output, session) {
     if (input$rmapSearchBt){
       link <- c()
       # improve using subset - subset(data,selection,projection)
-      for (i in seq_along(roadmap$summary$Experiment)){
+      for (i in seq_along(roadmap.db$Experiment)){
         if (is.null(input$rmapExpFilter)
-            || roadmap$summary$Experiment[i]  %in% input$rmapExpFilter){
+            || roadmap.db$Experiment[i]  %in% input$rmapExpFilter){
           if (is.null(input$rmapSamplesFilter)
-              || roadmap$summary$Sample.Name[i]  %in% input$rmapSamplesFilter){
-            link <- c(link,as.character(roadmap$summary$GEO.FTP[i]))
+              || roadmap.db$Sample.Name[i]  %in% input$rmapSamplesFilter){
+            link <- c(link,as.character(roadmap.db$GEO.FTP[i]))
             indexes <- c(indexes,i)
           }
         }
       }
     }
-    roadmap$summary[indexes,c(1:5,8)]
+    roadmap.db[indexes,c(1:5,8)]
   },
   options = list(pageLength = 10,
                  scrollX = TRUE,

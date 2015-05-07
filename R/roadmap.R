@@ -237,8 +237,8 @@ geoDownloaderLinks <- function(iFTPs, iOut, gui = FALSE){
   }
 }
 
-#' Uncompress a list of files - it does not remove the compressed file
-#' @keywords internal
+# Uncompress a list of files - it does not remove the compressed file
+# @keywords internal
 uncompress <- function(iFiles){
   if (!is.null(iFiles)){
     pbapply::pblapply  (iFiles,
@@ -254,8 +254,8 @@ uncompress <- function(iFiles){
   }
 }
 
-#' Show ftp links downloaded
-#' @keywords internal
+# Show ftp links downloaded
+# @keywords internal
 prepareInfoTable <- function(iLink,iOut){
   if(length(iLink) > 0 ){
     df <- do.call (rbind.data.frame, iLink)
@@ -265,8 +265,8 @@ prepareInfoTable <- function(iLink,iOut){
   }
 }
 
-#' Get all files in the ftp directory
-#' @keywords internal
+# Get all files in the ftp directory
+# @keywords internal
 getFileNames <- function(ftp){
   filePath <- unlist (
     strsplit(
@@ -282,8 +282,8 @@ getFileNames <- function(ftp){
   fileName <- as.list(strsplit (tail (filePath, n = 1),"\r*\n")[[1]])
 }
 
-#' Create directory
-#' @keywords internal
+# Create directory
+# @keywords internal
 mkdir <- function (iOut){
   if(!file.exists(iOut))
     dir.create (iOut, showWarnings = TRUE)  # create directory to save files
