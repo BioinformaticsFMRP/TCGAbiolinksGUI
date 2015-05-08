@@ -87,8 +87,10 @@ is.mapped <- function(term){
 
   }
   # search in tcga
-
-  idx <- grep(term, biosample.tcga$biosample, ignore.case = T)
+  idx <- grep(term, biosample.tcga$biosample, fixed = T  )
+  if(length(idx) == 0){
+   idx <- grep(term, biosample.tcga$biosample, ignore.case = T)
+  }
   if(length(idx) > 0){
     message("found in TCGA")
     res <- biosample.tcga[idx[1],]$BTO

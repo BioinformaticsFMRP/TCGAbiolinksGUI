@@ -1,3 +1,4 @@
+#' @importFrom rjson fromJSON
 load.encode <- function(){
   url1 <- c("https://www.encodeproject.org/search/?type=experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens&limit=all&format=JSON", "Homo sapiens")
   url2 <- c("https://www.encodeproject.org/search/?type=experiment&replicates.library.biosample.donor.organism.scientific_name=Mus%20musculus&limit=all&format=JSON", "Mus musculus")
