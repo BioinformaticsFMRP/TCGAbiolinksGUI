@@ -87,10 +87,15 @@ roadmap.download <- function (lines,
 ){
 
   dir.create(path, showWarnings = F, recursive =T)
-
+  error <- c()
   for (i in 1:dim(lines)[1]){
     url <- lines[i,]$GEO.FTP
-    if(length(url) == 0){next}
+    print(paste0("DEBUG: downloading line",i))
+    print(url)
+    if(nchar(url) == 0){
+      error <- c(error, lines[i,]$X..GEO.Accession)
+      next
+    }
     filenames <- getFileNames(url)
     if(!is.null(type)){
       idx <- unlist(lapply(type,function(x){grep(x,filenames)}))
@@ -110,6 +115,14 @@ roadmap.download <- function (lines,
         downloader::download(files[j],aux)
       }
     }
+  }
+  if(length(error)){
+    message("=============================")
+    message("         WARNING             ")
+    message("=============================")
+    message("Empty FTP: No files found")
+    invisible(apply(as.array(error),1,function(x)  message("Accession: ",x)))
+    message("=============================")
   }
 }
 #' @title TCGA Download
