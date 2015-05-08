@@ -94,7 +94,7 @@ is.mapped <- function(term){
   # search in tcga
   idx <- grep(term, biosample.tcga$biosample, fixed = T  )
   if(length(idx) == 0){
-   idx <- grep(term, biosample.tcga$biosample, ignore.case = T)
+    idx <- grep(term, biosample.tcga$biosample, ignore.case = T)
   }
   if(length(idx) > 0){
     message("found in TCGA")
@@ -110,6 +110,8 @@ is.mapped <- function(term){
 #'  Search a term using an ontology in the TCGA, ENCODE, ROADMAP databases
 #' @param term Term to be searched. Example: "brain" "u87" etc.
 #' @param experiment Experiment type
+#' @param plot Create a summary plot of the result found? Deafult: TRUE
+#' @param path Path to save summary plots
 #' \tabular{llll}{
 #'Microarray      \tab MiRNAMicroArray \tab RRBS    \tab DNAsequencing\cr
 #'ExpressionArray \tab Firehose        \tab ChipSeq \tab fiveC        \cr
@@ -118,7 +120,11 @@ is.mapped <- function(term){
 #'}
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
-biOmics.search  <- function(term, experiment = 'all'){
+biOmics.search  <- function(term,
+                            experiment = 'all',
+                            plot = F,
+                            path = "searchSummary"
+){
   message(paste("biOmics is searching for:", term, "\nSearching..."))
   start.time <- Sys.time()
   options(success=FALSE)
@@ -200,12 +206,13 @@ biOmics.search  <- function(term, experiment = 'all'){
     }
   }
 
-  return(show.results(solution,experiment))
+  return(show.results(solution,experiment,plot,path))
 }
 
 # show the results to the user
 #' @import ggplot2
-show.results <- function(solution,exper){
+show.results <- function(solution,exper,plot=F,path){
+
   # Get the samples that matches the result of the query
   # Databases were matched manually to systems
   pat <- unlist(strsplit(solution[1],","))
@@ -259,7 +266,6 @@ show.results <- function(solution,exper){
   message(paste0("|ENCODE : " , nrow(enc.result)))
   message(paste0("|ROADMAP: " , nrow(rmap.result)))
   message("====================================================")
-  message("Some summary images were saved in searchSummary folder")
 
   # Preparing the output table
   colnames(rmap.result)[1:3] <- c("ID","Sample","Experiment")
@@ -275,15 +281,19 @@ show.results <- function(solution,exper){
                 rep("tcga",    nrow(tcga.result))
   )
   results <- cbind(database,results)
-  dir.create("searchSummary", showWarnings = F)
-  # % Experiments per database
-  g <- ggplot(results, aes(factor(database), fill = Experiment)) + geom_bar(position = "fill")
-  ggsave(g, filename="searchSummary/experiments.pdf", height=14,scale=1.5)
 
-  # % Samples per database
-  g <- ggplot(results, aes(factor(database), fill = Sample)) + geom_bar(position = "fill")
-  ggsave(g, filename="searchSummary/samples.pdf", height=14,scale=1.5)
+  if(plot){
+    message("Summary images were saved in: ", path)
 
+    dir.create(path, showWarnings = F,recursive = T)
+    # % Experiments per database
+    g <- ggplot(results, aes(factor(database), fill = Experiment)) + geom_bar(position = "fill")
+    ggsave(g, filename=file.path(path,"experiments.pdf"), height=14,scale=1.5)
+
+    # % Samples per database
+    g <- ggplot(results, aes(factor(database), fill = Sample)) + geom_bar(position = "fill")
+    ggsave(g, filename=file.path(path,"samples.pdf"), height=14,scale=1.5)
+  }
   return(results)
 
 }
