@@ -56,8 +56,8 @@ is.mapped <- function(term){
     if(length(idx)> 0){
       message("found in cache")
       res <- search.cache[idx[1],2]
-      env$success <- T
-      env$solution <- res
+      options(success=T)
+      options(solution=res)
       return ()
     }
   }
@@ -68,8 +68,9 @@ is.mapped <- function(term){
     message("found in roadmap")
     res <- biosample.roadmap[idx[1],]$BTO
     if(!is.na(res)){
-      env$success <- T
-      env$solution <- c(res)
+      options(success=T)
+      options(solution=res)
+
       return ()
     }
   }
@@ -80,8 +81,9 @@ is.mapped <- function(term){
     message("found in encode")
     res <- biosample.encode[idx[1],]$BTO
     if(!is.na(res)){
-      env$success <-T
-      env$solution <- res
+      options(success=T)
+      options(solution=res)
+
       return ()
     }
 
@@ -94,8 +96,8 @@ is.mapped <- function(term){
   if(length(idx) > 0){
     message("found in TCGA")
     res <- biosample.tcga[idx[1],]$BTO
-    env$success <- T
-    env$solution <- res
+    options(success=T)
+    options(solution=res)
     return ()
   }
 }
@@ -117,9 +119,10 @@ biOmics.search  <- function(term, experiment = 'all'){
   env <- as.environment("package:biOmics")
   message(paste("biOmics is searching for:", term, "\nSearching..."))
   start.time <- Sys.time()
-  env$success <- F
-  env$solution <- NA
-  env$exper <- experiment
+  options(success=FALSE)
+  success=getOption("success")
+  options(solution=FALSE)
+  options(exper=experiment)
 
   # Step 0: verify if term is valid.
   if(!is.valid.term(term)){
@@ -127,13 +130,15 @@ biOmics.search  <- function(term, experiment = 'all'){
   }
 
   # Step 0.5: verify if experiment is valid.
-  if(!is.experiment(exper)){
+  if(!is.experiment(experiment)){
     return()
   }
 
   # Step 1: verify if term search has been mapped by us.
   if(!success){
     is.mapped(term)
+    success=getOption("success")
+    solution=getOption("solution")
   }
 
   # Step 2: search for the term in the BTO ontology.
@@ -176,8 +181,10 @@ biOmics.search  <- function(term, experiment = 'all'){
           }
         }}
     }
+    success=getOption("success")
+    solution=getOption("solution")
   }
-
+print(solution)
   end.time <- Sys.time()
   time.taken <- end.time - start.time
   message(paste("Time taken: ",round(time.taken,2),"s"))
@@ -198,8 +205,8 @@ biOmics.search  <- function(term, experiment = 'all'){
 show.results <- function(){
   # Get the samples that matches the result of the query
   # Databases were matched manually to systems
-  #print(solution)
-
+  solution=getOption("solution")
+  exper=getOption("exper")
   pat <- unlist(strsplit(solution[1],","))
   idx <- apply(sapply(pat, function(x){grepl(x,biosample.encode$BTO)}),1,any)
   enc.samples  <- biosample.encode[idx,]$biosample
@@ -282,6 +289,7 @@ show.results <- function(){
 
 is.experiment <- function(experiment){
   v <- c(unique(platforms$Standard), 'all')
+  print(experiment)
   if((length(grep(experiment, v, ignore.case = T)) > 0) & (nchar(experiment) >= 3)){
     return (TRUE)
   }
