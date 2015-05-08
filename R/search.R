@@ -288,11 +288,11 @@ show.results <- function(solution,exper,plot=F,path){
     dir.create(path, showWarnings = F,recursive = T)
     # % Experiments per database
     g <- ggplot(results, aes(factor(database), fill = Experiment)) + geom_bar(position = "fill")
-    ggsave(g, filename=file.path(path,"experiments.pdf"), height=14,w=10,scale=1.5)
+    ggsave(g, filename=file.path(path,"experiments.pdf"), height=14,width=10,scale=1.5)
 
     # % Samples per database
     g <- ggplot(results, aes(factor(database), fill = Sample)) + geom_bar(position = "fill")
-    ggsave(g, filename=file.path(path,"samples.pdf"), height=14,w=10,scale=1.5)
+    ggsave(g, filename=file.path(path,"samples.pdf"), height=14,width=10,scale=1.5)
   }
   return(results)
 

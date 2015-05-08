@@ -1,6 +1,6 @@
 
 .onAttach <- function (libname, pkgname){
-
+  options(search.cache=NULL)
   file = system.file("extdata/biomics.rda", package="biOmics")
   if(file.exists(file)){
     load(file,envir = as.environment("package:biOmics"))
@@ -30,8 +30,8 @@
     " Search, download & analyse - ENCODE, TCGA, ROADMAP\n",
     " Version:",utils::packageVersion("biOmics"),"\n",
     " ==================================================\n",
-    "Use suppressPackageStartupMessages to eliminate    \n",
-    "package startup messages."
+    " Use suppressPackageStartupMessages to eliminate    \n",
+    " package startup messages."
   )
   packageStartupMessage(welcome.message)
 
