@@ -1,5 +1,5 @@
 ---
-title: "Working with ENCODE inside biomics"
+title: "Working with ENCODE inside biOmics"
 author: "Tiago Chedraoui Silva"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,7 +9,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-This document describes how to search/download encode data using biomics package.
+This document describes how to search/download encode data using biOmics package.
   
 ## Encode search
  You can easily search tcga samples using the `encode.search` function.

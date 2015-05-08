@@ -1,5 +1,5 @@
 ---
-title: "Working with TCGA inside biomics"
+title: "Working with TCGA inside biOmics"
 author: "Tiago Chedraoui Silva"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,7 +9,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-This document describes how to search/download tcga data using biomics package.
+This document describes how to search/download tcga data using biOmics package.
   
 ## TCGA search
  You can easily search tcga samples using the `tcga.search` function.

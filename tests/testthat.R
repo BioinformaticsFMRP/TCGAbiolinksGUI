@@ -1,3 +1,3 @@
 library(testthat)
 
-test_check("biomics")
+test_check("biOmics")
