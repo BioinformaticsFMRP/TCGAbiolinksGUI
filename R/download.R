@@ -90,8 +90,6 @@ roadmap.download <- function (lines,
   error <- c()
   for (i in 1:dim(lines)[1]){
     url <- lines[i,]$GEO.FTP
-    print(paste0("DEBUG: downloading line",i))
-    print(url)
     if(nchar(url) == 0){
       error <- c(error, lines[i,]$X..GEO.Accession)
       next
