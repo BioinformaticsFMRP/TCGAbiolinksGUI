@@ -4,12 +4,16 @@
 \alias{biOmics.search}
 \title{Searches a term in TCGA, ENCODE, ROADMAP}
 \usage{
-biOmics.search(term, experiment = "all")
+biOmics.search(term, experiment = "all", plot = F, path = "searchSummary")
 }
 \arguments{
 \item{term}{Term to be searched. Example: "brain" "u87" etc.}
 
-\item{experiment}{Experiment type
+\item{experiment}{Experiment type}
+
+\item{plot}{Create a summary plot of the result found? Deafult: TRUE}
+
+\item{path}{Path to save summary plots
 \tabular{llll}{
 Microarray      \tab MiRNAMicroArray \tab RRBS    \tab DNAsequencing\cr
 ExpressionArray \tab Firehose        \tab ChipSeq \tab fiveC        \cr
