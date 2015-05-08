@@ -17,7 +17,7 @@
          file = paste0(system.file("extdata", package="biomics"),"/biomics.rda")
     )
   }
-
+  if (!interactive() || stats::runif(1) > 0.1) return()
   welcome.message <- paste0(
     " ==================================================\n",
     " |       _   _____   _     _   _   ____      \n",
@@ -26,10 +26,11 @@
     " |____| |_| |_____| |       | |_| |____  __|   \n",
     " --------------------------------------------------\n",
     " Search, download & analyse - ENCODE, TCGA, ROADMAP\n",
-    " Version:0.01 \n",
-    " ==================================================\n"
+    " Version:",utils::packageVersion("biOMICs"),"\n",
+    " ==================================================\n",
+    "Use suppressPackageStartupMessages to eliminate    \n",
+    "package startup messages."
   )
-  cat("\014")
   packageStartupMessage(welcome.message)
 
 }
