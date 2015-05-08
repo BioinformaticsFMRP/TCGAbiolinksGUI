@@ -104,8 +104,8 @@ roadmap.download <- function (lines,
     name.experiment <- str_replace_all(lines[i,]$Experiment, "[^[:alnum:]]", "_")
     folder <- paste0(path,"/",name.experiment,"/",name.sample)
     dir.create(folder,showWarnings = F, recursive =T)
-    #download files
 
+    #download files
     for(j in seq_along(files)){
       aux <- paste0(folder,"/",basename(files[j]))
       if(!file.exists(aux)){

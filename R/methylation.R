@@ -38,15 +38,15 @@ diffmean <- function(group1,group2){
 #' @description Creates survival analysis
 #'
 #' @param met.md Data frame with the following columns: vital, os, cluster
-#'        legend Legend title of the figure
-#'        cutoff xlim
-#'        main main title
-#'        ylab y axis text
-#'        xlab x axis text
-#'        time.reference In order not to forget -> MONTHS DAY YEAR
-#'        filename output file name
-#'        default.plot You can use ggplot or plot
-#'        color not implemented yet
+#' @param legend Legend title of the figure
+#' @param cutoff xlim
+#' @param main main title
+#' @param ylab y axis text
+#' @param xlab x axis text
+#' @param time.reference In order not to forget -> MONTHS DAY YEAR
+#' @param filename output file name
+#' @param default.plot You can use ggplot or plot
+#' @param color not implemented yet
 #' @import survival GGally
 #' @export
 survivalPlot <- function(met.md,
@@ -125,7 +125,7 @@ survivalPlot <- function(met.md,
     surv <- surv + geom_point(aes(colour=group),shape=3,size=2)
     surv <- surv + ggplot2::guides(linetype = FALSE) +
       scale_y_continuous(labels = percent)
-    ggsave(surv, file=filename)
+    ggsave(surv, filename=filename)
   }
 }
 #' @title organize TCGA Methylation MetaData
@@ -133,7 +133,7 @@ survivalPlot <- function(met.md,
 #' @description
 #'   Organize TCGA methylation metadata for the mean methylation analysis.
 #'
-#' @param dir Directory with the files
+#' @param wd Directory with the files
 #' @import stringr
 #' @export
 #' @return \code{invisible (metadata)}
@@ -165,12 +165,6 @@ organizeMethylationMetaDataFrame <- function(wd = NULL){
 #'    where rows are the probes names and columns are paciente ID
 #'    Execution: read all files inside the directory and merge it by
 #'    probes (Composite.Element.REF)
-#'
-#' @author
-#' Thathi Malta  \email{tathimalta@@gmail.com}
-#'
-#' Maintainer: Tiago Chedraoui Silva \email{tiagochst@@gmail.com}
-#'
 #' @param wd Directory with the files
 #' @return Methylation table
 #' @import stringr
@@ -293,7 +287,7 @@ met.mean.boxplot <- function (data,
 
   # saving box plot to analyse it
   ggsave(p, filename=filename,
-         width = 10, heigh = 10, dpi = 600)
+         width = 10, height = 10, dpi = 600)
 
 }
 
@@ -302,30 +296,33 @@ met.mean.boxplot <- function (data,
 #'    Input: two matrix to be compared with wilcoxon test,
 #'           a boolean value to do a paired or non-paired test
 #'    Output: p-values (non-adj/adj) histograms, p-values (non-adj/adj)
-#' @param matrix1  Matrix to be compared with matrix 2
-#' @param matrix2  Matrix to be compared with matrix 1
+#' @param values  Dataframe with values
+#' @param idx1  Index of the values in group 1
+#' @param idx2  Index of the values in group 2
 #' @param paired  Do a paired wilcoxon test? Default: True
-#' @return Methylation table
+#' @param exact  Do a exact wilcoxon test? Default: True
+#' @param mc.cores  How many cores to be used Default: parallel::detectCores()
+#' @return Data frame with cols p values/p values adjusted
 #' @import exactRankTests parallel
 #' @export
 calculate.pvalues <- function (values,idx1,idx2,paired=TRUE,exact=TRUE,mc.cores=parallel::detectCores()){
   # Apply Wilcoxon test in order to calculate the p-values
-  #print(idx1)
-  #print(idx2)
   w.p.values <- unlist(mclapply(values,function(probe) {
     zz <- wilcox.exact(as.matrix(probe[idx1]),as.matrix(probe[idx2]), exact=exact,paired=paired)
     z <- zz$p.value
     return(z)
   }, mc.cores=mc.cores))
-  #print(w.p.values)
+
   ##Plot a histogram
   png(filename="histogram_pvalues.png")
   hist(w.p.values)
   dev.off()
+
   ##Calculate the adjusted p-values by using the Benjamini-Hochberg (BH) method
   w.p.values.adj <- p.adjust(w.p.values,method="BH")
 
   png(filename="histogram_pvalues_adj.png")
+
   ##Plot a histogram
   hist(w.p.values.adj)
   dev.off()
@@ -348,6 +345,9 @@ calculate.pvalues <- function (values,idx1,idx2,paired=TRUE,exact=TRUE,mc.cores=
 #' @param xlab x axis text
 #' @param xlim x limits to cut image
 #' @param ylim y limits to cut image
+#' @param label vector of labels to be used in the figure
+#' @param p.cut p values threshold
+#' @param diffmean.cut diffmean threshold
 #' @import ggplot2
 #' @export
 volcano.plot <- function(data,
@@ -392,7 +392,7 @@ volcano.plot <- function(data,
                               labels = label,
                               name   = legend)
   # saving box plot to analyse it
-  ggsave(p, filename=filename, width = 10, heigh = 5, dpi = 600)
+  ggsave(p, filename=filename, width = 10, height = 5, dpi = 600)
   data <- subset(data,threshold == "2" | threshold == "3" )
   return(data[,c("Composite.Element.REF","threshold")])
 }
@@ -423,7 +423,6 @@ get.GRCh.bioMart <- function(){
 #'  Preparing methylation data and expression data
 #'
 #' @param met methylation data
-#' @param volcano data
 #' @param expression expression data
 #' @return Methylation table
 #' @import GenomicRanges
@@ -481,6 +480,7 @@ starbursanalysis <- function(met,expression){
 #' @param filename pdf filename
 #' @param legend legend title
 #' @param color vector of colors to be used in graph
+#' @param label vector of labels to be used in graph
 #' @param title main title
 #' @param ylab y axis text
 #' @param xlab x axis text
@@ -562,7 +562,7 @@ starburstplot <- function(data,
     geom_vline( aes( xintercept = lowerThr)) +
     geom_vline( aes( xintercept = upperThr))
 
-  ggsave(file = "starbust.gcimp.pdf", width=14, height = 10)
+  ggsave(filename = "starbust.gcimp.pdf", width=14, height = 10)
 
   # return methylation < 0, expressao >0
 }

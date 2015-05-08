@@ -75,6 +75,7 @@ load.platforms <- function(biOmicsEnv ){
 }
 
 #' Updates tcga platform and diseases
+#' @param env package environment
 #' @import XML stringr
 load.tcga <- function(env){
   tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"

@@ -8,14 +8,20 @@ calculate.pvalues(values, idx1, idx2, paired = TRUE, exact = TRUE,
   mc.cores = parallel::detectCores())
 }
 \arguments{
+\item{values}{Dataframe with values}
+
+\item{idx1}{Index of the values in group 1}
+
+\item{idx2}{Index of the values in group 2}
+
 \item{paired}{Do a paired wilcoxon test? Default: True}
 
-\item{matrix1}{Matrix to be compared with matrix 2}
+\item{exact}{Do a exact wilcoxon test? Default: True}
 
-\item{matrix2}{Matrix to be compared with matrix 1}
+\item{mc.cores}{How many cores to be used Default: parallel::detectCores()}
 }
 \value{
-Methylation table
+Data frame with cols p values/p values adjusted
 }
 \description{
 Calculate pvalues

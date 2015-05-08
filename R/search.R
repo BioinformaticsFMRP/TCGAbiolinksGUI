@@ -101,7 +101,14 @@ is.mapped <- function(term){
 #' @title Searches a term in TCGA, ENCODE, ROADMAP
 #' @description
 #'  Search a term using an ontology in the TCGA, ENCODE, ROADMAP databases
-#' @param term Term to be searched
+#' @param term Term to be searched. Example: "brain" "u87" etc.
+#' @param experiment Experiment type
+#' \tabular{llll}{
+#'Microarray      \tab MiRNAMicroArray \tab RRBS    \tab DNAsequencing\cr
+#'ExpressionArray \tab Firehose        \tab ChipSeq \tab fiveC        \cr
+#'ExonArray       \tab DNAMethylation  \tab MRESeq  \tab RepliSeq     \cr
+#'RNASeq          \tab miRNASeq        \tab Rampage \tab Others
+#'}
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
 biOmics.search  <- function(term, experiment = 'all'){
@@ -261,11 +268,11 @@ show.results <- function(){
   dir.create("searchSummary", showWarnings = F)
   # % Experiments per database
   g <- ggplot(results, aes(factor(database), fill = Experiment)) + geom_bar(position = "fill")
-  ggsave(g, file="searchSummary/experiments.pdf", height=14,scale=1.5)
+  ggsave(g, filename="searchSummary/experiments.pdf", height=14,scale=1.5)
 
   # % Samples per database
   g <- ggplot(results, aes(factor(database), fill = Sample)) + geom_bar(position = "fill")
-  ggsave(g, file="searchSummary/samples.pdf", height=14,scale=1.5)
+  ggsave(g, filename="searchSummary/samples.pdf", height=14,scale=1.5)
 
   return(results)
 
@@ -324,7 +331,7 @@ is.valid.term <- function(term){
 #'Bisulfite-Seq  \tab H2BK12ac               \tab H4K20me1 \tab H3T11ph                     \cr
 #'mRNA-Seq       \tab H2BK15ac               \tab H4K8ac   \tab H2AK9ac
 #'}
-#' @param cemter Example:
+#' @param center Example:
 #' \tabular{l}{
 #'UCSD                    \cr
 #'UCSF-UBC                \cr
