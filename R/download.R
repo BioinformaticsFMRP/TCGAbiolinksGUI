@@ -86,9 +86,18 @@ roadmap.download <- function (lines,
                          path="."
 ){
 
-  dir.create(path, showWarnings = F, recursive =T)
   error <- c()
   for (i in 1:dim(lines)[1]){
+    name.sample <- str_replace_all(lines[i,]$Sample.Name, "[^[:alnum:]]", "_")
+    name.experiment <- str_replace_all(lines[i,]$Experiment, "[^[:alnum:]]", "_")
+
+    folder <- paste0(path,"/",name.experiment,"/",name.sample)
+    status <- dir.create(folder,showWarnings = F, recursive =T)
+    if(!status){
+      message("Downloaded", i )
+      next
+    }
+
     url <- lines[i,]$GEO.FTP
     if(nchar(url) == 0){
       error <- c(error, lines[i,]$X..GEO.Accession)
@@ -100,10 +109,6 @@ roadmap.download <- function (lines,
       filenames <- filenames[idx]
     }
     files <- paste0(url,filenames)
-    name.sample <- str_replace_all(lines[i,]$Sample.Name, "[^[:alnum:]]", "_")
-    name.experiment <- str_replace_all(lines[i,]$Experiment, "[^[:alnum:]]", "_")
-    folder <- paste0(path,"/",name.experiment,"/",name.sample)
-    dir.create(folder,showWarnings = F, recursive =T)
 
     #download files
     for(j in seq_along(files)){
