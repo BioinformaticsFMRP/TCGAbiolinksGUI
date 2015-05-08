@@ -1,14 +1,14 @@
 
 # internal: used by biOmics.search
 systemSearch <- function(term){
-  #print (term)
-  env <- as.environment("package:biOmics")
+  success=getOption("success")
+  ont=getOption("ont")
+
   if(!success){
     found <- intersect(term, systems$BTO)
     if(length(found) > 0){
-      env$success <- T
-      env$solution <- found
-      print(solution)
+      options(success=T)
+      options(solution=found)
       return()
     }else{
       parentTerm <- rols::parents(term[1], ont)
@@ -20,6 +20,7 @@ systemSearch <- function(term){
 }
 
 map.to.bto <- function(term){
+  success=getOption("success")
   # Does the term exists in BTO?
   aux <- term
   names(aux) <- NULL
@@ -35,7 +36,9 @@ map.to.bto <- function(term){
              }
            })
   }
-  if(success){return()}
+  if(success){
+    return()
+  }
   else{
     ontology <- unlist(strsplit(names(term),":"))[1]
     parentTerm <- rols::parents(names(term),ontology)
@@ -48,8 +51,8 @@ map.to.bto <- function(term){
 
 
 is.mapped <- function(term){
-  env <- as.environment("package:biOmics")
 
+  search.cache=getOption("search.cache")
   # search in search cache
   if(exists("search.cache")){
     idx <- grep(term, search.cache[,1], ignore.case = T)
@@ -116,7 +119,6 @@ is.mapped <- function(term){
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
 biOmics.search  <- function(term, experiment = 'all'){
-  env <- as.environment("package:biOmics")
   message(paste("biOmics is searching for:", term, "\nSearching..."))
   start.time <- Sys.time()
   options(success=FALSE)
@@ -145,7 +147,8 @@ biOmics.search  <- function(term, experiment = 'all'){
   if(!success){
     message("Not found in the cache, searching in the ontology...")
     # Term has not been mapped before.
-    env$ont <- 'BTO'
+    options(ont="BTO")
+    ont=getOption("ont")
     query <- rols::olsQuery(term, ont, exact = T)
 
     if(length(query) > 0){
@@ -184,29 +187,27 @@ biOmics.search  <- function(term, experiment = 'all'){
     success=getOption("success")
     solution=getOption("solution")
   }
-print(solution)
+
   end.time <- Sys.time()
   time.taken <- end.time - start.time
   message(paste("Time taken: ",round(time.taken,2),"s"))
 
   if(success){
     if(!exists("search.cache")){
-      env$search.cache <- rbind(c(term,solution[1]))
+      options(search.cache=rbind(c(term,solution[1])))
     } else {
-      env$search.cache <- rbind(search.cache,c(term,solution[1]))
+      options(search.cache=rbind(search.cache,c(term,solution[1])))
     }
   }
 
-  return(show.results())
+  return(show.results(solution,experiment))
 }
 
 # show the results to the user
 #' @import ggplot2
-show.results <- function(){
+show.results <- function(solution,exper){
   # Get the samples that matches the result of the query
   # Databases were matched manually to systems
-  solution=getOption("solution")
-  exper=getOption("exper")
   pat <- unlist(strsplit(solution[1],","))
   idx <- apply(sapply(pat, function(x){grepl(x,biosample.encode$BTO)}),1,any)
   enc.samples  <- biosample.encode[idx,]$biosample
@@ -289,7 +290,6 @@ show.results <- function(){
 
 is.experiment <- function(experiment){
   v <- c(unique(platforms$Standard), 'all')
-  print(experiment)
   if((length(grep(experiment, v, ignore.case = T)) > 0) & (nchar(experiment) >= 3)){
     return (TRUE)
   }
