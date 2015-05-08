@@ -1,11 +1,11 @@
-#' @title biomics.download
-#' @description Download data previously selected using the biomics.search function
-#' @param lines biomics.search output
+#' @title biOmics.download
+#' @description Download data previously selected using the biOmics.search function
+#' @param lines biOmics.search output
 #' @param enc.file.type Extension to be downloaed from encode database
 #' @param rmap.file.type Extension to be downloaed from roadmap database
-#' @seealso biomics.search
+#' @seealso biOmics.search
 #' @export
-biomics.download <- function(lines,
+biOmics.download <- function(lines,
                              enc.file.type = NULL,
                              rmap.file.type=NULL
 ){

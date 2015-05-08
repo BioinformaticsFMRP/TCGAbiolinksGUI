@@ -1,11 +1,11 @@
 
 .onAttach <- function (libname, pkgname){
 
-  file = system.file("extdata/biomics.rda", package="biomics")
+  file = system.file("extdata/biomics.rda", package="biOmics")
   if(file.exists(file)){
-    load(file,envir = as.environment("package:biomics"))
+    load(file,envir = as.environment("package:biOmics"))
   } else {
-    biomicsEnv <- as.environment("package:biomics")
+    biomicsEnv <- as.environment("package:biOmics")
     load.biosamples(biomicsEnv)
     load.systems(biomicsEnv)
     load.platforms(biomicsEnv)
@@ -14,7 +14,7 @@
     load.tcga(biomicsEnv)
     save(biosample.encode,biosample.roadmap,biosample.tcga,
          encode.db,platforms,roadmap.db,systems,tcga.db,platform.table,disease.table,
-         file = paste0(system.file("extdata", package="biomics"),"/biomics.rda")
+         file = paste0(system.file("extdata", package="biOmics"),"/biomics.rda")
     )
   }
   if (!interactive() || stats::runif(1) > 0.1) return()
@@ -26,7 +26,7 @@
     " |____| |_| |_____| |       | |_| |____  __|   \n",
     " --------------------------------------------------\n",
     " Search, download & analyse - ENCODE, TCGA, ROADMAP\n",
-    " Version:",utils::packageVersion("biOMICs"),"\n",
+    " Version:",utils::packageVersion("biOmics"),"\n",
     " ==================================================\n",
     "Use suppressPackageStartupMessages to eliminate    \n",
     "package startup messages."

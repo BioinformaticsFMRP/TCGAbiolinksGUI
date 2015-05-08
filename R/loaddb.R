@@ -42,35 +42,35 @@ load.roadmap <- function(){
 }
 
 
-load.biosamples <- function(biomicsEnv){
+load.biosamples <- function(biOmicsEnv){
   downloader::download(url = "https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=28842439", destfile = 'roadmaptab.tsv')
   downloader::download(url = "https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=514976736", destfile = 'encodetab.tsv')
   downloader::download(url = "https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=0", destfile = 'tcgatab.tsv')
 
-  biomicsEnv$biosample.encode <- read.delim(file = 'encodetab.tsv', sep = '\t', )
-  biomicsEnv$biosample.roadmap <- read.delim(file = 'roadmaptab.tsv', sep = '\t')
-  biomicsEnv$biosample.tcga <- read.delim(file = 'tcgatab.tsv', sep = '\t')
+  biOmicsEnv$biosample.encode <- read.delim(file = 'encodetab.tsv', sep = '\t', )
+  biOmicsEnv$biosample.roadmap <- read.delim(file = 'roadmaptab.tsv', sep = '\t')
+  biOmicsEnv$biosample.tcga <- read.delim(file = 'tcgatab.tsv', sep = '\t')
 
-  biomicsEnv$biosample.encode <- data.frame(lapply(biosample.encode, as.character), stringsAsFactors=FALSE)
-  biomicsEnv$biosample.roadmap <- data.frame(lapply(biosample.roadmap, as.character), stringsAsFactors=FALSE)
-  biomicsEnv$biosample.tcga <- data.frame(lapply(biosample.tcga, as.character), stringsAsFactors=FALSE)
+  biOmicsEnv$biosample.encode <- data.frame(lapply(biosample.encode, as.character), stringsAsFactors=FALSE)
+  biOmicsEnv$biosample.roadmap <- data.frame(lapply(biosample.roadmap, as.character), stringsAsFactors=FALSE)
+  biOmicsEnv$biosample.tcga <- data.frame(lapply(biosample.tcga, as.character), stringsAsFactors=FALSE)
 
   if (file.exists('encodetab.tsv')) {file.remove('encodetab.tsv')}
   if (file.exists('roadmaptab.tsv')) {file.remove('roadmaptab.tsv')}
   if (file.exists('tcgatab.tsv')) {file.remove('tcgatab.tsv')}
 }
 
-load.systems <- function(biomicsEnv){
+load.systems <- function(biOmicsEnv){
   downloader::download(url = "https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=1660203777", destfile = 'systemstab.tsv')
-  biomicsEnv$systems <- read.delim(file = 'systemstab.tsv', sep = '\t', )
-  biomicsEnv$systems <- data.frame(lapply(systems, as.character), stringsAsFactors=FALSE)
+  biOmicsEnv$systems <- read.delim(file = 'systemstab.tsv', sep = '\t', )
+  biOmicsEnv$systems <- data.frame(lapply(systems, as.character), stringsAsFactors=FALSE)
   if (file.exists('systemstab.tsv')) {file.remove('systemstab.tsv')}
 }
 
-load.platforms <- function(biomicsEnv ){
+load.platforms <- function(biOmicsEnv ){
   downloader::download(url = "https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=1664832653", destfile = 'platformstab.tsv')
-  biomicsEnv$platforms <- read.delim(file = 'platformstab.tsv', sep = '\t', )
-  biomicsEnv$platforms <- data.frame(lapply(platforms, as.character), stringsAsFactors=FALSE)
+  biOmicsEnv$platforms <- read.delim(file = 'platformstab.tsv', sep = '\t', )
+  biOmicsEnv$platforms <- data.frame(lapply(platforms, as.character), stringsAsFactors=FALSE)
   if (file.exists('platformstab.tsv')) {file.remove('platformstab.tsv')}
 }
 

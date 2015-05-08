@@ -1,8 +1,8 @@
 
-# internal: used by biOMICs.search
+# internal: used by biOmics.search
 systemSearch <- function(term){
   #print (term)
-  env <- as.environment("package:biomics")
+  env <- as.environment("package:biOmics")
   if(!success){
     found <- intersect(term, systems$BTO)
     if(length(found) > 0){
@@ -48,7 +48,7 @@ map.to.bto <- function(term){
 
 
 is.mapped <- function(term){
-  env <- as.environment("package:biomics")
+  env <- as.environment("package:biOmics")
 
   # search in search cache
   if(exists("search.cache")){
@@ -104,9 +104,9 @@ is.mapped <- function(term){
 #' @param term Term to be searched
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
-biomics.search  <- function(term, experiment = 'all'){
-  env <- as.environment("package:biomics")
-  message(paste("biOMICS is searching for:", term, "\nSearching..."))
+biOmics.search  <- function(term, experiment = 'all'){
+  env <- as.environment("package:biOmics")
+  message(paste("biOmics is searching for:", term, "\nSearching..."))
   start.time <- Sys.time()
   env$success <- F
   env$solution <- NA
