@@ -18,6 +18,13 @@
     )
   }
 
+  file = system.file("extdata/GRCh.rda", package="biOMICs")
+  if(file.exists(file)){
+    load(file,envir = as.environment("package:biOMICs"))
+  }
+
+
+
   welcome.message <- paste0(
     " ==================================================\n",
     " |       _   _____   _     _   _   ____      \n",
