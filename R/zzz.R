@@ -21,9 +21,9 @@
   }
 
 
-  file = system.file("extdata/GRCh.rda", package="biOMICs")
+  file = system.file("extdata/GRCh.rda", package="biOmics")
   if(file.exists(file)){
-    load(file,envir = as.environment("package:biOMICs"))
+    load(file,envir = as.environment("package:biOmics"))
   }
 
   if (!interactive() || stats::runif(1) > 0.1) return()
