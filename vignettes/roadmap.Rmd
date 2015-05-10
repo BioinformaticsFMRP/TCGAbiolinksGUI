@@ -1,5 +1,5 @@
 ---
-title: "Working with roadmap inside biomics"
+title: "Working with roadmap inside biOmics"
 author: "Tiago Chedraoui Silva"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,7 +9,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-This document describes how to search/download roadmap data using biomics package.
+This document describes how to search/download roadmap data using biOmics package.
   
 ## Roadmap search
  You can easily search roadmap samples using the `search.roadmap` function.

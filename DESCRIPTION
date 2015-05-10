@@ -1,5 +1,5 @@
-Package: biOMICs
-Title: biOMICs
+Package: biOmics
+Title: biOmics
 Version: 0.1
 Date: 2015-04-22
 Author:
@@ -29,5 +29,13 @@ Imports:
   pbapply,
   rols,
   stringr,
-  plyr
+  plyr,
+  GGally,
+  GenomicRanges,
+  biomaRt,
+  exactRankTests,
+  ggplot2,
+  gplots,
+  matlab,
+  survival
 VignetteBuilder: knitr

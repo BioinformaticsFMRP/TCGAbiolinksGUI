@@ -6,13 +6,13 @@ result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, downloading
 
 .onAttach <- function (libname, pkgname){
   updateRoadmap()
-  load(file = system.file("extdata/roadmap.RData", package="biOMICs"), .GlobalEnv)
+  load(file = system.file("extdata/roadmap.RData", package="biOmics"), .GlobalEnv)
 }
 
 updateRoadmap <- function (){
   #get raodmap data
-  roadmapSummaryFile <- system.file("extdata/roadmap.RData", package="biOMICs")
-  dataDirecotry <- system.file("extdata", package="biOMICs")
+  roadmapSummaryFile <- system.file("extdata/roadmap.RData", package="biOmics")
+  dataDirecotry <- system.file("extdata", package="biOmics")
 
   # If file exists and it was downlaoded 7 day ago ignore
   # otherwise redownload it
@@ -34,20 +34,20 @@ updateRoadmap <- function (){
 
 }
 
-#' @title biOMICs interface
+#' @title biOmics interface
 #' @description Calls UI interface
 #' @examples
 #' \dontrun{
-#'    biOMICsApp()
+#'    biOmicsApp()
 #' }
 #' @seealso \url{https://www.encodeproject.org/search/}
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
-#' @name biOMICsApp
+#' @name biOmicsApp
 #' @import shiny shinydashboard tcltk
 #' @export
-biOMICsApp <- function() {
+biOmicsApp <- function() {
   gui <<- TRUE
-  shiny::runApp (system.file ('app', package = 'biOMICs'))
+  shiny::runApp (system.file ('app', package = 'biOmics'))
 }
 
 

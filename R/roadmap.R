@@ -119,7 +119,7 @@ validateInput  <- function (input = NULL, list = NULL) {
 filterRmapData <- function (samples = NULL, experiments = NULL){
   # Load ROAMP table if it doesn't exists
   if(!exists("roadmap"))
-    load(file = system.file("extdata/roadmap.RData", package="biOMICs"), .GlobalEnv)
+    load(file = system.file("extdata/roadmap.RData", package="biOmics"), .GlobalEnv)
 
   if(!is.null(samples)) validateInput(samples,roadmap$samplesList)
   if(!is.null(experiments)) validateInput(experiments,roadmap$experimentList)
