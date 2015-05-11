@@ -7,7 +7,7 @@
 The data set contains the following fields:
 \itemize{
   \item X..GEO.Accession Geo Acession number
-  \item Sample.Name	Sample name
+  \item Sample.Name  Sample name
   \item Experiment	 Experiment name
   \item NA.Accession	NA acession number
   \item Center	Center name
@@ -21,7 +21,7 @@ Roadmap metadata database.
 The data set contains the following fields:
 \itemize{
   \item X..GEO.Accession Geo Acession number
-  \item Sample.Name	Sample name
+  \item Sample.Name  Sample name
   \item Experiment	 Experiment name
   \item NA.Accession	NA acession number
   \item Center	Center name
