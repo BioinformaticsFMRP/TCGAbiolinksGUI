@@ -1,6 +1,6 @@
 formatTarget <- function(iTarget) {
     if (!is.null(iTarget)) {
-        return(paste("target.investigated_as", gsub(" ", "%20", 
+        return(paste("target.investigated_as", gsub(" ", "%20",
             iTarget), sep = "=", collapse = "&"))
     }
     return(NULL)
@@ -8,7 +8,7 @@ formatTarget <- function(iTarget) {
 
 formatSample <- function(iSample) {
     if (!is.null(iSample)) {
-        return(paste("replicates.library.biosample.biosample_type", 
+        return(paste("replicates.library.biosample.biosample_type",
             gsub(" ", "%20", iSample), sep = "=", collapse = "&"))
     }
     return(NULL)
@@ -16,7 +16,7 @@ formatSample <- function(iSample) {
 
 formatFType <- function(iFType) {
     if (!is.null(iFType)) {
-        return(paste("files.file_format", iFType, sep = "=", 
+        return(paste("files.file_format", iFType, sep = "=",
             collapse = "&"))
     }
     return(NULL)
@@ -37,13 +37,13 @@ formatAssembly <- function(iAssembly) {
 }
 
 formatSearch <- function(iSearch) {
-    if (!is.null(iSearch)) 
+    if (!is.null(iSearch))
         return(paste("searchTerm", gsub(" ", "+", iSearch), sep = "="))
     return(NULL)
 }
 
 formatType <- function(iType) {
-    if (!is.null(iType)) 
+    if (!is.null(iType))
         return(paste("type", iType, sep = "="))
     return(NULL)
 }
@@ -75,14 +75,14 @@ formatType <- function(iType) {
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name encodeDownloader
 #' @export
-encodeDownloader <- function(iSearch, iType, iTarget, iSample, 
+encodeDownloader <- function(iSearch, iType, iTarget, iSample,
     iFType, iAssay, iAssembly, iOut) {
     # Constant parameters
-    encodePath <- "https://www.encodeproject.org"
-    searchPath <- "/search/"
+    encodePath <- "https://www.encodeproject.org/"
+    searchPath <- "search/"
     format <- "format=json"
     frame <- "frame=embedded"
-    
+
     searchTerm <- formatSearch(iSearch)
     type <- formatType(iType)
     target <- formatTarget(iTarget)
@@ -90,14 +90,14 @@ encodeDownloader <- function(iSearch, iType, iTarget, iSample,
     fType <- formatFType(iFType)
     assay <- formatAssay(iAssay)
     assembly <- formatAssembly(iAssembly)
-    
-    URLoptions <- paste(searchTerm, format, frame, target, type, 
+
+    URLoptions <- paste(searchTerm, format, frame, target, type,
         biosample, fType, assay, assembly, sep = "&")
     URL <- paste0(encodePath, paste(searchPath, URLoptions, sep = "?"))
-    
-    data <- rjson::fromJSON(RCurl::getURL(URL, dirlistonly = TRUE, 
+
+    data <- rjson::fromJSON(RCurl::getURL(URL, dirlistonly = TRUE,
         .opts = list(ssl.verifypeer = FALSE)), unexpected.escape = "keep")
-    
+
     if (data$total > 0) {
         # Output folder
         dir.create(iOut, showWarnings = FALSE)
@@ -106,32 +106,32 @@ encodeDownloader <- function(iSearch, iType, iTarget, iSample,
         for (j in 1:length(data$"@graph")) {
             nbFiles <- length(data$"@graph"[[j]]$files)
             print(paste0("Downloading experiment ", j))
-            
+
             for (i in 1:nbFiles) {
                 filePath <- data$"@graph"[[j]]$files[[i]]$href
                 dn <- paste0(encodePath, filePath)
-                fileOut <- paste(iOut, unlist(strsplit(data$"@graph"[[j]]$"@id", 
+                fileOut <- paste(iOut, unlist(strsplit(data$"@graph"[[j]]$"@id",
                   "/"))[3], sep = "/")
                 if (!file.exists(fileOut)) {
                   dir.create(fileOut, showWarnings = FALSE)
                 }
-                fileOut <- paste(fileOut, unlist(strsplit(filePath, 
+                fileOut <- paste(fileOut, unlist(strsplit(filePath,
                   "/"))[5], sep = "/")
-                
+
                 # Did the user select a file format
-                if (is.null(iFType) || data$"@graph"[[j]]$files[[i]]$file_format %in% 
-                  iFType) {
+                if (is.null(iFType) ||
+                    data$"@graph"[[j]]$files[[i]]$file_format %in% iFType){
                   downloader::download(dn, fileOut, quiet = TRUE)
                   print(paste0("Downloaded file: ", fileOut))
-                  
+
                 }
                 df <- rbind(df, data.frame(dn))
             }
         }
-        names(df) <- paste0("Files downloaded into:", getwd(), 
+        names(df) <- paste0("Files downloaded into:", getwd(),
             "/", iOut)
         result$df <- df
     } else {
         print(data$notification)
     }
-} 
+}

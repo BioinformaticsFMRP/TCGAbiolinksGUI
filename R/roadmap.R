@@ -19,7 +19,7 @@ eGeo <- function(...) {
     input_list <- list(...)
     output_list <- lapply(X = input_list, function(x) {
         if (length(x) > 2) {
-            paste(x[[3]], paste(paste(x[[1]], x[[2]], sep = "["), 
+            paste(x[[3]], paste(paste(x[[1]], x[[2]], sep = "["),
                 NULL, sep = "]"))
         } else {
             paste(paste(NULL, x[[1]], sep = "("), NULL, sep = ")")
@@ -49,28 +49,30 @@ eGeo <- function(...) {
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 #' @name geoDownloader
 #' @export
+#' @importFrom reutils esummary content
+#' @importFrom XML xmlToList
 geoDownloader <- function(iQuery, iOut) {
     # Constant parameters
-    roadmapURL <- paste0("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/", 
+    roadmapURL <- paste0("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/",
         "esearch.fcgi?db=gds&term=")
     optionRet <- "retmax=5000"
     optionHist <- "usehistory=y"
-    
+
     # search on geo databse(gds) for iQuery
-    pmids <- reutils::esearch(iQuery, "gds", retmax = 10000)
-    
+    pmids <- esearch(iQuery, "gds", retmax = 10000)
+
     if (pmids@.xData$no_errors()) {
-        nbFiles <- as.numeric(XML::xmlToList(pmids@.xData$get_content())$Count)
-        
+        nbFiles <- as.numeric(xmlToList(pmids@.xData$get_content())$Count)
+
         if (nbFiles > 0) {
             # Found more than one result?
-            
-            aux <- reutils::esummary(pmids)
-            info <- reutils::content(aux, "parsed")
-            
-            if (nbFiles > 1) 
+
+            aux <- esummary(pmids)
+            info <- content(aux, "parsed")
+
+            if (nbFiles > 1)
                 ftps <- lapply(info, function(x) x$FTPLink) else ftps <- info$FTPLink
-            
+
             geoDownloaderLinks(ftps)
         }
     }
@@ -87,9 +89,9 @@ geoDownloader <- function(iQuery, iOut) {
 #' @keywords internal
 validateInput <- function(input = NULL, list = NULL) {
     for (i in seq_along(input)) {
-        if (!(input[i] %in% list)) {
+        if ( ! (input[i] %in% list)) {
             print(paste0("ERROR: ", input[i], " does not exists in roadmap"))
-            print(paste0("Possible values can be seen in objects: ", 
+            print(paste0("Possible values can be seen in objects: ",
                 "roadmap$experimentList and roadmap$samplesLis "))
             # print(list)
         }
@@ -111,27 +113,27 @@ validateInput <- function(input = NULL, list = NULL) {
 #' @export
 filterRmapData <- function(samples = NULL, experiments = NULL) {
     # Load ROAMP table if it doesn't exists
-    if (!exists("roadmap.db")) 
-        if (!is.null(samples)) 
+    if (!exists("roadmap.db"))
+        if (!is.null(samples))
             validateInput(samples, roadmap.db$Sample.Name)
-    if (!is.null(experiments)) 
+    if (!is.null(experiments))
         validateInput(experiments, roadmap.db$Experiment)
     # get list of ftps use outer in order to combine each element
     # of x and y
     if (!is.null(samples) && !is.null(experiments)) {
-        link <- unlist(outer(X = samples, Y = experiments, Vectorize(function(x, 
+        link <- unlist(outer(X = samples, Y = experiments, Vectorize(function(x,
             y) {
-            as.character(roadmap.db$GEO.FTP[roadmap.db$Sample.Name == 
+            as.character(roadmap.db$GEO.FTP[roadmap.db$Sample.Name ==
                 x & roadmap.db$Experiment == y])
         })))
     } else if (!is.null(samples)) {
         link <- unlist(lapply(samples, function(x) {
-            as.character(roadmap.db$GEO.FTP[roadmap.db$Sample.Name == 
+            as.character(roadmap.db$GEO.FTP[roadmap.db$Sample.Name ==
                 x])
         }))
     } else if (!is.null(experiments)) {
         link <- unlist(lapply(experiments, function(x) {
-            as.character(roadmap.db$GEO.FTP[roadmap.db$Sample.Name == 
+            as.character(roadmap.db$GEO.FTP[roadmap.db$Sample.Name ==
                 x])
         }))
     }
@@ -157,10 +159,10 @@ filterRmapData <- function(samples = NULL, experiments = NULL) {
 #' @importFrom downloader download
 downloadFromGEO <- function(iFTP, iFileName, iOut, gui = FALSE) {
     compresssedFiles <- c()
-    if (gui) 
+    if (gui)
         setOptionsProgressBar(title = "Roadmap data", label = "Downloading")
     gzFiles <- pblapply(iFileName, function(x) {
-        if (!file.exists(paste0(iOut, "/", x))) 
+        if (!file.exists(paste0(iOut, "/", x)))
             download(paste0(iFTP, x), paste0(iOut, "/", x))
         compresssedFiles <- c(compresssedFiles, file)
     })
@@ -187,7 +189,7 @@ geoDownloaderLinks <- function(iFTPs, iOut, gui = FALSE) {
     if (nbFiles > 0) {
         # Found more than one result?
         mkdir(iOut)
-        
+
         for (ftp in iFTPs) {
             if (ftp != "") {
                 # create folder for experiment
@@ -196,11 +198,11 @@ geoDownloaderLinks <- function(iFTPs, iOut, gui = FALSE) {
                 mkdir(outPath)
                 # get list of files names in the ftp
                 fileName <- getFileNames(ftp)
-                compresssedFiles <- downloadFromGEO(ftp, fileName, 
+                compresssedFiles <- downloadFromGEO(ftp, fileName,
                   outPath, gui)
                 print("Uncompressing")
                 uncompress(compresssedFiles)
-                
+
             }
         }
         # prepareInfoTable (ret$link,iOut)
@@ -213,7 +215,7 @@ uncompress <- function(iFiles) {
     if (!is.null(iFiles)) {
         pbapply::pblapply(iFiles, function(x) {
             if (file.exists(x) & tools::file_ext(x) == "gz") {
-                R.utils::gunzip(x, remove = FALSE, skip = TRUE, 
+                R.utils::gunzip(x, remove = FALSE, skip = TRUE,
                   ext = "gz")
                 print(paste0("Uncompressed: ", x))
             }
@@ -228,7 +230,7 @@ prepareInfoTable <- function(iLink, iOut) {
     if (length(iLink) > 0) {
         df <- do.call(rbind.data.frame, iLink)
         result$g_nbFiles <- nrow(df)
-        names(df) <- paste0("Files downloaded into:", getwd(), 
+        names(df) <- paste0("Files downloaded into:", getwd(),
             "/", iOut)
         result$df <- df
     }
@@ -236,7 +238,7 @@ prepareInfoTable <- function(iLink, iOut) {
 
 # Get all files in the ftp directory @keywords internal
 getFileNames <- function(ftp) {
-    filePath <- unlist(strsplit(RCurl::getURL(ftp, ftp.use.epsv = FALSE, 
+    filePath <- unlist(strsplit(RCurl::getURL(ftp, ftp.use.epsv = FALSE,
         dirlistonly = TRUE), " "))
     # remove \r\n from name
     fileName <- as.list(strsplit(tail(filePath, n = 1), "\r*\n")[[1]])
@@ -244,6 +246,6 @@ getFileNames <- function(ftp) {
 
 # Create directory @keywords internal
 mkdir <- function(iOut) {
-    if (!file.exists(iOut)) 
+    if (!file.exists(iOut))
         dir.create(iOut, showWarnings = TRUE)  # create directory to save files
-} 
+}

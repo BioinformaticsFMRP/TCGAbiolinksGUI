@@ -12,17 +12,23 @@ sidebar <-  dashboardSidebar(
 )
 
 body <-  dashboardBody(
-    src1 <- paste0('//cdnjs.cloudflare.com/ajax/libs/datatables/',
-                   '1.10.5/js/jquery.dataTables.min.js')
-    src2 <- paste0('//cdn.datatables.net/tabletools/2.2.3/css/',
-                   'dataTables.tableTools.css')
-    src3 <- '//cdn.datatables.net/1.10.5/css/jquery.dataTables.css'
-    src4 <- '//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.min.js'
     tagList(
-        singleton(tags$head(tags$script(src1, type='text/javascript'))),
-        singleton(tags$head(tags$link(href=src2,rel='stylesheet',type='text/css'))),
-        singleton(tags$head(tags$link(href=src3,rel='stylesheet',type='text/css'))),
-        singleton(tags$head(tags$script(src=src4,type='text/javascript'))),
+        singleton(tags$head(tags$script(
+            paste0('//cdnjs.cloudflare.com/ajax/libs/datatables/',
+                   '1.10.5/js/jquery.dataTables.min.js'),
+            type='text/javascript'))),
+        singleton(tags$head(tags$link(href=paste0('//cdn.datatables.net/',
+                                                  'tabletools/2.2.3/css/',
+                                                  'dataTables.tableTools.css'),
+                                      rel='stylesheet',type='text/css'))),
+        singleton(tags$head(tags$link(href=paste0('//cdn.datatables.net',
+                                                  '/1.10.5/css/jquery.',
+                                                  'dataTables.css'),
+                                      rel='stylesheet',type='text/css'))),
+        singleton(tags$head(tags$script(src=paste0('//cdn.datatables.net/',
+                                                   'tabletools/2.2.3/js/dat',
+                                                   'aTables.tableTools.min.js'),
+                                        type='text/javascript'))),
         singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css",
                                       href = "biOMICS.css")))
     ),
@@ -36,9 +42,6 @@ body <-  dashboardBody(
                            box(title = "Advanced search",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,
-                               #textInput("rmapSearch", label = "Search Term", value = ""),
-                               #textInput("rmapProject", label = "Project", value = "roadmap epigenomics"),
-                               #textInput("rmapType", label = "Type", value = "gsm"),
                                selectInput('rmapExpFilter', 'Experiments filter',
                                            roadmap.db$Experiment,
                                            multiple = TRUE, selectize = TRUE),
@@ -47,19 +50,28 @@ body <-  dashboardBody(
                                            multiple = TRUE, selectize = TRUE),
                                actionButton("selectDir",
                                             "Select directory",
-                                            style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 100%",
+                                            style = "background-color: #F39C12;
+                                                    color: #FFFFFF;
+                                                    margin-left: auto;
+                                                    margin-right: auto;
+                                            width: 100%",
                                             icon = icon("folder")),
                                verbatimTextOutput("rmapDir"),
                                actionButton("rmapSearchBt",
                                             "search",
-                                            style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 100%",
+                                            style = "background-color: #F39C12;
+                                                     color: #FFFFFF;
+                                                     margin-left: auto;
+                                                     margin-right: auto;
+                                                     width: 100%",
                                             icon = icon("search")),
                                actionButton("rmapSearchDownloadBt",
                                             "Download selected",
-                                            style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 100%",
+                                            style = "background-color: #F39C12;
+                                                     color: #FFFFFF;
+                                                     margin-left: auto;
+                                                     margin-right: auto;
+                                                     width: 100%",
                                             icon = icon("download")),
 
                                textOutput('rmapSearchLink')
@@ -72,9 +84,11 @@ body <-  dashboardBody(
         tabItem(tabName = "encode",
                 fluidRow(
                     column(8,
-                           box(title = "Advanced search",width = NULL, status = "warning",
+                           box(title = "Advanced search",width = NULL,
+                               status = "warning",
                                solidHeader = TRUE, collapsible = TRUE,
-                               textInput("encodeSearch", label = "Search Term", value = ""),
+                               textInput("encodeSearch", label = "Search Term",
+                                         value = ""),
                                selectInput('encodeAssay', 'Assay filter',
                                            list("ChIP-seq",
                                                 "RNA-seq",
@@ -110,9 +124,13 @@ body <-  dashboardBody(
                                            label = "Sample filter",
                                            choices = list("tissue",
                                                           "stem cell",
-                                                          "immortalized cell line",
-                                                          "in vitro differentiated cells",
-                                                          "induced pluripotent stem cell line",
+                                                          paste0("immortalized",
+                                                          " cell line"),
+                                                          paste0("in vitro dif",
+                                                          "ferentiated cells"),
+                                                          paste0("induced plu",
+                                                          "ripotent stem cell",
+                                                          " line"),
                                                           "primary cell"),
                                            multiple = TRUE, selectize = TRUE),
                                # @param assembly - "hg19" "mm9"
@@ -124,8 +142,11 @@ body <-  dashboardBody(
                                            multiple = TRUE, selectize = TRUE),
                                actionButton("encodeDownloadBt",
                                             "Download",
-                                            style = "background-color: #F39C12;color: #FFFFFF;
-                                      margin-left: auto;margin-right: auto;width: 100%",
+                                            style = "background-color: #F39C12;
+                                                    color: #FFFFFF;
+                                                    margin-left: auto;
+                                                    margin-right: auto;
+                                                    width: 100%",
                                             icon = icon("download"))
                            )
                     ),
@@ -143,7 +164,8 @@ body <-  dashboardBody(
                 fluidRow(
                     column(1),
                     column(10,
-                           box(title = "Get bar code", width = NULL, status = "warning",
+                           box(title = "Get bar code", width = NULL,
+                               status = "warning",
                                solidHeader = TRUE, collapsible = FALSE,
                                fileInput('file1', 'Upload TCGA file',
                                          accept = c(

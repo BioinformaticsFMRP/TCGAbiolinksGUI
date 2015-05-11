@@ -3,7 +3,7 @@
 systemSearch <- function(term) {
     success <- getOption("success")
     ont <- getOption("ont")
-    
+
     if (!success) {
         found <- intersect(term, systems$BTO)
         if (length(found) > 0) {
@@ -27,7 +27,7 @@ map.to.bto <- function(term) {
     aux <- term
     names(aux) <- NULL
     query <- rols::olsQuery(aux, "BTO", exact = FALSE)
-    
+
     if (length(query) > 0) {
         # term found in BTO
         term.found <- names(query)
@@ -42,7 +42,7 @@ map.to.bto <- function(term) {
     } else {
         ontology <- unlist(strsplit(names(term), ":"))[1]
         parentTerm <- rols::parents(names(term), ontology)
-        
+
         for (i in seq(parentTerm)) {
             map.to.bto(parentTerm[i])
         }
@@ -51,7 +51,7 @@ map.to.bto <- function(term) {
 
 
 is.mapped <- function(term) {
-    
+
     search.cache <- getOption("search.cache")
     # search in search cache
     if (exists("search.cache")) {
@@ -73,23 +73,23 @@ is.mapped <- function(term) {
         if (!is.na(res)) {
             options(success = TRUE)
             options(solution = res)
-            
+
             return()
         }
     }
     # search in encode
     idx <- grep(term, biosample.encode$biosample, ignore.case = TRUE)
-    
+
     if (length(idx) > 0) {
         message("found in encode")
         res <- biosample.encode[idx[1], ]$BTO
         if (!is.na(res)) {
             options(success = TRUE)
             options(solution = res)
-            
+
             return()
         }
-        
+
     }
     # search in tcga
     idx <- grep(term, biosample.tcga$biosample, fixed = TRUE)
@@ -120,7 +120,7 @@ is.mapped <- function(term) {
 #'}
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
-biOmics.search <- function(term, experiment = "all", plot = FALSE, 
+biOmics.search <- function(term, experiment = "all", plot = FALSE,
     path = "searchSummary") {
     message(paste("biOmics is searching for:", term, "\nSearching..."))
     start.time <- Sys.time()
@@ -128,24 +128,24 @@ biOmics.search <- function(term, experiment = "all", plot = FALSE,
     success <- getOption("success")
     options(solution = FALSE)
     options(exper = experiment)
-    
+
     # Step 0: verify if term is valid.
     if (!is.valid.term(term)) {
         return()
     }
-    
+
     # Step 0.5: verify if experiment is valid.
     if (!is.experiment(experiment)) {
         return()
     }
-    
+
     # Step 1: verify if term search has been mapped by us.
     if (!success) {
         is.mapped(term)
         success <- getOption("success")
         solution <- getOption("solution")
     }
-    
+
     # Step 2: search for the term in the BTO ontology.
     if (!success) {
         message("Not found in the cache, searching in the ontology...")
@@ -153,7 +153,7 @@ biOmics.search <- function(term, experiment = "all", plot = FALSE,
         options(ont = "BTO")
         ont <- getOption("ont")
         query <- rols::olsQuery(term, ont, exact = TRUE)
-        
+
         if (length(query) > 0) {
             term.found <- names(query)
             systemSearch(term.found)
@@ -168,13 +168,13 @@ biOmics.search <- function(term, experiment = "all", plot = FALSE,
                 })
             }
         }
-        
+
         # Not found in bto or cache we are going to search in other
         # ontologies and see if from the other ontologies we can
         # reach BTO
         if (!success) {
             message("Not found in the cache, not found in BTO...")
-            
+
             ont.vec <- c("EFO", "CL", "UBERON")
             for (i in seq(ont.vec)) {
                 query <- rols::olsQuery(term, ont.vec[i])
@@ -192,27 +192,27 @@ biOmics.search <- function(term, experiment = "all", plot = FALSE,
         success <- getOption("success")
         solution <- getOption("solution")
     }
-    
+
     end.time <- Sys.time()
     time.taken <- end.time - start.time
     message(paste("Time taken: ", round(time.taken, 2), "s"))
-    
+
     if (success) {
         if (!exists("search.cache")) {
             options(search.cache = rbind(c(term, solution[1])))
         } else {
-            options(search.cache = rbind(search.cache, c(term, 
+            options(search.cache = rbind(search.cache, c(term,
                 solution[1])))
         }
     }
-    
+
     return(show.results(solution, experiment, plot, path))
 }
 
 # show the results to the user
 #' @import ggplot2
 show.results <- function(solution, exper, plot = FALSE, path) {
-    
+
     # Get the samples that matches the result of the query
     # Databases were matched manually to systems
     pat <- unlist(strsplit(solution[1], ","))
@@ -220,45 +220,45 @@ show.results <- function(solution, exper, plot = FALSE, path) {
         grepl(x, biosample.encode$BTO)
     }), 1, any)
     enc.samples <- biosample.encode[idx, ]$biosample
-    
+
     idx <- apply(sapply(pat, function(x) {
         grepl(x, biosample.roadmap$BTO)
     }), 1, any)
     rmap.samples <- biosample.roadmap[idx, ]$biosample
-    
+
     idx <- apply(sapply(pat, function(x) {
         grepl(x, biosample.tcga$BTO)
     }), 1, any)
     tcga.samples <- biosample.tcga[idx, ]$biosample
-    
-    
+
+
     # Select the database rows
-    enc.result <- encode.db[is.element(encode.db$biosample, enc.samples), 
+    enc.result <- encode.db[is.element(encode.db$biosample, enc.samples),
         ]
-    rmap.result <- roadmap.db[is.element(roadmap.db$Sample.Name, 
+    rmap.result <- roadmap.db[is.element(roadmap.db$Sample.Name,
         rmap.samples), ]
-    disease <- sapply(strsplit(tcga.samples, split = " - "), 
+    disease <- sapply(strsplit(tcga.samples, split = " - "),
         function(x) {
             x[1]
         })
-    tcga.result <- tcga.db[is.element(tcga.db$Disease, disease), 
+    tcga.result <- tcga.db[is.element(tcga.db$Disease, disease),
         ]
     # Select experiments
     if (!exper == "all") {
         message("Filtering by experiment")
-        idx <- apply(sapply(platforms[grep(exper, platforms$Standard, 
+        idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
             ignore.case = TRUE), 2], function(x) {
             grepl(x, enc.result$assay, ignore.case = TRUE)
         }), 1, any)
         enc.result <- enc.result[idx, ]
-        
-        idx <- apply(sapply(platforms[grep(exper, platforms$Standard, 
+
+        idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
             ignore.case = TRUE), 2], function(x) {
             grepl(x, rmap.result$Experiment, ignore.case = TRUE)
         }), 1, any)
         rmap.result <- rmap.result[idx, ]
-        
-        idx <- apply(sapply(platforms[grep(exper, platforms$Standard, 
+
+        idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
             ignore.case = TRUE), 2], function(x) {
             grepl(x, tcga.result$baseName, ignore.case = TRUE)
         }), 1, any)
@@ -267,9 +267,9 @@ show.results <- function(solution, exper, plot = FALSE, path) {
         } else {
             tcga.result <- tcga.result[1:nrow(tcga.result), ]
         }
-        
+
     }
-    
+
     message("============ Summary of results found ==============")
     sapply(pat, function(x) {
         message(paste("|Mapped to:", subset(systems, BTO == x)$system))
@@ -278,52 +278,53 @@ show.results <- function(solution, exper, plot = FALSE, path) {
     message(paste0("|TCGA   : ", length(tcga.samples)))
     message(paste0("|ENCODE : ", length(enc.samples)))
     message(paste0("|ROADMAP: ", length(rmap.samples)))
-    
+
     message("--------------- Number of samples ------------------")
     message(paste0("|TCGA Archives: ", nrow(tcga.result)))
     message(paste0("|ENCODE : ", nrow(enc.result)))
     message(paste0("|ROADMAP: ", nrow(rmap.result)))
     message("====================================================")
-    
+
     # Preparing the output table
     colnames(rmap.result)[1:3] <- c("ID", "Sample", "Experiment")
     colnames(enc.result)[1:3] <- c("ID", "Sample", "Experiment")
-    colnames(tcga.result)[c(7, 11, 10)] <- c("ID", "Sample", 
+    colnames(tcga.result)[c(7, 11, 10)] <- c("ID", "Sample",
         "Experiment")
-    
-    results <- rbind(enc.result[1:3], rmap.result[1:3], tcga.result[c(7, 
+
+    results <- rbind(enc.result[1:3], rmap.result[1:3], tcga.result[c(7,
         11, 10)])
-    database <- c(rep("encode", nrow(enc.result)), rep("roadmap", 
+    database <- c(rep("encode", nrow(enc.result)), rep("roadmap",
         nrow(rmap.result)), rep("tcga", nrow(tcga.result)))
     results <- cbind(database, results)
-    
+
     if (plot) {
         message("Summary images were saved in: ", path)
-        
+
         dir.create(path, showWarnings = FALSE, recursive = TRUE)
         # % Experiments per database
-        g <- ggplot(results, aes(factor(database), fill = Experiment)) + 
+        g <- ggplot(results, aes(factor(database), fill = Experiment)) +
             geom_bar(position = "fill")
-        ggsave(g, filename = file.path(path, "experiments.pdf"), 
+        ggsave(g, filename = file.path(path, "experiments.pdf"),
             height = 14, width = 10, scale = 1.5)
-        
+
         # % Samples per database
-        g <- ggplot(results, aes(factor(database), fill = Sample)) + 
+        g <- ggplot(results, aes(factor(database), fill = Sample)) +
             geom_bar(position = "fill")
-        ggsave(g, filename = file.path(path, "samples.pdf"), 
+        ggsave(g, filename = file.path(path, "samples.pdf"),
             height = 14, width = 10, scale = 1.5)
     }
     return(results)
-    
+
 }
 
 is.experiment <- function(experiment) {
     v <- c(unique(platforms$Standard), "all")
-    if ((length(grep(experiment, v, ignore.case = TRUE)) > 0) & 
+    if ((length(grep(experiment, v, ignore.case = TRUE)) > 0) &
         (nchar(experiment) >= 3)) {
         return(TRUE)
     } else {
-        message(paste0("ERROR: ", experiment, " is not an experiment or\",\n                   \"has less than 3 characters.\nUse:"))
+        message(paste0("ERROR: ", experiment, " is not an experiment or",
+                        "has less than 3 characters.\nUse:"))
         print(unique(platforms$Standard))
         return(FALSE)
     }
@@ -333,7 +334,8 @@ is.valid.term <- function(term) {
     if (nchar(term) >= 3) {
         return(TRUE)
     } else {
-        message(paste0("ERROR: ", term, " is not valid.", " Specify a term of at least 3 characters"))
+        message(paste0("ERROR: ", term, " is not valid.",
+                       " Specify a term of at least 3 characters"))
         return(FALSE)
     }
 }
@@ -385,11 +387,11 @@ is.valid.term <- function(term) {
 #'  ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/
 #'  \tab 2010-05-03
 #'}
-roadmap.search <- function(accession = NULL, sample = NULL, experiment = NULL, 
+roadmap.search <- function(accession = NULL, sample = NULL, experiment = NULL,
     NA.Accession = NULL, center = NULL, embargo.end.date = NULL) {
     # roadmap.verify.input(GEO.Accession,sample,
     # experiment,center,embargo.end.date)
-    
+
     db <- roadmap.db
     if (!is.null(sample)) {
         id <- sapply(sample, function(x) {
@@ -519,13 +521,13 @@ roadmap.search <- function(accession = NULL, sample = NULL, experiment = NULL,
 #' @import ggplot2
 #' @export
 #' @return Dataframe with the query result
-encode.search <- function(accession = NULL, biosample = NULL, 
-    assay = NULL, lab = NULL, target = NULL, description = NULL, 
+encode.search <- function(accession = NULL, biosample = NULL,
+    assay = NULL, lab = NULL, target = NULL, description = NULL,
     organism = NULL) {
-    
+
     # roadmap.verify.input(GEO.Accession,sample,experiment,
     # center,embargo.end.date)
-    
+
     db <- encode.db
     if (!is.null(biosample)) {
         id <- sapply(biosample, function(x) {
@@ -574,4 +576,4 @@ encode.search <- function(accession = NULL, biosample = NULL,
         db <- db[id, ]
     }
     return(db)
-} 
+}

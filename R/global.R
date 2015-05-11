@@ -1,6 +1,6 @@
 # @title Reactive global variables @description Global
 # variables used to update shiny @keywords internal
-result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL, 
+result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL,
     downloading = 1)
 # gui <- FALSE
 
@@ -36,6 +36,6 @@ setOptionsProgressBar <- function(title, label) {
     # pbapply::pboptions(type='tk', title = title, label = label)
     # else if(is.windows()) opb <- pbapply::pboptions(type='win',
     # title = title, label = label) else
-    opb <- pbapply::pboptions(type = "txt", char = "+", title = title, 
+    opb <- pbapply::pboptions(type = "txt", char = "+", title = title,
         label = label)
-} 
+}

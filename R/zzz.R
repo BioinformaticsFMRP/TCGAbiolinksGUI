@@ -15,8 +15,10 @@
         env$solution <- ""
         save(biosample.encode, biosample.roadmap, biosample.tcga,
             encode.db, platforms, roadmap.db, systems, tcga.db,
-            platform.table, disease.table, file = paste0(system.file("extdata",
-                package = "biOmics"), "/biomics.rda"))
+            platform.table, disease.table,
+            file = file.path(system.file("extdata", package = "biOmics"),
+                             "biomics.rda")
+            )
     }
 
     file <- system.file("extdata/GRCh.rda", package = "biOmics")

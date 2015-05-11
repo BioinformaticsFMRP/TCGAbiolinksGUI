@@ -140,4 +140,4 @@ NULL
 #' @keywords internal
 #' @name gene.location
 #' @format A data frame with 24474 rows and 12 variables
-NULL 
+NULL

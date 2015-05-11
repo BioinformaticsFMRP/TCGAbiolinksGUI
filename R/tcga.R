@@ -1,13 +1,14 @@
-getBarCode <- function(TCGAList, filterList) {
-    TCGAList <- TCGAList[, 2]
+#' @importFrom gdata trim
+getBarCode <- function(TCGAList, filter) {
+    list <- list[, 2]
     files <- NULL
-    for (i in unlist(filterList)) {
-        for (j in TCGAList) {
-            if (grepl(i, j)) 
+    for (i in unlist(filter)) {
+        for (j in list) {
+            if (grepl(i, j))
                 files <- paste0(files, " ", j)
         }
     }
-    files <- gsub(" ", ",", gdata::trim(files))
+    files <- gsub(" ", ",", trim(files))
 }
 # ------------------------ Encode search
 #' @title TCGA search
@@ -54,11 +55,12 @@ getBarCode <- function(TCGAList, filterList) {
 #' @param added.up.to 04- 14-2010
 #' @param listSample List of samples. Ex:c('TCGA-04-06-*','TCGA-04-08-*')
 #' @export
-#' @import downloader
-tcga.search <- function(tumor = NULL, platform = NULL, added.since = NULL, 
-    added.up.to = NULL, listSample = NULL, level = NULL) {
+#' @importFrom downloader download
+tcgaSearch <- function(tumor = NULL, platform = NULL, added.since = NULL,
+    added.up.to = NULL, samples = NULL, level = NULL) {
     if (!is.null(tumor)) {
-        if (!(is.element(tolower(tumor), tolower(disease.table$abbreviation)))) {
+        if (!(is.element(tolower(tumor),
+                         tolower(disease.table$abbreviation)))) {
             message("Disease not found. Chosse between:")
             message(paste(disease.table$abbreviation, collapse = " "))
             stop("Invalid tumor")
@@ -71,14 +73,14 @@ tcga.search <- function(tumor = NULL, platform = NULL, added.since = NULL,
             stop("Invalid platform")
         }
     }
-    
+
     if (!is.null(level)) {
         if (!(is.element(level, c("1", "2", "3")))) {
             message("Levelnot found. Chosse between:'1', '2' or '3'")
             stop("Invalid platform")
         }
     }
-    
+
     if (!is.null(added.since)) {
         d <- try(as.Date(added.since, format = "%m/%d/%Y"))
         if (class(d) == "try-error" || is.na(d)) {
@@ -91,23 +93,23 @@ tcga.search <- function(tumor = NULL, platform = NULL, added.since = NULL,
             print("Date format should be mm/dd/YYYY")
         }
     }
-    
+
     # to be improved
-    if (!is.null(listSample)) {
+    if (!is.null(samples)) {
         # archives <- c()
         files <- c()
-        for (i in seq_along(listSample)) {
+        for (i in seq_along(samples)) {
             # table with barcode id example:
             # query=BiospecimenBarcode[@barcode=TCGA-28-2499*]
             message("Searching for barcode files...")
-            message(paste("Barcode:", listSample[i]))
-            db <- get.barcode.table(listSample[i])
-            
+            message(paste("Barcode:", samples[i]))
+            db <- getBarcodeTable(samples[i])
+
             # Improvement: using portion analyte in order to select
             # platform
             if (!is.null(platform)) {
                 analyte <- c()
-                pat <- paste0("TCGA-[[:alnum:]]{2}-[[:alnum:]]{4}-", 
+                pat <- paste0("TCGA-[[:alnum:]]{2}-[[:alnum:]]{4}-",
                   "[[:alnum:]]{3}-[[:alnum:]]{2}")
                 if (is.element(tolower(platform), tolower(dna.plat))) {
                   analyte <- c(analyte, "D")
@@ -132,7 +134,7 @@ tcga.search <- function(tumor = NULL, platform = NULL, added.since = NULL,
                 }
                 idx <- c()
                 for (i in seq_along(analyte)) {
-                  aux <- grep(paste0(pat, "[", analyte[i], "]"), 
+                  aux <- grep(paste0(pat, "[", analyte[i], "]"),
                     as.character(db$barcode))
                   idx <- union(idx, aux)
                 }
@@ -140,9 +142,9 @@ tcga.search <- function(tumor = NULL, platform = NULL, added.since = NULL,
                 db <- db[idx, ]
             }
             if (!is.null(platform)) {
-                pat <- paste0("TCGA-[[:alnum:]]{2}-[[:alnum:]]{4}-", 
+                pat <- paste0("TCGA-[[:alnum:]]{2}-[[:alnum:]]{4}-",
                   "[[:alnum:]]{3}-[[:alnum:]]{3}-[[:alnum:]]{4}-")
-                
+
                 idx <- grep(platform, plat.center$platform)
                 centers <- as.character(plat.center[idx, "center"])
                 idx <- c()
@@ -153,12 +155,12 @@ tcga.search <- function(tumor = NULL, platform = NULL, added.since = NULL,
                 print(length(idx))
                 db <- db[idx, ]
             }
-            
+
             # get getBcrArchiveCollection table
             for (i in seq_along(db$id)) {
                 # aux <- getBcrArchiveCollection(db[i,'id']) archives <-
                 # rbind(archives,aux)
-                aux <- get.samples.files(db[i, "id"])
+                aux <- getSamplesFiles(db[i, "id"])
                 aux$barcode <- db[i, "barcode"]
                 if (!is.null(aux)) {
                   files <- rbind(files, aux)
@@ -177,43 +179,44 @@ tcga.search <- function(tumor = NULL, platform = NULL, added.since = NULL,
         if (!is.null(level)) {
             x <- subset(x, grepl(paste0("Level_", level), name))
         }
-        
+
     } else {
         message("CREATING TABLE")
-        x <- create.tcga.table(platform = platform, type = level, 
+        x <- createTcgaTable(platform = platform, type = level,
             disease = tumor)
     }
     if (!is.null(added.since)) {
-        x <- subset(x, as.Date(addedDate) > as.Date(added.since, 
+        x <- subset(x, as.Date(addedDate) > as.Date(added.since,
             "%m/%d/%Y"))
     }
     if (!is.null(added.up.to)) {
-        x <- subset(x, as.Date(addedDate) < as.Date(added.up.to, 
+        x <- subset(x, as.Date(addedDate) < as.Date(added.up.to,
             "%m/%d/%Y"))
     }
-    
+
     return(x)
 }
 
 # @description get the arhive info from tcga api
 getArchive <- function(id) {
     root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
-    query <- paste0("query=Archive&FileInfo[@id=", id, "]&roleName=archiveCollection")
+    query <- paste0("query=Archive&FileInfo[@id=", id,
+                    "]&roleName=archiveCollection")
     url <- paste0(root, query)
-    db <- tcga.get.table(url)
+    db <- tcgaGetTable(url)
     return(db)
 }
 
-get.samples.files <- function(id) {
+getSamplesFiles <- function(id) {
     archives <- NULL
     root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
-    query <- paste0("query=FileInfo&BiospecimenBarcode[@id=", 
+    query <- paste0("query=FileInfo&BiospecimenBarcode[@id=",
         id, "]&roleName=fileCollection")
     url <- paste0(root, query)
-    db <- tcga.get.table(url)
+    db <- tcgaGetTable(url)
     if (!is.null(db)) {
         obsolete <- grep("-", db$md5sum)
-        
+
         if (length(obsolete) > 0) {
             db <- db[-obsolete, ]
         }
@@ -225,7 +228,7 @@ get.samples.files <- function(id) {
             if (!exists("archives")) {
                 archives <- getArchive(latest)
                 archives$file <- files[i]
-                
+
             } else {
                 aux <- getArchive(latest)
                 aux$file <- files[i]
@@ -234,62 +237,62 @@ get.samples.files <- function(id) {
         }
         archives <- archives[, -c(10:15)]
         archives$addedDate <- as.Date(archives$addedDate, "%m-%d-%Y")
-        archives <- tcga.db.addCol(archives)
+        archives <- tcgaDbAddCol(archives)
     }
     return(archives)
 }
 
 getBcrArchiveCollection <- function(id) {
     tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
-    tcga.query <- paste0("query=Archive&BiospecimenBarcode[@id=", 
+    tcga.query <- paste0("query=Archive&BiospecimenBarcode[@id=",
         id, "]&roleName=bcrArchiveCollection")
     url <- paste0(tcga.root, tcga.query)
-    db <- tcga.get.table(url)
+    db <- tcgaGetTable(url)
     db$addedDate <- as.Date(db$addedDate, "%m-%d-%Y")
-    db <- tcga.db.addCol(db)
+    db <- tcgaDbAddCol(db)
 }
-get.barcode.table <- function(barcode) {
+getBarcodeTable <- function(barcode) {
     tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
-    tcga.query <- paste0("query=BiospecimenBarcode[@barcode=", 
+    tcga.query <- paste0("query=BiospecimenBarcode[@barcode=",
         barcode, "][@isValid=true]")
     url <- paste0(tcga.root, tcga.query)
-    db <- tcga.get.table(url)
+    db <- tcgaGetTable(url)
+    return (db)
 }
 # This function created tcga.db warning to create the db
 # takes almost 3 days to update it should take some minutes
 # (function still needed to be done)
-#' @import downloader XML plyr stringr
-create.tcga.table <- function(disease = NULL, platform = NULL, 
+#' @importFrom downloader download
+createTcgaTable <- function(disease = NULL, platform = NULL,
     type = NULL) {
     # get all compressed archives
     tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
-    regex <- "<table summary=\"Data Summary\".*</a></td></tr></table>"
     message("Downloading TCGA database")
     tcga.query <- paste0("query=Archive[isLatest=1]")
-    
+
     extra <- ""
     pages <- 32
     if (!is.null(platform)) {
-        extra <- paste0(extra, "[Platform[@name=", platform, 
+        extra <- paste0(extra, "[Platform[@name=", platform,
             "]]")
-        pages <- pages/4
+        pages <- pages / 4
     }
     if (!is.null(disease)) {
-        extra <- paste0(extra, "[Disease[@abbreviation=", disease, 
+        extra <- paste0(extra, "[Disease[@abbreviation=", disease,
             "]]")
-        pages <- pages/4
+        pages <- pages / 4
     }
     if (!is.null(type)) {
-        extra <- paste0(extra, "[ArchiveType[@type=Level_", type, 
+        extra <- paste0(extra, "[ArchiveType[@type=Level_", type,
             "]]")
-        pages <- pages/4
+        pages <- pages / 4
     }
     url <- paste0(tcga.root, tcga.query, extra)
-    db <- tcga.get.table(url, pages)
-    
+    db <- tcgaGetTable(url, pages)
+
     # remove useless cols
     db <- db[, 1:9]
-    
+
     # remove protected data from the update
     idx <- grep("tcga4yeo", db$deployLocation)
     if (length(idx) > 0) {
@@ -297,12 +300,12 @@ create.tcga.table <- function(disease = NULL, platform = NULL,
     }
     # transoform date into same format
     db$addedDate <- as.Date(db$addedDate, "%m-%d-%Y")
-    db <- tcga.db.addCol(db)
+    db <- tcgaDbAddCol(db)
     return(db)
 }
 
 # Using the name create two collumns Platform and Disease
-tcga.db.addCol <- function(data) {
+tcgaDbAddCol <- function(data) {
     data$Platform <- ""
     data$Disease <- ""
     diseases <- disease.table$abbreviation
@@ -312,7 +315,7 @@ tcga.db.addCol <- function(data) {
             data[idx, ]$Disease <- diseases[i]
         }
     }
-    
+
     for (i in seq_along(platform.table$name)) {
         idx <- grep(platform.table[i, ]$name, data$baseName)
         if (length(idx) > 0) {
@@ -324,19 +327,21 @@ tcga.db.addCol <- function(data) {
 
 # A function to get a tcga table from api input: url (max for
 # progress bar) return: table
-tcga.get.table <- function(url, max = 0) {
+#' @importFrom stringr str_match
+#' @importFrom downloader download
+tcgaGetTable <- function(url, max = 0) {
     db <- NULL
     next.url <- url
     regex <- "<table summary=\"Data Summary\".*</a></td></tr></table>"
     next.regex <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML.*Next"
-    
+
     if (max > 0) {
         pb <- txtProgressBar(min = 0, max = max, style = 3)
         i <- 0
     }
     # print(url)
     while (!is.na(next.url)) {
-        downloader::download(next.url, "tcga.html", quiet = TRUE)
+        download(next.url, "tcga.html", quiet = TRUE)
         html <- readLines("tcga.html")
         match <- str_match(html, regex)
         idx <- which(!is.na(match))
@@ -344,11 +349,11 @@ tcga.get.table <- function(url, max = 0) {
             next.url <- NA
             break
         }
-        table <- readHTMLTable(toString(match[idx, ]), header = TRUE, 
+        table <- readHTMLTable(toString(match[idx, ]), header = TRUE,
             stringsAsFactors = FALSE)$"NULL"
         colnames(table) <- table[1, ]
         table <- table[-1, ]
-        
+
         if (exists("db")) {
             db <- rbind(db, table)
         } else {
@@ -357,7 +362,7 @@ tcga.get.table <- function(url, max = 0) {
         # get next table
         next.url <- str_match(html, next.regex)[6, ]
         next.url <- gsub("amp;", "", gsub("\">Next", "", next.url))
-        
+
         if (max > 0) {
             # update progress bar
             i <- i + 1
@@ -369,4 +374,4 @@ tcga.get.table <- function(url, max = 0) {
         close(pb)
     }
     return(db)
-} 
+}
