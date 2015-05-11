@@ -10,28 +10,28 @@ biOmics.download <- function(lines,
                              rmap.file.type = NULL
 ){
 
-  encode.lines <- subset(lines, database == 'encode')
-  rmap.lines <- subset(lines, database == 'roadmap')
-  tcga.lines <- subset(lines, database == 'tcga')
+    encode.lines <- subset(lines, database == 'encode')
+    rmap.lines <- subset(lines, database == 'roadmap')
+    tcga.lines <- subset(lines, database == 'tcga')
 
-  #--------------   download Encode
-  if(dim(encode.lines)[1] > 0){
-    encode.lines <- subset(encode.db, encode.db$accession == encode.lines$ID)
-    encode.download(encode.lines,enc.file.type)
-  }
+    #--------------   download Encode
+    if(dim(encode.lines)[1] > 0){
+        encode.lines <- subset(encode.db, encode.db$accession == encode.lines$ID)
+        encode.download(encode.lines,enc.file.type)
+    }
 
-  #--------------   download ROADMAP
-  if(dim(rmap.lines)[1] > 0){
-    rmap.lines <- subset(roadmap.db,
-                         roadmap.db$X..GEO.Accession == rmap.lines$ID)
-    roadmap.download(rmap.lines,rmap.file.type)
-  }
-  #---------------- download TCGA
-  # TODO: add filters, folder to save
-  if(dim(tcga.lines)[1] > 0){
-    tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
-    TCGADownload(tcga.lines,path="TCGA")
-  }
+    #--------------   download ROADMAP
+    if(dim(rmap.lines)[1] > 0){
+        rmap.lines <- subset(roadmap.db,
+                             roadmap.db$X..GEO.Accession == rmap.lines$ID)
+        roadmap.download(rmap.lines,rmap.file.type)
+    }
+    #---------------- download TCGA
+    # TODO: add filters, folder to save
+    if(dim(tcga.lines)[1] > 0){
+        tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
+        TCGADownload(tcga.lines,path="TCGA")
+    }
 }
 
 #' @title Download encode data
@@ -44,34 +44,34 @@ encode.download <- function(lines,
                             type = NULL,
                             path = "."
 ){
-  dir.create(path, showWarnings = FALSE, recursive = TRUE)
+    dir.create(path, showWarnings = FALSE, recursive = TRUE)
 
-  encode.url <- "https://www.encodeproject.org/"
-  json <- "/?format=JSON"
+    encode.url <- "https://www.encodeproject.org/"
+    json <- "/?format=JSON"
 
-  for (i in 1:dim(lines)[1]){
-    id <-  lines$accession[i]
-    url <- paste0(encode.url, 'experiments/', id, json)
+    for (i in 1:dim(lines)[1]){
+        id <-  lines$accession[i]
+        url <- paste0(encode.url, 'experiments/', id, json)
 
-    #get list of files
-    item <- rjson::fromJSON (
-      RCurl::getURL(url, dirlistonly = TRUE,
-                    .opts = list(ssl.verifypeer = FALSE))
-    )[['files']]
+        #get list of files
+        item <- rjson::fromJSON (
+            RCurl::getURL(url, dirlistonly = TRUE,
+                          .opts = list(ssl.verifypeer = FALSE))
+        )[['files']]
 
-    files <- sapply(item,function(x){x$href})
+        files <- sapply(item,function(x){x$href})
 
-    if(!is.null(type)){
-      idx <- unlist(lapply(type,function(x){grep(x,files)}))
-      files <- files[idx]
+        if(!is.null(type)){
+            idx <- unlist(lapply(type,function(x){grep(x,files)}))
+            files <- files[idx]
+        }
+        #download files
+        for (j in seq_along(files)){
+            link <- paste0(encode.url, files[j])
+            fileout <- file.path(path,id,basename(link))
+            downloader::download(link, fileout)
+        }
     }
-    #download files
-    for (j in seq_along(files)){
-      link <- paste0(encode.url, files[j])
-      fileout <- file.path(path,id,basename(link))
-      downloader::download(link, fileout)
-    }
-  }
 
 }
 
@@ -83,51 +83,54 @@ encode.download <- function(lines,
 #' @export
 #' @import RCurl
 roadmap.download <- function (lines,
-                         type = NULL,
-                         path = "."
+                              type = NULL,
+                              path = "."
 ){
 
-  error <- c()
-  for (i in 1:dim(lines)[1]){
-    name.sample <- str_replace_all(lines[i,]$Sample.Name, "[^[:alnum:]]", "_")
-    name.expr <- str_replace_all(lines[i,]$Experiment, "[^[:alnum:]]", "_")
+    error <- c()
+    for (i in 1:dim(lines)[1]){
+        sample <- str_replace_all(lines[i,]$Sample.Name, "[^[:alnum:]]", "_")
+        expr <- str_replace_all(lines[i,]$Experiment, "[^[:alnum:]]", "_")
 
-    folder <- paste0(path,"/",name.expr,"/",name.sample)
-    status <- dir.create(folder,showWarnings = FALSE, recursive = TRUE)
-    if(!status){
-      message("Downloaded", i )
-      next
-    }
+        folder <- paste0(path,"/", expr, "/", sample)
+        status <- dir.create(folder,showWarnings = FALSE, recursive = TRUE)
+        if(!status){
+            message("Downloaded", i )
+            next
+        }
 
-    url <- lines[i,]$GEO.FTP
-    if(nchar(url) == 0){
-      error <- c(error, lines[i,]$X..GEO.Accession)
-      next
-    }
-    filenames <- getFileNames(url)
-    if(!is.null(type)){
-      idx <- unlist(lapply(type,function(x){grep(x,filenames)}))
-      filenames <- filenames[idx]
-    }
-    files <- paste0(url,filenames)
+        url <- lines[i,]$GEO.FTP
+        if(nchar(url) == 0){
+            error <- c(error, lines[i,]$X..GEO.Accession)
+            next
+        }
+        filenames <- getFileNames(url)
+        if(!is.null(type)){
+            idx <- unlist(lapply(type,function(x){grep(x,filenames)}))
+            filenames <- filenames[idx]
+        }
+        files <- paste0(url,filenames)
 
-    #download files
-    for(j in seq_along(files)){
-      aux <- paste0(folder,"/",basename(files[j]))
-      if(!file.exists(aux)){
-        message(paste0("Downloading: ", aux))
-        downloader::download(files[j],aux)
-      }
+        #download files
+        for(j in seq_along(files)){
+            aux <- paste0(folder,"/",basename(files[j]))
+            if(!file.exists(aux)){
+                message(paste0("Downloading: ", aux))
+                downloader::download(files[j],aux)
+            }
+        }
     }
-  }
-  if(length(error)){
-    message("=============================")
-    message("         WARNING             ")
-    message("=============================")
-    message("Empty FTP: No files found")
-    invisible(apply(as.array(error),1,function(x)  message("Accession: ",x)))
-    message("=============================")
-  }
+    if(length(error)){
+        message("=============================")
+        message("         WARNING             ")
+        message("=============================")
+        message("Empty FTP: No files found")
+        invisible(apply(as.array(error),
+                        1,
+                        function(x)  message("Accession: ",x))
+        )
+        message("=============================")
+    }
 }
 #' @title TCGA Download
 #' @description Download data previously selected using the TCGAQuery function
@@ -142,30 +145,30 @@ roadmap.download <- function (lines,
 #' @import downloader
 tcga.download <- function(data = NULL, path = ".")
 {
-  dir.create(path,showWarnings = FALSE)
-  root <- "https://tcga-data.nci.nih.gov"
-  if(!("file" %in% colnames(data))){
-    message("Downloading folders")
-    for(i in 1:nrow(data)){
-      file <- paste0(path,"/",basename(data[i,"deployLocation"]))
-      message(paste0("Downloading:", basename(data[i,"deployLocation"])))
-      if(!file.exists(file)){
-        downloader::download(paste0(root,data[i,"deployLocation"]),file)
-        untar(file, exdir = path)
-      }
+    dir.create(path,showWarnings = FALSE)
+    root <- "https://tcga-data.nci.nih.gov"
+    if(!("file" %in% colnames(data))){
+        message("Downloading folders")
+        for(i in 1:nrow(data)){
+            file <- paste0(path,"/",basename(data[i,"deployLocation"]))
+            message(paste0("Downloading:", basename(data[i,"deployLocation"])))
+            if(!file.exists(file)){
+                downloader::download(paste0(root,data[i,"deployLocation"]),file)
+                untar(file, exdir = path)
+            }
+        }
     }
-  }
-  else{
-    message("Downloading files")
-    for(i in 1:nrow(data)){
-      file <- paste0(path,"/",basename(data[i,"file"]))
-      message(paste0("Downloading:", basename(data[i,"file"])))
-      if(!file.exists(file)){
-        downloader::download(paste0(root,
-                                    gsub(".tar.gz","",data[i,"deployLocation"]),
-                                    "/",data[i,"file"]),
-                             file)
-      }
+    else{
+        message("Downloading files")
+        for(i in 1:nrow(data)){
+            file <- paste0(path,"/",basename(data[i,"file"]))
+            message(paste0("Downloading:", basename(data[i,"file"])))
+            if(!file.exists(file)){
+                downloader::download(paste0(root,
+                                            gsub(".tar.gz","",data[i,"deployLocation"]),
+                                            "/",data[i,"file"]),
+                                     file)
+            }
+        }
     }
-  }
 }

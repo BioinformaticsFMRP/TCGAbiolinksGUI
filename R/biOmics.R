@@ -86,11 +86,11 @@ NULL
 #' \itemize{
 #'   \item X..GEO.Accession Geo Acession number
 #'   \item Sample.Name  Sample name
-#'   \item Experiment	 Experiment name
-#'   \item NA.Accession	NA acession number
-#'   \item Center	Center name
-#'   \item SRA.FTP	SRA file FTP path
-#'   \item GEO.FTP	GEO files FTO path
+#'   \item Experiment Experiment name
+#'   \item NA.Accession NA acession number
+#'   \item Center Center name
+#'   \item SRA.FTP SRA file FTP path
+#'   \item GEO.FTP GEO files FTO path
 #'   \item Embargo.end.date Embargo date
 #'}
 #' @docType data
@@ -103,9 +103,9 @@ NULL
 #' The data set contains the following fields:
 #' \itemize{
 #' \item addedDate Date when sample was added to database
-#' \item baseName	name of the sample folder
-#' \item deployLocation	Path of the sample folder
-#' \item deployStatus	If available or not
+#' \item baseName name of the sample folder
+#' \item deployLocation Path of the sample folder
+#' \item deployStatus If available or not
 #' \item id TCGA id
 #' \item isLatest Is the lasted version of the sample?
 #' \item name Sample name
@@ -129,7 +129,7 @@ NULL
 #' \item chromosome_name
 #' \item start_position
 #' \item end_position
-#' \item strand	external_gene_name
+#' \item strand external_gene_name
 #' \item external_transcript_name
 #' \item external_gene_source
 #' \item external_transcript_source_name

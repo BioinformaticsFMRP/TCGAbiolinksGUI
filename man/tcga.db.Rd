@@ -7,9 +7,9 @@
 The data set contains the following fields:
 \itemize{
 \item addedDate Date when sample was added to database
-\item baseName	name of the sample folder
-\item deployLocation	Path of the sample folder
-\item deployStatus	If available or not
+\item baseName name of the sample folder
+\item deployLocation Path of the sample folder
+\item deployStatus If available or not
 \item id TCGA id
 \item isLatest Is the lasted version of the sample?
 \item name Sample name
@@ -24,9 +24,9 @@ TCGA metadata database.
 The data set contains the following fields:
 \itemize{
 \item addedDate Date when sample was added to database
-\item baseName	name of the sample folder
-\item deployLocation	Path of the sample folder
-\item deployStatus	If available or not
+\item baseName name of the sample folder
+\item deployLocation Path of the sample folder
+\item deployStatus If available or not
 \item id TCGA id
 \item isLatest Is the lasted version of the sample?
 \item name Sample name

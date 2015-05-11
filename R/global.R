@@ -17,28 +17,27 @@ result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0,
 #' @import shiny shinydashboard tcltk
 #' @export
 biOmicsApp <- function() {
-  gui <<- TRUE
-  shiny::runApp (system.file ('app', package = 'biOmics'))
+    shiny::runApp (system.file ('app', package = 'biOmics'))
 }
 
 is.windows <- function() {
-  Sys.info()["sysname"] == "Windows"
+    Sys.info()["sysname"] == "Windows"
 }
 
 is.mac <- function() {
-  Sys.info()["sysname"] == "Darwin"
+    Sys.info()["sysname"] == "Darwin"
 }
 
 is.linux <- function() {
-  Sys.info()["sysname"] == "Linux"
+    Sys.info()["sysname"] == "Linux"
 }
 
 setOptionsProgressBar <- function(title, label){
-  #if(is.linux() || is.mac() )
-  #  opb <- pbapply::pboptions(type="tk", title = title, label = label)
-  #else if(is.windows())
-  #  opb <- pbapply::pboptions(type="win", title = title, label = label)
-  #else
+    #if(is.linux() || is.mac() )
+    #  opb <- pbapply::pboptions(type="tk", title = title, label = label)
+    #else if(is.windows())
+    #  opb <- pbapply::pboptions(type="win", title = title, label = label)
+    #else
     opb <- pbapply::pboptions(type = "txt", char = "+",
                               title = title, label = label)
 }

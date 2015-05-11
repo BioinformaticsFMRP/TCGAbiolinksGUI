@@ -11,7 +11,7 @@ The data set contains the following fields:
 \item chromosome_name
 \item start_position
 \item end_position
-\item strand	external_gene_name
+\item strand external_gene_name
 \item external_transcript_name
 \item external_gene_source
 \item external_transcript_source_name
@@ -28,7 +28,7 @@ The data set contains the following fields:
 \item chromosome_name
 \item start_position
 \item end_position
-\item strand	external_gene_name
+\item strand external_gene_name
 \item external_transcript_name
 \item external_gene_source
 \item external_transcript_source_name

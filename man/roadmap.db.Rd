@@ -8,11 +8,11 @@ The data set contains the following fields:
 \itemize{
   \item X..GEO.Accession Geo Acession number
   \item Sample.Name  Sample name
-  \item Experiment	 Experiment name
-  \item NA.Accession	NA acession number
-  \item Center	Center name
-  \item SRA.FTP	SRA file FTP path
-  \item GEO.FTP	GEO files FTO path
+  \item Experiment Experiment name
+  \item NA.Accession NA acession number
+  \item Center Center name
+  \item SRA.FTP SRA file FTP path
+  \item GEO.FTP GEO files FTO path
   \item Embargo.end.date Embargo date
 }}
 \format{A data frame with 3135 rows and 8 variables}
@@ -22,11 +22,11 @@ The data set contains the following fields:
 \itemize{
   \item X..GEO.Accession Geo Acession number
   \item Sample.Name  Sample name
-  \item Experiment	 Experiment name
-  \item NA.Accession	NA acession number
-  \item Center	Center name
-  \item SRA.FTP	SRA file FTP path
-  \item GEO.FTP	GEO files FTO path
+  \item Experiment Experiment name
+  \item NA.Accession NA acession number
+  \item Center Center name
+  \item SRA.FTP SRA file FTP path
+  \item GEO.FTP GEO files FTO path
   \item Embargo.end.date Embargo date
 }
 }
