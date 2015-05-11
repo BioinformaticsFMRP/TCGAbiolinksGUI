@@ -5,7 +5,8 @@
 #' @param rmap.file.type Extension to be downloaed from roadmap database
 #' @seealso biOmics.search
 #' @export
-biOmics.download <- function(lines, enc.file.type = NULL, rmap.file.type = NULL) {
+biOmicsDownload <- function(lines, enc.file.type = NULL,
+                             rmap.file.type = NULL) {
 
     encode.lines <- subset(lines, database == "encode")
     rmap.lines <- subset(lines, database == "roadmap")
@@ -15,14 +16,14 @@ biOmics.download <- function(lines, enc.file.type = NULL, rmap.file.type = NULL)
     if (dim(encode.lines)[1] > 0) {
         encode.lines <- subset(encode.db, encode.db$accession ==
                                    encode.lines$ID)
-        encode.download(encode.lines, enc.file.type)
+        encodeDownload(encode.lines, enc.file.type)
     }
 
     # -------------- download ROADMAP
     if (dim(rmap.lines)[1] > 0) {
         rmap.lines <- subset(roadmap.db, roadmap.db$X..GEO.Accession ==
                                  rmap.lines$ID)
-        roadmap.download(rmap.lines, rmap.file.type)
+        roadmapDownload(rmap.lines, rmap.file.type)
     }
     # ---------------- download TCGA TODO: add filters, folder to
     # save
@@ -40,7 +41,9 @@ biOmics.download <- function(lines, enc.file.type = NULL, rmap.file.type = NULL)
 #' @param type extesion of files to be downloaded
 #' @export
 #' @importFrom downloader download
-encode.download <- function(lines, type = NULL, path = ".") {
+#' @importFrom RCurl getURL
+#' @importFrom rjson fromJSON
+encodeDownload <- function(lines, type = NULL, path = ".") {
     dir.create(path, showWarnings = FALSE, recursive = TRUE)
 
     encode.url <- "https://www.encodeproject.org/"
@@ -51,7 +54,7 @@ encode.download <- function(lines, type = NULL, path = ".") {
         url <- paste0(encode.url, "experiments/", id, json)
 
         # get list of files
-        item <- rjson::fromJSON(RCurl::getURL(url, dirlistonly = TRUE,
+        item <- fromJSON(getURL(url, dirlistonly = TRUE,
                                               .opts = list(ssl.verifypeer = FALSE)))[["files"]]
 
         files <- sapply(item, function(x) {
@@ -80,9 +83,9 @@ encode.download <- function(lines, type = NULL, path = ".") {
 #' @param path Folder to save the file
 #' @param type extesion of files to be downloaded
 #' @export
-#' @import RCurl
 #' @importFrom downloader download
-roadmap.download <- function(lines, type = NULL, path = ".") {
+#' @importFrom stringr str_replace
+roadmapDownload <- function(lines, type = NULL, path = ".") {
 
     error <- c()
     for (i in 1:dim(lines)[1]) {
@@ -142,7 +145,7 @@ roadmap.download <- function(lines, type = NULL, path = ".") {
 #' }
 #' @export
 #' @importFrom downloader download
-tcga.download <- function(data = NULL, path = ".") {
+tcgaDownload <- function(data = NULL, path = ".") {
     dir.create(path, showWarnings = FALSE)
     root <- "https://tcga-data.nci.nih.gov"
     if (!("file" %in% colnames(data))) {

@@ -1,5 +1,5 @@
 
-# internal: used by biOmics.search
+# internal: used by biOmicsSearch
 systemSearch <- function(term) {
     success <- getOption("success")
     ont <- getOption("ont")
@@ -120,7 +120,7 @@ is.mapped <- function(term) {
 #'}
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
-biOmics.search <- function(term, experiment = "all", plot = FALSE,
+biOmicsSearch <- function(term, experiment = "all", plot = FALSE,
     path = "searchSummary") {
     message(paste("biOmics is searching for:", term, "\nSearching..."))
     start.time <- Sys.time()
@@ -387,7 +387,7 @@ is.valid.term <- function(term) {
 #'  ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/
 #'  \tab 2010-05-03
 #'}
-roadmap.search <- function(accession = NULL, sample = NULL, experiment = NULL,
+roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
     NA.Accession = NULL, center = NULL, embargo.end.date = NULL) {
     # roadmap.verify.input(GEO.Accession,sample,
     # experiment,center,embargo.end.date)
@@ -521,7 +521,7 @@ roadmap.search <- function(accession = NULL, sample = NULL, experiment = NULL,
 #' @import ggplot2
 #' @export
 #' @return Dataframe with the query result
-encode.search <- function(accession = NULL, biosample = NULL,
+encodeSearch <- function(accession = NULL, biosample = NULL,
     assay = NULL, lab = NULL, target = NULL, description = NULL,
     organism = NULL) {
 

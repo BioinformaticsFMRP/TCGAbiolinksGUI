@@ -11,9 +11,10 @@ starburstplot(data, filename = "volcano.pdf",
   " adjusted Significance (FDR)"), title = "Starburst Plot",
   legend = "Methylation/Expression Relation", color = c(`1` = "black", `2` =
   "purple", `3` = "darkgreen", `4` = "blue", `5` = "darkred", `6` = "red", `7` =
-  "green"), label = c(`1` = "Not Significant", `2` = "Up & Hypo", `3` =
-  "Down & Hypo", `4` = "hypo", `5` = "hyper", `6` = "Up", `7` = "Down"),
-  xlim = NULL, ylim = NULL, p.cut = 0.05, diffmean.cut = 0)
+  "green", `8` = "yellow", `9` = "orange"), label = c(`1` = "Not Significant",
+  `2` = "Up & Hypo", `3` = "Down & Hypo", `4` = "hypo", `5` = "hyper", `6` =
+  "Up", `7` = "Down", `8` = "Up & Hyper", `9` = "Down & Hyper"), xlim = NULL,
+  ylim = NULL, p.cut = 0.05, diffmean.cut = 0)
 }
 \arguments{
 \item{data}{data frame columns: diffmean, p.value.adj}

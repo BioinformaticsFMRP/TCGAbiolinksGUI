@@ -48,7 +48,8 @@ diffmean <- function(group1, group2) {
 #' @param filename output file name
 #' @param default.plot You can use ggplot or plot
 #' @param color not implemented yet
-#' @import survival GGally
+#' @importFrom GGally ggsurv
+#' @importFrom survival survfit
 #' @export
 survivalPlot <- function(met.md, legend = "Legend", cutoff = 0,
     main = "Kaplan-Meier Overall Survival Curves", ylab = "PROBABILITY OF SURVIVAL",
@@ -114,7 +115,6 @@ survivalPlot <- function(met.md, legend = "Legend", cutoff = 0,
 #'   Organize TCGA methylation metadata for the mean methylation analysis.
 #'
 #' @param wd Directory with the files
-#' @import stringr
 #' @export
 #' @return \code{invisible (metadata)}
 organizeMethylationMetaDataFrame <- function(wd = NULL) {
@@ -149,7 +149,6 @@ organizeMethylationMetaDataFrame <- function(wd = NULL) {
 #'    probes (Composite.Element.REF)
 #' @param wd Directory with the files
 #' @return Methylation table
-#' @import stringr
 #' @export
 organizeMethylationDataFrame <- function(wd = getwd()) {
     oldwd <- getwd()
@@ -272,7 +271,8 @@ met.mean.boxplot <- function(data, sort = FALSE, filename = "G-CIMP-mean.methyla
 #' @param exact  Do a exact wilcoxon test? Default: True
 #' @param mc.cores  How many cores to be used Default: parallel::detectCores()
 #' @return Data frame with cols p values/p values adjusted
-#' @import exactRankTests parallel
+#' @importFrom exactRankTests wilcox.exact
+#' @importFrom parallel mclapply detectCores
 #' @export
 calculate.pvalues <- function(values, idx1, idx2, paired = TRUE,
     exact = TRUE, cores = NULL) {
@@ -370,7 +370,7 @@ volcano.plot <- function(data, filename = "volcano.pdf", ylab = "- 1*log10 of th
 
 # Get latest Genome Reference Consortium Human Build And save
 # it as Genomic Ranges
-#' @import biomaRt
+#' @importFrom biomaRt useMart
 get.GRCh.bioMart <- function() {
     ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
     chrom <- c(1:22, "X", "Y")
@@ -399,7 +399,7 @@ get.GRCh.bioMart <- function() {
 #' @param met methylation data
 #' @param expression expression data
 #' @return Methylation table
-#' @import GenomicRanges
+#' @importFrom GenomicRanges GRanges
 #' @export
 starbursanalysis <- function(met, expression) {
     #### fix methylation gene names before merging.  map gene ID to
@@ -466,17 +466,27 @@ starbursanalysis <- function(met, expression) {
 #' @param p.cut p value cut-off
 #' @param diffmean.cut diffmean cut-off
 #' @import ggplot2
-#' @import GenomicRanges
 #' @export
-starburstplot <- function(data, filename = "volcano.pdf", ylab = paste0("Gene Expression\nlog10 of the",
-    "adjusted Significance (FDR)"), xlab = paste0("DNA Methylation\nlog10 of the",
-    " adjusted Significance (FDR)"), title = "Starburst Plot",
-    legend = "Methylation/Expression Relation", color = c(`1` = "black",
-        `2` = "purple", `3` = "darkgreen", `4` = "blue", `5` = "darkred",
-        `6` = "red", `7` = "green"), label = c(`1` = "Not Significant",
-        `2` = "Up & Hypo", `3` = "Down & Hypo", `4` = "hypo",
-        `5` = "hyper", `6` = "Up", `7` = "Down"), xlim = NULL,
-    ylim = NULL, p.cut = 0.05, diffmean.cut = 0) {
+starburstplot <- function(data,
+                          filename = "volcano.pdf",
+                          ylab = paste0("Gene Expression\nlog10 of the",
+                                 "adjusted Significance (FDR)"),
+                          xlab = paste0("DNA Methylation\nlog10 of the",
+                          " adjusted Significance (FDR)"),
+                          title = "Starburst Plot",
+                          legend = "Methylation/Expression Relation",
+                          color = c('1' = "black", '2' = "purple",
+                                    '3' = "darkgreen", '4' = "blue",
+                                    '5' = "darkred", '6' = "red",
+                                    '7' = "green", '8' = "yellow",
+                                    '9' = "orange"),
+                           label = c('1' = "Not Significant", '2' = "Up & Hypo",
+                                     '3' = "Down & Hypo", '4' = "hypo",
+                                     '5' = "hyper", '6' = "Up", '7' = "Down",
+                                     '8' = "Up & Hyper",'9' = "Down & Hyper"),
+                          xlim = NULL, ylim = NULL, p.cut = 0.05,
+                          diffmean.cut = 0)
+{
     .e <- environment()
     volcano.m <- data
     volcano.m$threshold.starburst <- "1"
@@ -510,8 +520,14 @@ starburstplot <- function(data, filename = "volcano.pdf", ylab = paste0("Gene Ex
     f <- subset(volcano.m, geFDR2 < lowerThr & meFDR2 < upperThr &
         meFDR2 > lowerThr)
 
-    size <- c("3", "3", "2", "2", "2", "2")
-    groups <- c("2", "3", "4", "5", "6", "7")
+    # Group 8: upregulated and hypermethylated
+    f <- subset(volcano.m, geFDR2 > upperThr & meFDR2 > upperThr)
+
+    # Group 9: downregulated and hypermethylated
+    f <- subset(volcano.m, geFDR2 < lowerThr & meFDR2 > upperThr)
+
+    size <- c("3", "3", "2", "2", "2", "2", "2","2")
+    groups <- c("2", "3", "4", "5", "6", "7","8","9")
     s <- list(a, b, c, d, e, f)
     for (i in seq_along(s)) {
         idx <- rownames(s[[i]])
