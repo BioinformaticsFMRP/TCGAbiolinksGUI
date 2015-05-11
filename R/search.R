@@ -302,7 +302,7 @@ show.results <- function(solution, exper, plot = FALSE, path){
     g <- ggplot(results, aes(factor(database), fill = Sample)) +
       geom_bar(position = "fill")
     ggsave(g, filename=file.path(path,"samples.pdf"),
-           height = 14,width =10, scale = 1.5)
+           height = 14,width = 10, scale = 1.5)
   }
   return(results)
 
@@ -310,7 +310,7 @@ show.results <- function(solution, exper, plot = FALSE, path){
 
 is.experiment <- function(experiment){
   v <- c(unique(platforms$Standard), 'all')
-  if((length(grep(experiment, v, ignore.case = T)) > 0) &
+  if((length(grep(experiment, v, ignore.case = TRUE)) > 0) &
        (nchar(experiment) >= 3))
     {
     return (TRUE)

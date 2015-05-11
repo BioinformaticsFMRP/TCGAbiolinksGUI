@@ -44,7 +44,7 @@ encode.download <- function(lines,
                             type = NULL,
                             path = "."
 ){
-  dir.create(path, showWarnings = F, recursive = T)
+  dir.create(path, showWarnings = FALSE, recursive = TRUE)
 
   encode.url <- "https://www.encodeproject.org/"
   json <- "/?format=JSON"
@@ -142,7 +142,7 @@ roadmap.download <- function (lines,
 #' @import downloader
 tcga.download <- function(data = NULL, path = ".")
 {
-  dir.create(path,showWarnings = F)
+  dir.create(path,showWarnings = FALSE)
   root <- "https://tcga-data.nci.nih.gov"
   if(!("file" %in% colnames(data))){
     message("Downloading folders")
