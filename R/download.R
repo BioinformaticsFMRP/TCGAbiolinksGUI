@@ -1,5 +1,5 @@
 #' @title biOmics.download
-#' @description Download data previously selected using the biOmics.search function
+#' @description Download data selected using the biOmics.search function
 #' @param lines biOmics.search output
 #' @param enc.file.type Extension to be downloaed from encode database
 #' @param rmap.file.type Extension to be downloaed from roadmap database
@@ -7,7 +7,7 @@
 #' @export
 biOmics.download <- function(lines,
                              enc.file.type = NULL,
-                             rmap.file.type=NULL
+                             rmap.file.type = NULL
 ){
 
   encode.lines <- subset(lines, database == 'encode')
@@ -15,14 +15,15 @@ biOmics.download <- function(lines,
   tcga.lines <- subset(lines, database == 'tcga')
 
   #--------------   download Encode
-  if(dim(encode.lines)[1] >0){
+  if(dim(encode.lines)[1] > 0){
     encode.lines <- subset(encode.db, encode.db$accession == encode.lines$ID)
     encode.download(encode.lines,enc.file.type)
   }
 
   #--------------   download ROADMAP
   if(dim(rmap.lines)[1] > 0){
-    rmap.lines <- subset(roadmap.db, roadmap.db$X..GEO.Accession == rmap.lines$ID)
+    rmap.lines <- subset(roadmap.db,
+                         roadmap.db$X..GEO.Accession == rmap.lines$ID)
     roadmap.download(rmap.lines,rmap.file.type)
   }
   #---------------- download TCGA
@@ -34,16 +35,16 @@ biOmics.download <- function(lines,
 }
 
 #' @title Download encode data
-#' @description Download encode data previously selected using the encode.search function
+#' @description Download encode data selected using the encode.search function
 #' @param lines encode.search output
 #' @param path Folder to save the file
 #' @param type extesion of files to be downloaded
 #' @export
 encode.download <- function(lines,
                             type = NULL,
-                            path="."
+                            path = "."
 ){
-  dir.create(path, showWarnings = F, recursive =T)
+  dir.create(path, showWarnings = F, recursive = T)
 
   encode.url <- "https://www.encodeproject.org/"
   json <- "/?format=JSON"
@@ -75,24 +76,24 @@ encode.download <- function(lines,
 }
 
 #' @title Download roadmap data
-#' @description Download roadmap data previously selected using the roadmap.search function
+#' @description Download roadmap data selected using the roadmap.search
 #' @param lines roadmap.search output
 #' @param path Folder to save the file
 #' @param type extesion of files to be downloaded
 #' @export
 #' @import RCurl
 roadmap.download <- function (lines,
-                         type=NULL,
-                         path="."
+                         type = NULL,
+                         path = "."
 ){
 
   error <- c()
   for (i in 1:dim(lines)[1]){
     name.sample <- str_replace_all(lines[i,]$Sample.Name, "[^[:alnum:]]", "_")
-    name.experiment <- str_replace_all(lines[i,]$Experiment, "[^[:alnum:]]", "_")
+    name.expr <- str_replace_all(lines[i,]$Experiment, "[^[:alnum:]]", "_")
 
-    folder <- paste0(path,"/",name.experiment,"/",name.sample)
-    status <- dir.create(folder,showWarnings = F, recursive =T)
+    folder <- paste0(path,"/",name.expr,"/",name.sample)
+    status <- dir.create(folder,showWarnings = FALSE, recursive = TRUE)
     if(!status){
       message("Downloaded", i )
       next
@@ -139,7 +140,7 @@ roadmap.download <- function (lines,
 #' }
 #' @export
 #' @import downloader
-tcga.download <- function(data=NULL, path=".")
+tcga.download <- function(data = NULL, path = ".")
 {
   dir.create(path,showWarnings = F)
   root <- "https://tcga-data.nci.nih.gov"
@@ -160,7 +161,10 @@ tcga.download <- function(data=NULL, path=".")
       file <- paste0(path,"/",basename(data[i,"file"]))
       message(paste0("Downloading:", basename(data[i,"file"])))
       if(!file.exists(file)){
-        downloader::download(paste0(root,gsub(".tar.gz","",data[i,"deployLocation"]),"/",data[i,"file"]),file)
+        downloader::download(paste0(root,
+                                    gsub(".tar.gz","",data[i,"deployLocation"]),
+                                    "/",data[i,"file"]),
+                             file)
       }
     }
   }

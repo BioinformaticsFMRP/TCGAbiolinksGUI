@@ -1,13 +1,13 @@
 
 # internal: used by biOmics.search
 systemSearch <- function(term){
-  success=getOption("success")
-  ont=getOption("ont")
+  success <- getOption("success")
+  ont <- getOption("ont")
 
   if(!success){
     found <- intersect(term, systems$BTO)
     if(length(found) > 0){
-      options(success=T)
+      options(success=TRUE)
       options(solution=found)
       return()
     }else{
@@ -20,13 +20,13 @@ systemSearch <- function(term){
 }
 
 map.to.bto <- function(term){
-  success=getOption("success")
+  success <- getOption("success")
   # Does the term exists in BTO?
   aux <- term
   names(aux) <- NULL
-  query <- rols::olsQuery(aux,"BTO", exact = F)
+  query <- rols::olsQuery(aux,"BTO", exact = FALSE)
 
-  if(length(query)>0){
+  if(length(query) > 0){
     # term found in BTO
     term.found <- names(query)
     sapply(term.found,
@@ -52,39 +52,39 @@ map.to.bto <- function(term){
 
 is.mapped <- function(term){
 
-  search.cache=getOption("search.cache")
+  search.cache <- getOption("search.cache")
   # search in search cache
   if(exists("search.cache")){
-    idx <- grep(term, search.cache[,1], ignore.case = T)
-    if(length(idx)> 0){
+    idx <- grep(term, search.cache[,1], ignore.case = TRUE)
+    if(length(idx) > 0){
       message("found in cache")
       res <- search.cache[idx[1],2]
-      options(success=T)
+      options(success=TRUE)
       options(solution=res)
       return ()
     }
   }
   # search in roamap
   # Could be - Accession, Sample.Name, Experiment
-  idx <- grep(term, biosample.roadmap$biosample, ignore.case = T)
-  if(length(idx)> 0){
+  idx <- grep(term, biosample.roadmap$biosample, ignore.case = TRUE)
+  if(length(idx) > 0){
     message("found in roadmap")
     res <- biosample.roadmap[idx[1],]$BTO
     if(!is.na(res)){
-      options(success=T)
+      options(success=TRUE)
       options(solution=res)
 
       return ()
     }
   }
   # search in encode
-  idx <- grep(term, biosample.encode$biosample, ignore.case = T)
+  idx <- grep(term, biosample.encode$biosample, ignore.case = TRUE)
 
-  if(length(idx)> 0){
+  if(length(idx) > 0){
     message("found in encode")
     res <- biosample.encode[idx[1],]$BTO
     if(!is.na(res)){
-      options(success=T)
+      options(success=TRUE)
       options(solution=res)
 
       return ()
@@ -92,14 +92,14 @@ is.mapped <- function(term){
 
   }
   # search in tcga
-  idx <- grep(term, biosample.tcga$biosample, fixed = T  )
+  idx <- grep(term, biosample.tcga$biosample, fixed = TRUE  )
   if(length(idx) == 0){
-    idx <- grep(term, biosample.tcga$biosample, ignore.case = T)
+    idx <- grep(term, biosample.tcga$biosample, ignore.case = TRUE)
   }
   if(length(idx) > 0){
     message("found in TCGA")
     res <- biosample.tcga[idx[1],]$BTO
-    options(success=T)
+    options(success=TRUE)
     options(solution=res)
     return ()
   }
@@ -122,15 +122,15 @@ is.mapped <- function(term){
 #' @export
 biOmics.search  <- function(term,
                             experiment = 'all',
-                            plot = F,
+                            plot = FALSE,
                             path = "searchSummary"
 ){
   message(paste("biOmics is searching for:", term, "\nSearching..."))
   start.time <- Sys.time()
-  options(success=FALSE)
-  success=getOption("success")
-  options(solution=FALSE)
-  options(exper=experiment)
+  options(success = FALSE)
+  success <- getOption("success")
+  options(solution = FALSE)
+  options(exper = experiment)
 
   # Step 0: verify if term is valid.
   if(!is.valid.term(term)){
@@ -145,8 +145,8 @@ biOmics.search  <- function(term,
   # Step 1: verify if term search has been mapped by us.
   if(!success){
     is.mapped(term)
-    success=getOption("success")
-    solution=getOption("solution")
+    success <- getOption("success")
+    solution <- getOption("solution")
   }
 
   # Step 2: search for the term in the BTO ontology.
@@ -154,15 +154,15 @@ biOmics.search  <- function(term,
     message("Not found in the cache, searching in the ontology...")
     # Term has not been mapped before.
     options(ont="BTO")
-    ont=getOption("ont")
-    query <- rols::olsQuery(term, ont, exact = T)
+    ont <- getOption("ont")
+    query <- rols::olsQuery(term, ont, exact = TRUE)
 
     if(length(query) > 0){
       term.found <- names(query)
       systemSearch(term.found)
     } else{
-      query <- rols::olsQuery(term, ont, exact = F)
-      if(length(query)>0){
+      query <- rols::olsQuery(term, ont, exact = FALSE)
+      if(length(query) > 0){
         term.found <- names(query)
         sapply(term.found,
                function (x) {
@@ -190,8 +190,8 @@ biOmics.search  <- function(term,
           }
         }}
     }
-    success=getOption("success")
-    solution=getOption("solution")
+    success <- getOption("success")
+    solution <- getOption("solution")
   }
 
   end.time <- Sys.time()
@@ -211,7 +211,7 @@ biOmics.search  <- function(term,
 
 # show the results to the user
 #' @import ggplot2
-show.results <- function(solution,exper,plot=F,path){
+show.results <- function(solution, exper, plot = FALSE, path){
 
   # Get the samples that matches the result of the query
   # Databases were matched manually to systems
@@ -234,17 +234,23 @@ show.results <- function(solution,exper,plot=F,path){
   # Select experiments
   if(!exper == 'all'){
     message("Filtering by experiment")
-    idx <- apply(sapply(platforms[grep(exper, platforms$Standard, ignore.case = T), 2],
-                        function(x){grepl(x, enc.result$assay, ignore.case = T )}),1,any)
+    idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
+                                       ignore.case = TRUE), 2],
+                        function(x){grepl(x, enc.result$assay,
+                                          ignore.case = TRUE )}),1,any)
     enc.result <- enc.result[idx,]
 
-    idx <- apply(sapply(platforms[grep(exper, platforms$Standard, ignore.case = T), 2],
-                        function(x){grepl(x, rmap.result$Experiment, ignore.case = T)}),1,any)
+    idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
+                                       ignore.case = TRUE), 2],
+                        function(x){grepl(x, rmap.result$Experiment,
+                                          ignore.case = TRUE)}),1,any)
     rmap.result <- rmap.result[idx,]
 
-    idx <- apply(sapply(platforms[grep(exper, platforms$Standard, ignore.case = T), 2],
-                        function(x){grepl(x, tcga.result$baseName, ignore.case = T)}),1,any)
-    if(length(idx)>0){
+    idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
+                                       ignore.case = TRUE), 2],
+                        function(x){grepl(x, tcga.result$baseName,
+                                          ignore.case = TRUE)}),1,any)
+    if(length(idx) > 0){
       tcga.result <- tcga.result[idx,]
     } else {
       tcga.result <-  tcga.result[1:nrow(tcga.result),]
@@ -254,7 +260,7 @@ show.results <- function(solution,exper,plot=F,path){
 
   message("============ Summary of results found ==============")
   sapply(pat, function(x){
-    message(paste("|Mapped to:", subset(systems,BTO==x)$system))
+    message(paste("|Mapped to:", subset(systems,BTO == x)$system))
   })
   message("---------- Number of terms in the system -----------")
   message(paste0("|TCGA   : " , length(tcga.samples)))
@@ -285,14 +291,18 @@ show.results <- function(solution,exper,plot=F,path){
   if(plot){
     message("Summary images were saved in: ", path)
 
-    dir.create(path, showWarnings = F,recursive = T)
+    dir.create(path, showWarnings = FALSE, recursive = TRUE)
     # % Experiments per database
-    g <- ggplot(results, aes(factor(database), fill = Experiment)) + geom_bar(position = "fill")
-    ggsave(g, filename=file.path(path,"experiments.pdf"), height=14,width=10,scale=1.5)
+    g <- ggplot(results, aes(factor(database), fill = Experiment)) +
+      geom_bar(position = "fill")
+    ggsave(g, filename=file.path(path,"experiments.pdf"),
+           height = 14, width = 10, scale = 1.5)
 
     # % Samples per database
-    g <- ggplot(results, aes(factor(database), fill = Sample)) + geom_bar(position = "fill")
-    ggsave(g, filename=file.path(path,"samples.pdf"), height=14,width=10,scale=1.5)
+    g <- ggplot(results, aes(factor(database), fill = Sample)) +
+      geom_bar(position = "fill")
+    ggsave(g, filename=file.path(path,"samples.pdf"),
+           height = 14,width =10, scale = 1.5)
   }
   return(results)
 
@@ -300,11 +310,14 @@ show.results <- function(solution,exper,plot=F,path){
 
 is.experiment <- function(experiment){
   v <- c(unique(platforms$Standard), 'all')
-  if((length(grep(experiment, v, ignore.case = T)) > 0) & (nchar(experiment) >= 3)){
+  if((length(grep(experiment, v, ignore.case = T)) > 0) &
+       (nchar(experiment) >= 3))
+    {
     return (TRUE)
   }
   else{
-    message(paste0('ERROR: ', experiment, ' is not an experiment or has less than 3 characters.\nUse:'))
+    message(paste0('ERROR: ', experiment, ' is not an experiment or",
+                   "has less than 3 characters.\nUse:'))
     print(unique(platforms$Standard))
     return (FALSE)
   }
@@ -315,7 +328,8 @@ is.valid.term <- function(term){
     return(TRUE)
   }
   else{
-    message(paste0('ERROR: ', term, ' is not valid. Specify a term of at least 3 characters'))
+    message(paste0('ERROR: ', term, ' is not valid.'
+                   ,' Specify a term of at least 3 characters'))
     return(FALSE)
   }
 }
@@ -340,16 +354,16 @@ is.valid.term <- function(term){
 #'}
 #' @param experiment Examples:
 #'\tabular{llll}{
-#'H3K4me1        \tab smRNA-Seq              \tab H2BK20ac \tab H4K91ac                     \cr
-#'H3K4me3        \tab MeDIP-Seq              \tab H3K14ac  \tab Exon array                  \cr
-#'H3K36me3       \tab H3K27ac                \tab H3K23ac  \tab H2BK5ac                     \cr
-#'H3K9ac         \tab DNase hypersensitivity \tab H3K4ac   \tab H3K23me2                    \cr
-#'MRE-Seq        \tab H3K18ac                \tab H3K4me2  \tab RRBS                        \cr
-#'ChIP-Seq input \tab H4K5ac                 \tab H3K56ac  \tab Digital genomic footprinting\cr
-#'H3K9me3        \tab H2AK5ac                \tab H3K79me1 \tab H3K9me1                     \cr
-#'H3K27me3       \tab H2BK120ac              \tab H3K79me2 \tab H2A.Z                       \cr
-#'Bisulfite-Seq  \tab H2BK12ac               \tab H4K20me1 \tab H3T11ph                     \cr
-#'mRNA-Seq       \tab H2BK15ac               \tab H4K8ac   \tab H2AK9ac
+#'H3K4me1   \tab smRNA-Seq \tab H2BK20ac \tab H4K91ac                     \cr
+#'H3K4me3   \tab MeDIP-Seq \tab H3K14ac  \tab Exon array                  \cr
+#'H3K36me3  \tab H3K27ac   \tab H3K23ac  \tab H2BK5ac                     \cr
+#'H3K9ac    \tab H3K23me2  \tab H3K4ac   \tab  DNase hypersensitivity     \cr
+#'MRE-Seq   \tab H3K18ac   \tab H3K4me2  \tab RRBS                        \cr
+#'H3K9me1   \tab H4K5ac    \tab H3K56ac  \tab Digital genomic footprinting\cr
+#'H3K9me3   \tab H2AK5ac   \tab H3K79me1 \tab ChIP-Seq input              \cr
+#'H3K27me3  \tab H2BK120ac \tab H3K79me2 \tab H2A.Z                       \cr
+#'H2AK9ac   \tab H2BK12ac  \tab H4K20me1 \tab H3T11ph                     \cr
+#'mRNA-Seq  \tab H2BK15ac  \tab H4K8ac   \tab Bisulfite-Seq
 #'}
 #' @param center Example:
 #' \tabular{l}{
@@ -364,7 +378,8 @@ is.valid.term <- function(term){
 #' @return Dataframe with the results of the query
 #'\tabular{llllll}{
 #'  GSM409307 \tab H1 cell line \tab H3K4me1 \tab UCSD \tab
-#'  ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/ \tab 2010-05-03
+#'  ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/
+#'  \tab 2010-05-03
 #'}
 roadmap.search <- function(
   accession = NULL,
@@ -420,49 +435,70 @@ roadmap.search <- function(
 #' @param accession GEO sample accession Ex: ENCSR337VPD
 #' @param biosample Example:
 #'\tabular{lllll}{
-#'  hepatocyte             \tab GM12878    \tab induced pluripotent stem cell \tab kidney    \tab Daoy                    \cr
-#'  neural progenitor cell \tab A673       \tab bipolar spindle neuron        \tab heart     \tab A172                    \cr
-#'  K562                   \tab Karpas-422 \tab adipose tissue                \tab liver     \tab LHCN-M2                 \cr
-#'  A549                   \tab MM.1S      \tab adrenal gland                 \tab testis    \tab skeletal muscle myoblast\cr
-#'  brain                  \tab HT1080     \tab female gonad                  \tab RPMI-7951 \tab myotube                 \cr
-#'  spleen                 \tab SK-N-DZ    \tab lung                          \tab M059J     \tab H7-hESC                 \cr
-#'  pancreas               \tab SK-MEL-5   \tab sigmoid colon                 \tab H4        \tab astrocyte               \cr
-#'  HepG2                  \tab NCI-H460   \tab small intestine               \tab SJSA1     \tab HeLa-S3
+#'  hepatocyte             \tab GM12878    \tab induced pluripotent stem cell
+#'   \tab kidney    \tab Daoy                    \cr
+#'  neural progenitor cell \tab A673       \tab bipolar spindle neuron
+#'   \tab heart     \tab A172                    \cr
+#'  K562                   \tab Karpas-422 \tab adipose tissue
+#'  \tab liver     \tab LHCN-M2                 \cr
+#'  A549                   \tab MM.1S      \tab adrenal gland
+#'  \tab testis    \tab skeletal muscle myoblast\cr
+#'  brain                  \tab HT1080     \tab female gonad
+#'  \tab RPMI-7951 \tab myotube                 \cr
+#'  spleen                 \tab SK-N-DZ    \tab lung
+#'  \tab M059J     \tab H7-hESC                 \cr
+#'  pancreas               \tab SK-MEL-5   \tab sigmoid colon
+#'  \tab H4        \tab astrocyte               \cr
+#'  HepG2                  \tab NCI-H460   \tab small intestine
+#'  \tab SJSA1     \tab HeLa-S3
 #'}
 #' @param assay Example:
 #'\tabular{ll}{
-#'  RAMPAGE                                    \tab RRBS                                                \cr
-#'  ChIP-seq                                   \tab FAIRE-seq                                           \cr
-#'  RNA-seq                                    \tab Repli-seq                                           \cr
-#'  shRNA knockdown followed by RNA-seq        \tab DNA methylation profiling by array assay            \cr
-#'  DNase-seq                                  \tab protein sequencing by tandem mass spectrometry assay\cr
-#'  iCLIP                                      \tab Switchgear                                          \cr
-#'  ChIA-PET                                   \tab CAGE                                                \cr
-#'  MeDIP-seq assay                            \tab RIP-chip                                            \cr
-#'  MRE-seq                                    \tab Repli-chip                                          \cr
-#'  RNA profiling by array assay               \tab whole-genome shotgun bisulfite sequencing           \cr
-#'  RNA-PET                                    \tab MNase-seq                                           \cr
-#'  5C                                         \tab DNA-PET                                             \cr
-#'  comparative genomic hybridization by array \tab RIP-seq
+#'  RAMPAGE  \tab RRBS \cr
+#'  ChIP-seq \tab FAIRE-seq \cr
+#'  RNA-seq  \tab Repli-seq \cr
+#'  shRNA knockdown followed by RNA-seq
+#'  \tab DNA methylation profiling by array assay            \cr
+#'  DNase-seq \tab RIP-seq \cr
+#'  iCLIP     \tab Switchgear \cr
+#'  ChIA-PET  \tab CAGE   \cr
+#'  MeDIP-seq assay \tab RIP-chip   \cr
+#'  MRE-seq         \tab Repli-chip \cr
+#'  RNA profiling by array assay
+#'   \tab whole-genome shotgun bisulfite sequencing           \cr
+#'  RNA-PET         \tab MNase-seq  \cr
+#'  5C              \tab DNA-PET    \cr
+#'  comparative genomic hybridization by array
+#'  \tab protein sequencing by tandem mass spectrometry assay
 #'}
 #' @param lab Example:
 #' \tabular{lllll}{
-#'Thomas Gingeras, CSHL    \tab John Stamatoyannopoulos, UW \tab Kevin Struhl, HMS    \tab Gregory Crawford, Duke       \tab David Gilbert, FSU      \cr
-#'Kevin White, UChicago    \tab Barbara Wold, Caltech       \tab Peggy Farnham, USC   \tab Morgan Giddings, UNC         \tab Ali Mortazavi, UCI      \cr
-#'Michael Snyder, Stanford \tab Gene Yeo, UCSD              \tab Job Dekker, UMass    \tab Scott Tenenbaum, SUNY-Albany \tab Ross Hardison, PennState\cr
-#'Brenton Graveley, UConn  \tab Bradley Bernstein, Broad    \tab Vishwanath Iyer, UTA \tab Piero Carninci, RIKEN        \tab Bing Ren, UCSD          \cr
-#'Richard Myers, HAIB      \tab Yijun Ruan, GIS             \tab Jason Lieb, UNC      \tab Sherman Weissman, Yale       \tab Joe Ecker, Salk
+#'Thomas Gingeras, CSHL    \tab John Stamatoyannopoulos, UW
+#' \tab Kevin Struhl, HMS    \tab Gregory Crawford, Duke
+#'  \tab David Gilbert, FSU      \cr
+#'Kevin White, UChicago    \tab Barbara Wold, Caltech
+#'\tab Peggy Farnham, USC   \tab Morgan Giddings, UNC
+#'\tab Ali Mortazavi, UCI      \cr
+#'Michael Snyder, Stanford \tab Gene Yeo, UCSD
+#'\tab Job Dekker, UMass    \tab Scott Tenenbaum, SUNY-Albany
+#'\tab Ross Hardison, PennState\cr
+#'Brenton Graveley, UConn  \tab Bradley Bernstein, Broad
+#'\tab Vishwanath Iyer, UTA \tab Piero Carninci, RIKEN
+#'\tab Bing Ren, UCSD          \cr
+#'Richard Myers, HAIB      \tab Yijun Ruan, GIS
+#'\tab Jason Lieb, UNC      \tab Sherman Weissman, Yale \tab Joe Ecker, Salk
 #'}
 #' @param target Target Example:
 #'\tabular{lllll}{
-#'  Control                     \tab SERBP1 \tab FAM120A \tab DDX27  \tab RPLP0 \cr
-#'  rabbit-IgG-control          \tab RRP9   \tab EIF3D   \tab CSTF2  \tab RPL23A\cr
-#'  Non-specific target control \tab RPS19  \tab EFTUD2  \tab BCLAF1 \tab RCC2  \cr
-#'  XRN2                        \tab PRPF8  \tab EEF2    \tab BCCIP  \tab RBM27 \cr
-#'  UCHL5                       \tab PES1   \tab DDX55   \tab UPF2   \tab PSIP1 \cr
-#'  TFIP11                      \tab PA2G4  \tab DDX52   \tab TROVE2 \tab PKM   \cr
-#'  SUPV3L1                     \tab NONO   \tab DDX51   \tab RPS5   \tab PHF6  \cr
-#'  SRP68                       \tab GEMIN5 \tab DDX28   \tab RPS2   \tab NUSAP1
+#'  Control            \tab SERBP1 \tab FAM120A \tab DDX27  \tab RPLP0 \cr
+#'  rabbit-IgG-control \tab RRP9   \tab EIF3D   \tab CSTF2  \tab RPL23A\cr
+#'  NUSAP1             \tab RPS19  \tab EFTUD2  \tab BCLAF1 \tab RCC2  \cr
+#'  XRN2               \tab PRPF8  \tab EEF2    \tab BCCIP  \tab RBM27 \cr
+#'  UCHL5              \tab PES1   \tab DDX55   \tab UPF2   \tab PSIP1 \cr
+#'  TFIP11             \tab PA2G4  \tab DDX52   \tab TROVE2 \tab PKM   \cr
+#'  SUPV3L1            \tab NONO   \tab DDX51   \tab RPS5   \tab PHF6  \cr
+#'  SRP68              \tab GEMIN5 \tab DDX28   \tab RPS2   \tab
+#'  Non-specific target control
 #'}
 #' @param description Description of the sample
 #' @param organism The organism that the sample belongs to
@@ -472,14 +508,9 @@ roadmap.search <- function(
 #' @import ggplot2
 #' @export
 #' @return Dataframe with the query result
-encode.search <- function(
-  accession=NULL,
-  biosample=NULL,
-  assay=NULL,
-  lab=NULL,
-  target=NULL,
-  description=NULL,
-  organism=NULL
+encode.search <- function(accession = NULL, biosample = NULL, assay = NULL,
+                          lab = NULL, target = NULL, description = NULL,
+                          organism = NULL
 ){
 
   #roadmap.verify.input(GEO.Accession,sample,experiment,center,embargo.end.date)

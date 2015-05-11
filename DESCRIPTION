@@ -6,16 +6,20 @@ Author:
   Tiago Chedraoui Silva <tiagochst@gmail.com>,
   Tiago Mendes <tmendesilva@gmail.com>
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
-Description: Search for data in TCGA, Roadmap and ENCODE
+Description:
+  A bioinformatics method to search,
+  analyse and interpret biological data from genomic sequencing
+  in public repositories (roadmap,encode,tcga).
 License: GPL (>= 3)
 Depends:
-  R (>= 3.0),
+  R (>= 3.2),
   shinydashboard (>= 0.2.2)
 Suggests:
   testthat,
   knitr,
   roxygen2,
-  devtools
+  devtools,
+  BiocStyle
 Imports:
   shiny (>= 0.11.1),
   downloader,
@@ -37,5 +41,6 @@ Imports:
   ggplot2,
   gplots,
   matlab,
-  survival
+  survival,
+  parallel
 VignetteBuilder: knitr

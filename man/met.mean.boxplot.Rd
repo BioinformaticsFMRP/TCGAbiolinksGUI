@@ -4,14 +4,14 @@
 \alias{met.mean.boxplot}
 \title{Mean methylation boxplot}
 \usage{
-met.mean.boxplot(data, sort = F, filename = "G-CIMP-mean.methylation.pdf",
-  ylab = "Mean DNA methylation", xlab = "DNA Methylation Clusters",
-  title = "Mean DNA methylation by cluster - G-CIMP samples",
-  legend = "Legend", color = c("green", "red", "purple", "orange", "salmon",
-  "grey"))
+met.mean.boxplot(data, sort = FALSE,
+  filename = "G-CIMP-mean.methylation.pdf", ylab = "Mean DNA methylation",
+  xlab = "DNA Methylation Clusters",
+  title = "Mean DNA methylation by cluster", legend = "Legend",
+  color = c("green", "red", "purple", "orange", "salmon", "grey"))
 }
 \arguments{
-\item{data}{data frame first column mean methylation by patient, second groups}
+\item{data}{data frame first col mean methylation by patient, second groups}
 
 \item{sort}{Sort by mean methylation? False by default}
 

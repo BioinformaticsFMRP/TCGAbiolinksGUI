@@ -7,7 +7,7 @@
 geoDownloader(iQuery, iOut)
 }
 \arguments{
-\item{iQuery}{- GEO query - build it with http://www.ncbi.nlm.nih.gov/gds/advanced}
+\item{iQuery}{- GEO query -  http://www.ncbi.nlm.nih.gov/gds/advanced}
 
 \item{iOut}{- path to save files}
 }
@@ -22,7 +22,6 @@ Download data from GEO database using reutils library
                    AND roadmap epigenomics[Project] AND "gsm"[Filter]',
                    )
  iQuery <- "((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]"
- iQuery <- "((h1 cell RRBS) AND gsm[Filter]) AND roadmap epigenomics[Project]"
  iQuery <- "((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]"
 }
 }

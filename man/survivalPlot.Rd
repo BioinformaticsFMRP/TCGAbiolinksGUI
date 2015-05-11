@@ -5,7 +5,7 @@
 \title{creates survival analysis}
 \usage{
 survivalPlot(met.md, legend = "Legend", cutoff = 0,
-  main = "Kaplan-Meier Overall Survival Curves\\nTCGA Samples\\nLGG",
+  main = "Kaplan-Meier Overall Survival Curves",
   ylab = "PROBABILITY OF SURVIVAL", xlab = "TIME SINCE DIAGNOSIS",
   time.reference = "DAYS", filename = "survival.pdf", color = c("green",
   "firebrick4", "orange3", "blue"), default.plot = "ggplot")

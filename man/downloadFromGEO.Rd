@@ -8,9 +8,12 @@ Download all files of ftp directory}
 downloadFromGEO(iFTP, iFileName, iOut, gui = FALSE)
 }
 \arguments{
-\item{iFTP:}{ftp directory adress
-iFileName - list of files in the ftp path (use .getFileNames to get the list)
-iOut - folder where files will be downloaded}
+\item{iFileName}{- list of files in the ftp path
+(use .getFileNames to get the list)}
+
+\item{iOut}{- folder where files will be downloaded}
+
+\item{iFTP:}{ftp directory adress}
 }
 \value{
 compressedFiles - compressed files downloaded
@@ -23,7 +26,7 @@ Download all files of ftp directory
 \dontrun{
  downloadFromGEO (
   "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/",
-   c ("GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz","GSM409307_UCSD.H1.H3K4me1.LL228.wig.gz"),
+   c ("GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz"),
    "path_to_folder_GSM409307" )
 }
 }

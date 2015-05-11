@@ -14,7 +14,7 @@ biOmics.download(lines, enc.file.type = NULL, rmap.file.type = NULL)
 \item{rmap.file.type}{Extension to be downloaed from roadmap database}
 }
 \description{
-Download data previously selected using the biOmics.search function
+Download data selected using the biOmics.search function
 }
 \seealso{
 biOmics.search

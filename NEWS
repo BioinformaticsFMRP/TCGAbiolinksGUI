@@ -1,0 +1,6 @@
+biOmics 0.1
+----------------------------------------------------------------
+  FIRST VERSION - FEATURES
+
+  * Searches/Download TCGA,roadmap,encode database
+  * Create some methylation analysis functions

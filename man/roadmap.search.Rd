@@ -26,16 +26,16 @@ adrenal gland, fetal day96 U     \tab CD34 cultured cells
 
 \item{experiment}{Examples:
 \tabular{llll}{
-H3K4me1        \tab smRNA-Seq              \tab H2BK20ac \tab H4K91ac                     \cr
-H3K4me3        \tab MeDIP-Seq              \tab H3K14ac  \tab Exon array                  \cr
-H3K36me3       \tab H3K27ac                \tab H3K23ac  \tab H2BK5ac                     \cr
-H3K9ac         \tab DNase hypersensitivity \tab H3K4ac   \tab H3K23me2                    \cr
-MRE-Seq        \tab H3K18ac                \tab H3K4me2  \tab RRBS                        \cr
-ChIP-Seq input \tab H4K5ac                 \tab H3K56ac  \tab Digital genomic footprinting\cr
-H3K9me3        \tab H2AK5ac                \tab H3K79me1 \tab H3K9me1                     \cr
-H3K27me3       \tab H2BK120ac              \tab H3K79me2 \tab H2A.Z                       \cr
-Bisulfite-Seq  \tab H2BK12ac               \tab H4K20me1 \tab H3T11ph                     \cr
-mRNA-Seq       \tab H2BK15ac               \tab H4K8ac   \tab H2AK9ac
+H3K4me1   \tab smRNA-Seq \tab H2BK20ac \tab H4K91ac                     \cr
+H3K4me3   \tab MeDIP-Seq \tab H3K14ac  \tab Exon array                  \cr
+H3K36me3  \tab H3K27ac   \tab H3K23ac  \tab H2BK5ac                     \cr
+H3K9ac    \tab H3K23me2  \tab H3K4ac   \tab  DNase hypersensitivity     \cr
+MRE-Seq   \tab H3K18ac   \tab H3K4me2  \tab RRBS                        \cr
+H3K9me1   \tab H4K5ac    \tab H3K56ac  \tab Digital genomic footprinting\cr
+H3K9me3   \tab H2AK5ac   \tab H3K79me1 \tab ChIP-Seq input              \cr
+H3K27me3  \tab H2BK120ac \tab H3K79me2 \tab H2A.Z                       \cr
+H2AK9ac   \tab H2BK12ac  \tab H4K20me1 \tab H3T11ph                     \cr
+mRNA-Seq  \tab H2BK15ac  \tab H4K8ac   \tab Bisulfite-Seq
 }}
 
 \item{NA.Accession}{Example: NA000020967.1}
@@ -54,7 +54,8 @@ University of Washington
 Dataframe with the results of the query
 \tabular{llllll}{
  GSM409307 \tab H1 cell line \tab H3K4me1 \tab UCSD \tab
- ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/ \tab 2010-05-03
+ ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/
+ \tab 2010-05-03
 }
 }
 \description{

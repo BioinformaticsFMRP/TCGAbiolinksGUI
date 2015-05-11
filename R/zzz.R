@@ -1,8 +1,7 @@
-
 .onAttach <- function (libname, pkgname){
-  options(search.cache=NULL)
-  file = system.file("extdata/biomics.rda", package="biOmics")
-  if(file.exists(file)){
+  options(search.cache = NULL)
+  file <- system.file("extdata/biomics.rda", package="biOmics")
+  if(file.exists(file) && !is.old(file)){
     load(file,envir = as.environment("package:biOmics"))
   } else {
     biomicsEnv <- as.environment("package:biOmics")
@@ -12,16 +11,16 @@
     biomicsEnv$encode.db <- load.encode()
     biomicsEnv$roadmap.db <- load.roadmap()
     load.tcga(biomicsEnv)
-    biomicsEnv$success <- F
+    biomicsEnv$success <- FALSE
     biomicsEnv$solution <- ""
-    save(biosample.encode,biosample.roadmap,biosample.tcga,
-         encode.db,platforms,roadmap.db,systems,tcga.db,platform.table,disease.table,
-         file = paste0(system.file("extdata", package="biOmics"),"/biomics.rda")
+    save(biosample.encode,biosample.roadmap,biosample.tcga,encode.db,platforms,
+         roadmap.db,systems,tcga.db,platform.table,disease.table,
+         file = paste0(system.file("extdata", package = "biOmics"),
+                       "/biomics.rda")
     )
   }
 
-
-  file = system.file("extdata/GRCh.rda", package="biOmics")
+  file <- system.file("extdata/GRCh.rda", package="biOmics")
   if(file.exists(file)){
     load(file,envir = as.environment("package:biOmics"))
   }
@@ -41,5 +40,11 @@
     " package startup messages."
   )
   packageStartupMessage(welcome.message)
+}
 
+is.old <- function (file = NULL, days = 20){
+  finf <- file.info(file , extra_cols = FALSE)
+  return (nrow(finf[difftime(Sys.time(),
+                         finf[,"mtime"],
+                         units = "days") > days , 1:4]) == 1)
 }

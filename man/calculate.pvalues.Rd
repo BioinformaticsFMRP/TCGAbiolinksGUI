@@ -5,7 +5,7 @@
 \title{Calculate pvalues}
 \usage{
 calculate.pvalues(values, idx1, idx2, paired = TRUE, exact = TRUE,
-  mc.cores = parallel::detectCores())
+  cores = NULL)
 }
 \arguments{
 \item{values}{Dataframe with values}

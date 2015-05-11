@@ -14,6 +14,6 @@ roadmap.download(lines, type = NULL, path = ".")
 \item{path}{Folder to save the file}
 }
 \description{
-Download roadmap data previously selected using the roadmap.search function
+Download roadmap data selected using the roadmap.search
 }
 

@@ -5,7 +5,7 @@
 \title{Volcano plot}
 \usage{
 volcano.plot(data, filename = "volcano.pdf",
-  ylab = "-1*log10 of the Significance", xlab = "DNA Methylation",
+  ylab = "- 1*log10 of the Significance", xlab = "DNA Methylation",
   title = "Volcano Plot TCGA GBM Tumors", legend = "Legend", color = c(`1`
   = "black", `2` = "green", `3` = "red"), label = c(`1` = "Not Significant",
   `2` = "Hypermethylated", `3` = "Hypomethylated"), xlim = NULL,

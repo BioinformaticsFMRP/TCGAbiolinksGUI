@@ -11,7 +11,8 @@ eGeo(...)
 \item{List}{of parameters parameter = (Term,Field,Connector)
 First parameter should contain the terms,
 Field NULL which means all fields and connector NULL
-For roadmap one parameter should be c ("roadmap epigenomics","Project","AND"),
+For roadmap one parameter should be
+c("roadmap epigenomics","Project","AND"),
 For samples: c ("gsm","Filter","AND") )}
 }
 \description{

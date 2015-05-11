@@ -4,7 +4,8 @@
 \alias{biOmics.search}
 \title{Searches a term in TCGA, ENCODE, ROADMAP}
 \usage{
-biOmics.search(term, experiment = "all", plot = F, path = "searchSummary")
+biOmics.search(term, experiment = "all", plot = FALSE,
+  path = "searchSummary")
 }
 \arguments{
 \item{term}{Term to be searched. Example: "brain" "u87" etc.}
