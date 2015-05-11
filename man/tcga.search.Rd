@@ -50,9 +50,9 @@ IlluminaHiSeq_RNASeqV2            \tab Mixed_DNASeq_Cont
 
 \item{added.up.to}{04- 14-2010}
 
-\item{listSample}{List of samples. Ex:c("TCGA-04-06-*","TCGA-04-08-*")}
+\item{listSample}{List of samples. Ex:c('TCGA-04-06-*','TCGA-04-08-*')}
 
-\item{level}{"1" "2" "3"}
+\item{level}{'1' '2' '3'}
 }
 \description{
 Searches in the tcga database

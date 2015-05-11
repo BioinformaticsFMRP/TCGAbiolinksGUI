@@ -8,7 +8,7 @@ biOmics.search(term, experiment = "all", plot = FALSE,
   path = "searchSummary")
 }
 \arguments{
-\item{term}{Term to be searched. Example: "brain" "u87" etc.}
+\item{term}{Term to be searched. Example: 'brain' 'u87' etc.}
 
 \item{experiment}{Experiment type}
 

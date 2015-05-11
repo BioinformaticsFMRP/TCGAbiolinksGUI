@@ -10,18 +10,18 @@ encodeDownloader(iSearch, iType, iTarget, iSample, iFType, iAssay, iAssembly,
 \arguments{
 \item{iSearch}{- bone chip}
 
-\item{iType}{-   "experiment" "publication" "software" ""antibody_lot" "web"}
+\item{iType}{-   'experiment' 'publication' 'software' ''antibody_lot' 'web'}
 
-\item{iTarget}{- "transcription factor" "RNA binding protein"
-"tag" "histone modification"}
+\item{iTarget}{- 'transcription factor' 'RNA binding protein'
+'tag' 'histone modification'}
 
-\item{iSample}{- "tissue" "primary cell"}
+\item{iSample}{- 'tissue' 'primary cell'}
 
-\item{iFType}{- "bam" "bigWig" "bed_broadPeak" "broadPeak" "fastq"}
+\item{iFType}{- 'bam' 'bigWig' 'bed_broadPeak' 'broadPeak' 'fastq'}
 
-\item{iAssay}{- "ChIP-seq" "RIP-chip" "Repli-chip"}
+\item{iAssay}{- 'ChIP-seq' 'RIP-chip' 'Repli-chip'}
 
-\item{iAssembly}{- "hg19" "mm9"}
+\item{iAssembly}{- 'hg19' 'mm9'}
 
 \item{iOut}{- path to save files}
 }
@@ -30,14 +30,14 @@ Downloads data from ENCODE project
 }
 \examples{
 \dontrun{
-   encodeDownloader("bone chip",
-                   "experiment",
-                   "transcription factor",
-                   "primary cell",
-                   "bigWig",
-                   "ChIP-seq",
-                   "mm9",
-                   "diretory_name_to_save_files"
+   encodeDownloader('bone chip',
+                   'experiment',
+                   'transcription factor',
+                   'primary cell',
+                   'bigWig',
+                   'ChIP-seq',
+                   'mm9',
+                   'diretory_name_to_save_files'
                    )
 }
 }

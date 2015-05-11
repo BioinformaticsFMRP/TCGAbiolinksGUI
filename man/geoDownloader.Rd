@@ -18,11 +18,11 @@ Download data from GEO database using reutils library
 }
 \examples{
 \dontrun{
-   geoDownloader ("'(h1[All Fields] AND RRBS[All Fields])
-                   AND roadmap epigenomics[Project] AND "gsm"[Filter]',
+   geoDownloader (''(h1[All Fields] AND RRBS[All Fields])
+                   AND roadmap epigenomics[Project] AND 'gsm'[Filter]',
                    )
- iQuery <- "((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]"
- iQuery <- "((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]"
+ iQuery <- '((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]'
+ iQuery <- '((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]'
 }
 }
 \seealso{

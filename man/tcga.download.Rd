@@ -16,7 +16,7 @@ Download data previously selected using the TCGAQuery function
 }
 \examples{
 \dontrun{
-         TCGADownload(data,"folder")
+         TCGADownload(data,'folder')
 }
 }
 \seealso{

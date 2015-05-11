@@ -18,10 +18,10 @@ Download a files from a list o ftp directory and uncompress it
 \examples{
 \dontrun{
  geoDownloaderLinks (
-    c("ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/",
-      "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409312/suppl/"
+    c('ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/',
+      'ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409312/suppl/'
       ),
-    "path_to_folder_GSM409307"
+    'path_to_folder_GSM409307'
   )
 }
 }

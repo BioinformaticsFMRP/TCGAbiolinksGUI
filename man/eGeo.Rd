@@ -12,8 +12,8 @@ eGeo(...)
 First parameter should contain the terms,
 Field NULL which means all fields and connector NULL
 For roadmap one parameter should be
-c("roadmap epigenomics","Project","AND"),
-For samples: c ("gsm","Filter","AND") )}
+c('roadmap epigenomics','Project','AND'),
+For samples: c ('gsm','Filter','AND') )}
 }
 \description{
 Create query from UI to be used with esearch - not completed
@@ -22,9 +22,9 @@ Create query from UI to be used with esearch - not completed
 \examples{
 \dontrun{
  eGeo(
-   c ("h1 cell RRBS",NULL,NULL),
-   c ("roadmap epigenomics","Project","AND"),
-   c ("gsm","Filter","AND") )
+   c ('h1 cell RRBS',NULL,NULL),
+   c ('roadmap epigenomics','Project','AND'),
+   c ('gsm','Filter','AND') )
 }
 }
 \keyword{internal}
