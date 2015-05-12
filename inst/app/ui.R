@@ -4,9 +4,9 @@ header <- dashboardHeader(
 
 sidebar <-  dashboardSidebar(
     sidebarMenu(
-        menuItem ("Encode" , tabName = "encode" , icon = icon("database")),
-        menuItem ("Roadmap", tabName = "roadmap", icon = icon("database")),
-        menuItem ("TCGA"   , tabName = "tcga"   , icon = icon("database"),
+        menuItem("Encode" , tabName = "encode" , icon = icon("database")),
+        menuItem("Roadmap", tabName = "roadmap", icon = icon("database")),
+        menuItem("TCGA"   , tabName = "tcga"   , icon = icon("database"),
         badgeLabel = "new", badgeColor = "green")
     )
 )
@@ -16,19 +16,19 @@ body <-  dashboardBody(
         singleton(tags$head(tags$script(
             paste0('//cdnjs.cloudflare.com/ajax/libs/datatables/',
                 '1.10.5/js/jquery.dataTables.min.js'),
-            type='text/javascript'))),
-        singleton(tags$head(tags$link(href=paste0('//cdn.datatables.net/',
+            type = 'text/javascript'))),
+        singleton(tags$head(tags$link(href = paste0('//cdn.datatables.net/',
                                                 'tabletools/2.2.3/css/',
                                                 'dataTables.tableTools.css'),
-                                      rel='stylesheet',type='text/css'))),
-        singleton(tags$head(tags$link(href=paste0('//cdn.datatables.net',
+                                      rel = 'stylesheet',type = 'text/css'))),
+        singleton(tags$head(tags$link(href = paste0('//cdn.datatables.net',
                                                 '/1.10.5/css/jquery.',
                                                 'dataTables.css'),
-                                      rel='stylesheet',type='text/css'))),
-        singleton(tags$head(tags$script(src=paste0('//cdn.datatables.net/',
+                                      rel = 'stylesheet',type = 'text/css'))),
+        singleton(tags$head(tags$script(src = paste0('//cdn.datatables.net/',
                                                 'tabletools/2.2.3/js/dat',
                                                 'aTables.tableTools.min.js'),
-                                        type='text/javascript'))),
+                                        type = 'text/javascript'))),
         singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css",
                                       href = "biOMICS.css")))
     ),
@@ -139,7 +139,7 @@ body <-  dashboardBody(
                                             multiple = TRUE, selectize = TRUE),
                                 # @param assembly - "hg19" "mm9"
                                 selectInput("encodeAssembly",
-                                           label ="Assembly Filter",
+                                           label = "Assembly Filter",
                                            choices = list("hg19",
                                                         "dm3",
                                                         "mm9"),

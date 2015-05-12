@@ -67,7 +67,7 @@ geoDownloader <- function(query) {
             aux <- esummary(pmids)
             info <- content(aux, "parsed")
 
-            if (nbFiles > 1){
+            if (nbFiles > 1) {
                 ftps <- lapply(info, function(x) x$FTPLink)
             } else {
                 ftps <- info$FTPLink
@@ -89,7 +89,7 @@ geoDownloader <- function(query) {
 #' @return If uinput is valid or not
 validateInput <- function(input = NULL, list = NULL) {
     for (i in seq_along(input)) {
-        if ( ! (input[i] %in% list)) {
+        if ( !(input[i] %in% list)) {
             print(paste0("ERROR: ", input[i], " does not exists in roadmap"))
             print(paste0("Possible values can be seen in objects: ",
                         "roadmap$experimentList and roadmap$samplesLis "))
@@ -289,7 +289,7 @@ geoDownloader <- function(iQuery, iOut) {
             aux <- esummary(pmids)
             info <- content(aux, "parsed")
 
-            if (nbFiles > 1){
+            if (nbFiles > 1) {
                 ftps <- lapply(info, function(x) x$FTPLink)
             } else {
                 ftps <- info$FTPLink
@@ -310,7 +310,7 @@ geoDownloader <- function(iQuery, iOut) {
 #' @keywords internal
 validateInput <- function(input = NULL, list = NULL) {
     for (i in seq_along(input)) {
-        if ( ! (input[i] %in% list)) {
+        if ( !(input[i] %in% list)) {
             print(paste0("ERROR: ", input[i], " does not exists in roadmap"))
             print(paste0("Possible values can be seen in objects: ",
                         "roadmap$experimentList and roadmap$samplesLis "))

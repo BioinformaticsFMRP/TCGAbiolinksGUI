@@ -22,16 +22,16 @@ test_that("A null parameter returns NULL", {
 
 # Sample
 test_that("Parameter sample should have the
-          prefix replicates.library.biosample.biosample_type= ", {
-              expect_equal(formatSample("primary cell"),
+            prefix replicates.library.biosample.biosample_type= ", {
+                expect_equal(formatSample("primary cell"),
                            paste0("replicates.library.biosample.",
                                   "biosample_type=primary%20cell")
-              )
+                )
           })
 
 test_that("If more than one parameter sample, both should have the prefix  ", {
     expect_equal(formatSample(c("primary cell","tissue")),
-                 paste ("replicates.library.biosample.",
+                 paste("replicates.library.biosample.",
                         "biosample_type=primary%20cell&",
                         "replicates.library.biosample.",
                         "biosample_type=tissue",

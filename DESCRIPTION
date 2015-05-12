@@ -3,52 +3,53 @@ Title: biOmics
 Version: 0.99.0
 Date: 2015-04-22
 Author:
-  Tiago Chedraoui Silva <tiagochst@gmail.com>,
-  Tiago Mendes <tmendesilva@gmail.com>
+    Tiago Chedraoui Silva <tiagochst@gmail.com>,
+    Tiago Mendes <tmendesilva@gmail.com>
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
 Description:
-  A bioinformatics method to search,
-  analyse and interpret biological data from genomic sequencing
-  in public repositories (roadmap,encode,tcga).
+    A bioinformatics method to search,
+    analyse and interpret biological data from genomic sequencing
+    in public repositories (roadmap,encode,tcga).
 License: GPL (>= 3)
 Depends:
-  R (>= 3.2),
-  shinydashboard (>= 0.4.0)
+    R (>= 3.2),
+    shinydashboard (>= 0.4.0)
 Suggests:
-  testthat,
-  knitr,
-  roxygen2,
-  devtools,
-  BiocStyle
+    testthat,
+    knitr,
+    roxygen2,
+    devtools,
+    BiocStyle
 Imports:
-  shiny (>= 0.11.1),
-  downloader,
-  gdata,
-  RCurl,
-  R.utils,
-  rjson,
-  reutils,
-  XML,
-  tcltk,
-  pbapply,
-  rols,
-  stringr,
-  GGally,
-  GenomicRanges,
-  IRanges,
-  biomaRt,
-  exactRankTests,
-  ggplot2,
-  survival,
-  parallel
+    shiny (>= 0.11.1),
+    downloader,
+    gdata,
+    RCurl,
+    R.utils,
+    rjson,
+    reutils,
+    XML,
+    tcltk,
+    pbapply,
+    rols,
+    stringr,
+    GGally,
+    GenomicRanges,
+    IRanges,
+    biomaRt,
+    exactRankTests,
+    ggplot2,
+    survival,
+    parallel
 VignetteBuilder: knitr
-biocViews: Genetics,
-           DNAMethylation,
-	   StatisticalMethod,
-	   DifferentialMethylation,
-	   GeneRegulation,
-	   GeneExpression,
-	   MethylationArray,
-	   DifferentialExpression,
-	   Pathways,
-	   Network
+biocViews:
+    Genetics,
+    DNAMethylation,
+    StatisticalMethod,
+    DifferentialMethylation,
+    GeneRegulation,
+    GeneExpression,
+    MethylationArray,
+    DifferentialExpression,
+    Pathways,
+    Network

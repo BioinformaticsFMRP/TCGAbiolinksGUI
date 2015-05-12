@@ -89,10 +89,8 @@ load.biosamples <- function(env) {
     download(paste0(gdocs, "514976736"), destfile = "encodetab.tsv")
     download(paste0(gdocs, "0"), destfile = "tcgatab.tsv")
 
-    env$biosample.encode <- read.delim(file = "encodetab.tsv",
-                                       sep = "\t", )
-    env$biosample.roadmap <- read.delim(file = "roadmaptab.tsv",
-                                        sep = "\t")
+    env$biosample.encode <- read.delim(file = "encodetab.tsv", sep = "\t")
+    env$biosample.roadmap <- read.delim(file = "roadmaptab.tsv", sep = "\t")
     env$biosample.tcga <- read.delim(file = "tcgatab.tsv", sep = "\t")
 
     env$biosample.encode <- data.frame(lapply(env$biosample.encode,

@@ -121,7 +121,7 @@ encodeDownloader <- function(search, type, target, sample,
 
                 # Did the user select a file format
                 if (is.null(type) ||
-                    data$"@graph"[[j]]$files[[i]]$file_format %in% type){
+                    data$"@graph"[[j]]$files[[i]]$file_format %in% type) {
                     downloader::download(dn, fileOut, quiet = TRUE)
                   print(paste0("Downloaded file: ", fileOut))
 
