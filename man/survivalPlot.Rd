@@ -31,6 +31,9 @@ survivalPlot(met.md, legend = "Legend", cutoff = 0,
 
 \item{default.plot}{You can use ggplot or plot}
 }
+\value{
+Survival plot
+}
 \description{
 Creates survival analysis
 }

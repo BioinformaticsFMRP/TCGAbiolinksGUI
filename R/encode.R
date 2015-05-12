@@ -75,6 +75,7 @@ formatType <- function(type) {
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name encodeDownloader
 #' @export
+#' @return Save encode data into folder, return data downloaded
 encodeDownloader <- function(search, type, target, sample,
     ftype, assay, assembly, out) {
     # Constant parameters

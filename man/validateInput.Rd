@@ -5,16 +5,30 @@
 \title{Verify user input}
 \usage{
 validateInput(input = NULL, list = NULL)
+
+validateInput(input = NULL, list = NULL)
 }
 \arguments{
 \item{input}{- user input of samples}
 
 \item{list}{- roadmap list of experiments or samples}
+
+\item{input}{- user input of samples}
+
+\item{list}{- roadmap list of experiments or samples}
+}
+\value{
+If uinput is valid or not
 }
 \description{
 Verify user input existis in roadmap
+
+Verify user input existis in roadmap
 }
 \examples{
+\dontrun{
+ validateInput(samples,roadmap$samplesList)
+}
 \dontrun{
  validateInput(samples,roadmap$samplesList)
 }

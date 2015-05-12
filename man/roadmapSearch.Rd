@@ -12,15 +12,15 @@ roadmapSearch(accession = NULL, sample = NULL, experiment = NULL,
 
 \item{sample}{Example:
 \tabular{ll}{
-H1 cell line                     \tab heart, fetal day96 U  \cr
-IMR90 cell line                  \tab kidney, fetal day122 U\cr
-CD34 primary cells               \tab lung, fetal day122 U  \cr
-CD34 mobilized primary cells     \tab heart, fetal day101 U \cr
-kidney, fetal day82 F            \tab lung, fetal day101 U  \cr
+H1 cell line  \tab heart, fetal day96 U  \cr
+IMR90 cell line \tab kidney, fetal day122 U\cr
+CD34 primary cells \tab lung, fetal day122 U  \cr
+CD34 mobilized primary cells \tab heart, fetal day101 U \cr
+kidney, fetal day82 F \tab lung, fetal day101 U  \cr
 breast, luminal epithelial cells \tab CD3 primary cells     \cr
 breast, myoepithelial cells      \tab CD19 primary cells    \cr
-breast, stem cells               \tab ES-WA7 cell line      \cr
-brain, fetal day122 M            \tab ES-I3 cell line       \cr
+breast, stem cells \tab ES-WA7 cell line \cr
+brain, fetal day122 M \tab ES-I3 cell line \cr
 adrenal gland, fetal day96 U     \tab CD34 cultured cells
 }}
 

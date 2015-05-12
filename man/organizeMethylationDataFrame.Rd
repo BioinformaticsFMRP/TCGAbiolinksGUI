@@ -10,7 +10,7 @@ organizeMethylationDataFrame(wd = getwd())
 \item{wd}{Directory with the files}
 }
 \value{
-Methylation table
+Methylation betavalues table
 }
 \description{
 Organize TCGA methylation data for the mean methylation analysis.

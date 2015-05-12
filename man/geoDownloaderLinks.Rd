@@ -6,16 +6,35 @@
 Download a files from a list o ftp directory and uncompress it}
 \usage{
 geoDownloaderLinks(iFTPs, iOut, gui = FALSE)
+
+geoDownloaderLinks(iFTPs, iOut, gui = FALSE)
 }
 \arguments{
 \item{iFTPs:}{list of ftp directory adress
 iOut - folder where files will be downloaded}
+
+\item{iFTPs:}{list of ftp directory adress
+iOut - folder where files will be downloaded}
+}
+\value{
+download geo links
 }
 \description{
 Download a files from a list o ftp directory and uncompress it
 Download a files from a list o ftp directory and uncompress it
+
+Download a files from a list o ftp directory and uncompress it
+Download a files from a list o ftp directory and uncompress it
 }
 \examples{
+\dontrun{
+ geoDownloaderLinks (
+    c('ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/',
+      'ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409312/suppl/'
+      ),
+    'path_to_folder_GSM409307'
+  )
+}
 \dontrun{
  geoDownloaderLinks (
     c('ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/',

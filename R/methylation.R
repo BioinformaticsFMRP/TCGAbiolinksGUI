@@ -1,19 +1,11 @@
-#' @title calculate diffmean methylation between primary and recurent
+#' @title calculate diffmean methylation between two groups
 #' @description
-#'    calculate diffmean methylation between primary and recurent
-#'    samples
-#' @param data Data frame probes vs patient
+#'    calculate diffmean methylation between two groups
+#' @param group1 Data frame probes vs patient
+#' @param group2 Data frame probes vs patient
 #' @import ggplot2
 #' @export
-diffmean.prim.rec <- function(data) {
-    pat.prim <- "TCGA-[0-9a-z]{2}-[0-9a-z]{4}-01"
-    pat.rec <- "TCGA-[0-9a-z]{2}-[0-9a-z]{4}-02"
-    rec <- data[, grep(pat.rec, colnames(data))]
-    prim <- data[, grep(pat.prim, colnames(data))]
-    prim.rec <- diffmean(prim, rec)
-    return(prim.rec)
-}
-
+#' @return dataframe with diffmean values
 diffmean <- function(group1, group2) {
     g1 <- group1
     g1$mean.g1 <- apply(group1, 1, mean, na.rm = TRUE)
@@ -52,6 +44,7 @@ diffmean <- function(group1, group2) {
 #' @importFrom GGally ggsurv
 #' @importFrom survival survfit
 #' @export
+#' @return Survival plot
 survivalPlot <- function(met.md, legend = "Legend", cutoff = 0,
                         main = "Kaplan-Meier Overall Survival Curves",
                         ylab = "PROBABILITY OF SURVIVAL",
@@ -111,10 +104,10 @@ survivalPlot <- function(met.md, legend = "Legend", cutoff = 0,
             surv <- surv + scale_colour_discrete(
                 name = "legend",
                 labels = sapply(levels(met.md$type), label.add.n))
-            surv <- surv + geom_point(aes(colour = group), shape = 3,
+            surv <- surv + geom_point(aes(colour = met.md$group), shape = 3,
                                         size = 2)
             surv <- surv + guides(linetype = FALSE) +
-                scale_y_continuous(labels = percent)
+                scale_y_continuous(formatter = 'percent')
             ggsave(surv, filename = filename)
         }
     })
@@ -158,7 +151,7 @@ organizeMethylationMetaDataFrame <- function(wd = NULL) {
 #'    Execution: read all files inside the directory and merge it by
 #'    probes (Composite.Element.REF)
 #' @param wd Directory with the files
-#' @return Methylation table
+#' @return Methylation betavalues table
 #' @export
 organizeMethylationDataFrame <- function(wd = getwd()) {
     oldwd <- getwd()
@@ -218,6 +211,7 @@ organizeMethylationDataFrame <- function(wd = getwd()) {
 #' @param sort Sort by mean methylation? False by default
 #' @import ggplot2
 #' @export
+#' @return Save the survival plot
 #'
 #' @examples
 #'# -----------------
@@ -299,6 +293,8 @@ metMeanBoxplot <- function(data, sort = FALSE,
 #' @importFrom exactRankTests wilcox.exact
 #' @importFrom parallel mclapply detectCores
 #' @export
+#' @return Data frame with two cols
+#'         p-values/p-values adjusted
 calculate.pvalues <- function(values, idx1, idx2, paired = TRUE,
                             exact = TRUE, cores = NULL) {
     if (is.null(cores)) {
@@ -350,7 +346,12 @@ calculate.pvalues <- function(values, idx1, idx2, paired = TRUE,
 #' @param diffmean.cut diffmean threshold
 #' @import ggplot2
 #' @export
-volcano.plot <- function(data, filename = "volcano.pdf",
+#' @return A dataframe with the Composite.Element.REF and
+#'         the group it was classified
+#'          group 1 = Not Significant
+#'          group 2 = Hypermethylated
+#'          group 3 = Hypomethylated
+volcanoPlot <- function(data, filename = "volcano.pdf",
                          ylab = "- 1*log10 of the Significance",
                          xlab = "DNA Methylation",
                          title = "Volcano Plot TCGA GBM Tumors",
@@ -440,11 +441,11 @@ get.GRCh.bioMart <- function() {
 #'
 #' @param met methylation data
 #' @param expression expression data
-#' @return Methylation table
+#' @return Dataframe with methylation and expression data
 #' @importFrom GenomicRanges GRanges distanceToNearest
 #' @importFrom IRanges IRanges
 #' @export
-starbursanalysis <- function(met, expression) {
+starbursAnalysis <- function(met, expression) {
     #### fix methylation gene names before merging.  map gene ID to
     #### genomic coordinates
     gene.GR <- GRanges(seqnames = paste0("chr", gene.location$chromosome_name),
@@ -517,7 +518,8 @@ starbursanalysis <- function(met, expression) {
 #' @param diffmean.cut diffmean cut-off
 #' @import ggplot2
 #' @export
-starburstplot <- function(data,
+#' @return Save a starburst plot
+starburstPlot <- function(data,
                           filename = "volcano.pdf",
                           ylab = paste0("Gene Expression\nlog10 of the",
                                         "adjusted Significance (FDR)"),

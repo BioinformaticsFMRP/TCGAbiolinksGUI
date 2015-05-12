@@ -5,11 +5,12 @@
 #' @param rmap.file.type Extension to be downloaed from roadmap database
 #' @seealso biOmicsSearch
 #' @export
+#' @return Saves the file of the line files
 biOmicsDownload <- function(lines, enc.file.type = NULL,
                             rmap.file.type = NULL) {
-    encode.db  <- getOption("encode.db")
-    tcga.db    <- getOption("tcga.db")
-    roadmap.db <- getOption("roadmap.db")
+    encode.db  <- get("encode.db")
+    tcga.db    <- get("tcga.db")
+    roadmap.db <- get("roadmap.db")
 
     with(lines,{
         encode.lines <- subset(lines, lines$database == "encode")
@@ -46,6 +47,7 @@ biOmicsDownload <- function(lines, enc.file.type = NULL,
 #' @importFrom downloader download
 #' @importFrom RCurl getURL
 #' @importFrom rjson fromJSON
+#' @return Download encode data into path
 encodeDownload <- function(lines, type = NULL, path = ".") {
     dir.create(path, showWarnings = FALSE, recursive = TRUE)
 
@@ -90,6 +92,7 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
 #' @export
 #' @importFrom downloader download
 #' @importFrom stringr str_replace_all
+#' @return Download romapdata into path
 roadmapDownload <- function(lines, type = NULL, path = ".") {
 
     error <- c()
@@ -149,6 +152,7 @@ roadmapDownload <- function(lines, type = NULL, path = ".") {
 #' }
 #' @export
 #' @importFrom downloader download
+#' @return Download tcga into path
 tcgaDownload <- function(data = NULL, path = ".") {
     dir.create(path, showWarnings = FALSE)
     root <- "https://tcga-data.nci.nih.gov"

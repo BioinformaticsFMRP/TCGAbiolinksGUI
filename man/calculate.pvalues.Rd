@@ -22,6 +22,9 @@ calculate.pvalues(values, idx1, idx2, paired = TRUE, exact = TRUE,
 }
 \value{
 Data frame with cols p values/p values adjusted
+
+Data frame with two cols
+        p-values/p-values adjusted
 }
 \description{
 Calculate pvalues

@@ -13,6 +13,9 @@ roadmapDownload(lines, type = NULL, path = ".")
 
 \item{path}{Folder to save the file}
 }
+\value{
+Download romapdata into path
+}
 \description{
 Download roadmap data selected using the roadmap.search
 }

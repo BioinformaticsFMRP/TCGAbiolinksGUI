@@ -15,6 +15,10 @@ For roadmap one parameter should be
 c('roadmap epigenomics','Project','AND'),
 For samples: c ('gsm','Filter','AND') )}
 }
+\value{
+Return the list to search in geo database. Used by
+        the UI
+}
 \description{
 Create query from UI to be used with esearch - not completed
 Create query from UI to be used with esearch - not completed

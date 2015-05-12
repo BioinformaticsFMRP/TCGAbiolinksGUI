@@ -16,11 +16,15 @@ biOmicsSearch(term, experiment = "all", plot = FALSE,
 
 \item{path}{Path to save summary plots
 \tabular{llll}{
-Microarray      \tab MiRNAMicroArray \tab RRBS    \tab DNAsequencing\cr
-ExpressionArray \tab Firehose        \tab ChipSeq \tab fiveC        \cr
-ExonArray       \tab DNAMethylation  \tab MRESeq  \tab RepliSeq     \cr
-RNASeq          \tab miRNASeq        \tab Rampage \tab Others
+Microarray \tab MiRNAMicroArray \tab RRBS \tab DNAsequencing\cr
+ExpressionArray \tab Firehose \tab ChipSeq \tab fiveC \cr
+ExonArray \tab DNAMethylation  \tab MRESeq  \tab RepliSeq \cr
+RNASeq \tab miRNASeq \tab Rampage \tab Others
 }}
+}
+\value{
+A dataframe with the results of the query if it
+        was successful
 }
 \description{
 Search a term using an ontology in the TCGA, ENCODE, ROADMAP databases

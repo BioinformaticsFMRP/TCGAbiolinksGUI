@@ -11,6 +11,9 @@ tcgaDownload(data = NULL, path = ".")
 
 \item{path}{location of the final data saving}
 }
+\value{
+Download tcga into path
+}
 \description{
 Download data previously selected using the TCGASeach
 }

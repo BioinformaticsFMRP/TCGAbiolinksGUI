@@ -9,6 +9,7 @@
 #' @name biOmicsApp
 #' @import shiny shinydashboard tcltk
 #' @export
+#' @return Open a connection to shiny
 biOmicsApp <- function() {
     shiny::runApp(system.file("app", package = "biOmics"))
 }

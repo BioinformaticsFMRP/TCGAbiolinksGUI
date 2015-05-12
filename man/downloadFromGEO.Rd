@@ -6,6 +6,8 @@
 Download all files of ftp directory}
 \usage{
 downloadFromGEO(iFTP, iFileName, iOut, gui = FALSE)
+
+downloadFromGEO(iFTP, iFileName, iOut, gui = FALSE)
 }
 \arguments{
 \item{iFileName}{- list of files in the ftp path
@@ -14,15 +16,33 @@ downloadFromGEO(iFTP, iFileName, iOut, gui = FALSE)
 \item{iOut}{- folder where files will be downloaded}
 
 \item{iFTP:}{ftp directory adress}
+
+\item{iFTP:}{ftp directory adress}
+
+\item{iFileName}{- list of files in the ftp path
+(use .getFileNames to get the list)}
+
+\item{iOut}{- folder where files will be downloaded}
 }
 \value{
+compressedFiles - compressed files downloaded
+
 compressedFiles - compressed files downloaded
 }
 \description{
 Download all files of ftp directory
 Download all files of ftp directory
+
+Download all files of ftp directory
+Download all files of ftp directory
 }
 \examples{
+\dontrun{
+ downloadFromGEO (
+  'ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/',
+   c ('GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz'),
+   'path_to_folder_GSM409307' )
+}
 \dontrun{
  downloadFromGEO (
   'ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/',

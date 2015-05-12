@@ -6,6 +6,9 @@
 \usage{
 biOmicsApp()
 }
+\value{
+Open a connection to shiny
+}
 \description{
 Calls UI interface
 }

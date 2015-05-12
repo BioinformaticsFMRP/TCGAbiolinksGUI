@@ -144,11 +144,12 @@ load.platforms <- function(env) {
     }
 }
 
-#' Updates tcga platform and diseases
-#' @param env package environment
+# Updates tcga platform and diseases
+# @param env package environment
 #' @importFrom stringr str_match
 #' @importFrom XML readHTMLTable
 #' @importFrom downloader download
+#' @keywords internal
 load.tcga <- function(env) {
     tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
     tcga.query <- "query=Platform"
@@ -181,5 +182,4 @@ load.tcga <- function(env) {
     }
 
     env$tcga.db <- tcgaSearch()
-
 }

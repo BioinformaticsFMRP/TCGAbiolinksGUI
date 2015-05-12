@@ -125,6 +125,8 @@ is.mapped <- function(term) {
 #'}
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
+#' @return A dataframe with the results of the query if it
+#'         was successful
 biOmicsSearch <- function(term, experiment = "all", plot = FALSE,
                           path = "searchSummary") {
     message(paste("biOmics is searching for:", term, "\nSearching..."))

@@ -2,21 +2,24 @@
 % Please edit documentation in R/download.R
 \name{biOmicsDownload}
 \alias{biOmicsDownload}
-\title{biOmics.download}
+\title{biOmicsDownload}
 \usage{
 biOmicsDownload(lines, enc.file.type = NULL, rmap.file.type = NULL)
 }
 \arguments{
-\item{lines}{biOmics.search output}
+\item{lines}{biOmicsSearch output}
 
 \item{enc.file.type}{Extension to be downloaed from encode database}
 
 \item{rmap.file.type}{Extension to be downloaed from roadmap database}
 }
+\value{
+Saves the file of the line files
+}
 \description{
 Download data selected using the biOmics.search function
 }
 \seealso{
-biOmics.search
+biOmicsSearch
 }
 

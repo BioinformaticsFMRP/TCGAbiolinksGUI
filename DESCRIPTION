@@ -1,6 +1,6 @@
 Package: biOmics
 Title: biOmics
-Version: 0.99
+Version: 0.99.0
 Date: 2015-04-22
 Author:
   Tiago Chedraoui Silva <tiagochst@gmail.com>,
@@ -42,3 +42,13 @@ Imports:
   survival,
   parallel
 VignetteBuilder: knitr
+biocViews: Genetics,
+           DNAMethylation,
+	   StatisticalMethod,
+	   DifferentialMethylation,
+	   GeneRegulation,
+	   GeneExpression,
+	   MethylationArray,
+	   DifferentialExpression,
+	   Pathways,
+	   Network

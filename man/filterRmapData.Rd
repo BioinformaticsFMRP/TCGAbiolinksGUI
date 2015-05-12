@@ -5,19 +5,37 @@
 \title{Filter roadmap data}
 \usage{
 filterRmapData(samples = NULL, experiments = NULL)
+
+filterRmapData(samples = NULL, experiments = NULL)
 }
 \arguments{
+\item{samples}{- list of samples}
+
+\item{experiments}{- list of experiments}
+
 \item{samples}{- list of samples}
 
 \item{experiments}{- list of experiments}
 }
 \value{
 List of ftp to download data
+
+Get list of files doing the samples x experiments
+
+List of ftp to download data
 }
 \description{
 Select data from roadmap
+
+Select data from roadmap
 }
 \examples{
+\dontrun{
+   link <- filterRmapData (
+    samples = c('H1 cell line','H9 cell line'),
+    experiments = c('RRBS','H4K91ac')
+   )
+}
 \dontrun{
    link <- filterRmapData (
     samples = c('H1 cell line','H9 cell line'),

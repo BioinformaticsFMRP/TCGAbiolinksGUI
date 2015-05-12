@@ -24,6 +24,9 @@ encodeDownloader(search, type, target, sample, ftype, assay, assembly, out)
 
 \item{out}{- path to save files}
 }
+\value{
+Save encode data into folder, return data downloaded
+}
 \description{
 Downloads data from ENCODE project
 }

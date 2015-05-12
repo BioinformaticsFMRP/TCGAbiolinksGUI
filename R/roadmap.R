@@ -15,6 +15,8 @@
 #' }
 #' @keywords internal
 #' @export
+#' @return Return the list to search in geo database. Used by
+#'         the UI
 eGeo <- function(...) {
     input_list <- list(...)
     output_list <- lapply(X = input_list, function(x) {
@@ -33,16 +35,15 @@ eGeo <- function(...) {
 #' @description Download data from GEO database using reutils library
 #'              Input should be a GEO query, you can you this site
 #'              to create the query  http://www.ncbi.nlm.nih.gov/gds/advanced
-#' @param iQuery - GEO query -  http://www.ncbi.nlm.nih.gov/gds/advanced
-#' @param iOut - path to save files
+#' @param query - GEO query -  http://www.ncbi.nlm.nih.gov/gds/advanced
 #' @examples
 #' \dontrun{
 #'    geoDownloader (''(h1[All Fields] AND RRBS[All Fields])
 #'                    AND roadmap epigenomics[Project] AND 'gsm'[Filter]',
 # 'path_to_download_folder'
 #'                    )
-#'  iQuery <- '((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]'
-#'  iQuery <- '((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]'
+#'  query <- '((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]'
+#'  query <- '((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]'
 #' }
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/geo/info/download.html}
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/geo/info/geo_paccess.html}
@@ -51,15 +52,11 @@ eGeo <- function(...) {
 #' @export
 #' @importFrom reutils esummary content esearch
 #' @importFrom XML xmlToList
-geoDownloader <- function(iQuery, iOut) {
-    # Constant parameters
-    roadmapURL <- paste0("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/",
-                        "esearch.fcgi?db=gds&term=")
-    optionRet <- "retmax=5000"
-    optionHist <- "usehistory=y"
+#' @return Download data
+geoDownloader <- function(query) {
 
     # search on geo databse(gds) for iQuery
-    pmids <- esearch(iQuery, "gds", retmax = 10000)
+    pmids <- esearch(query, "gds", retmax = 10000)
 
     if (pmids@.xData$no_errors()) {
         nbFiles <- as.numeric(xmlToList(pmids@.xData$get_content())$Count)
@@ -89,6 +86,7 @@ geoDownloader <- function(iQuery, iOut) {
 #'  validateInput(samples,roadmap$samplesList)
 #' }
 #' @keywords internal
+#' @return If uinput is valid or not
 validateInput <- function(input = NULL, list = NULL) {
     for (i in seq_along(input)) {
         if ( ! (input[i] %in% list)) {
@@ -113,6 +111,7 @@ validateInput <- function(input = NULL, list = NULL) {
 #' }
 #' @return List of ftp to download data
 #' @export
+#' @return Get list of files doing the samples x experiments
 filterRmapData <- function(samples = NULL, experiments = NULL) {
     # Load ROAMP table if it doesn't exists
     roadmap.db <- getOption("roadmap.db")
@@ -187,6 +186,7 @@ downloadFromGEO <- function(iFTP, iFileName, iOut, gui = FALSE) {
 #' }
 #' @keywords internal
 #' @export
+#' @return download geo links
 geoDownloaderLinks <- function(iFTPs, iOut, gui = FALSE) {
     nbFiles <- length(iFTPs)
     if (nbFiles > 0) {
@@ -246,36 +246,6 @@ getFileNames <- function(ftp) {
                                             dirlistonly = TRUE), " "))
     # remove \r\n from name
     fileName <- as.list(strsplit(tail(filePath, n = 1), "\r*\n")[[1]])
-}
-#' Create query from UI to be used with esearch - not completed
-#' Create query from UI to be used with esearch - not completed
-#' @param List of parameters parameter = (Term,Field,Connector)
-#'        First parameter should contain the terms,
-#'        Field NULL which means all fields and connector NULL
-#'        For roadmap one parameter should be
-#'        c('roadmap epigenomics','Project','AND'),
-#'        For samples: c ('gsm','Filter','AND') )
-#' @examples
-#' \dontrun{
-#'  eGeo(
-#'    c ('h1 cell RRBS',NULL,NULL),
-#'    c ('roadmap epigenomics','Project','AND'),
-#'    c ('gsm','Filter','AND') )
-#' }
-#' @keywords internal
-#' @export
-eGeo <- function(...) {
-    input_list <- list(...)
-    output_list <- lapply(X = input_list, function(x) {
-        if (length(x) > 2) {
-            paste(x[[3]], paste(paste(x[[1]], x[[2]], sep = "["),
-                                NULL, sep = "]"))
-        } else {
-            paste(paste(NULL, x[[1]], sep = "("), NULL, sep = ")")
-        }
-    })
-    output_list <- paste(output_list, collapse = " ")
-    return(output_list)
 }
 
 #' @title Download data from GEO database

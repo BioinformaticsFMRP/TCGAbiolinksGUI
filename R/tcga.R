@@ -56,6 +56,8 @@ getBarCode <- function(TCGAList, filter) {
 #' @param samples List of samples. Ex:c('TCGA-04-06-*','TCGA-04-08-*')
 #' @export
 #' @importFrom downloader download
+#' @return A dataframe with the results of the query
+#'        (lastest version of the files)
 tcgaSearch <- function(tumor = NULL, platform = NULL, added.since = NULL,
                         added.up.to = NULL, samples = NULL, level = NULL) {
     disease.table <- getOption("disease.table")

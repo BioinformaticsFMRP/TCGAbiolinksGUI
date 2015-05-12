@@ -54,6 +54,10 @@ IlluminaHiSeq_RNASeqV2            \tab Mixed_DNASeq_Cont
 
 \item{level}{'1' '2' '3'}
 }
+\value{
+A dataframe with the results of the query
+       (lastest version of the files)
+}
 \description{
 Searches in the tcga database
 }

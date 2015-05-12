@@ -26,6 +26,9 @@ metMeanBoxplot(data, sort = FALSE, filename = "G-CIMP-mean.methylation.pdf",
 
 \item{color}{vector of colors to be used in graph}
 }
+\value{
+Save the survival plot
+}
 \description{
 Mean methylation boxplot.
   Input: a dataframe with two columns:
