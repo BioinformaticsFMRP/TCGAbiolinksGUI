@@ -101,7 +101,7 @@ survivalPlot <- function(met.md, legend = "Legend", cutoff = 0,
                            lty.ci = 2, cens.shape = 3,
                            back.white = TRUE,
                            xlab = paste0(xlab, "(", time.reference,
-                                         ")"), ylab = ylab, main = main)
+                                        ")"), ylab = ylab, main = main)
             if (cutoff != 0) {
                 surv <- surv + ggplot2::coord_cartesian(xlim = c(0, cutoff))
             }
@@ -248,16 +248,16 @@ metMeanBoxplot <- function(data, sort = FALSE,
     # mean methylation
     if (sort) {
         p <- ggplot(data, aes(reorder(factor(data$cluster), data$avg),
-                              data$avg))
+                            data$avg))
         p <- p + geom_boxplot(aes(fill = reorder(factor(data$cluster),
                                                 data$avg)),
-                              notchwidth = 0.25) +
+                            notchwidth = 0.25) +
             geom_jitter(height = 0,position = position_jitter(width = 0.1),
                         size = 3) +
             scale_fill_manual(values = color,
-                              labels = levels(reorder(factor(data$cluster),
+                            labels = levels(reorder(factor(data$cluster),
                                                     data$avg)),
-                              name = legend)
+                            name = legend)
     } else {
         p <- ggplot(data, aes(factor(data$cluster), data$avg))
         p <- p + geom_boxplot(aes(fill = factor(data$cluster)),
@@ -378,8 +378,8 @@ volcano.plot <- function(data, filename = "volcano.pdf",
 
     # Plot a volcano plot
     p <- ggplot(data = data, aes(x = diffmean,
-                                 y = -1 * log10(data$p.value.adj),
-                                 colour = data$threshold),
+                                y = -1 * log10(data$p.value.adj),
+                                colour = data$threshold),
                 environment = .e) +
         geom_point()
     if (!is.null(xlim)) {

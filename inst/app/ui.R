@@ -7,7 +7,7 @@ sidebar <-  dashboardSidebar(
         menuItem ("Encode" , tabName = "encode" , icon = icon("database")),
         menuItem ("Roadmap", tabName = "roadmap", icon = icon("database")),
         menuItem ("TCGA"   , tabName = "tcga"   , icon = icon("database"),
-                  badgeLabel = "new", badgeColor = "green")
+        badgeLabel = "new", badgeColor = "green")
     )
 )
 
@@ -15,19 +15,19 @@ body <-  dashboardBody(
     tagList(
         singleton(tags$head(tags$script(
             paste0('//cdnjs.cloudflare.com/ajax/libs/datatables/',
-                   '1.10.5/js/jquery.dataTables.min.js'),
+                '1.10.5/js/jquery.dataTables.min.js'),
             type='text/javascript'))),
         singleton(tags$head(tags$link(href=paste0('//cdn.datatables.net/',
-                                                  'tabletools/2.2.3/css/',
-                                                  'dataTables.tableTools.css'),
+                                                'tabletools/2.2.3/css/',
+                                                'dataTables.tableTools.css'),
                                       rel='stylesheet',type='text/css'))),
         singleton(tags$head(tags$link(href=paste0('//cdn.datatables.net',
-                                                  '/1.10.5/css/jquery.',
-                                                  'dataTables.css'),
+                                                '/1.10.5/css/jquery.',
+                                                'dataTables.css'),
                                       rel='stylesheet',type='text/css'))),
         singleton(tags$head(tags$script(src=paste0('//cdn.datatables.net/',
-                                                   'tabletools/2.2.3/js/dat',
-                                                   'aTables.tableTools.min.js'),
+                                                'tabletools/2.2.3/js/dat',
+                                                'aTables.tableTools.min.js'),
                                         type='text/javascript'))),
         singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css",
                                       href = "biOMICS.css")))
@@ -62,21 +62,21 @@ body <-  dashboardBody(
                                actionButton("rmapSearchBt",
                                             "search",
                                             style = "background-color: #F39C12;
-                                                     color: #FFFFFF;
-                                                     margin-left: auto;
-                                                     margin-right: auto;
-                                                     width: 100%",
+                                                    color: #FFFFFF;
+                                                    margin-left: auto;
+                                                    margin-right: auto;
+                                                    width: 100%",
                                             icon = icon("search")),
                                actionButton("rmapSearchDownloadBt",
                                             "Download selected",
                                             style = "background-color: #F39C12;
-                                                     color: #FFFFFF;
-                                                     margin-left: auto;
-                                                     margin-right: auto;
-                                                     width: 100%",
+                                                    color: #FFFFFF;
+                                                    margin-left: auto;
+                                                    margin-right: auto;
+                                                    width: 100%",
                                             icon = icon("download")),
 
-                               textOutput('rmapSearchLink')
+                            textOutput('rmapSearchLink')
                            )
                     )
 
@@ -86,65 +86,65 @@ body <-  dashboardBody(
         tabItem(tabName = "encode",
                 fluidRow(
                     column(8,
-                           box(title = "Advanced search",width = NULL,
-                               status = "warning",
-                               solidHeader = TRUE, collapsible = TRUE,
-                               textInput("encodeSearch", label = "Search Term",
-                                         value = ""),
-                               selectInput('encodeAssay', 'Assay filter',
-                                           list("ChIP-seq",
-                                                "RNA-seq",
-                                                "RRBS",
-                                                "RIP-chip",
-                                                "DNase-seq",
-                                                "Repli-chip"),
-                                           multiple = TRUE,
-                                           selectize = TRUE),
+                           box( title = "Advanced search",width = NULL,
+                                status = "warning",
+                                solidHeader = TRUE, collapsible = TRUE,
+                                textInput("encodeSearch", label = "Search Term",
+                                        value = ""),
+                                selectInput('encodeAssay', 'Assay filter',
+                                        list("ChIP-seq",
+                                        "RNA-seq",
+                                        "RRBS",
+                                        "RIP-chip",
+                                        "DNase-seq",
+                                        "Repli-chip"),
+                                        multiple = TRUE,
+                                        selectize = TRUE),
                                # @param iTarget - "transcription factor"
-                               selectInput(
+                                selectInput(
                                    "encodeTarget",
                                     label =  "Target filter",
                                     choices = list("transcription factor",
-                                                    "RNA binding protein",
-                                                    "control",
-                                                    "histone modification",
-                                                    "tag"),
+                                                "RNA binding protein",
+                                                "control",
+                                                "histone modification",
+                                                "tag"),
                                            multiple = TRUE, selectize = TRUE),
                                # @param iFType -"bam""bigWig" "bed_broadPeak"
-                               selectInput("encodeFtype",
+                                selectInput("encodeFtype",
                                            label = "File Type filter",
                                            choices = list("bam",
-                                                          "bigWig",
-                                                          "bed_broadPeak",
-                                                          "broadPeak",
-                                                          "narrowPeak",
-                                                          "bed_narrowPeak",
-                                                          "bed",
-                                                          "bigBed",
-                                                          "fastq"),
+                                                    "bigWig",
+                                                    "bed_broadPeak",
+                                                    "broadPeak",
+                                                    "narrowPeak",
+                                                    "bed_narrowPeak",
+                                                    "bed",
+                                                    "bigBed",
+                                                    "fastq"),
                                            multiple = TRUE, selectize = TRUE),
-                               # @param iSample - "tissue" "primary cell"
-                               selectInput(
+                                # @param iSample - "tissue" "primary cell"
+                                selectInput(
                                    "encodeSample",
                                     label = "Sample filter",
                                     choices = list("tissue",
-                                                  "stem cell",
-                                                  paste0("immortalized",
-                                                  " cell line"),
-                                                  paste0("in vitro dif",
-                                                  "ferentiated cells"),
-                                                  paste0("induced plu",
-                                                  "ripotent stem cell line"),
-                                                  "primary cell"),
-                                           multiple = TRUE, selectize = TRUE),
-                               # @param assembly - "hg19" "mm9"
-                               selectInput("encodeAssembly",
+                                                "stem cell",
+                                                paste0("immortalized",
+                                                " cell line"),
+                                                paste0("in vitro dif",
+                                                "ferentiated cells"),
+                                                paste0("induced plu",
+                                                "ripotent stem cell line"),
+                                                "primary cell"),
+                                            multiple = TRUE, selectize = TRUE),
+                                # @param assembly - "hg19" "mm9"
+                                selectInput("encodeAssembly",
                                            label ="Assembly Filter",
                                            choices = list("hg19",
-                                                          "dm3",
-                                                          "mm9"),
+                                                        "dm3",
+                                                        "mm9"),
                                            multiple = TRUE, selectize = TRUE),
-                               actionButton("encodeDownloadBt",
+                                actionButton("encodeDownloadBt",
                                             "Download",
                                             style = "background-color: #F39C12;
                                                     color: #FFFFFF;
@@ -173,18 +173,18 @@ body <-  dashboardBody(
                                solidHeader = TRUE, collapsible = FALSE,
                                fileInput('file1', 'Upload TCGA file',
                                          accept = c(
-                                             'text/csv',
-                                             'text/comma-separated-values',
-                                             '.csv'
+                                            'text/csv',
+                                            'text/comma-separated-values',
+                                            '.csv'
                                          )
                                ),
                                fileInput('file2', 'Upload barcode filter',
                                          accept = c(
-                                             'text/plain'
+                                            'text/plain'
                                          )),
                                downloadButton("getTcgaBarCode",
-                                              "Download",
-                                              class = "btn-block btn-warning"
+                                            "Download",
+                                            class = "btn-block btn-warning"
                                )
 
                            )),

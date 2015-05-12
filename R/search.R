@@ -118,10 +118,10 @@ is.mapped <- function(term) {
 #' @param plot Create a summary plot of the result found? Deafult: TRUE
 #' @param path Path to save summary plots
 #' \tabular{llll}{
-#'Microarray      \tab MiRNAMicroArray \tab RRBS    \tab DNAsequencing\cr
-#'ExpressionArray \tab Firehose        \tab ChipSeq \tab fiveC        \cr
-#'ExonArray       \tab DNAMethylation  \tab MRESeq  \tab RepliSeq     \cr
-#'RNASeq          \tab miRNASeq        \tab Rampage \tab Others
+#'Microarray \tab MiRNAMicroArray \tab RRBS \tab DNAsequencing\cr
+#'ExpressionArray \tab Firehose \tab ChipSeq \tab fiveC \cr
+#'ExonArray \tab DNAMethylation  \tab MRESeq  \tab RepliSeq \cr
+#'RNASeq \tab miRNASeq \tab Rampage \tab Others
 #'}
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
@@ -342,7 +342,7 @@ is.experiment <- function(experiment) {
         return(TRUE)
     } else {
         message(paste0("ERROR: ", experiment, " is not an experiment or",
-                       "has less than 3 characters.\nUse:"))
+                        "has less than 3 characters.\nUse:"))
         print(unique(platforms$Standard))
         return(FALSE)
     }
@@ -353,7 +353,7 @@ is.valid.term <- function(term) {
         return(TRUE)
     } else {
         message(paste0("ERROR: ", term, " is not valid.",
-                       " Specify a term of at least 3 characters"))
+                        " Specify a term of at least 3 characters"))
         return(FALSE)
     }
 }
@@ -365,15 +365,15 @@ is.valid.term <- function(term) {
 #' @param accession GEO sample accession Ex: GSM409307
 #' @param sample Example:
 #' \tabular{ll}{
-#'H1 cell line                     \tab heart, fetal day96 U  \cr
-#'IMR90 cell line                  \tab kidney, fetal day122 U\cr
-#'CD34 primary cells               \tab lung, fetal day122 U  \cr
-#'CD34 mobilized primary cells     \tab heart, fetal day101 U \cr
-#'kidney, fetal day82 F            \tab lung, fetal day101 U  \cr
+#'H1 cell line  \tab heart, fetal day96 U  \cr
+#'IMR90 cell line \tab kidney, fetal day122 U\cr
+#'CD34 primary cells \tab lung, fetal day122 U  \cr
+#'CD34 mobilized primary cells \tab heart, fetal day101 U \cr
+#'kidney, fetal day82 F \tab lung, fetal day101 U  \cr
 #'breast, luminal epithelial cells \tab CD3 primary cells     \cr
 #'breast, myoepithelial cells      \tab CD19 primary cells    \cr
-#'breast, stem cells               \tab ES-WA7 cell line      \cr
-#'brain, fetal day122 M            \tab ES-I3 cell line       \cr
+#'breast, stem cells \tab ES-WA7 cell line \cr
+#'brain, fetal day122 M \tab ES-I3 cell line \cr
 #'adrenal gland, fetal day96 U     \tab CD34 cultured cells
 #'}
 #' @param experiment Examples:

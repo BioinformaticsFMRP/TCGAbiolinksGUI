@@ -5,8 +5,8 @@
 #' @keywords internal
 biOMICsServer <- function(input, output, session) {
 
-    result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0, df = NULL,
-                             downloading = 1)
+    result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0,
+                            df = NULL, downloading = 1)
     setwd(Sys.getenv("HOME"))
     rmapDir   <- paste0(Sys.getenv("HOME"),"/GEO")
     encodeFolder <- paste0(Sys.getenv("HOME"),"/ENCODE")
@@ -24,8 +24,8 @@ biOMICsServer <- function(input, output, session) {
     observe({
         if(input$selectDir){
             rmapDir <<- tcltk::tk_choose.dir(getwd(),
-                                             paste0("Choose a suitable folder",
-                                                    " to save the files"))
+                                            paste0("Choose a suitable folder",
+                                            " to save the files"))
         }
         output$rmapDir <- renderText({rmapDir})
     })
@@ -138,13 +138,13 @@ biOMICsServer <- function(input, output, session) {
         # trigger this function by pressing download button
         if(input$encodeDownloadBt){
             encodeDownloader(isolate(getEncodeSearch()),
-                             "experiment",
-                             isolate(getEncodeTarget()),
-                             isolate(getEncodeSample()),
-                             isolate(getEncodeFType()),
-                             isolate(getEncodeAssay()),
-                             isolate(getEncodeAssembly()),
-                             encodeFolder
+                            "experiment",
+                            isolate(getEncodeTarget()),
+                            isolate(getEncodeSample()),
+                            isolate(getEncodeFType()),
+                            isolate(getEncodeAssay()),
+                            isolate(getEncodeAssembly()),
+                            encodeFolder
             )
             if(!is.null(result$df)) result$df
         }
@@ -197,11 +197,11 @@ biOMICsServer <- function(input, output, session) {
             filter <- filterTcgaBarCode()
             validate(
                 need(!is.null(tcga),
-                     "Please upload file with TCGA bar codes")
+                    "Please upload file with TCGA bar codes")
             )
             validate(
                 need(!is.null(filter),
-                     "Please upload file with filtered bar codes")
+                    "Please upload file with filtered bar codes")
             )
 
             barCode  <- getBarCode (tcga, filter)
