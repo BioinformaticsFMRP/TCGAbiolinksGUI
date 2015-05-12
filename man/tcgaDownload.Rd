@@ -18,9 +18,7 @@ Download tcga into path
 Download data previously selected using the TCGASeach
 }
 \examples{
-\dontrun{
-         TCGADownload(data,'folder')
-}
+TCGADownload(data,'folder')
 }
 \seealso{
 TCGASearch

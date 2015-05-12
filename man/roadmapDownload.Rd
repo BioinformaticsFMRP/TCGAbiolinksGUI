@@ -19,4 +19,8 @@ Download romapdata into path
 \description{
 Download roadmap data selected using the roadmap.search
 }
+\examples{
+query <- roadmapSearch(sample = "H1 cell line", experiment = "RRBS")
+roadmapDownload(query,type = "bed", path = "roadmap")
+}
 

@@ -1,9 +1,7 @@
 #' @title biOmics interface
 #' @description Calls UI interface
 #' @examples
-#' \dontrun{
 #'    biOmicsApp()
-#' }
 #' @seealso \url{https://www.encodeproject.org/search/}
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name biOmicsApp

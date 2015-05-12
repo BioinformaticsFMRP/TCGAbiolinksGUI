@@ -30,12 +30,10 @@ Select data from roadmap
 Select data from roadmap
 }
 \examples{
-\dontrun{
-   link <- filterRmapData (
+link <- filterRmapData (
     samples = c('H1 cell line','H9 cell line'),
     experiments = c('RRBS','H4K91ac')
    )
-}
 \dontrun{
    link <- filterRmapData (
     samples = c('H1 cell line','H9 cell line'),

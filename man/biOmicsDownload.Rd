@@ -19,6 +19,10 @@ Saves the file of the line files
 \description{
 Download data selected using the biOmics.search function
 }
+\examples{
+query <- biOmicsSearch("u87")
+biOmicsDownload(query, enc.file.type = "bam",rmap.file.type = "bed")
+}
 \seealso{
 biOmicsSearch
 }

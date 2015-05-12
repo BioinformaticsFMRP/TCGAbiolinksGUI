@@ -6,6 +6,7 @@
 #' @import ggplot2
 #' @export
 #' @return dataframe with diffmean values
+#' @examples inst/examples/analysis.R
 diffmean <- function(group1, group2) {
     g1 <- group1
     g1$mean.g1 <- apply(group1, 1, mean, na.rm = TRUE)
@@ -44,6 +45,7 @@ diffmean <- function(group1, group2) {
 #' @importFrom GGally ggsurv
 #' @importFrom survival survfit
 #' @export
+#' @example inst/examples/analysis.R
 #' @return Survival plot
 survivalPlot <- function(met.md, legend = "Legend", cutoff = 0,
                         main = "Kaplan-Meier Overall Survival Curves",
@@ -118,6 +120,7 @@ survivalPlot <- function(met.md, legend = "Legend", cutoff = 0,
 #'   Organize TCGA methylation metadata for the mean methylation analysis.
 #'
 #' @param wd Directory with the files
+#' @example inst/examples/analysis.R
 #' @export
 #' @return \code{invisible (metadata)}
 organizeMethylationMetaDataFrame <- function(wd = NULL) {
@@ -150,6 +153,7 @@ organizeMethylationMetaDataFrame <- function(wd = NULL) {
 #'    where rows are the probes names and columns are paciente ID
 #'    Execution: read all files inside the directory and merge it by
 #'    probes (Composite.Element.REF)
+#' @example inst/examples/analysis.R
 #' @param wd Directory with the files
 #' @return Methylation betavalues table
 #' @export
@@ -219,16 +223,11 @@ organizeMethylationDataFrame <- function(wd = getwd()) {
 #'# -----------------
 #'# | mean.met|cluster|
 #'# -------------------
-#' \dontrun{
-#'   met.mean.boxplot(data)
-#'}
-#' \dontrun{
 #'   mean <- runif(500,0,1)
 #'   cluster <- c('Lgm1','Lgm2','Lgm3','Lgm4','Lgm5','Lgm6')
-#'   cluster.vec <- sample(cluster, 500,replace = T)
+#'   cluster.vec <- sample(cluster, 500,replace = TRUE)
 #'   data <- data.frame(mean,cluster.vec)
 #'   met.mean.boxplot(data)
-#'}
 metMeanBoxplot <- function(data, sort = FALSE,
                             filename = "G-CIMP-mean.methylation.pdf",
                             ylab = "Mean DNA methylation",
@@ -293,6 +292,7 @@ metMeanBoxplot <- function(data, sort = FALSE,
 #' @importFrom exactRankTests wilcox.exact
 #' @importFrom parallel mclapply detectCores
 #' @export
+ #'@example inst/examples/analysis.R
 #' @return Data frame with two cols
 #'         p-values/p-values adjusted
 calculate.pvalues <- function(values, idx1, idx2, paired = TRUE,
@@ -346,6 +346,7 @@ calculate.pvalues <- function(values, idx1, idx2, paired = TRUE,
 #' @param diffmean.cut diffmean threshold
 #' @import ggplot2
 #' @export
+#' @example inst/examples/analysis.R
 #' @return A dataframe with the Composite.Element.REF and
 #'         the group it was classified
 #'          group 1 = Not Significant
@@ -445,6 +446,11 @@ get.GRCh.bioMart <- function() {
 #' @importFrom GenomicRanges GRanges distanceToNearest
 #' @importFrom IRanges IRanges
 #' @export
+#' @examples
+#' # met Methylation data
+#' # experssion Expression data
+#' gene.met <- starbursAnalysis(met,expression)
+#' starburstplot(gene.met)
 starbursAnalysis <- function(met, expression) {
     #### fix methylation gene names before merging.  map gene ID to
     #### genomic coordinates
@@ -519,6 +525,11 @@ starbursAnalysis <- function(met, expression) {
 #' @import ggplot2
 #' @export
 #' @return Save a starburst plot
+#' @examples
+#' # met Methylation data
+#' # experssion Expression data
+#' gene.met <- starbursAnalysis(met,expression)
+#' starburstplot(gene.met)
 starburstPlot <- function(data,
                           filename = "volcano.pdf",
                           ylab = paste0("Gene Expression\nlog10 of the",

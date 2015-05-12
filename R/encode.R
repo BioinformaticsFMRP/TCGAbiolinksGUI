@@ -60,7 +60,6 @@ formatType <- function(type) {
 #' @param assembly - 'hg19' 'mm9'
 #' @param out - path to save files
 #' @examples
-#' \dontrun{
 #'    encodeDownloader('bone chip',
 #'                    'experiment',
 #'                    'transcription factor',
@@ -70,7 +69,7 @@ formatType <- function(type) {
 #'                    'mm9',
 #'                    'diretory_name_to_save_files'
 #'                    )
-#' }
+#'
 #' @seealso \url{https://www.encodeproject.org/search/}
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name encodeDownloader

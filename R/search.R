@@ -123,6 +123,7 @@ is.mapped <- function(term) {
 #'ExonArray \tab DNAMethylation  \tab MRESeq  \tab RepliSeq \cr
 #'RNASeq \tab miRNASeq \tab Rampage \tab Others
 #'}
+#' @examples inst/examples/biomicsSearch.R
 #' @importFrom rols olsQuery term parents isIdObsolete
 #' @export
 #' @return A dataframe with the results of the query if it
@@ -407,6 +408,7 @@ is.valid.term <- function(term) {
 #'  ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/
 #'  \tab 2010-05-03
 #'}
+#' @example inst/examples/roadmapSearch.R
 roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
                           NA.Accession = NULL, center = NULL,
                           embargo.end.date = NULL) {

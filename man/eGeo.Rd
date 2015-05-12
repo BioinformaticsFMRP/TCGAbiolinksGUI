@@ -24,12 +24,10 @@ Create query from UI to be used with esearch - not completed
 Create query from UI to be used with esearch - not completed
 }
 \examples{
-\dontrun{
- eGeo(
+eGeo(
    c ('h1 cell RRBS',NULL,NULL),
    c ('roadmap epigenomics','Project','AND'),
    c ('gsm','Filter','AND') )
-}
 }
 \keyword{internal}
 

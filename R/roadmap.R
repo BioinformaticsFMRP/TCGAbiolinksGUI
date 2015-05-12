@@ -7,12 +7,11 @@
 #'        c('roadmap epigenomics','Project','AND'),
 #'        For samples: c ('gsm','Filter','AND') )
 #' @examples
-#' \dontrun{
 #'  eGeo(
 #'    c ('h1 cell RRBS',NULL,NULL),
 #'    c ('roadmap epigenomics','Project','AND'),
 #'    c ('gsm','Filter','AND') )
-#' }
+#'
 #' @keywords internal
 #' @export
 #' @return Return the list to search in geo database. Used by
@@ -37,14 +36,9 @@ eGeo <- function(...) {
 #'              to create the query  http://www.ncbi.nlm.nih.gov/gds/advanced
 #' @param query - GEO query -  http://www.ncbi.nlm.nih.gov/gds/advanced
 #' @examples
-#' \dontrun{
-#'    geoDownloader (''(h1[All Fields] AND RRBS[All Fields])
-#'                    AND roadmap epigenomics[Project] AND 'gsm'[Filter]',
-# 'path_to_download_folder'
-#'                    )
-#'  query <- '((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]'
-#'  query <- '((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]'
-#' }
+#'    geoDownloader ("(h1[All Fields] AND RRBS[All Fields])")
+#'  query <- "((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]"
+#'  query <- "((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]"
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/geo/info/download.html}
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/geo/info/geo_paccess.html}
 #' @seealso \url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
@@ -103,12 +97,10 @@ validateInput <- function(input = NULL, list = NULL) {
 #' @param samples - list of samples
 #' @param experiments - list of experiments
 #' @examples
-#' \dontrun{
 #'    link <- filterRmapData (
 #'     samples = c('H1 cell line','H9 cell line'),
 #'     experiments = c('RRBS','H4K91ac')
 #'    )
-#' }
 #' @return List of ftp to download data
 #' @export
 #' @return Get list of files doing the samples x experiments
@@ -150,12 +142,10 @@ filterRmapData <- function(samples = NULL, experiments = NULL) {
 #' @param iOut - folder where files will be downloaded
 #' @return compressedFiles - compressed files downloaded
 #' @examples
-#' \dontrun{
 #'  downloadFromGEO (
 #'   'ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/',
 #'    c ('GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz'),
 #'    'path_to_folder_GSM409307' )
-#' }
 #' @keywords internal
 #' @importFrom pbapply pblapply
 #' @importFrom downloader download
@@ -176,14 +166,12 @@ downloadFromGEO <- function(iFTP, iFileName, iOut, gui = FALSE) {
 #' @param iFTPs: list of ftp directory adress
 #'        iOut - folder where files will be downloaded
 #' @examples
-#' \dontrun{
 #'  geoDownloaderLinks (
 #'     c('ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/',
 #'       'ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409312/suppl/'
 #'       ),
 #'     'path_to_folder_GSM409307'
 #'   )
-#' }
 #' @keywords internal
 #' @export
 #' @return download geo links
@@ -246,57 +234,6 @@ getFileNames <- function(ftp) {
                                             dirlistonly = TRUE), " "))
     # remove \r\n from name
     fileName <- as.list(strsplit(tail(filePath, n = 1), "\r*\n")[[1]])
-}
-
-#' @title Download data from GEO database
-#' @description Download data from GEO database using reutils library
-#'              Input should be a GEO query, you can you this site
-#'              to create the query  http://www.ncbi.nlm.nih.gov/gds/advanced
-#' @param iQuery - GEO query -  http://www.ncbi.nlm.nih.gov/gds/advanced
-#' @param iOut - path to save files
-#' @examples
-#' \dontrun{
-#'    geoDownloader (''(h1[All Fields] AND RRBS[All Fields])
-#'                    AND roadmap epigenomics[Project] AND 'gsm'[Filter]',
-# 'path_to_download_folder'
-#'                    )
-#'  iQuery <- '((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]'
-#'  iQuery <- '((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]'
-#' }
-#' @seealso \url{http://www.ncbi.nlm.nih.gov/geo/info/download.html}
-#' @seealso \url{http://www.ncbi.nlm.nih.gov/geo/info/geo_paccess.html}
-#' @seealso \url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
-#' @name geoDownloader
-#' @export
-#' @importFrom reutils esummary content esearch
-#' @importFrom XML xmlToList
-geoDownloader <- function(iQuery, iOut) {
-    # Constant parameters
-    roadmapURL <- paste0("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/",
-                        "esearch.fcgi?db=gds&term=")
-    optionRet <- "retmax=5000"
-    optionHist <- "usehistory=y"
-
-    # search on geo databse(gds) for iQuery
-    pmids <- esearch(iQuery, "gds", retmax = 10000)
-
-    if (pmids@.xData$no_errors()) {
-        nbFiles <- as.numeric(xmlToList(pmids@.xData$get_content())$Count)
-
-        if (nbFiles > 0) {
-            # Found more than one result?
-
-            aux <- esummary(pmids)
-            info <- content(aux, "parsed")
-
-            if (nbFiles > 1) {
-                ftps <- lapply(info, function(x) x$FTPLink)
-            } else {
-                ftps <- info$FTPLink
-            }
-            geoDownloaderLinks(ftps)
-        }
-    }
 }
 
 #' @title Verify user input

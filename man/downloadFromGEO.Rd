@@ -37,12 +37,10 @@ Download all files of ftp directory
 Download all files of ftp directory
 }
 \examples{
-\dontrun{
- downloadFromGEO (
+downloadFromGEO (
   'ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/',
    c ('GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz'),
    'path_to_folder_GSM409307' )
-}
 \dontrun{
  downloadFromGEO (
   'ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/',

@@ -13,9 +13,7 @@ Open a connection to shiny
 Calls UI interface
 }
 \examples{
-\dontrun{
-   biOmicsApp()
-}
+biOmicsApp()
 }
 \seealso{
 \url{https://www.encodeproject.org/search/}

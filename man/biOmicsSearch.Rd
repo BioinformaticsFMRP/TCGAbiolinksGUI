@@ -29,4 +29,7 @@ A dataframe with the results of the query if it
 \description{
 Search a term using an ontology in the TCGA, ENCODE, ROADMAP databases
 }
+\examples{
+inst/examples/biomicsSearch.R
+}
 

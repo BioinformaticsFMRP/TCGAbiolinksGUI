@@ -31,8 +31,7 @@ Save encode data into folder, return data downloaded
 Downloads data from ENCODE project
 }
 \examples{
-\dontrun{
-   encodeDownloader('bone chip',
+encodeDownloader('bone chip',
                    'experiment',
                    'transcription factor',
                    'primary cell',
@@ -41,7 +40,6 @@ Downloads data from ENCODE project
                    'mm9',
                    'diretory_name_to_save_files'
                    )
-}
 }
 \seealso{
 \url{https://www.encodeproject.org/search/}

@@ -41,15 +41,10 @@ Mean methylation boxplot.
 # -----------------
 # | mean.met|cluster|
 # -------------------
-\dontrun{
-  met.mean.boxplot(data)
-}
-\dontrun{
   mean <- runif(500,0,1)
   cluster <- c('Lgm1','Lgm2','Lgm3','Lgm4','Lgm5','Lgm6')
-  cluster.vec <- sample(cluster, 500,replace = T)
+  cluster.vec <- sample(cluster, 500,replace = TRUE)
   data <- data.frame(mean,cluster.vec)
   met.mean.boxplot(data)
-}
 }
 

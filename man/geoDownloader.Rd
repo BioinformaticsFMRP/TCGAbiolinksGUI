@@ -4,15 +4,9 @@
 \alias{geoDownloader}
 \title{Download data from GEO database}
 \usage{
-geoDownloader(iQuery, iOut)
-
-geoDownloader(iQuery, iOut)
+geoDownloader(query)
 }
 \arguments{
-\item{iQuery}{- GEO query -  http://www.ncbi.nlm.nih.gov/gds/advanced}
-
-\item{iOut}{- path to save files}
-
 \item{query}{- GEO query -  http://www.ncbi.nlm.nih.gov/gds/advanced}
 }
 \value{
@@ -22,34 +16,13 @@ Download data
 Download data from GEO database using reutils library
              Input should be a GEO query, you can you this site
              to create the query  http://www.ncbi.nlm.nih.gov/gds/advanced
-
-Download data from GEO database using reutils library
-             Input should be a GEO query, you can you this site
-             to create the query  http://www.ncbi.nlm.nih.gov/gds/advanced
 }
 \examples{
-\dontrun{
-   geoDownloader (''(h1[All Fields] AND RRBS[All Fields])
-                   AND roadmap epigenomics[Project] AND 'gsm'[Filter]',
-                   )
- query <- '((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]'
- query <- '((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]'
-}
-\dontrun{
-   geoDownloader (''(h1[All Fields] AND RRBS[All Fields])
-                   AND roadmap epigenomics[Project] AND 'gsm'[Filter]',
-                   )
- iQuery <- '((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]'
- iQuery <- '((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]'
-}
+geoDownloader ("(h1[All Fields] AND RRBS[All Fields])")
+ query <- "((GSM956006) AND gsm[Filter]) AND roadmap epigenomics[Project]"
+ query <- "((h1 cell ) AND gsm[Filter]) AND roadmap epigenomics[Project]"
 }
 \seealso{
-\url{http://www.ncbi.nlm.nih.gov/geo/info/download.html}
-
-\url{http://www.ncbi.nlm.nih.gov/geo/info/geo_paccess.html}
-
-\url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
-
 \url{http://www.ncbi.nlm.nih.gov/geo/info/download.html}
 
 \url{http://www.ncbi.nlm.nih.gov/geo/info/geo_paccess.html}

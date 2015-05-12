@@ -6,6 +6,9 @@
 #' @seealso biOmicsSearch
 #' @export
 #' @return Saves the file of the line files
+#' @examples
+#' query <- biOmicsSearch("u87")
+#' biOmicsDownload(query, enc.file.type = "bam",rmap.file.type = "bed")
 biOmicsDownload <- function(lines, enc.file.type = NULL,
                             rmap.file.type = NULL) {
     encode.db  <- get("encode.db")
@@ -44,6 +47,9 @@ biOmicsDownload <- function(lines, enc.file.type = NULL,
 #' @param path Folder to save the file
 #' @param type extesion of files to be downloaded
 #' @export
+#' @examples
+#'  query <- encodeSearch(biosample = "brain")
+#'  encodeDownload(query,type = "bam",path = "encode")
 #' @importFrom downloader download
 #' @importFrom RCurl getURL
 #' @importFrom rjson fromJSON
@@ -92,6 +98,9 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
 #' @importFrom downloader download
 #' @importFrom stringr str_replace_all
 #' @return Download romapdata into path
+#' @examples
+#' query <- roadmapSearch(sample = "H1 cell line", experiment = "RRBS")
+#' roadmapDownload(query,type = "bed", path = "roadmap")
 roadmapDownload <- function(lines, type = NULL, path = ".") {
 
     error <- c()
@@ -146,9 +155,7 @@ roadmapDownload <- function(lines, type = NULL, path = ".") {
 #' @param path location of the final data saving
 #' @seealso TCGASearch
 #' @examples
-#' \dontrun{
-#'          TCGADownload(data,'folder')
-#' }
+#'    TCGADownload(data,'folder')
 #' @export
 #' @importFrom downloader download
 #' @return Download tcga into path

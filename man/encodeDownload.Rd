@@ -19,4 +19,8 @@ Download encode data into path
 \description{
 Download encode data selected using the encodeSearch
 }
+\examples{
+query <- encodeSearch(biosample = "brain")
+ encodeDownload(query,type = "bam",path = "encode")
+}
 
