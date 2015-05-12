@@ -57,16 +57,14 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
     for (i in 1:dim(lines)[1]) {
         id <- lines$accession[i]
         url <- paste0(encode.url, "experiments/", id, json)
-
+        dir.create(file.path(path,id), showWarnings = FALSE, recursive = TRUE)
         # get list of files
         item <- fromJSON(getURL(url, dirlistonly = TRUE,
                                 .opts = list(ssl.verifypeer = FALSE)
                                 )
                          )[["files"]]
 
-        files <- sapply(item, function(x) {
-            x$href
-        })
+        files <- sapply(item, function(x) { x$href })
 
         if (!is.null(type)) {
             idx <- unlist(lapply(type, function(x) {
@@ -76,6 +74,7 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
         }
         # download files
         for (j in seq_along(files)) {
+            print(files[j])
             link <- paste0(encode.url, files[j])
             fileout <- file.path(path, id, basename(link))
             download(link, fileout)
