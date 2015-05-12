@@ -414,7 +414,7 @@ roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
     # roadmap.verify.input(GEO.Accession,sample,
     # experiment,center,embargo.end.date)
 
-    db <- getOption("roadmap.db")
+    db <- get("roadmap.db")
     if (!is.null(sample)) {
         id <- sapply(sample, function(x) {
             db$Sample.Name == x

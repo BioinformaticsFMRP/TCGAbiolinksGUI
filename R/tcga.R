@@ -54,6 +54,7 @@ getBarCode <- function(TCGAList, filter) {
 #' @param added.since 04- 14-2010
 #' @param added.up.to 04- 14-2010
 #' @param samples List of samples. Ex:c('TCGA-04-06-*','TCGA-04-08-*')
+#' @example inst/examples/tcgaSearch.R
 #' @export
 #' @importFrom downloader download
 #' @return A dataframe with the results of the query
