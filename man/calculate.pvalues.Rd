@@ -18,7 +18,7 @@ calculate.pvalues(values, idx1, idx2, paired = TRUE, exact = TRUE,
 
 \item{exact}{Do a exact wilcoxon test? Default: True}
 
-\item{mc.cores}{How many cores to be used Default: parallel::detectCores()}
+\item{cores}{How many cores to be used Default: parallel::detectCores()}
 }
 \value{
 Data frame with cols p values/p values adjusted

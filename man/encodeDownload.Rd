@@ -14,6 +14,6 @@ encodeDownload(lines, type = NULL, path = ".")
 \item{path}{Folder to save the file}
 }
 \description{
-Download encode data selected using the encode.search function
+Download encode data selected using the encodeSearch
 }
 

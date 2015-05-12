@@ -42,4 +42,3 @@ test_that("pancreas is mapped into disgestive and endocrine", {
     )
     expect_equal(getOption("solution"), "BTO:0001491,BTO:0001488")
 })
-

@@ -1,64 +1,64 @@
-formatTarget <- function(iTarget) {
-    if (!is.null(iTarget)) {
+formatTarget <- function(target) {
+    if (!is.null(target)) {
         return(paste("target.investigated_as", gsub(" ", "%20",
-            iTarget), sep = "=", collapse = "&"))
+            target), sep = "=", collapse = "&"))
     }
     return(NULL)
 }
 
-formatSample <- function(iSample) {
-    if (!is.null(iSample)) {
+formatSample <- function(sample) {
+    if (!is.null(sample)) {
         return(paste("replicates.library.biosample.biosample_type",
-            gsub(" ", "%20", iSample), sep = "=", collapse = "&"))
+            gsub(" ", "%20", sample), sep = "=", collapse = "&"))
     }
     return(NULL)
 }
 
-formatFType <- function(iFType) {
-    if (!is.null(iFType)) {
-        return(paste("files.file_format", iFType, sep = "=",
+formatFType <- function(type) {
+    if (!is.null(type)) {
+        return(paste("files.file_format", type, sep = "=",
             collapse = "&"))
     }
     return(NULL)
 }
 
-formatAssay <- function(iAssay) {
-    if (!is.null(iAssay)) {
-        return(paste("assay_term_name", iAssay, sep = "=", collapse = "&"))
+formatAssay <- function(assay) {
+    if (!is.null(assay)) {
+        return(paste("assay_term_name", assay, sep = "=", collapse = "&"))
     }
     return(NULL)
 }
 
-formatAssembly <- function(iAssembly) {
-    if (!is.null(iAssembly)) {
-        return(paste("assembly", iAssembly, sep = "=", collapse = "&"))
+formatAssembly <- function(assambly) {
+    if (!is.null(assambly)) {
+        return(paste("assembly", assambly, sep = "=", collapse = "&"))
     }
     return(NULL)
 }
 
-formatSearch <- function(iSearch) {
-    if (!is.null(iSearch))
-        return(paste("searchTerm", gsub(" ", "+", iSearch), sep = "="))
+formatSearch <- function(seach) {
+    if (!is.null(seach))
+        return(paste("searchTerm", gsub(" ", "+", seach), sep = "="))
     return(NULL)
 }
 
-formatType <- function(iType) {
-    if (!is.null(iType))
-        return(paste("type", iType, sep = "="))
+formatType <- function(type) {
+    if (!is.null(type))
+        return(paste("type", type, sep = "="))
     return(NULL)
 }
 
 #' @title Download data from ENCODDE project
 #' @description Downloads data from ENCODE project
-#' @param iSearch - bone chip
-#' @param iType -   'experiment' 'publication' 'software' ''antibody_lot' 'web'
-#' @param iTarget - 'transcription factor' 'RNA binding protein'
+#' @param search - bone chip
+#' @param type -   'experiment' 'publication' 'software' ''antibody_lot' 'web'
+#' @param target - 'transcription factor' 'RNA binding protein'
 #'                  'tag' 'histone modification'
-#' @param iSample - 'tissue' 'primary cell'
-#' @param iFType  - 'bam' 'bigWig' 'bed_broadPeak' 'broadPeak' 'fastq'
-#' @param iAssay - 'ChIP-seq' 'RIP-chip' 'Repli-chip'
-#' @param iAssembly - 'hg19' 'mm9'
-#' @param iOut - path to save files
+#' @param sample - 'tissue' 'primary cell'
+#' @param ftype  - 'bam' 'bigWig' 'bed_broadPeak' 'broadPeak' 'fastq'
+#' @param assay - 'ChIP-seq' 'RIP-chip' 'Repli-chip'
+#' @param assembly - 'hg19' 'mm9'
+#' @param out - path to save files
 #' @examples
 #' \dontrun{
 #'    encodeDownloader('bone chip',
@@ -75,21 +75,21 @@ formatType <- function(iType) {
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name encodeDownloader
 #' @export
-encodeDownloader <- function(iSearch, iType, iTarget, iSample,
-    iFType, iAssay, iAssembly, iOut) {
+encodeDownloader <- function(search, type, target, sample,
+    ftype, assay, assembly, out) {
     # Constant parameters
     encodePath <- "https://www.encodeproject.org/"
     searchPath <- "search/"
     format <- "format=json"
     frame <- "frame=embedded"
 
-    searchTerm <- formatSearch(iSearch)
-    type <- formatType(iType)
-    target <- formatTarget(iTarget)
-    biosample <- formatSample(iSample)
-    fType <- formatFType(iFType)
-    assay <- formatAssay(iAssay)
-    assembly <- formatAssembly(iAssembly)
+    searchTerm <- formatSearch(search)
+    type <- formatType(type)
+    target <- formatTarget(target)
+    biosample <- formatSample(sample)
+    fType <- formatFType(ftype)
+    assay <- formatAssay(assay)
+    assembly <- formatAssembly(assembly)
 
     URLoptions <- paste(searchTerm, format, frame, target, type,
         biosample, fType, assay, assembly, sep = "&")
@@ -100,7 +100,7 @@ encodeDownloader <- function(iSearch, iType, iTarget, iSample,
 
     if (data$total > 0) {
         # Output folder
-        dir.create(iOut, showWarnings = FALSE)
+        dir.create(out, showWarnings = FALSE)
         df <- data.frame()
         # Downloads all files from the search
         for (j in 1:length(data$"@graph")) {
@@ -110,7 +110,7 @@ encodeDownloader <- function(iSearch, iType, iTarget, iSample,
             for (i in 1:nbFiles) {
                 filePath <- data$"@graph"[[j]]$files[[i]]$href
                 dn <- paste0(encodePath, filePath)
-                fileOut <- paste(iOut, unlist(strsplit(data$"@graph"[[j]]$"@id",
+                fileOut <- paste(out, unlist(strsplit(data$"@graph"[[j]]$"@id",
                   "/"))[3], sep = "/")
                 if (!file.exists(fileOut)) {
                   dir.create(fileOut, showWarnings = FALSE)
@@ -119,9 +119,9 @@ encodeDownloader <- function(iSearch, iType, iTarget, iSample,
                   "/"))[5], sep = "/")
 
                 # Did the user select a file format
-                if (is.null(iFType) ||
-                    data$"@graph"[[j]]$files[[i]]$file_format %in% iFType){
-                  downloader::download(dn, fileOut, quiet = TRUE)
+                if (is.null(type) ||
+                    data$"@graph"[[j]]$files[[i]]$file_format %in% type){
+                    downloader::download(dn, fileOut, quiet = TRUE)
                   print(paste0("Downloaded file: ", fileOut))
 
                 }
@@ -129,7 +129,7 @@ encodeDownloader <- function(iSearch, iType, iTarget, iSample,
             }
         }
         names(df) <- paste0("Files downloaded into:", getwd(),
-            "/", iOut)
+            "/", out)
         result$df <- df
     } else {
         print(data$notification)

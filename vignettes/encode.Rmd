@@ -9,11 +9,13 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-This document describes how to search/download encode data using biOmics package.
+This document describes how to search/download encode data using
+biOmics package.
   
 ## Encode search
- You can easily search tcga samples using the `encode.search` function.
- Using a summary of roadmap datatabase, the function works with the following parameters:
+ You can easily search tcga samples using the `encodeSearch` function.
+ Using a summary of roadmap datatabase, the function works with the
+ following parameters:
 
 *  accession
 *  biosample
@@ -25,7 +27,7 @@ This document describes how to search/download encode data using biOmics package
 
 Some examples of search are shown below
 ```{r, eval = FALSE}
-query <- encode.search(accession = "ENCSR602PHV")
+query <- encodeSearch(accession = "ENCSR602PHV")
 ```
 
 Obs: As these terms needs to be exact we validate user input before searching.
@@ -35,7 +37,7 @@ You can easily download roadmap data using the `encode.download` function.
  
 ```{r, eval = FALSE}
 # get all sampples from the query and save into tcga folder
-encode.download(query,path="tcga",type="fastq") 
+encodeDownload(query,path="tcga",type="fastq") 
 ```
 
 Obs: The function will structure the folders to save the data as:

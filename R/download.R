@@ -1,41 +1,44 @@
-#' @title biOmics.download
+#' @title biOmicsDownload
 #' @description Download data selected using the biOmics.search function
-#' @param lines biOmics.search output
+#' @param lines biOmicsSearch output
 #' @param enc.file.type Extension to be downloaed from encode database
 #' @param rmap.file.type Extension to be downloaed from roadmap database
-#' @seealso biOmics.search
+#' @seealso biOmicsSearch
 #' @export
 biOmicsDownload <- function(lines, enc.file.type = NULL,
-                             rmap.file.type = NULL) {
+                            rmap.file.type = NULL) {
+    encode.db  <- getOption("encode.db")
+    tcga.db    <- getOption("tcga.db")
+    roadmap.db <- getOption("roadmap.db")
 
-    encode.lines <- subset(lines, database == "encode")
-    rmap.lines <- subset(lines, database == "roadmap")
-    tcga.lines <- subset(lines, database == "tcga")
-
+    with(lines,{
+        encode.lines <- subset(lines, lines$database == "encode")
+        rmap.lines <- subset(lines, lines$database == "roadmap")
+        tcga.lines <- subset(lines, lines$database == "tcga")
+    })
     # -------------- download Encode
     if (dim(encode.lines)[1] > 0) {
-        encode.lines <- subset(encode.db, encode.db$accession ==
-                                   encode.lines$ID)
+        encode.lines <- subset(encode.db,
+                                encode.db$accession == encode.lines$ID)
         encodeDownload(encode.lines, enc.file.type)
     }
 
     # -------------- download ROADMAP
     if (dim(rmap.lines)[1] > 0) {
-        rmap.lines <- subset(roadmap.db, roadmap.db$X..GEO.Accession ==
-                                 rmap.lines$ID)
+        rmap.lines <- subset(roadmap.db,
+                            roadmap.db$X..GEO.Accession == rmap.lines$ID)
         roadmapDownload(rmap.lines, rmap.file.type)
     }
     # ---------------- download TCGA TODO: add filters, folder to
     # save
     if (dim(tcga.lines)[1] > 0) {
-        tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,
-                              ]
-        TCGADownload(tcga.lines, path = "TCGA")
+        tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
+        tcgaDownload(tcga.lines, path = "TCGA")
     }
 }
 
 #' @title Download encode data
-#' @description Download encode data selected using the encode.search function
+#' @description Download encode data selected using the encodeSearch
 #' @param lines encode.search output
 #' @param path Folder to save the file
 #' @param type extesion of files to be downloaded
@@ -55,7 +58,9 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
 
         # get list of files
         item <- fromJSON(getURL(url, dirlistonly = TRUE,
-                                              .opts = list(ssl.verifypeer = FALSE)))[["files"]]
+                                .opts = list(ssl.verifypeer = FALSE)
+                                )
+                         )[["files"]]
 
         files <- sapply(item, function(x) {
             x$href
@@ -84,15 +89,13 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
 #' @param type extesion of files to be downloaded
 #' @export
 #' @importFrom downloader download
-#' @importFrom stringr str_replace
+#' @importFrom stringr str_replace_all
 roadmapDownload <- function(lines, type = NULL, path = ".") {
 
     error <- c()
     for (i in 1:dim(lines)[1]) {
-        sample <- str_replace_all(lines[i, ]$Sample.Name, "[^[:alnum:]]",
-                                  "_")
-        expr <- str_replace_all(lines[i, ]$Experiment, "[^[:alnum:]]",
-                                "_")
+        sample <- str_replace_all(lines[i, ]$Sample.Name, "[^[:alnum:]]","_")
+        expr <- str_replace_all(lines[i, ]$Experiment, "[^[:alnum:]]","_")
 
         folder <- paste0(path, "/", expr, "/", sample)
         status <- dir.create(folder, showWarnings = FALSE, recursive = TRUE)
@@ -129,16 +132,17 @@ roadmapDownload <- function(lines, type = NULL, path = ".") {
         message("         WARNING             ")
         message("=============================")
         message("Empty FTP: No files found")
-        invisible(apply(as.array(error), 1, function(x) message("Accession: ",
-                                                                x)))
+        invisible(apply(as.array(error), 1,
+                        function(x) message("Accession: ",x))
+                  )
         message("=============================")
     }
 }
 #' @title TCGA Download
-#' @description Download data previously selected using the TCGAQuery function
-#' @param data TCGAQUery output
+#' @description Download data previously selected using the TCGASeach
+#' @param data TCGASearch output
 #' @param path location of the final data saving
-#' @seealso TCGAQuery
+#' @seealso TCGASearch
 #' @examples
 #' \dontrun{
 #'          TCGADownload(data,'folder')
@@ -152,7 +156,8 @@ tcgaDownload <- function(data = NULL, path = ".") {
         message("Downloading folders")
         for (i in 1:nrow(data)) {
             file <- paste0(path, "/", basename(data[i, "deployLocation"]))
-            message(paste0("Downloading:", basename(data[i, "deployLocation"])))
+            message(paste0("Downloading:",
+                           basename(data[i, "deployLocation"])))
             if (!file.exists(file)) {
                 download(paste0(root, data[i, "deployLocation"]),
                          file)
@@ -166,8 +171,9 @@ tcgaDownload <- function(data = NULL, path = ".") {
             message(paste0("Downloading:", basename(data[i, "file"])))
             if (!file.exists(file)) {
                 download(paste0(root, gsub(".tar.gz",
-                                           "", data[i, "deployLocation"]), "/", data[i,
-                                                                                     "file"]), file)
+                                        "",
+                                        data[i, "deployLocation"]),
+                                "/", data[i,"file"]), file)
             }
         }
     }

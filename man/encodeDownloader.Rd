@@ -4,26 +4,25 @@
 \alias{encodeDownloader}
 \title{Download data from ENCODDE project}
 \usage{
-encodeDownloader(iSearch, iType, iTarget, iSample, iFType, iAssay, iAssembly,
-  iOut)
+encodeDownloader(search, type, target, sample, ftype, assay, assembly, out)
 }
 \arguments{
-\item{iSearch}{- bone chip}
+\item{search}{- bone chip}
 
-\item{iType}{-   'experiment' 'publication' 'software' ''antibody_lot' 'web'}
+\item{type}{-   'experiment' 'publication' 'software' ''antibody_lot' 'web'}
 
-\item{iTarget}{- 'transcription factor' 'RNA binding protein'
+\item{target}{- 'transcription factor' 'RNA binding protein'
 'tag' 'histone modification'}
 
-\item{iSample}{- 'tissue' 'primary cell'}
+\item{sample}{- 'tissue' 'primary cell'}
 
-\item{iFType}{- 'bam' 'bigWig' 'bed_broadPeak' 'broadPeak' 'fastq'}
+\item{ftype}{- 'bam' 'bigWig' 'bed_broadPeak' 'broadPeak' 'fastq'}
 
-\item{iAssay}{- 'ChIP-seq' 'RIP-chip' 'Repli-chip'}
+\item{assay}{- 'ChIP-seq' 'RIP-chip' 'Repli-chip'}
 
-\item{iAssembly}{- 'hg19' 'mm9'}
+\item{assembly}{- 'hg19' 'mm9'}
 
-\item{iOut}{- path to save files}
+\item{out}{- path to save files}
 }
 \description{
 Downloads data from ENCODE project

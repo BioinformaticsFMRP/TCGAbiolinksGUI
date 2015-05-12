@@ -10,10 +10,11 @@ vignette: >
 ---
 
 This document describes how to search/download tcga data using biOmics package.
-  
+
 ## TCGA search
  You can easily search tcga samples using the `tcga.search` function.
- Using a summary of roadmap datatabase, the function works with the following parameters:
+ Using a summary of roadmap datatabase, the function works with the following 
+ parameters:
 
 * tumor
 * platform

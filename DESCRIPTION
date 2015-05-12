@@ -1,6 +1,6 @@
 Package: biOmics
 Title: biOmics
-Version: 0.0.1
+Version: 0.99
 Date: 2015-04-22
 Author:
   Tiago Chedraoui Silva <tiagochst@gmail.com>,
@@ -13,7 +13,7 @@ Description:
 License: GPL (>= 3)
 Depends:
   R (>= 3.2),
-  shinydashboard (>= 0.2.2)
+  shinydashboard (>= 0.4.0)
 Suggests:
   testthat,
   knitr,
@@ -33,14 +33,12 @@ Imports:
   pbapply,
   rols,
   stringr,
-  plyr,
   GGally,
   GenomicRanges,
+  IRanges,
   biomaRt,
   exactRankTests,
   ggplot2,
-  gplots,
-  matlab,
   survival,
   parallel
 VignetteBuilder: knitr

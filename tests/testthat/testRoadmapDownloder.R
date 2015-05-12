@@ -34,16 +34,3 @@ test_that("Test list of files", {
     file.remove("roadmap_test")
     file.remove("roadmap_test.gz")
 })
-
-
-test_that("A directory is created if it does not exists", {
-    if (file.exists("roadmap_test"))
-        file.remove("roadmap_test")
-    expect_true(mkdir("roadmap_test"))
-})
-
-test_that("A directory is not created if it exists", {
-    expect_equal(mkdir("roadmap_test"), NULL)
-    if (file.exists("roadmap_test"))
-        file.remove("roadmap_test")
-})

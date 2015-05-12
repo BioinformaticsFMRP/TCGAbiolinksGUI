@@ -2,10 +2,12 @@
 load.encode <- function() {
     url1 <- c(paste0("https://www.encodeproject.org/search/?type=experiment&",
                      "replicates.library.biosample.donor.organism.scientific_",
-                     "name=Homo%20sapiens&limit=all&format=JSON"), "Homo sapiens")
+                     "name=Homo%20sapiens&limit=all&format=JSON"),
+              "Homo sapiens")
     url2 <- c(paste0("https://www.encodeproject.org/search/?type=experiment&",
                      "replicates.library.biosample.donor.organism.scientific_",
-                     "name=Mus%20musculus&limit=all&format=JSON"), "Mus musculus")
+                     "name=Mus%20musculus&limit=all&format=JSON"),
+              "Mus musculus")
     url3 <- c(paste0("https://www.encodeproject.org/search/?type=experiment&",
                      "replicates.library.biosample.donor.organism.scientific_",
                      "name=Drosophila+melanogaster&limit=all&format=JSON"),
@@ -18,8 +20,9 @@ load.encode <- function() {
 
     for (j in 1:dim(url)[1]) {
         message(paste0("Loading ", url[j, 2], "..."))
-        data <- rjson::fromJSON(RCurl::getURL(url[j, 1], dirlistonly = TRUE,
-                                              .opts = list(ssl.verifypeer = FALSE)))[["@graph"]]
+        data <- fromJSON(getURL(url[j, 1], dirlistonly = TRUE,
+                                .opts = list(ssl.verifypeer = FALSE))
+        )[["@graph"]]
 
 
         pb <- txtProgressBar(style = 3, max = length(data))
@@ -57,8 +60,9 @@ load.encode <- function() {
                 description <- data[[i]]$description
             }
 
-            encodeData <- rbind(encodeData, c(accession, biosample,
-                                              assay, lab, target, description, url[j, 2]))
+            encodeData <- rbind(encodeData,
+                                c(accession, biosample,
+                                  assay, lab, target, description, url[j, 2]))
 
             setTxtProgressBar(pb, i)
         }
@@ -69,15 +73,18 @@ load.encode <- function() {
 
 load.roadmap <- function() {
     dataRoadmap <- read.csv(paste0("http://www.ncbi.nlm.nih.gov/geo/roadmap/",
-                                   "epigenomics/?view=samples&sort=acc&mode=csv"), stringsAsFactors = FALSE)
+                                   "epigenomics/?view=samples&sort=",
+                                   "acc&mode=csv"),
+                            stringsAsFactors = FALSE)
     return(dataRoadmap)
 }
 
 #' @importFrom downloader download
 load.biosamples <- function(env) {
-    gdocs <- paste0("https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO",
-                    "88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4L",
-                    "d1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=")
+    gdocs <- paste0("https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h",
+                    "4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=",
+                    "10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=")
+
     download(paste0(gdocs, "28842439"), destfile = "roadmaptab.tsv")
     download(paste0(gdocs, "514976736"), destfile = "encodetab.tsv")
     download(paste0(gdocs, "0"), destfile = "tcgatab.tsv")
@@ -88,11 +95,13 @@ load.biosamples <- function(env) {
                                         sep = "\t")
     env$biosample.tcga <- read.delim(file = "tcgatab.tsv", sep = "\t")
 
-    env$biosample.encode <- data.frame(lapply(biosample.encode,
-                                              as.character), stringsAsFactors = FALSE)
-    env$biosample.roadmap <- data.frame(lapply(biosample.roadmap,
-                                               as.character), stringsAsFactors = FALSE)
-    env$biosample.tcga <- data.frame(lapply(biosample.tcga, as.character),
+    env$biosample.encode <- data.frame(lapply(env$biosample.encode,
+                                              as.character),
+                                       stringsAsFactors = FALSE)
+    env$biosample.roadmap <- data.frame(lapply(env$biosample.roadmap,
+                                               as.character),
+                                        stringsAsFactors = FALSE)
+    env$biosample.tcga <- data.frame(lapply(env$biosample.tcga, as.character),
                                      stringsAsFactors = FALSE)
 
     if (file.exists("encodetab.tsv")) {
@@ -108,13 +117,13 @@ load.biosamples <- function(env) {
 
 #' @importFrom downloader download
 load.systems <- function(env) {
-    gdocs <- paste0("https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO",
-                    "88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4L",
-                    "d1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=")
+    gdocs <- paste0("https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h",
+                    "4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=",
+                    "10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=")
 
     download(url = paste0(gdocs, "1660203777"), destfile = "systemstab.tsv")
     env$systems <- read.delim(file = "systemstab.tsv", sep = "\t")
-    env$systems <- data.frame(lapply(systems, as.character),
+    env$systems <- data.frame(lapply(env$systems, as.character),
                               stringsAsFactors = FALSE)
     if (file.exists("systemstab.tsv")) {
         file.remove("systemstab.tsv")
@@ -123,12 +132,12 @@ load.systems <- function(env) {
 
 #' @importFrom downloader download
 load.platforms <- function(env) {
-    gdocs <- paste0("https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4HTGO",
-                    "88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=10GwiiO8A4L",
-                    "d1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=")
+    gdocs <- paste0("https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4",
+                    "HTGO88oaP7y3sqJHNRiQ_wcnKfXyM/export?format=tsv&id=",
+                    "10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=")
     download(paste0(gdocs, "1664832653"), destfile = "platformstab.tsv")
     env$platforms <- read.delim(file = "platformstab.tsv", sep = "\t")
-    env$platforms <- data.frame(lapply(platforms, as.character),
+    env$platforms <- data.frame(lapply(env$platforms, as.character),
                                 stringsAsFactors = FALSE)
     if (file.exists("platformstab.tsv")) {
         file.remove("platformstab.tsv")
@@ -147,8 +156,9 @@ load.tcga <- function(env) {
     download(next.url, "tcga.html", quiet = TRUE)
     regex <- "<table summary=\"Data Summary\".*</a></td></tr></table>"
     html <- readLines("tcga.html")
-    platform.table <- readHTMLTable(toString(str_match(html,
-                                                       regex)[6, ]), header = TRUE, stringsAsFactors = FALSE)$"NULL"
+    platform.table <- readHTMLTable(toString(str_match(html,regex)[6, ]),
+                                    header = TRUE,
+                                    stringsAsFactors = FALSE)$"NULL"
     colnames(platform.table) <- platform.table[1, ]
     env$platform.table <- platform.table[-1, 1:4]
 
@@ -161,7 +171,8 @@ load.tcga <- function(env) {
     idx <- which(!is.na(match))
     if (length(idx) > 0) {
         disease.table <- readHTMLTable(toString(match[idx, ]),
-                                       header = TRUE, stringsAsFactors = FALSE)$"NULL"
+                                       header = TRUE,
+                                       stringsAsFactors = FALSE)$"NULL"
         colnames(disease.table) <- disease.table[1, ]
         env$disease.table <- disease.table[-1, 1:4]
     }
@@ -169,6 +180,6 @@ load.tcga <- function(env) {
         file.remove("tcga.html")
     }
 
-    env$tcga.db <- tcga.search()
+    env$tcga.db <- tcgaSearch()
 
 }

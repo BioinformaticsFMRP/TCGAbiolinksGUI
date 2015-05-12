@@ -7,12 +7,12 @@
 tcgaDownload(data = NULL, path = ".")
 }
 \arguments{
-\item{data}{TCGAQUery output}
+\item{data}{TCGASearch output}
 
 \item{path}{location of the final data saving}
 }
 \description{
-Download data previously selected using the TCGAQuery function
+Download data previously selected using the TCGASeach
 }
 \examples{
 \dontrun{
@@ -20,6 +20,6 @@ Download data previously selected using the TCGAQuery function
 }
 }
 \seealso{
-TCGAQuery
+TCGASearch
 }
 

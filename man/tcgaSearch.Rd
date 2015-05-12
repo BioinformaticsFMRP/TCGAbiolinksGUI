@@ -21,28 +21,28 @@ LUAD \tab LIHC \tab STAD \tab MESO \tab CNTL
 
 \item{platform}{Example:
 \tabular{ll}{
-CGH- 1x1M_G4447A                   \tab IlluminaGA_RNASeqV2                \cr
-AgilentG4502A_07                  \tab IlluminaGA_mRNA_DGE                \cr
-Human1MDuo                        \tab HumanMethylation450                \cr
-HG-CGH-415K_G4124A                \tab IlluminaGA_miRNASeq                \cr
-HumanHap550                       \tab IlluminaHiSeq_miRNASeq             \cr
-ABI                               \tab H-miRNA_8x15K                      \cr
+CGH- 1x1M_G4447A                   \tab IlluminaGA_RNASeqV2   \cr
+AgilentG4502A_07                  \tab IlluminaGA_mRNA_DGE    \cr
+Human1MDuo                        \tab HumanMethylation450    \cr
+HG-CGH-415K_G4124A                \tab IlluminaGA_miRNASeq    \cr
+HumanHap550                       \tab IlluminaHiSeq_miRNASeq \cr
+ABI                               \tab H-miRNA_8x15K  \cr
 HG-CGH-244A                       \tab SOLiD_DNASeq                       \cr
 IlluminaDNAMethylation_OMA003_CPI \tab IlluminaGA_DNASeq_automated        \cr
-IlluminaDNAMethylation_OMA002_CPI \tab HG-U133_Plus_2                     \cr
-HuEx- 1_0-st-v2                    \tab Mixed_DNASeq                       \cr
-H-miRNA_8x15Kv2                   \tab IlluminaGA_DNASeq_curated          \cr
-MDA_RPPA_Core                     \tab IlluminaHiSeq_TotalRNASeqV2        \cr
-HT_HG-U133A                       \tab IlluminaHiSeq_DNASeq_automated     \cr
-diagnostic_images                 \tab microsat_i                         \cr
-IlluminaHiSeq_RNASeq              \tab SOLiD_DNASeq_curated               \cr
-IlluminaHiSeq_DNASeqC             \tab Mixed_DNASeq_curated               \cr
+IlluminaDNAMethylation_OMA002_CPI \tab HG-U133_Plus_2                 \cr
+HuEx- 1_0-st-v2 \tab Mixed_DNASeq                  \cr
+H-miRNA_8x15Kv2 \tab IlluminaGA_DNASeq_curated      \cr
+MDA_RPPA_Core   \tab IlluminaHiSeq_TotalRNASeqV2    \cr
+HT_HG-U133A     \tab IlluminaHiSeq_DNASeq_automated \cr
+diagnostic_images                 \tab microsat_i                     \cr
+IlluminaHiSeq_RNASeq              \tab SOLiD_DNASeq_curated           \cr
+IlluminaHiSeq_DNASeqC             \tab Mixed_DNASeq_curated           \cr
 IlluminaGA_RNASeq                 \tab IlluminaGA_DNASeq_Cont_automated   \cr
-IlluminaGA_DNASeq                 \tab IlluminaHiSeq_WGBS                 \cr
+IlluminaGA_DNASeq                 \tab IlluminaHiSeq_WGBS             \cr
 pathology_reports                 \tab IlluminaHiSeq_DNASeq_Cont_automated\cr
-Genome_Wide_SNP_6                 \tab bio                                \cr
-tissue_images                     \tab Mixed_DNASeq_automated             \cr
-HumanMethylation27                \tab Mixed_DNASeq_Cont_curated          \cr
+Genome_Wide_SNP_6                 \tab bio                            \cr
+tissue_images                     \tab Mixed_DNASeq_automated         \cr
+HumanMethylation27                \tab Mixed_DNASeq_Cont_curated      \cr
 IlluminaHiSeq_RNASeqV2            \tab Mixed_DNASeq_Cont
 }}
 
@@ -50,9 +50,9 @@ IlluminaHiSeq_RNASeqV2            \tab Mixed_DNASeq_Cont
 
 \item{added.up.to}{04- 14-2010}
 
-\item{level}{'1' '2' '3'}
+\item{samples}{List of samples. Ex:c('TCGA-04-06-*','TCGA-04-08-*')}
 
-\item{listSample}{List of samples. Ex:c('TCGA-04-06-*','TCGA-04-08-*')}
+\item{level}{'1' '2' '3'}
 }
 \description{
 Searches in the tcga database

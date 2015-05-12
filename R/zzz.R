@@ -13,11 +13,11 @@
         load.tcga(env)
         env$success <- FALSE
         env$solution <- ""
-        save(biosample.encode, biosample.roadmap, biosample.tcga,
-            encode.db, platforms, roadmap.db, systems, tcga.db,
-            platform.table, disease.table,
+        save(env$biosample.encode, env$biosample.roadmap, env$biosample.tcga,
+            env$encode.db, env$platforms, env$roadmap.db, env$systems,
+            env$tcga.db, env$platform.table, env$disease.table,
             file = file.path(system.file("extdata", package = "biOmics"),
-                             "biomics.rda")
+                            "biomics.rda")
             )
     }
 
