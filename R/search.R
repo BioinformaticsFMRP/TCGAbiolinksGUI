@@ -537,6 +537,7 @@ roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
 #'\tabular{l}{
 #'Homo sapiens \cr Mus musculus \cr Drosophila melanogaster
 #'}
+#' @example inst/examples/encodeSearch.R
 #' @import ggplot2
 #' @export
 #' @return Dataframe with the query result
@@ -547,7 +548,7 @@ encodeSearch <- function(accession = NULL, biosample = NULL,
     # roadmap.verify.input(GEO.Accession,sample,experiment,
     # center,embargo.end.date)
 
-    db <- getOption("encode.db")
+    db <- get("encode.db")
     if (!is.null(biosample)) {
         id <- sapply(biosample, function(x) {
             db$biosample == x
