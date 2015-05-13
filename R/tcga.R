@@ -91,18 +91,17 @@ tcgaSearch <- function(tumor = NULL, platform = NULL, added.since = NULL,
             df <- as.data.frame(matrix(sort(unique(platform.table$alias)),
                                        ncol = 3))
             print(kable(df, col.names = NULL, format = "pandoc",
-                        caption = "Platforms"))
+                        caption = "TCGA Platforms"))
             cat("=======================================================\n")
             cat("ERROR: Platform not found. Select from the table above.\n")
             cat("=======================================================\n")
-
             return(NULL)
         }
     }
 
     if (!is.null(level)) {
         if (!(is.element(level, c("1", "2", "3")))) {
-            message("Levelnot found. Chosse between:'1', '2' or '3'")
+            message("Level not found. Chosse between:'1', '2' or '3'")
             stop("Invalid platform")
         }
     }

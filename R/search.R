@@ -347,9 +347,14 @@ is.experiment <- function(experiment) {
             (nchar(experiment) >= 3)) {
         return(TRUE)
     } else {
-        message(paste0("ERROR: ", experiment, " is not an experiment or",
-                        "has less than 3 characters.\nUse:"))
-        print(unique(platforms$Standard))
+        df <- as.data.frame(matrix(sort(unique(platforms$Standard)),
+                                   ncol = 3))
+        print(kable(df, col.names = NULL, format = "pandoc",
+                    caption = "Experiment"))
+        cat("=======================================================\n")
+        cat("ERROR: Experiment not found. Select from the table above.\n")
+        cat("       Select from the table above.\n")
+        cat("=======================================================\n")
         return(FALSE)
     }
 }
