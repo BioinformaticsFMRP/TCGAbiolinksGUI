@@ -57,34 +57,46 @@ getBarCode <- function(TCGAList, filter) {
 #' @example inst/examples/tcgaSearch.R
 #' @export
 #' @importFrom downloader download
+#' @importFrom knitr kable
 #' @return A dataframe with the results of the query
 #'        (lastest version of the files)
 tcgaSearch <- function(tumor = NULL, platform = NULL, added.since = NULL,
                         added.up.to = NULL, samples = NULL, level = NULL) {
-    disease.table <- getOption("disease.table")
-    platform.table <- getOption("platform.table")
-    dna.plat <- getOption("dna.plat")
-    rna.plat <- getOption("rna.plat")
-    total.rna.plat <- getOption("total.rna.plat")
-    mirna.plat <- getOption("mirna.plat")
-    wgarubcon.plat <- getOption("wgarubcon.plat")
-    wgaqiagen1.plat <- getOption("wgaqiagen1.plat")
-    wgaqiagen2.plat <- getOption("wgaqiagen2.plat")
-    plat.center <- getOption("plat.center")
+    disease.table   <- get("disease.table")
+    platform.table  <- get("platform.table")
+    dna.plat        <- get("dna.plat")
+    rna.plat        <- get("rna.plat")
+    total.rna.plat  <- get("total.rna.plat")
+    mirna.plat      <- get("mirna.plat")
+    wgarubcon.plat  <- get("wgarubcon.plat")
+    wgaqiagen1.plat <- get("wgaqiagen1.plat")
+    wgaqiagen2.plat <- get("wgaqiagen2.plat")
+    plat.center     <- get("plat.center")
 
     if (!is.null(tumor)) {
         if (!(is.element(tolower(tumor),
                         tolower(disease.table$abbreviation)))) {
-            message("Disease not found. Chosse between:")
-            message(paste(disease.table$abbreviation, collapse = " "))
-            stop("Invalid tumor")
+            df <- as.data.frame(matrix(sort(unique(disease.table$abbreviation)),
+                                       ncol = 8))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "TCGA tumors"))
+            cat("=======================================================\n")
+            cat("ERROR: Disease not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(NULL)
         }
     }
     if (!is.null(platform)) {
         if (!(is.element(tolower(platform), tolower(platform.table$alias)))) {
-            message("Platform not found. Chosse between:")
-            message(paste(platform.table$alias, collapse = " "))
-            stop("Invalid platform")
+            df <- as.data.frame(matrix(sort(unique(platform.table$alias)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Platforms"))
+            cat("=======================================================\n")
+            cat("ERROR: Platform not found. Select from the table above.\n")
+            cat("=======================================================\n")
+
+            return(NULL)
         }
     }
 
