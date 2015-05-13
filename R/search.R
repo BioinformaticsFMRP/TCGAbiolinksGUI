@@ -421,8 +421,12 @@ roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
                           NA.Accession = NULL, center = NULL,
                           embargo.end.date = NULL) {
 
-    validadeRoadmap(accession, sample, experiment, center,
+    valid <- validadeRoadmap(accession, sample, experiment, center,
                     NA.Accession, embargo.end.date)
+
+    if(!(valid)){
+        return(NULL)
+    }
 
     db <- get("roadmap.db")
     if (!is.null(sample)) {
@@ -479,7 +483,7 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
 
     if (!is.null(accession)) {
         if (!length(grep(accession, db$X..GEO.Accession,
-                        ignore.case = TRUE)) > 0 ){
+                         ignore.case = TRUE)) > 0 ){
             cat("=======================================================\n")
             cat("ERROR: Acession not found. Select from the table above.\n")
             cat("=======================================================\n")
@@ -502,7 +506,7 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
 
     if (!is.null(experiment)) {
         if  (!length(grep(experiment, db$Experiment,
-                         ignore.case = TRUE)) > 0 ){
+                          ignore.case = TRUE)) > 0 ){
             df <- as.data.frame(matrix(sort(unique(db$Experiment)),
                                        ncol = 3))
             print(kable(df, col.names = NULL, format = "pandoc",
@@ -543,7 +547,7 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
             print("Date format should be YYYY-mm-dd")
         }
     }
-
+    return(TRUE)
 }
 
 # ------------------------ Encode search
@@ -629,12 +633,18 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
 #' @return Dataframe with the query result
 encodeSearch <- function(accession = NULL, biosample = NULL,
                          assay = NULL, lab = NULL, target = NULL,
-                         description = NULL, organism = NULL) {
+                         description = NULL, organism = NULL, exact = TRUE) {
 
     # roadmap.verify.input(GEO.Accession,sample,experiment,
     # center,embargo.end.date)
+    valid <- validadeEncode(accession, biosample, assay, lab, target,
+                            description, organism)
+    if(!(valid)){
+        return(NULL)
+    }
 
     db <- get("encode.db")
+
     if (!is.null(biosample)) {
         id <- sapply(biosample, function(x) {
             db$biosample == x
@@ -681,5 +691,94 @@ encodeSearch <- function(accession = NULL, biosample = NULL,
         id <- grep(description, db$description, ignore.case = FALSE)
         db <- db[id, ]
     }
+
     return(db)
+}
+
+validadeEncode <- function(accession = NULL, biosample = NULL,
+                           assay = NULL, lab = NULL, target = NULL,
+                           description = NULL, organism = NULL
+){
+
+    db <- get("encode.db")
+
+    if (!is.null(accession)) {
+        if (!length(grep(accession, db$accession,
+                         ignore.case = TRUE)) > 0 ){
+            cat("=======================================================\n")
+            cat("ERROR: Acession not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(biosample)) {
+        if (!length(grep(accession, db$biosample,
+                         ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$biosample)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Encode samples"))
+            cat("=======================================================\n")
+            cat("ERROR: Samples not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(assay)) {
+        if  (!length(grep(assay, db$assay,
+                          ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$assay)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Encode assay"))
+            cat("==========================================================\n")
+            cat("ERROR: Assay not found. Select from the table above.\n")
+            cat("==========================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(lab)) {
+        if  (!length(grep(center, db$lab, ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$lab)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Encode lab"))
+            cat("==========================================================\n")
+            cat("ERROR: Lab not found. Select from the table above.\n")
+            cat("==========================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(target)){
+        if (!length(grep(target, db$target,
+                         ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$target)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Encode lab"))
+            cat("=======================================================\n")
+            cat("ERROR: Target not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(organism)) {
+        if (!length(grep(organism, db$organism,
+                         ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$organism)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Encode lab"))
+            cat("=======================================================\n")
+            cat("ERROR: Organism not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+    return(TRUE)
 }
