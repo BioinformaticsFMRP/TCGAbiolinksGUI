@@ -6,7 +6,7 @@
 biOMICsServer <- function(input, output, session) {
 
     result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0,
-                            df = NULL, downloading = 1)
+                             df = NULL, downloading = 1)
     setwd(Sys.getenv("HOME"))
     rmapDir   <- paste0(Sys.getenv("HOME"),"/GEO")
     encodeFolder <- paste0(Sys.getenv("HOME"),"/ENCODE")
@@ -24,8 +24,8 @@ biOMICsServer <- function(input, output, session) {
     observe({
         if (input$selectDir ) {
             rmapDir <<- tcltk::tk_choose.dir(getwd(),
-                                            paste0("Choose a suitable folder",
-                                            " to save the files"))
+                                             paste0("Choose a suitable folder",
+                                                    " to save the files"))
         }
         output$rmapDir <- renderText({rmapDir})
     })
@@ -138,13 +138,13 @@ biOMICsServer <- function(input, output, session) {
         # trigger this function by pressing download button
         if (input$encodeDownloadBt) {
             encodeDownloader(isolate(getEncodeSearch()),
-                            "experiment",
-                            isolate(getEncodeTarget()),
-                            isolate(getEncodeSample()),
-                            isolate(getEncodeFType()),
-                            isolate(getEncodeAssay()),
-                            isolate(getEncodeAssembly()),
-                            encodeFolder
+                             "experiment",
+                             isolate(getEncodeTarget()),
+                             isolate(getEncodeSample()),
+                             isolate(getEncodeFType()),
+                             isolate(getEncodeAssay()),
+                             isolate(getEncodeAssembly()),
+                             encodeFolder
             )
             if (!is.null(result$df)) result$df
         }
@@ -197,11 +197,11 @@ biOMICsServer <- function(input, output, session) {
             filter <- filterTcgaBarCode()
             validate(
                 need(!is.null(tcga),
-                    "Please upload file with TCGA bar codes")
+                     "Please upload file with TCGA bar codes")
             )
             validate(
                 need(!is.null(filter),
-                    "Please upload file with filtered bar codes")
+                     "Please upload file with filtered bar codes")
             )
 
             barCode  <- getBarCode(tcga, filter)
@@ -209,6 +209,117 @@ biOMICsServer <- function(input, output, session) {
             writeLines(barCode, fileConn)
             close(fileConn)
         }
+    )
+
+    #----------------- Ontology
+    ontDir   <- getwd()
+    getontProject <- reactive({c(input$ontProject,"Project","AND") })
+    getontSearch  <- reactive({c(input$ontSearch,NULL,NULL)        })
+    getontType    <- reactive({c(input$ontType,"Filter","AND")     })
+
+    output$savedFiles <- renderUI({
+        if (input$ontSearchDownloadBt ) {
+            valueBoxOutput("ontProgressBox", width = NULL)
+        }
+    })
+    observe({
+        if (input$selectDir ) {
+            ontDir <<- tcltk::tk_choose.dir(getwd(),
+                                            paste0("Choose a suitable folder",
+                                                   " to save the files"))
+        }
+        output$ontDir <- renderText({ontDir})
+    })
+
+    output$savedPath <- renderValueBox({
+        input$selectDir
+        valueBox(
+            h4(ontDir), "Output directory", icon = icon("folder-open"),
+            color = "blue"
+        )
+    })
+
+    output$statusBox <- renderUI({
+        invalidateLater(1000, session)
+        valueBoxOutput("statusBoxText", width = NULL)
+    })
+
+
+    output$statusBoxText <- renderValueBox({
+        if (result$downloading == 2 ) {
+            valueBox(
+                h4(paste0("Downloaded files")), "Status",
+                icon = icon("check-circle"),
+                color = "green"
+            )} else if (result$downloading == 1) {
+                valueBox(
+                    h4(paste0("Idle")), "Status", icon = icon("stop"),
+                    color = "red"
+                )
+            } else {
+                valueBox(
+                    h4(paste0("Downloaded  ",getNbFiles(), " files")),
+                    "Status", icon = icon("fa fa-spinner fa-spin"),
+                    color = "yellow"
+                )
+
+            }
+    })
+
+    output$ontSearchLink <-  renderText({
+        if (input$ontSearchDownloadBt ) {
+            link <- c()
+            accession <- unlist(input$allRows)
+            for (i in seq(1,length(accession), by = 6)) {
+                index <- which(roadmap.db$X..GEO.Accession ==  accession[i])
+                link <- c(link,as.character(roadmap.db$GEO.FTP[index]))
+            }
+            #geoDownloaderLinks(link,ontDir, TRUE)
+        }}
+    )
+
+    output$ontSearchtbl <- renderDataTable({
+        indexes <- c()
+        query <- data.frame()
+        if (input$ontSearchBt) {
+            link <- c()
+            term <- input$ontSamplesFilter
+            exp <-  input$ontExpFilter
+            print(term)
+            print(exp)
+            query <- biOmicsSearch(input$ontSamplesFilter,
+                                   experiment = input$ontExpFilter)
+            # improve using subset - subset(data,selection,projection)
+        }
+        query
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = c(10, 50, 100, -1),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdnjs.cloudflare.com/ajax/",
+                                           "libs/datatables-tabletools/",
+                                           "2.2.3/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {
+      table.on('click.dt', 'tr', function() {
+        Shiny.onInputChange('allRows',
+                            table.rows('.selected').data().toArray());
+      });
+
+    }"
     )
 
 }

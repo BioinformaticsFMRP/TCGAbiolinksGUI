@@ -128,7 +128,7 @@ is.mapped <- function(term) {
 #' @export
 #' @return A dataframe with the results of the query if it
 #'         was successful
-biOmicsSearch <- function(term, experiment = "all", plot = FALSE,
+biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
                           path = "searchSummary") {
     message(paste("biOmics is searching for:", term, "\nSearching..."))
     start.time <- Sys.time()
@@ -250,7 +250,7 @@ showResults <- function(solution, exper, plot = FALSE, path) {
                       function(x) {x[1]})
     tcga.result <- tcga.db[is.element(tcga.db$Disease, disease),]
     # Select experiments
-    if (!exper == "all") {
+    if (! is.null(exper)) {
         message("Filtering by experiment")
         idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
                                         ignore.case = TRUE), 2],
@@ -339,7 +339,10 @@ showResults <- function(solution, exper, plot = FALSE, path) {
 
 is.experiment <- function(experiment) {
     platforms    <- get("platforms")
-    v <- c(unique(platforms$Standard), "all")
+    v <- unique(platforms$Standard)
+    if(is.null(experiment)){
+        return(TRUE)
+    }
     if ((length(grep(experiment, v, ignore.case = TRUE)) > 0) &
             (nchar(experiment) >= 3)) {
         return(TRUE)
