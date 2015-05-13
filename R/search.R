@@ -487,7 +487,6 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
         }
     }
 
-
     if (!is.null(sample)) {
         if (!(is.element(tolower(sample), tolower(db$Sample.Name)))){
             df <- as.data.frame(matrix(sort(unique(db$Sample.Name)),
@@ -512,6 +511,36 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
             cat("ERROR: Experiment not found. Select from the table above.\n")
             cat("==========================================================\n")
             return(FALSE)
+        }
+    }
+
+    if (!is.null(center)) {
+        if  (!length(grep(center, db$Center, ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$Center)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Roadmap center"))
+            cat("==========================================================\n")
+            cat("ERROR: Center not found. Select from the table above.\n")
+            cat("==========================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(NA.Accession)) {
+        if (!length(grep(NA.Accession, db$NA.Accession,
+                         ignore.case = TRUE)) > 0 ){
+            cat("=======================================================\n")
+            cat("ERROR: NA.Acession not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(embargo.end.date)) {
+        d <- try(as.Date(embargo.end.date,  format = "%Y-%m-%d"))
+        if (class(d) == "try-error" || is.na(d)) {
+            print("Date format should be YYYY-mm-dd")
         }
     }
 
