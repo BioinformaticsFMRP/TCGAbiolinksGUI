@@ -245,7 +245,7 @@ showResults <- function(solution, exper, plot = FALSE, path) {
     # Select the database rows
     enc.result <- encode.db[is.element(encode.db$biosample, enc.samples),]
     rmap.result <- roadmap.db[is.element(roadmap.db$Sample.Name,
-                                        rmap.samples), ]
+                                         rmap.samples), ]
     disease <- sapply(strsplit(tcga.samples, split = " - "),
                       function(x) {x[1]})
     tcga.result <- tcga.db[is.element(tcga.db$Disease, disease),]
@@ -253,33 +253,33 @@ showResults <- function(solution, exper, plot = FALSE, path) {
     if (! is.null(exper)) {
         message("Filtering by experiment")
         idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
-                                        ignore.case = TRUE), 2],
+                                           ignore.case = TRUE), 2],
                             function(x) {
                                 grepl(x,
-                                    enc.result$assay,
-                                    ignore.case = TRUE)
-                                        }
-                            ), 1, any)
+                                      enc.result$assay,
+                                      ignore.case = TRUE)
+                            }
+        ), 1, any)
         enc.result <- enc.result[idx, ]
 
         idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
-                                        ignore.case = TRUE), 2],
+                                           ignore.case = TRUE), 2],
                             function(x) {
-                                 grepl(x,
-                                       rmap.result$Experiment,
-                                       ignore.case = TRUE)
-                                        }
-                            ), 1, any)
+                                grepl(x,
+                                      rmap.result$Experiment,
+                                      ignore.case = TRUE)
+                            }
+        ), 1, any)
         rmap.result <- rmap.result[idx, ]
 
         idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
-                                        ignore.case = TRUE), 2],
+                                           ignore.case = TRUE), 2],
                             function(x) {
                                 grepl(x,
-                                    tcga.result$baseName,
-                                    ignore.case = TRUE)
-                                        }
-                            ), 1, any)
+                                      tcga.result$baseName,
+                                      ignore.case = TRUE)
+                            }
+        ), 1, any)
         if (length(idx) > 0) {
             tcga.result <- tcga.result[idx, ]
         } else {
@@ -309,11 +309,11 @@ showResults <- function(solution, exper, plot = FALSE, path) {
     colnames(tcga.result)[c(7, 11, 10)] <- c("ID", "Sample", "Experiment")
 
     results <- rbind(enc.result[1:3],
-                    rmap.result[1:3],
-                    tcga.result[c(7,11, 10)])
+                     rmap.result[1:3],
+                     tcga.result[c(7,11, 10)])
     database <- c(rep("encode", nrow(enc.result)),
-                    rep("roadmap", nrow(rmap.result)),
-                    rep("tcga", nrow(tcga.result)))
+                  rep("roadmap", nrow(rmap.result)),
+                  rep("tcga", nrow(tcga.result)))
     results <- cbind(database, results)
 
     if (plot) {
@@ -364,7 +364,7 @@ is.valid.term <- function(term) {
         return(TRUE)
     } else {
         message(paste0("ERROR: ", term, " is not valid.",
-                        " Specify a term of at least 3 characters"))
+                       " Specify a term of at least 3 characters"))
         return(FALSE)
     }
 }
@@ -421,8 +421,8 @@ roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
                           NA.Accession = NULL, center = NULL,
                           embargo.end.date = NULL) {
 
-    # roadmap.verify.input(GEO.Accession,sample,
-    # experiment,center,embargo.end.date)
+    validadeRoadmap(accession, sample, experiment, center,
+                    NA.Accession, embargo.end.date)
 
     db <- get("roadmap.db")
     if (!is.null(sample)) {
@@ -468,6 +468,53 @@ roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
         db <- db[id, ]
     }
     return(db)
+}
+
+validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
+                            NA.Accession = NULL, center = NULL,
+                            embargo.end.date = NULL
+){
+
+    db <- get("roadmap.db")
+
+    if (!is.null(accession)) {
+        if (!length(grep(accession, db$X..GEO.Accession,
+                        ignore.case = TRUE)) > 0 ){
+            cat("=======================================================\n")
+            cat("ERROR: Acession not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+
+    if (!is.null(sample)) {
+        if (!(is.element(tolower(sample), tolower(db$Sample.Name)))){
+            df <- as.data.frame(matrix(sort(unique(db$Sample.Name)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Roadmap samples"))
+            cat("=======================================================\n")
+            cat("ERROR: Samples not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(experiment)) {
+        if  (!length(grep(experiment, db$Experiment,
+                         ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$Experiment)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Roadmap experiments"))
+            cat("==========================================================\n")
+            cat("ERROR: Experiment not found. Select from the table above.\n")
+            cat("==========================================================\n")
+            return(FALSE)
+        }
+    }
+
 }
 
 # ------------------------ Encode search
