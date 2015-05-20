@@ -11,7 +11,7 @@ getBarCode <- function(TCGAList, filter) {
     files <- gsub(" ", ",", trim(files))
 }
 # ------------------------ Encode search
-#' @title TCGA search
+#' @title TCGAQuery
 #' @description
 #'    Searches in the tcga database
 #' @param tumor Disease Examples:
@@ -53,166 +53,139 @@ getBarCode <- function(TCGAList, filter) {
 #' @param level '1' '2' '3'
 #' @param added.since 04- 14-2010
 #' @param added.up.to 04- 14-2010
+#' @param center center name
 #' @param samples List of samples. Ex:c('TCGA-04-06-*','TCGA-04-08-*')
 #' @example inst/examples/tcgaSearch.R
 #' @export
 #' @importFrom downloader download
+#' @importFrom knitr kable
 #' @return A dataframe with the results of the query
 #'        (lastest version of the files)
 tcgaSearch <- function(tumor = NULL, platform = NULL, added.since = NULL,
-                        added.up.to = NULL, samples = NULL, level = NULL) {
-    disease.table <- getOption("disease.table")
-    platform.table <- getOption("platform.table")
-    dna.plat <- getOption("dna.plat")
-    rna.plat <- getOption("rna.plat")
-    total.rna.plat <- getOption("total.rna.plat")
-    mirna.plat <- getOption("mirna.plat")
-    wgarubcon.plat <- getOption("wgarubcon.plat")
-    wgaqiagen1.plat <- getOption("wgaqiagen1.plat")
-    wgaqiagen2.plat <- getOption("wgaqiagen2.plat")
-    plat.center <- getOption("plat.center")
+                      added.up.to = NULL, samples = NULL, center = NULL,
+                      level = NULL) {
+    disease.table   <- get("disease.table")
+    platform.table  <- get("platform.table")
+    center.table  <- get("center.table")
+    db <-  get("tcga.db")
 
     if (!is.null(tumor)) {
-        if (!(is.element(tolower(tumor),
-                        tolower(disease.table$abbreviation)))) {
-            message("Disease not found. Chosse between:")
-            message(paste(disease.table$abbreviation, collapse = " "))
-            stop("Invalid tumor")
-        }
-    }
-    if (!is.null(platform)) {
-        if (!(is.element(tolower(platform), tolower(platform.table$alias)))) {
-            message("Platform not found. Chosse between:")
-            message(paste(platform.table$alias, collapse = " "))
-            stop("Invalid platform")
+        for (j in seq_along(tumor)) {
+            if (!(is.element(tolower(tumor[j]),
+                             tolower(disease.table$abbreviation)))) {
+                suppressWarnings(
+                    df <- as.data.frame(matrix(sort(unique(disease.table$abbreviation)),
+                                               ncol = 8))
+                )
+                print(kable(df, col.names = NULL, format = "pandoc",
+                            caption = "TCGA tumors"))
+                cat("=======================================================\n")
+                cat("ERROR: Disease not found. Select from the table above.\n")
+                cat("=======================================================\n")
+                return(NULL)
+            }
         }
     }
 
+    if (!is.null(platform)) {
+        for (j in seq_along(platform)) {
+            if (!(is.element(tolower(platform[j]), tolower(platform.table$name)))) {
+                suppressWarnings(
+                    df <- as.data.frame(matrix(sort(unique(platform.table$name)),
+                                               ncol = 3))
+                )
+                print(kable(df, col.names = NULL, format = "pandoc",
+                            caption = "TCGA Platforms"))
+                cat("=======================================================\n")
+                cat("ERROR: Platform not found. Select from the table above.\n")
+                cat("=======================================================\n")
+                return(NULL)
+            }
+        }
+    }
+
+    if (!is.null(center)) {
+        if (!(is.element(tolower(center), tolower(center.table$name)))) {
+            suppressWarnings(
+                df <- as.data.frame(matrix(sort(unique(center.table$name)),
+                                           ncol = 3))
+            )
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "TCGA Centers"))
+            cat("=======================================================\n")
+            cat("ERROR: Center not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(NULL)
+        }
+    }
     if (!is.null(level)) {
-        if (!(is.element(level, c("1", "2", "3")))) {
-            message("Levelnot found. Chosse between:'1', '2' or '3'")
+        if (!(is.element(level, c("1", "2", "3","mage-tab")))) {
+            message("Level not found. Chosse between:'1', '2','3','mage-tab'")
             stop("Invalid platform")
         }
     }
 
     if (!is.null(added.since)) {
-        d <- try(as.Date(added.since, format = "%m/%d/%Y"))
+        d <- try(as.Date(added.since, format = "%Y/%m/%d"))
         if (class(d) == "try-error" || is.na(d)) {
-            print("Date format should be mm/dd/YYYY")
+            print("Date format should be YYYY-mm-dd")
         }
     }
     if (!is.null(added.up.to)) {
-        d <- try(as.Date(added.up.to, format = "%m/%d/%Y"))
+        d <- try(as.Date(added.up.to, format = "%Y/%m/%d"))
         if (class(d) == "try-error" || is.na(d)) {
-            print("Date format should be mm/dd/YYYY")
+            print("Date format should be YYYY-mm-dd")
         }
+    }
+
+    if(!is.null(tumor)){
+        id <- sapply(tumor, function(x){
+            grepl(x, db$Disease, ignore.case = TRUE)
+        })
+        id <- apply(id, 1,any)
+        db <-  db[id,]
+    }
+    if(!is.null(platform)){
+        id <- sapply(platform, function(x){
+            grepl(x, db$Platform, ignore.case = TRUE)
+        })
+        id <- apply(id, 1,any)
+        db <-  db[id,]
+    }
+    if(!is.null(center)){
+        id <- sapply(center, function(x){
+            grepl(x, db$Center, ignore.case = TRUE)
+        })
+        id <- apply(id, 1,any)
+        db <-  db[id,]
+    }
+    if(!is.null(level)){
+        id <- grep(paste0("Level_", level), db$name)
+        if(length(id) > 0){
+            db <-  db[id,]
+        }
+    }
+
+    if (!is.null(added.since)) {
+        db <- subset(db, as.Date(db$addedDate) > as.Date(added.since,
+                                                         "%m/%d/%Y"))
+    }
+    if (!is.null(added.up.to)) {
+        db <- subset(db, as.Date(db$addedDate) < as.Date(added.up.to,
+                                                         "%m/%d/%Y"))
     }
 
     # to be improved
-    if (!is.null(samples)) {
-        # archives <- c()
-        files <- c()
-        for (i in seq_along(samples)) {
-            # table with barcode id example:
-            # query=BiospecimenBarcode[@barcode=TCGA-28-2499*]
-            message("Searching for barcode files...")
-            message(paste("Barcode:", samples[i]))
-            db <- getBarcodeTable(samples[i])
-
-            # Improvement: using portion analyte in order to select
-            # platform
-            if (!is.null(platform)) {
-                analyte <- c()
-                pat <- paste0("TCGA-[[:alnum:]]{2}-[[:alnum:]]{4}-",
-                            "[[:alnum:]]{3}-[[:alnum:]]{2}")
-                if (is.element(tolower(platform), tolower(dna.plat))) {
-                    analyte <- c(analyte, "D")
-                }
-                if (is.element(tolower(platform), tolower(rna.plat))) {
-                    analyte <- c(analyte, "R")
-                }
-                if (is.element(tolower(platform), tolower(total.rna.plat))) {
-                    analyte <- c(analyte, "T")
-                }
-                if (is.element(tolower(platform), tolower(wgarubcon.plat))) {
-                    analyte <- c(analyte, "G")
-                }
-                if (is.element(tolower(platform), tolower(mirna.plat))) {
-                    analyte <- c(analyte, "H")
-                }
-                if (is.element(tolower(platform), tolower(wgaqiagen2.plat))) {
-                    analyte <- c(analyte, "X")
-                }
-                if (is.element(tolower(platform), tolower(wgaqiagen1.plat))) {
-                    analyte <- c(analyte, "W")
-                }
-                idx <- c()
-                for (i in seq_along(analyte)) {
-                    aux <- grep(paste0(pat, "[", analyte[i], "]"),
-                                as.character(db$barcode))
-                    idx <- union(idx, aux)
-                }
-                print(length(idx))
-                db <- db[idx, ]
-            }
-            if (!is.null(platform)) {
-                pat <- paste0("TCGA-[[:alnum:]]{2}-[[:alnum:]]{4}-",
-                            "[[:alnum:]]{3}-[[:alnum:]]{3}-[[:alnum:]]{4}-")
-                with(plat.center,{
-                    idx <- grep(platform, plat.center$platform)
-                    centers <- as.character(plat.center[idx, "center"])
-                })
-                idx <- c()
-                for (i in seq_along(centers)) {
-                    aux <- grep(paste0(pat, centers[i]),
-                                as.character(db$barcode))
-                    idx <- union(idx, aux)
-                }
-                print(length(idx))
-                db <- db[idx, ]
-            }
-
-            # get getBcrArchiveCollection table
-            for (i in seq_along(db$id)) {
-                # aux <- getBcrArchiveCollection(db[i,'id']) archives <-
-                # rbind(archives,aux)
-                aux <- getSamplesFiles(db[i, "id"])
-                aux$barcode <- db[i, "barcode"]
-                if (!is.null(aux)) {
-                    files <- rbind(files, aux)
-                }
-            }
+    idx <- c()
+    if(!is.null(samples)){
+        for(i in seq_along(samples)){
+            aux <- grep(samples[i],db$barcode)
+            idx <- union(idx, aux)
         }
-        x <- subset(files, files$isLatest == 1)
-        x <- x[!duplicated(x), ]
-        x <- x[, order(names(x))]
-        if (!is.null(platform)) {
-            x <- subset(x, grepl(tolower(x$platform), tolower(x$Platform)))
-        }
-        if (!is.null(platform)) {
-            x <- subset(x, tolower(x$Disease) == tolower(tumor))
-        }
-        if (!is.null(level)) {
-            x <- subset(x, grepl(paste0("Level_", level), x$name))
-        }
-
-    } else {
-        message("CREATING TABLE")
-        x <- createTcgaTable(platform = platform, type = level,
-                            disease = tumor)
+        db <- db[idx,]
     }
-    if (!is.null(added.since)) {
-        x <- subset(x, as.Date(x$addedDate) > as.Date(added.since,
-                                                    "%m/%d/%Y"))
-    }
-    if (!is.null(added.up.to)) {
-        x <- subset(x, as.Date(x$addedDate) < as.Date(added.up.to,
-                                                    "%m/%d/%Y"))
-    }
-
-    return(x)
+    return(db)
 }
-
 # @description get the arhive info from tcga api
 getArchive <- function(id) {
     root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"

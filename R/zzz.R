@@ -26,14 +26,6 @@
         load(file, envir = as.environment("package:biOmics"))
     }
 
-    file <- system.file("extdata/plat.rda", package = "biOmics")
-    if (file.exists(file)) {
-        load(file, envir = as.environment("package:biOmics"))
-    }
-    file <- system.file("extdata/plat.center.rda", package = "biOmics")
-    if (file.exists(file)) {
-        load(file, envir = as.environment("package:biOmics"))
-    }
 
     if (!interactive() || stats::runif(1) > 0.1)
         return()
