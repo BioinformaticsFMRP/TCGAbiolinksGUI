@@ -186,15 +186,6 @@ tcgaSearch <- function(tumor = NULL, platform = NULL, added.since = NULL,
     }
     return(db)
 }
-# @description get the arhive info from tcga api
-getArchive <- function(id) {
-    root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
-    query <- paste0("query=Archive&FileInfo[@id=", id,
-                    "]&roleName=archiveCollection")
-    url <- paste0(root, query)
-    db <- tcgaGetTable(url)
-    return(db)
-}
 
 getSamplesFiles <- function(id) {
     archives <- NULL

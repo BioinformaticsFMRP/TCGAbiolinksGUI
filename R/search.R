@@ -128,7 +128,7 @@ is.mapped <- function(term) {
 #' @export
 #' @return A dataframe with the results of the query if it
 #'         was successful
-biOmicsSearch <- function(term, experiment = "all", plot = FALSE,
+biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
                           path = "searchSummary") {
     message(paste("biOmics is searching for:", term, "\nSearching..."))
     start.time <- Sys.time()
@@ -245,41 +245,41 @@ showResults <- function(solution, exper, plot = FALSE, path) {
     # Select the database rows
     enc.result <- encode.db[is.element(encode.db$biosample, enc.samples),]
     rmap.result <- roadmap.db[is.element(roadmap.db$Sample.Name,
-                                        rmap.samples), ]
+                                         rmap.samples), ]
     disease <- sapply(strsplit(tcga.samples, split = " - "),
                       function(x) {x[1]})
     tcga.result <- tcga.db[is.element(tcga.db$Disease, disease),]
     # Select experiments
-    if (!exper == "all") {
+    if (! is.null(exper)) {
         message("Filtering by experiment")
         idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
-                                        ignore.case = TRUE), 2],
+                                           ignore.case = TRUE), 2],
                             function(x) {
                                 grepl(x,
-                                    enc.result$assay,
-                                    ignore.case = TRUE)
-                                        }
-                            ), 1, any)
+                                      enc.result$assay,
+                                      ignore.case = TRUE)
+                            }
+        ), 1, any)
         enc.result <- enc.result[idx, ]
 
         idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
-                                        ignore.case = TRUE), 2],
+                                           ignore.case = TRUE), 2],
                             function(x) {
-                                 grepl(x,
-                                       rmap.result$Experiment,
-                                       ignore.case = TRUE)
-                                        }
-                            ), 1, any)
+                                grepl(x,
+                                      rmap.result$Experiment,
+                                      ignore.case = TRUE)
+                            }
+        ), 1, any)
         rmap.result <- rmap.result[idx, ]
 
         idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
-                                        ignore.case = TRUE), 2],
+                                           ignore.case = TRUE), 2],
                             function(x) {
                                 grepl(x,
-                                    tcga.result$baseName,
-                                    ignore.case = TRUE)
-                                        }
-                            ), 1, any)
+                                      tcga.result$baseName,
+                                      ignore.case = TRUE)
+                            }
+        ), 1, any)
         if (length(idx) > 0) {
             tcga.result <- tcga.result[idx, ]
         } else {
@@ -309,11 +309,11 @@ showResults <- function(solution, exper, plot = FALSE, path) {
     colnames(tcga.result)[c(7, 11, 10)] <- c("ID", "Sample", "Experiment")
 
     results <- rbind(enc.result[1:3],
-                    rmap.result[1:3],
-                    tcga.result[c(7,11, 10)])
+                     rmap.result[1:3],
+                     tcga.result[c(7,11, 10)])
     database <- c(rep("encode", nrow(enc.result)),
-                    rep("roadmap", nrow(rmap.result)),
-                    rep("tcga", nrow(tcga.result)))
+                  rep("roadmap", nrow(rmap.result)),
+                  rep("tcga", nrow(tcga.result)))
     results <- cbind(database, results)
 
     if (plot) {
@@ -339,14 +339,22 @@ showResults <- function(solution, exper, plot = FALSE, path) {
 
 is.experiment <- function(experiment) {
     platforms    <- get("platforms")
-    v <- c(unique(platforms$Standard), "all")
+    v <- unique(platforms$Standard)
+    if(is.null(experiment)){
+        return(TRUE)
+    }
     if ((length(grep(experiment, v, ignore.case = TRUE)) > 0) &
             (nchar(experiment) >= 3)) {
         return(TRUE)
     } else {
-        message(paste0("ERROR: ", experiment, " is not an experiment or",
-                        "has less than 3 characters.\nUse:"))
-        print(unique(platforms$Standard))
+        df <- as.data.frame(matrix(sort(unique(platforms$Standard)),
+                                   ncol = 3))
+        print(kable(df, col.names = NULL, format = "pandoc",
+                    caption = "Experiment"))
+        cat("=======================================================\n")
+        cat("ERROR: Experiment not found. Select from the table above.\n")
+        cat("       Select from the table above.\n")
+        cat("=======================================================\n")
         return(FALSE)
     }
 }
@@ -356,7 +364,7 @@ is.valid.term <- function(term) {
         return(TRUE)
     } else {
         message(paste0("ERROR: ", term, " is not valid.",
-                        " Specify a term of at least 3 characters"))
+                       " Specify a term of at least 3 characters"))
         return(FALSE)
     }
 }
@@ -413,8 +421,12 @@ roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
                           NA.Accession = NULL, center = NULL,
                           embargo.end.date = NULL) {
 
-    # roadmap.verify.input(GEO.Accession,sample,
-    # experiment,center,embargo.end.date)
+    valid <- validadeRoadmap(accession, sample, experiment, center,
+                    NA.Accession, embargo.end.date)
+
+    if(!(valid)){
+        return(NULL)
+    }
 
     db <- get("roadmap.db")
     if (!is.null(sample)) {
@@ -460,6 +472,82 @@ roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
         db <- db[id, ]
     }
     return(db)
+}
+
+validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
+                            NA.Accession = NULL, center = NULL,
+                            embargo.end.date = NULL
+){
+
+    db <- get("roadmap.db")
+
+    if (!is.null(accession)) {
+        if (!length(grep(accession, db$X..GEO.Accession,
+                         ignore.case = TRUE)) > 0 ){
+            cat("=======================================================\n")
+            cat("ERROR: Acession not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(sample)) {
+        if (!(is.element(tolower(sample), tolower(db$Sample.Name)))){
+            df <- as.data.frame(matrix(sort(unique(db$Sample.Name)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Roadmap samples"))
+            cat("=======================================================\n")
+            cat("ERROR: Samples not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(experiment)) {
+        if  (!length(grep(experiment, db$Experiment,
+                          ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$Experiment)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Roadmap experiments"))
+            cat("==========================================================\n")
+            cat("ERROR: Experiment not found. Select from the table above.\n")
+            cat("==========================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(center)) {
+        if  (!length(grep(center, db$Center, ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$Center)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Roadmap center"))
+            cat("==========================================================\n")
+            cat("ERROR: Center not found. Select from the table above.\n")
+            cat("==========================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(NA.Accession)) {
+        if (!length(grep(NA.Accession, db$NA.Accession,
+                         ignore.case = TRUE)) > 0 ){
+            cat("=======================================================\n")
+            cat("ERROR: NA.Acession not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(embargo.end.date)) {
+        d <- try(as.Date(embargo.end.date,  format = "%Y-%m-%d"))
+        if (class(d) == "try-error" || is.na(d)) {
+            print("Date format should be YYYY-mm-dd")
+        }
+    }
+    return(TRUE)
 }
 
 # ------------------------ Encode search
@@ -545,12 +633,18 @@ roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
 #' @return Dataframe with the query result
 encodeSearch <- function(accession = NULL, biosample = NULL,
                          assay = NULL, lab = NULL, target = NULL,
-                         description = NULL, organism = NULL) {
+                         description = NULL, organism = NULL, exact = TRUE) {
 
     # roadmap.verify.input(GEO.Accession,sample,experiment,
     # center,embargo.end.date)
+    valid <- validadeEncode(accession, biosample, assay, lab, target,
+                            description, organism)
+    if(!(valid)){
+        return(NULL)
+    }
 
     db <- get("encode.db")
+
     if (!is.null(biosample)) {
         id <- sapply(biosample, function(x) {
             db$biosample == x
@@ -597,5 +691,94 @@ encodeSearch <- function(accession = NULL, biosample = NULL,
         id <- grep(description, db$description, ignore.case = FALSE)
         db <- db[id, ]
     }
+
     return(db)
+}
+
+validadeEncode <- function(accession = NULL, biosample = NULL,
+                           assay = NULL, lab = NULL, target = NULL,
+                           description = NULL, organism = NULL
+){
+
+    db <- get("encode.db")
+
+    if (!is.null(accession)) {
+        if (!length(grep(accession, db$accession,
+                         ignore.case = TRUE)) > 0 ){
+            cat("=======================================================\n")
+            cat("ERROR: Acession not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(biosample)) {
+        if (!length(grep(accession, db$biosample,
+                         ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$biosample)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Encode samples"))
+            cat("=======================================================\n")
+            cat("ERROR: Samples not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(assay)) {
+        if  (!length(grep(assay, db$assay,
+                          ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$assay)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Encode assay"))
+            cat("==========================================================\n")
+            cat("ERROR: Assay not found. Select from the table above.\n")
+            cat("==========================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(lab)) {
+        if  (!length(grep(center, db$lab, ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$lab)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Encode lab"))
+            cat("==========================================================\n")
+            cat("ERROR: Lab not found. Select from the table above.\n")
+            cat("==========================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(target)){
+        if (!length(grep(target, db$target,
+                         ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$target)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Encode lab"))
+            cat("=======================================================\n")
+            cat("ERROR: Target not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+
+    if (!is.null(organism)) {
+        if (!length(grep(organism, db$organism,
+                         ignore.case = TRUE)) > 0 ){
+            df <- as.data.frame(matrix(sort(unique(db$organism)),
+                                       ncol = 3))
+            print(kable(df, col.names = NULL, format = "pandoc",
+                        caption = "Encode lab"))
+            cat("=======================================================\n")
+            cat("ERROR: Organism not found. Select from the table above.\n")
+            cat("=======================================================\n")
+            return(FALSE)
+        }
+    }
+    return(TRUE)
 }
