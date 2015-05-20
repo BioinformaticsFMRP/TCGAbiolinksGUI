@@ -2,10 +2,10 @@
 % Please edit documentation in R/tcga.R
 \name{tcgaSearch}
 \alias{tcgaSearch}
-\title{TCGA search}
+\title{TCGAQuery}
 \usage{
 tcgaSearch(tumor = NULL, platform = NULL, added.since = NULL,
-  added.up.to = NULL, samples = NULL, level = NULL)
+  added.up.to = NULL, samples = NULL, center = NULL, level = NULL)
 }
 \arguments{
 \item{tumor}{Disease Examples:
@@ -51,6 +51,8 @@ IlluminaHiSeq_RNASeqV2            \tab Mixed_DNASeq_Cont
 \item{added.up.to}{04- 14-2010}
 
 \item{samples}{List of samples. Ex:c('TCGA-04-06-*','TCGA-04-08-*')}
+
+\item{center}{center name}
 
 \item{level}{'1' '2' '3'}
 }

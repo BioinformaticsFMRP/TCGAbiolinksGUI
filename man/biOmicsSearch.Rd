@@ -4,7 +4,7 @@
 \alias{biOmicsSearch}
 \title{Searches a term in TCGA, ENCODE, ROADMAP}
 \usage{
-biOmicsSearch(term, experiment = "all", plot = FALSE,
+biOmicsSearch(term, experiment = NULL, plot = FALSE,
   path = "searchSummary")
 }
 \arguments{

@@ -5,7 +5,8 @@
 \title{Encode search}
 \usage{
 encodeSearch(accession = NULL, biosample = NULL, assay = NULL,
-  lab = NULL, target = NULL, description = NULL, organism = NULL)
+  lab = NULL, target = NULL, description = NULL, organism = NULL,
+  exact = TRUE)
 }
 \arguments{
 \item{accession}{GEO sample accession Ex: ENCSR337VPD}
