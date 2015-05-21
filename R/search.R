@@ -132,11 +132,11 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
                           path = "searchSummary") {
     message(paste("biOmics is searching for:", term, "\nSearching..."))
     start.time <- Sys.time()
-    options(success = FALSE)
-    success <- getOption("success")
-    options(solution = FALSE)
-    options(exper = experiment)
-    search.cache <- getOption("search.cache")
+    assign('success', FALSE, envir = as.environment("package:biOmics"))
+    success <- get("success")
+    assign('solution',FALSE, envir = as.environment("package:biOmics") )
+    assign('exper', experiment, envir = as.environment("package:biOmics"))
+    search.cache <- get("search.cache")
 
     # Step 0: verify if term is valid.
     if (!is.valid.term(term)) {
@@ -159,8 +159,10 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
     if (!success) {
         message("Not found in the cache, searching in the ontology...")
         # Term has not been mapped before.
-        options(ont = "BTO")
-        ont <- getOption("ont")
+        assign("ont", "BTO" , envir = as.environment("package:biOmics"))
+        ont <- get("ont")
+        print(ont)
+        print(term)
         query <- rols::olsQuery(term, ont, exact = TRUE)
 
         if (length(query) > 0) {
@@ -198,8 +200,8 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
                 }
             }
         }
-        success <- getOption("success")
-        solution <- getOption("solution")
+        success <- get("success")
+        solution <- get("solution")
     }
 
     end.time <- Sys.time()
@@ -207,7 +209,7 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
     message(paste("Time taken: ", round(time.taken, 2), "s"))
 
     if (success) {
-        options(search.cache = rbind(search.cache, c(term, solution[1])))
+        assign('search.cache', rbind(search.cache, c(term, solution[1])), envir = as.environment("package:biOmics"))
     }
 
     return(showResults(solution, experiment, plot, path))
