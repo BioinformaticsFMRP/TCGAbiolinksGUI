@@ -8,14 +8,25 @@
         load.biosamples(env)
         load.systems(env)
         load.platforms(env)
-        env$encode.db <- load.encode()
-        env$roadmap.db <- load.roadmap()
+        load.encode(env)
+        load.roadmap(env)
         load.tcga(env)
+        tcga.db <- get("tcga.db")
+        encode.db <- get("encode.db")
+        roadmap.db <- get("roadmap.db")
+        platform.table <- get("platform.table")
+        disease.table <- get("disease.table")
+        biosample.encode <- get("biosample.encode")
+        biosample.roadmap <- get("biosample.roadmap")
+        biosample.tcga <- get("biosample.tcga")
+        systems <- get("systems")
+        platforms <- get("platforms")
+
         env$success <- FALSE
         env$solution <- ""
-        save(env$biosample.encode, env$biosample.roadmap, env$biosample.tcga,
-            env$encode.db, env$platforms, env$roadmap.db, env$systems,
-            env$tcga.db, env$platform.table, env$disease.table,
+        save(biosample.encode, biosample.roadmap, biosample.tcga,
+            encode.db, platforms, roadmap.db, systems,
+            tcga.db, platform.table, disease.table,
             file = file.path(system.file("extdata", package = "biOmics"),
                             "biomics.rda")
             )
