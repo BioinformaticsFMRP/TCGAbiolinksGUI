@@ -57,6 +57,7 @@
 
 is.old <- function(file = NULL, days = 20) {
     finf <- file.info(file, extra_cols = FALSE)
-    return(nrow(finf[difftime(Sys.time(), finf[, "mtime"], units = "days") >
-        days, 1:4]) == 1)
+    old <-  finf[as.numeric(difftime(Sys.time(), finf[, "mtime"],
+                                     units = "days"))[1] > days,]
+    return(nrow(old) == 1)
 }
