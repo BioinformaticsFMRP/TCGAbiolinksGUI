@@ -1,15 +1,15 @@
 
 # internal: used by biOmicsSearch
 systemSearch <- function(term) {
-    success <- getOption("success")
-    ont <- getOption("ont")
-    systems <- get("systems")
+    success <- get("success", envir = as.environment("package:biOmics"))
+    ont <- get("ont", envir = as.environment("package:biOmics"))
+    systems <- get("systems", envir = as.environment("package:biOmics"))
 
     if (!success) {
         found <- intersect(term, systems$BTO)
         if (length(found) > 0) {
-            options(success = TRUE)
-            options(solution = found)
+            assign("success", TRUE, envir = as.environment("package:biOmics"))
+            assign("solution", found, envir = as.environment("package:biOmics"))
             return()
         } else {
             parentTerm <- rols::parents(term[1], ont)
@@ -23,7 +23,7 @@ systemSearch <- function(term) {
 }
 
 map.to.bto <- function(term) {
-    success <- getOption("success")
+    success <- get("success", envir = as.environment("package:biOmics"))
     # Does the term exists in BTO?
     aux <- term
     names(aux) <- NULL
@@ -53,10 +53,10 @@ map.to.bto <- function(term) {
 
 is.mapped <- function(term) {
 
-    search.cache <- getOption("search.cache")
-    biosample.encode  <- get("biosample.encode")
-    biosample.roadmap <- get("biosample.roadmap")
-    biosample.tcga    <- get("biosample.tcga")
+    search.cache <- get("search.cache", envir = as.environment("package:biOmics"))
+    biosample.encode  <- get("biosample.encode", envir = as.environment("package:biOmics"))
+    biosample.roadmap <- get("biosample.roadmap", envir = as.environment("package:biOmics"))
+    biosample.tcga    <- get("biosample.tcga", envir = as.environment("package:biOmics"))
 
     # search in search cache
     if (exists("search.cache")) {
@@ -64,8 +64,9 @@ is.mapped <- function(term) {
         if (length(idx) > 0) {
             message("found in cache")
             res <- search.cache[idx[1], 2]
-            options(success = TRUE)
-            options(solution = res)
+            assign('success', TRUE, envir = as.environment("package:biOmics"))
+            assign('solution' ,res, envir = as.environment("package:biOmics"))
+
             return()
         }
     }
@@ -76,9 +77,8 @@ is.mapped <- function(term) {
         message("found in roadmap")
         res <- biosample.roadmap[idx[1], ]$BTO
         if (!is.na(res)) {
-            options(success = TRUE)
-            options(solution = res)
-
+            assign('success', TRUE, envir = as.environment("package:biOmics"))
+            assign('solution', res, envir = as.environment("package:biOmics"))
             return()
         }
     }
@@ -89,8 +89,8 @@ is.mapped <- function(term) {
         message("found in encode")
         res <- biosample.encode[idx[1], ]$BTO
         if (!is.na(res)) {
-            options(success = TRUE)
-            options(solution = res)
+            assign('success', TRUE, envir = as.environment("package:biOmics"))
+            assign('solution', res, envir = as.environment("package:biOmics"))
 
             return()
         }
@@ -104,8 +104,8 @@ is.mapped <- function(term) {
     if (length(idx) > 0) {
         message("found in TCGA")
         res <- biosample.tcga[idx[1], ]$BTO
-        options(success = TRUE)
-        options(solution = res)
+        assign('success', TRUE, envir = as.environment("package:biOmics"))
+        assign('solution', res, envir = as.environment("package:biOmics"))
         return()
     }
 }
@@ -133,10 +133,10 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
     message(paste("biOmics is searching for:", term, "\nSearching..."))
     start.time <- Sys.time()
     assign('success', FALSE, envir = as.environment("package:biOmics"))
-    success <- get("success")
+    success <- get("success", envir = as.environment("package:biOmics"))
     assign('solution',FALSE, envir = as.environment("package:biOmics") )
     assign('exper', experiment, envir = as.environment("package:biOmics"))
-    search.cache <- get("search.cache")
+    search.cache <- get("search.cache", envir = as.environment("package:biOmics"))
 
     # Step 0: verify if term is valid.
     if (!is.valid.term(term)) {
@@ -147,12 +147,11 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
     if (!is.experiment(experiment)) {
         return()
     }
-
     # Step 1: verify if term search has been mapped by us.
     if (!success) {
         is.mapped(term)
-        success <- getOption("success")
-        solution <- getOption("solution")
+        success <- get("success", envir = as.environment("package:biOmics"))
+        solution <- get("solution", envir = as.environment("package:biOmics"))
     }
 
     # Step 2: search for the term in the BTO ontology.
@@ -160,9 +159,7 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
         message("Not found in the cache, searching in the ontology...")
         # Term has not been mapped before.
         assign("ont", "BTO" , envir = as.environment("package:biOmics"))
-        ont <- get("ont")
-        print(ont)
-        print(term)
+        ont <- get("ont",envir = as.environment("package:biOmics"))
         query <- rols::olsQuery(term, ont, exact = TRUE)
 
         if (length(query) > 0) {
@@ -200,8 +197,8 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
                 }
             }
         }
-        success <- get("success")
-        solution <- get("solution")
+        success <- get("success", envir = as.environment("package:biOmics"))
+        solution <- get("solution", envir = as.environment("package:biOmics"))
     }
 
     end.time <- Sys.time()
@@ -219,14 +216,14 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
 #' @import ggplot2
 #' @keywords internal
 showResults <- function(solution, exper, plot = FALSE, path) {
-    biosample.encode  <- get("biosample.encode")
-    biosample.roadmap <- get("biosample.roadmap")
-    biosample.tcga    <- get("biosample.tcga")
-    encode.db     <- get("encode.db")
-    tcga.db       <- get("tcga.db")
-    roadmap.db    <- get("roadmap.db")
-    systems       <- get("systems")
-    platforms     <- get("platforms")
+    biosample.encode  <- get("biosample.encode", envir = as.environment("package:biOmics"))
+    biosample.roadmap <- get("biosample.roadmap", envir = as.environment("package:biOmics"))
+    biosample.tcga    <- get("biosample.tcga", envir = as.environment("package:biOmics"))
+    encode.db     <- get("encode.db", envir = as.environment("package:biOmics"))
+    tcga.db       <- get("tcga.db", envir = as.environment("package:biOmics"))
+    roadmap.db    <- get("roadmap.db", envir = as.environment("package:biOmics"))
+    systems       <- get("systems", envir = as.environment("package:biOmics"))
+    platforms     <- get("platforms", envir = as.environment("package:biOmics"))
 
     # Get the samples that matches the result of the query
     # Databases were matched manually to systems
@@ -340,7 +337,7 @@ showResults <- function(solution, exper, plot = FALSE, path) {
 }
 
 is.experiment <- function(experiment) {
-    platforms    <- get("platforms")
+    platforms    <- get("platforms", envir = as.environment("package:biOmics"))
     v <- unique(platforms$Standard)
     if(is.null(experiment)){
         return(TRUE)
@@ -430,7 +427,7 @@ roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
         return(NULL)
     }
 
-    db <- get("roadmap.db")
+    db <- get("roadmap.db", envir = as.environment("package:biOmics"))
     if (!is.null(sample)) {
         id <- sapply(sample, function(x) {
             db$Sample.Name == x
@@ -481,7 +478,7 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
                             embargo.end.date = NULL
 ){
 
-    db <- get("roadmap.db")
+    db <- get("roadmap.db", envir = as.environment("package:biOmics"))
 
     if (!is.null(accession)) {
         if (!length(grep(accession, db$X..GEO.Accession,
@@ -645,7 +642,7 @@ encodeSearch <- function(accession = NULL, biosample = NULL,
         return(NULL)
     }
 
-    db <- get("encode.db")
+    db <- get("encode.db", envir = as.environment("package:biOmics"))
 
     if (!is.null(biosample)) {
         id <- sapply(biosample, function(x) {
@@ -702,7 +699,7 @@ validadeEncode <- function(accession = NULL, biosample = NULL,
                            description = NULL, organism = NULL
 ){
 
-    db <- get("encode.db")
+    db <- get("encode.db", envir = as.environment("package:biOmics"))
 
     if (!is.null(accession)) {
         if (!length(grep(accession, db$accession,

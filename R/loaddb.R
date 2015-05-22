@@ -95,13 +95,13 @@ load.biosamples <- function(env) {
     biosample.roadmap <- read.delim(file = "roadmaptab.tsv", sep = "\t")
     biosample.tcga <- read.delim(file = "tcgatab.tsv", sep = "\t")
 
-    biosample.encode <- data.frame(lapply(env$biosample.encode,
+    biosample.encode <- data.frame(lapply(biosample.encode,
                                               as.character),
                                        stringsAsFactors = FALSE)
-    biosample.roadmap <- data.frame(lapply(env$biosample.roadmap,
+    biosample.roadmap <- data.frame(lapply(biosample.roadmap,
                                                as.character),
                                         stringsAsFactors = FALSE)
-    biosample.tcga <- data.frame(lapply(env$biosample.tcga, as.character),
+    biosample.tcga <- data.frame(lapply(biosample.tcga, as.character),
                                      stringsAsFactors = FALSE)
 
     if (file.exists("encodetab.tsv")) {
@@ -126,7 +126,7 @@ load.systems <- function(env) {
 
     download(url = paste0(gdocs, "1660203777"), destfile = "systemstab.tsv")
     systems <- read.delim(file = "systemstab.tsv", sep = "\t")
-    systems <- data.frame(lapply(env$systems, as.character),
+    systems <- data.frame(lapply(systems, as.character),
                               stringsAsFactors = FALSE)
     if (file.exists("systemstab.tsv")) {
         file.remove("systemstab.tsv")
