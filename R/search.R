@@ -216,6 +216,7 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
 #' @import ggplot2
 #' @keywords internal
 showResults <- function(solution, exper, plot = FALSE, path) {
+    .e <- environment()
     biosample.encode  <- get("biosample.encode", envir = as.environment("package:biOmics"))
     biosample.roadmap <- get("biosample.roadmap", envir = as.environment("package:biOmics"))
     biosample.tcga    <- get("biosample.tcga", envir = as.environment("package:biOmics"))
@@ -321,14 +322,21 @@ showResults <- function(solution, exper, plot = FALSE, path) {
         dir.create(path, showWarnings = FALSE, recursive = TRUE)
         # % Experiments per database
         g <- ggplot(results,
-                    aes(factor(database), fill = results$Experiment )) +
-            geom_bar(position = "fill")
+                    aes(factor(database), fill = results$Experiment ),
+                    environment = .e, main = "Experiments per database") +
+            geom_bar(position = "fill") +
+            ggtitle("Experiments per database")
+        plot(g)
         ggsave(g, filename = file.path(path, "experiments.pdf"),
                height = 14, width = 10, scale = 1.5)
 
         # % Samples per database
-        g <- ggplot(results, aes(factor(database), fill = results$Sample)) +
-            geom_bar(position = "fill")
+        g <- ggplot(results, aes(factor(database),
+                                 fill = results$Sample),
+                    environment = .e) +
+            geom_bar(position = "fill") +
+            ggtitle("Samples per database")
+        plot(g)
         ggsave(g, filename = file.path(path, "samples.pdf"),
                height = 14, width = 10, scale = 1.5)
     }
@@ -421,7 +429,7 @@ roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
                           embargo.end.date = NULL) {
 
     valid <- validadeRoadmap(accession, sample, experiment, center,
-                    NA.Accession, embargo.end.date)
+                             NA.Accession, embargo.end.date)
 
     if(!(valid)){
         return(NULL)

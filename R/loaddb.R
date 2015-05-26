@@ -134,6 +134,8 @@ load.systems <- function(env) {
     assign("systems",systems, envir = env)
 }
 
+
+
 #' @importFrom downloader download
 load.platforms <- function(env) {
     gdocs <- paste0("https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4",
@@ -141,7 +143,7 @@ load.platforms <- function(env) {
                     "10GwiiO8A4Ld1h4HTGO88oaP7y3sqJHNRiQ_wcnKfXyM&gid=")
     download(paste0(gdocs, "1664832653"), destfile = "platformstab.tsv")
     platforms <- read.delim(file = "platformstab.tsv", sep = "\t")
-    platforms <- data.frame(lapply(env$platforms, as.character),
+    platforms <- data.frame(lapply(platforms, as.character),
                                 stringsAsFactors = FALSE)
     if (file.exists("platformstab.tsv")) {
         file.remove("platformstab.tsv")
