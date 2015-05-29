@@ -109,12 +109,7 @@ roadmapDownload <- function(lines, type = NULL, path = ".") {
         expr <- str_replace_all(lines[i, ]$Experiment, "[^[:alnum:]]","_")
 
         folder <- paste0(path, "/", expr, "/", sample)
-        status <- dir.create(folder, showWarnings = FALSE, recursive = TRUE)
-        if (!status) {
-            message("Downloaded", i)
-            next
-        }
-
+        dir.create(folder, showWarnings = FALSE, recursive = TRUE)
         url <- lines[i, ]$GEO.FTP
         if (nchar(url) == 0) {
             error <- c(error, lines[i, ]$X..GEO.Accession)
