@@ -53,23 +53,10 @@ map.to.bto <- function(term,env) {
 
 is.mapped <- function(term,env) {
 
-    search.cache <- get("search.cache", envir = as.environment("package:biOmics"))
     biosample.encode  <- get("biosample.encode", envir = as.environment("package:biOmics"))
     biosample.roadmap <- get("biosample.roadmap", envir = as.environment("package:biOmics"))
     biosample.tcga    <- get("biosample.tcga", envir = as.environment("package:biOmics"))
 
-    # search in search cache
-    if (exists("search.cache")) {
-        idx <- grep(term, search.cache[, 1], ignore.case = TRUE)
-        if (length(idx) > 0) {
-            message("found in cache")
-            res <- search.cache[idx[1], 2]
-            assign('success', TRUE, envir = env)
-            assign('solution' ,res, envir = env)
-
-            return()
-        }
-    }
     # search in roamap Could be - Accession, Sample.Name,
     # Experiment
     idx <- grep(term, biosample.roadmap$biosample, ignore.case = TRUE)
@@ -140,7 +127,6 @@ biOmicsSearch <- function(term,
     success <- get("success", envir = env)
     assign('solution',FALSE, envir = env )
     assign('exper', experiment, envir = env)
-    search.cache <- get("search.cache", envir =  as.environment("package:biOmics"))
 
     # Step 0: verify if term is valid.
     if (!is.valid.term(term)) {
@@ -210,12 +196,10 @@ biOmicsSearch <- function(term,
     message(paste("Time taken: ", round(time.taken, 2), "s"))
 
     if (success) {
-        assign('search.cache', rbind(search.cache, c(term, solution[1])),
-               envir =  as.environment("package:biOmics"))
-    return(showResults(solution, experiment, plot, path))
-    } else {
-        message("Term not found")
+        return(showResults(solution, experiment, plot, path))
     }
+
+    message("Term not found")
     return(NULL)
 }
 

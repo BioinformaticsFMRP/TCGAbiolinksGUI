@@ -1,5 +1,4 @@
 .onAttach <- function(libname, pkgname) {
-    assign('search.cache', NULL, envir = as.environment("package:biOmics"))
     file <- system.file("extdata/biomics.rda", package = "biOmics")
     if (file.exists(file) && !is.old(file)) {
         load(file, envir = as.environment("package:biOmics"))
@@ -22,9 +21,7 @@
         systems <- get("systems")
         platforms <- get("platforms")
 
-        assign('success', FALSE, envir = as.environment("package:biOmics"))
-        assign('solution', "", envir = as.environment("package:biOmics"))
-        save(biosample.encode, biosample.roadmap, biosample.tcga,
+       save(biosample.encode, biosample.roadmap, biosample.tcga,
             encode.db, platforms, roadmap.db, systems,
             tcga.db, platform.table, disease.table,
             file = file.path(system.file("extdata", package = "biOmics"),
