@@ -15,7 +15,7 @@ systemSearch <- function(term,env) {
             parentTerm <- rols::parents(term[1], ont)
             parentTerm <- names(parentTerm)
             sapply(parentTerm, function(x) {
-                systemSearch(x)
+                systemSearch(x,env)
             })
             return()
         }
@@ -34,7 +34,7 @@ map.to.bto <- function(term,env) {
         term.found <- names(query)
         sapply(term.found, function(x) {
             if (!success) {
-                systemSearch(x)
+                systemSearch(x, env)
             }
         })
     }
@@ -212,9 +212,9 @@ biOmicsSearch <- function(term,
     if (success) {
         assign('search.cache', rbind(search.cache, c(term, solution[1])),
                envir = env)
-    }
-
     return(showResults(solution, experiment, plot, path))
+    }
+    return(NULL)
 }
 
 # show the results to the user
