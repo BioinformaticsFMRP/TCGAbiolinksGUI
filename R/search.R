@@ -1,15 +1,15 @@
 
 # internal: used by biOmicsSearch
-systemSearch <- function(term) {
-    success <- get("success", envir = as.environment("package:biOmics"))
-    ont <- get("ont", envir = as.environment("package:biOmics"))
+systemSearch <- function(term,env) {
+    success <- get("success", envir = env)
+    ont <- get("ont", envir = env)
     systems <- get("systems", envir = as.environment("package:biOmics"))
 
     if (!success) {
         found <- intersect(term, systems$BTO)
         if (length(found) > 0) {
-            assign("success", TRUE, envir = as.environment("package:biOmics"))
-            assign("solution", found, envir = as.environment("package:biOmics"))
+            assign("success", TRUE, envir = env)
+            assign("solution", found, envir = env)
             return()
         } else {
             parentTerm <- rols::parents(term[1], ont)
@@ -22,8 +22,8 @@ systemSearch <- function(term) {
     }
 }
 
-map.to.bto <- function(term) {
-    success <- get("success", envir = as.environment("package:biOmics"))
+map.to.bto <- function(term,env) {
+    success <- get("success", envir = env)
     # Does the term exists in BTO?
     aux <- term
     names(aux) <- NULL
@@ -51,7 +51,7 @@ map.to.bto <- function(term) {
 }
 
 
-is.mapped <- function(term) {
+is.mapped <- function(term,env) {
 
     search.cache <- get("search.cache", envir = as.environment("package:biOmics"))
     biosample.encode  <- get("biosample.encode", envir = as.environment("package:biOmics"))
@@ -64,8 +64,8 @@ is.mapped <- function(term) {
         if (length(idx) > 0) {
             message("found in cache")
             res <- search.cache[idx[1], 2]
-            assign('success', TRUE, envir = as.environment("package:biOmics"))
-            assign('solution' ,res, envir = as.environment("package:biOmics"))
+            assign('success', TRUE, envir = env)
+            assign('solution' ,res, envir = env)
 
             return()
         }
@@ -77,8 +77,8 @@ is.mapped <- function(term) {
         message("found in roadmap")
         res <- biosample.roadmap[idx[1], ]$BTO
         if (!is.na(res)) {
-            assign('success', TRUE, envir = as.environment("package:biOmics"))
-            assign('solution', res, envir = as.environment("package:biOmics"))
+            assign('success', TRUE, envir = env)
+            assign('solution', res, envir = env)
             return()
         }
     }
@@ -89,8 +89,8 @@ is.mapped <- function(term) {
         message("found in encode")
         res <- biosample.encode[idx[1], ]$BTO
         if (!is.na(res)) {
-            assign('success', TRUE, envir = as.environment("package:biOmics"))
-            assign('solution', res, envir = as.environment("package:biOmics"))
+            assign('success', TRUE, envir = env)
+            assign('solution', res, envir = env)
 
             return()
         }
@@ -104,8 +104,8 @@ is.mapped <- function(term) {
     if (length(idx) > 0) {
         message("found in TCGA")
         res <- biosample.tcga[idx[1], ]$BTO
-        assign('success', TRUE, envir = as.environment("package:biOmics"))
-        assign('solution', res, envir = as.environment("package:biOmics"))
+        assign('success', TRUE, envir = env)
+        assign('solution', res, envir = env)
         return()
     }
 }
@@ -128,15 +128,19 @@ is.mapped <- function(term) {
 #' @export
 #' @return A dataframe with the results of the query if it
 #'         was successful
-biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
+biOmicsSearch <- function(term,
+                          experiment = NULL,
+                          plot = FALSE,
                           path = "searchSummary") {
+
     message(paste("biOmics is searching for:", term, "\nSearching..."))
     start.time <- Sys.time()
-    assign('success', FALSE, envir = as.environment("package:biOmics"))
-    success <- get("success", envir = as.environment("package:biOmics"))
-    assign('solution',FALSE, envir = as.environment("package:biOmics") )
-    assign('exper', experiment, envir = as.environment("package:biOmics"))
-    search.cache <- get("search.cache", envir = as.environment("package:biOmics"))
+    env <- new.env()
+    assign('success', FALSE, envir = env)
+    success <- get("success", envir = env)
+    assign('solution',FALSE, envir = env )
+    assign('exper', experiment, envir = env)
+    search.cache <- get("search.cache", envir = env)
 
     # Step 0: verify if term is valid.
     if (!is.valid.term(term)) {
@@ -149,29 +153,29 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
     }
     # Step 1: verify if term search has been mapped by us.
     if (!success) {
-        is.mapped(term)
-        success <- get("success", envir = as.environment("package:biOmics"))
-        solution <- get("solution", envir = as.environment("package:biOmics"))
+        is.mapped(term, env)
+        success <- get("success", envir = env)
+        solution <- get("solution", envir = env)
     }
 
     # Step 2: search for the term in the BTO ontology.
     if (!success) {
         message("Not found in the cache, searching in the ontology...")
         # Term has not been mapped before.
-        assign("ont", "BTO" , envir = as.environment("package:biOmics"))
-        ont <- get("ont",envir = as.environment("package:biOmics"))
+        assign("ont", "BTO" , envir = env)
+        ont <- get("ont",envir = env)
         query <- rols::olsQuery(term, ont, exact = TRUE)
 
         if (length(query) > 0) {
             term.found <- names(query)
-            systemSearch(term.found)
+            systemSearch(term.found,env)
         } else {
             query <- rols::olsQuery(term, ont, exact = FALSE)
             if (length(query) > 0) {
                 term.found <- names(query)
                 sapply(term.found, function(x) {
                     if (!rols::isIdObsolete(x, ont)) {
-                        systemSearch(x)
+                        systemSearch(x,env)
                     }
                 })
             }
@@ -189,7 +193,7 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
                 if (length(query) > 0) {
                     # term was found in other ontology!
                     for (i in seq(query)) {
-                        map.to.bto(query[i])
+                        map.to.bto(query[i],env)
                         if (success) {
                             break
                         }
@@ -197,8 +201,8 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
                 }
             }
         }
-        success <- get("success", envir = as.environment("package:biOmics"))
-        solution <- get("solution", envir = as.environment("package:biOmics"))
+        success <- get("success", envir = env)
+        solution <- get("solution", envir = env)
     }
 
     end.time <- Sys.time()
@@ -206,7 +210,8 @@ biOmicsSearch <- function(term, experiment = NULL, plot = FALSE,
     message(paste("Time taken: ", round(time.taken, 2), "s"))
 
     if (success) {
-        assign('search.cache', rbind(search.cache, c(term, solution[1])), envir = as.environment("package:biOmics"))
+        assign('search.cache', rbind(search.cache, c(term, solution[1])),
+               envir = env)
     }
 
     return(showResults(solution, experiment, plot, path))
