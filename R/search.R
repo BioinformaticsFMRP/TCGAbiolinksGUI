@@ -140,7 +140,7 @@ biOmicsSearch <- function(term,
     success <- get("success", envir = env)
     assign('solution',FALSE, envir = env )
     assign('exper', experiment, envir = env)
-    search.cache <- get("search.cache", envir = env)
+    search.cache <- get("search.cache", envir =  as.environment("package:biOmics"))
 
     # Step 0: verify if term is valid.
     if (!is.valid.term(term)) {
@@ -211,8 +211,10 @@ biOmicsSearch <- function(term,
 
     if (success) {
         assign('search.cache', rbind(search.cache, c(term, solution[1])),
-               envir = env)
+               envir =  as.environment("package:biOmics"))
     return(showResults(solution, experiment, plot, path))
+    } else {
+        message("Term not found")
     }
     return(NULL)
 }
