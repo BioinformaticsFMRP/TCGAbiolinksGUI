@@ -53,9 +53,12 @@ map.to.bto <- function(term,env) {
 
 is.mapped <- function(term,env) {
 
-    biosample.encode  <- get("biosample.encode", envir = as.environment("package:biOmics"))
-    biosample.roadmap <- get("biosample.roadmap", envir = as.environment("package:biOmics"))
-    biosample.tcga    <- get("biosample.tcga", envir = as.environment("package:biOmics"))
+    biosample.encode  <- get("biosample.encode",
+                             envir = as.environment("package:biOmics"))
+    biosample.roadmap <- get("biosample.roadmap",
+                             envir = as.environment("package:biOmics"))
+    biosample.tcga    <- get("biosample.tcga",
+                             envir = as.environment("package:biOmics"))
 
     # search in roamap Could be - Accession, Sample.Name,
     # Experiment
@@ -103,7 +106,7 @@ is.mapped <- function(term,env) {
 #' @param term Term to be searched. Example: 'brain' 'u87' etc.
 #' @param experiment Experiment type
 #' @param plot Create a summary plot of the result found? Deafult: TRUE
-#' @param path Path to save summary plots
+#' @param dir.plot Directory to save summary plots
 #' \tabular{llll}{
 #'Microarray \tab MiRNAMicroArray \tab RRBS \tab DNAsequencing\cr
 #'ExpressionArray \tab Firehose \tab ChipSeq \tab fiveC \cr
@@ -118,7 +121,7 @@ is.mapped <- function(term,env) {
 biOmicsSearch <- function(term,
                           experiment = NULL,
                           plot = FALSE,
-                          path = "searchSummary") {
+                          dir.plot = "searchSummary") {
 
     message(paste("biOmics is searching for:", term, "\nSearching..."))
     start.time <- Sys.time()
@@ -137,6 +140,7 @@ biOmicsSearch <- function(term,
     if (!is.experiment(experiment)) {
         return()
     }
+
     # Step 1: verify if term search has been mapped by us.
     if (!success) {
         is.mapped(term, env)
@@ -180,6 +184,7 @@ biOmicsSearch <- function(term,
                     # term was found in other ontology!
                     for (i in seq(query)) {
                         map.to.bto(query[i],env)
+                        success <- get("success", envir = env)
                         if (success) {
                             break
                         }
@@ -196,7 +201,7 @@ biOmicsSearch <- function(term,
     message(paste("Time taken: ", round(time.taken, 2), "s"))
 
     if (success) {
-        return(showResults(solution, experiment, plot, path))
+        return(showResults(solution, experiment, plot, dir.plot))
     }
 
     message("Term not found")
@@ -415,8 +420,11 @@ is.valid.term <- function(term) {
 #'  \tab 2010-05-03
 #'}
 #' @example inst/examples/roadmapSearch.R
-roadmapSearch <- function(accession = NULL, sample = NULL, experiment = NULL,
-                          NA.Accession = NULL, center = NULL,
+roadmapSearch <- function(accession = NULL,
+                          sample = NULL,
+                          experiment = NULL,
+                          NA.Accession = NULL,
+                          center = NULL,
                           embargo.end.date = NULL) {
 
     valid <- validadeRoadmap(accession, sample, experiment, center,
@@ -629,9 +637,14 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
 #' @import ggplot2
 #' @export
 #' @return Dataframe with the query result
-encodeSearch <- function(accession = NULL, biosample = NULL,
-                         assay = NULL, lab = NULL, target = NULL,
-                         description = NULL, organism = NULL, exact = TRUE) {
+encodeSearch <- function(accession = NULL,
+                         biosample = NULL,
+                         assay = NULL,
+                         lab = NULL,
+                         target = NULL,
+                         description = NULL,
+                         organism = NULL,
+                         exact = TRUE) {
 
     # roadmap.verify.input(GEO.Accession,sample,experiment,
     # center,embargo.end.date)
