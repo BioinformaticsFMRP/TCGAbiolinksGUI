@@ -9,21 +9,19 @@
 #' @examples
 #' query <- biOmicsSearch("u87")
 #' biOmicsDownload(query, enc.file.type = "bam",rmap.file.type = "bed")
-biOmicsDownload <- function(lines, enc.file.type = NULL,
+biOmicsDownload <- function(lines=NULL, enc.file.type = NULL,
                             rmap.file.type = NULL) {
-    encode.db  <- get("encode.db")
-    tcga.db    <- get("tcga.db")
-    roadmap.db <- get("roadmap.db")
 
-    with(lines,{
+    if (is.null(lines)) stop("Please set lines parameter")
+
         encode.lines <- subset(lines, lines$database == "encode")
         rmap.lines <- subset(lines, lines$database == "roadmap")
         tcga.lines <- subset(lines, lines$database == "tcga")
-    })
+
     # -------------- download Encode
     if (dim(encode.lines)[1] > 0) {
         encode.lines <- subset(encode.db,
-                                encode.db$accession == encode.lines$ID)
+                               encode.db$accession == encode.lines$ID)
         encodeDownload(encode.lines, enc.file.type)
     }
 
@@ -34,11 +32,11 @@ biOmicsDownload <- function(lines, enc.file.type = NULL,
         roadmapDownload(rmap.lines, rmap.file.type)
     }
     # ---------------- download TCGA TODO: add filters, folder to
-    # save
-    if (dim(tcga.lines)[1] > 0) {
-        tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
-        tcgaDownload(tcga.lines, path = "TCGA")
-    }
+    # This will be replaced by TCGAbiolinks
+    #if (dim(tcga.lines)[1] > 0) {
+    #    tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
+    #    tcgaDownload(tcga.lines, path = "TCGA")
+    #}
 }
 
 #' @title Download encode data
@@ -142,61 +140,5 @@ roadmapDownload <- function(lines, type = NULL, path = ".") {
                         function(x) message("Accession: ",x))
                   )
         message("=============================")
-    }
-}
-#' @title TCGA Download
-#' @description Download data previously selected using the TCGASeach
-#' @param data TCGASearch output
-#' @param path location of the final data saving
-#' @param type Get files with type pattern instead of downloading all the folder
-#' @seealso TCGASearch
-#' @examples
-#' \dontrun{
-#'    tcgaDownload(data,path='folder',type="rsem.isoforms.results")
-#' }
-#' @export
-#' @importFrom downloader download
-#' @return Download tcga into path
-tcgaDownload <- function(data = NULL, path = ".", type = NULL) {
-
-    dir.create(path, showWarnings = FALSE)
-    root <- "https://tcga-data.nci.nih.gov"
-
-
-    if (is.null(type)) {
-        for (i in 1:nrow(data)) {
-
-            file <- paste0(path, "/", basename(data[i, "deployLocation"]))
-            message(paste0("Downloading:",
-                           basename(data[i, "deployLocation"])))
-            if (!file.exists(file)) {
-                download(paste0(root, data[i, "deployLocation"]),
-                         file)
-                untar(file, exdir = path)
-            }
-        }
-    } else {
-
-        for (i in 1:nrow(data)) {
-
-            folder <- gsub(".tar.gz","",basename(data[i,]$deployLocation))
-            dir.create(file.path(path,folder), showWarnings = FALSE)
-            url <- gsub(".tar.gz","",data[i,]$deployLocation)
-            files <- getFileNames(paste0(root,url))
-            files <- files[grepl(type,files)]
-            if (length(files) == 0) {
-                next
-            }
-            message(paste0("Downloading:", length(files), " files"))
-
-            for (i in seq_along(files)) {
-                if (!file.exists(files[i])) {
-                    download(paste0(root,url,"/",files[i]),
-                             file.path(path,folder,files[i]))
-                }
-                #message(paste0("Downloading:", files[i], " of ", length(files), " files"))
-
-            }
-        }
     }
 }
