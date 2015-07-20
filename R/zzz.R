@@ -1,39 +1,4 @@
 .onAttach <- function(libname, pkgname) {
-    file <- system.file("extdata/biomics.rda", package = "biOmics")
-    if (file.exists(file) && !is.old(file)) {
-        load(file, envir = as.environment("package:biOmics"))
-    } else {
-        env <- as.environment("package:biOmics")
-        load.biosamples(env)
-        load.systems(env)
-        load.platforms(env)
-        load.encode(env)
-        load.roadmap(env)
-        load.tcga(env)
-        tcga.db <- get("tcga.db")
-        encode.db <- get("encode.db")
-        roadmap.db <- get("roadmap.db")
-        platform.table <- get("platform.table")
-        disease.table <- get("disease.table")
-        biosample.encode <- get("biosample.encode")
-        biosample.roadmap <- get("biosample.roadmap")
-        biosample.tcga <- get("biosample.tcga")
-        systems <- get("systems")
-        platforms <- get("platforms")
-
-       save(biosample.encode, biosample.roadmap, biosample.tcga,
-            encode.db, platforms, roadmap.db, systems,
-            tcga.db, platform.table, disease.table,
-            file = file.path(system.file("extdata", package = "biOmics"),
-                            "biomics.rda")
-            )
-    }
-
-    file <- system.file("extdata/GRCh.rda", package = "biOmics")
-    if (file.exists(file)) {
-        load(file, envir = as.environment("package:biOmics"))
-    }
-
 
     if (!interactive() || stats::runif(1) > 0.1)
         return()
@@ -52,9 +17,39 @@
     packageStartupMessage(welcome.message)
 }
 
-is.old <- function(file = NULL, days = 20) {
-    finf <- file.info(file, extra_cols = FALSE)
-    old <-  finf[as.numeric(difftime(Sys.time(), finf[, "mtime"],
-                                     units = "days"))[1] > days,]
-    return(nrow(old) == 1)
+#' Update database
+#' This function will update the biomics database
+#' @keywords internal
+#' @importFrom devtools use_data
+update <- function(){
+    env <- as.environment("package:biOmics")
+    load.biosamples(env)
+    load.systems(env)
+    load.platforms(env)
+    load.encode(env)
+    load.roadmap(env)
+    tcga.db <- get("tcga.db")
+    encode.db <- get("encode.db")
+    roadmap.db <- get("roadmap.db")
+    platform.table <- get("platform.table")
+    disease.table <- get("disease.table")
+    biosample.encode <- get("biosample.encode")
+    biosample.roadmap <- get("biosample.roadmap")
+    biosample.tcga <- get("biosample.tcga")
+    systems <- get("systems")
+    platforms <- get("platforms")
+
+    use_data(biosample.encode,
+             biosample.roadmap,
+             biosample.tcga,
+             encode.db,
+             platforms,
+             roadmap.db,
+             systems,
+             tcga.db,
+             platform.table,
+             disease.table,
+             internal = TRUE, overwrite = T
+    )
+
 }

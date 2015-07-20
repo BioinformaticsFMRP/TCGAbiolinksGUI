@@ -1,4 +1,6 @@
+# Loads encode data
 #' @importFrom rjson fromJSON
+#' @keywords internal
 load.encode <- function(env) {
     url1 <- c(paste0("https://www.encodeproject.org/search/?type=experiment&",
                      "replicates.library.biosample.donor.organism.scientific_",
@@ -72,6 +74,7 @@ load.encode <- function(env) {
     assign("encode.db",encode.db, envir = env)
 }
 
+# Load the roadmap table
 load.roadmap <- function(env) {
     dataRoadmap <- read.csv(paste0("http://www.ncbi.nlm.nih.gov/geo/roadmap/",
                                    "epigenomics/?view=samples&sort=",
@@ -135,7 +138,7 @@ load.systems <- function(env) {
 }
 
 
-
+# Loads the table from google docs
 #' @importFrom downloader download
 load.platforms <- function(env) {
     gdocs <- paste0("https://docs.google.com/spreadsheets/d/10GwiiO8A4Ld1h4",
@@ -149,45 +152,4 @@ load.platforms <- function(env) {
         file.remove("platformstab.tsv")
     }
     assign("platforms",platforms, envir = env)
-}
-
-# Updates tcga platform and diseases
-# @param env package environment
-#' @importFrom stringr str_match
-#' @importFrom XML readHTMLTable
-#' @importFrom downloader download
-#' @keywords internal
-load.tcga <- function(env) {
-    tcga.root <- "http://tcga-data.nci.nih.gov/tcgadccws/GetHTML?"
-
-    # Get platform table
-    tcga.query <- "query=Platform"
-    next.url <- paste0(tcga.root, tcga.query)
-    platform.table <- tcgaGetTable(next.url)
-    platform.table <- platform.table[, 1:4]
-    platform.table <- platform.table[order(platform.table$name,
-                                           decreasing = TRUE),]
-
-    # Get disease table
-    tcga.query <- "query=Disease"
-    next.url <- paste0(tcga.root, tcga.query)
-    disease.table <- tcgaGetTable(next.url)
-    disease.table <- disease.table[, 1:3]
-
-    # Get center table
-    tcga.query <- "query=Center"
-    next.url <- paste0(tcga.root, tcga.query)
-    center.table  <- tcgaGetTable(next.url)
-    center.table <- center.table[, 1:3]
-
-    if (file.exists("tcga.html")) {
-        file.remove("tcga.html")
-    }
-
-    assign("platform.table",platform.table, envir = env)
-    assign("disease.table",disease.table, envir = env)
-    assign("center.table",center.table, envir = env)
-
-    tcga.db <-  createTcgaTable()
-    assign("tcga.db",tcga.db, envir = env)
 }
