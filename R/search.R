@@ -106,7 +106,7 @@ is.mapped <- function(term,env) {
 #' @param term Term to be searched. Example: 'brain' 'u87' etc.
 #' @param experiment Experiment type
 #' @param plot Create a summary plot of the result found? Deafult: TRUE
-#' @param dir.plot Directory to save summary plots
+#' @param dir.plot Directory to save the summary plots. Default: "searchSummary"
 #' \tabular{llll}{
 #'Microarray \tab MiRNAMicroArray \tab RRBS \tab DNAsequencing\cr
 #'ExpressionArray \tab Firehose \tab ChipSeq \tab fiveC \cr

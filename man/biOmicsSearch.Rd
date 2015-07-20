@@ -14,7 +14,7 @@ biOmicsSearch(term, experiment = NULL, plot = FALSE,
 
 \item{plot}{Create a summary plot of the result found? Deafult: TRUE}
 
-\item{dir.plot}{Directory to save summary plots
+\item{dir.plot}{Directory to save the summary plots. Default: "searchSummary"
 \tabular{llll}{
 Microarray \tab MiRNAMicroArray \tab RRBS \tab DNAsequencing\cr
 ExpressionArray \tab Firehose \tab ChipSeq \tab fiveC \cr

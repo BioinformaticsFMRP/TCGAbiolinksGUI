@@ -385,7 +385,8 @@ uncompress <- function(iFiles) {
     }
 }
 
-# Show ftp links downloaded @keywords internal
+# Show ftp links downloaded
+#' @keywords internal
 prepareInfoTable <- function(iLink, iOut) {
     if (length(iLink) > 0) {
         df <- do.call(rbind.data.frame, iLink)
