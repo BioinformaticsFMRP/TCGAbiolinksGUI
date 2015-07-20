@@ -437,7 +437,7 @@ roadmapSearch <- function(accession = NULL,
     db <- get("roadmap.db", envir = as.environment("package:biOmics"))
     if (!is.null(sample)) {
         id <- sapply(sample, function(x) {
-            db$Sample.Name == x
+            grepl(x,db$Sample.Name,ignore.case = T)
         })
         id <- apply(id, 1, any)
         db <- db[id, ]
@@ -498,7 +498,8 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
     }
 
     if (!is.null(sample)) {
-        if (!(is.element(tolower(sample), tolower(db$Sample.Name)))){
+        if (!length(grep(sample, db$Sample.Name,
+                         ignore.case = TRUE)) > 0 ){
             df <- as.data.frame(matrix(sort(unique(db$Sample.Name)),
                                        ncol = 3))
             print(kable(df, col.names = NULL, format = "pandoc",
