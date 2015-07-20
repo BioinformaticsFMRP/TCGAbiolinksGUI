@@ -4,7 +4,7 @@
 \alias{biOmicsDownload}
 \title{biOmicsDownload}
 \usage{
-biOmicsDownload(lines, enc.file.type = NULL, rmap.file.type = NULL)
+biOmicsDownload(lines = NULL, enc.file.type = NULL, rmap.file.type = NULL)
 }
 \arguments{
 \item{lines}{biOmicsSearch output}

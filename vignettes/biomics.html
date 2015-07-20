@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Tiago Chedraoui Silva, Tiago Mendes" />
+
+<meta name="date" content="2015-07-20" />
+
+<title>Working with biOmics package</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; }
+code > span.ch { color: #008080; }
+code > span.st { color: #008080; }
+code > span.co { color: #008000; }
+code > span.ot { color: #ff4000; }
+code > span.al { color: #ff0000; }
+code > span.er { font-weight: bold; }
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<link href="data:text/css,body%2C%20td%20%7B%0A%20%20%20font%2Dfamily%3A%20sans%2Dserif%3B%0A%20%20%20background%2Dcolor%3A%20white%3B%0A%20%20%20font%2Dsize%3A%2013px%3B%0A%7D%0A%0Abody%20%7B%0A%20%20max%2Dwidth%3A%20800px%3B%0A%20%20margin%3A%200%20auto%3B%0A%20%20padding%3A%201em%201em%202em%3B%0A%20%20line%2Dheight%3A%2020px%3B%0A%7D%0A%0A%2F%2A%20element%20spacing%20%2A%2F%0A%0Ap%2C%20pre%20%7B%20%0A%20%20margin%3A%200em%200em%201em%3B%0A%7D%0A%0A%2F%2A%20center%20images%20and%20tables%20%2A%2F%0Aimg%2C%20table%20%7B%0A%20%20margin%3A%200em%20auto%201em%3B%0A%7D%0A%0Ap%20%7B%0A%20%20text%2Dalign%3A%20justify%3B%0A%7D%0A%0Att%2C%20code%2C%20pre%20%7B%0A%20%20%20font%2Dfamily%3A%20%27DejaVu%20Sans%20Mono%27%2C%20%27Droid%20Sans%20Mono%27%2C%20%27Lucida%20Console%27%2C%20Consolas%2C%20Monaco%2C%20monospace%3B%0A%7D%0A%0Ah1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%2C%20h6%20%7B%20%0A%20%20font%2Dfamily%3A%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0A%20%20margin%3A%201%2E2em%200em%200%2E6em%200em%3B%0A%20%20font%2Dweight%3A%20bold%3B%0A%7D%0A%0Ah1%2Etitle%20%7B%0A%20%20font%2Dsize%3A%20250%25%3B%0A%20%20font%2Dweight%3A%20normal%3B%0A%20%20color%3A%20%2387b13f%3B%0A%20%20line%2Dheight%3A%201%2E1em%3B%0A%20%20margin%2Dtop%3A%200px%3B%0A%20%20border%2Dbottom%3A%200px%3B%0A%7D%0A%0Ah1%20%7B%0A%20%20font%2Dsize%3A%20160%25%3B%0A%20%20font%2Dweight%3A%20normal%3B%0A%20%20line%2Dheight%3A%201%2E4em%3B%0A%20%20border%2Dbottom%3A%201px%20%231a81c2%20solid%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20font%2Dsize%3A%20130%25%3B%20%20%0A%7D%0A%0Ah1%2C%20h2%2C%20h3%20%7B%0A%20%20color%3A%20%231a81c2%3B%0A%7D%0A%0Ah3%2C%20h4%2C%20h5%2C%20h6%20%7B%0A%20%20font%2Dsize%3A115%25%3B%0A%7D%20%2F%2A%20not%20expecting%20to%20dive%20deeper%20than%20four%20levels%20on%20a%20single%20page%20%2A%2F%0A%0A%2F%2A%20links%20are%20simply%20blue%2C%20hovering%20slightly%20less%20blue%20%2A%2F%0Aa%20%7B%20color%3A%20%231a81c2%3B%20%7D%0Aa%3Aactive%20%7B%20outline%3A%20none%3B%20%7D%0Aa%3Avisited%20%7B%20color%3A%20%231a81c2%3B%20%7D%0Aa%3Ahover%20%7B%20color%3A%20%234c94c2%3B%20%7D%0A%0Apre%2C%20img%20%7B%0A%20%20max%2Dwidth%3A%20100%25%3B%0A%20%20display%3A%20block%3B%0A%7D%0A%0Apre%20%7B%0A%20%20border%3A%200px%20none%3B%0A%20%20background%2Dcolor%3A%20%23F8F8F8%3B%0A%20%20white%2Dspace%3A%20pre%3B%0A%20%20overflow%2Dx%3A%20auto%3B%0A%7D%0A%0Apre%20code%20%7B%0A%20%20border%3A%201px%20%23aaa%20dashed%3B%0A%20%20background%2Dcolor%3A%20white%3B%0A%20%20display%3A%20block%3B%0A%20%20padding%3A%201em%3B%20%20%0A%20%20color%3A%20%23111%3B%0A%20%20overflow%2Dx%3A%20inherit%3B%0A%7D%0A%0A%2F%2A%20markdown%20v1%20%2A%2F%0Apre%20code%5Bclass%5D%20%7B%0A%20%20background%2Dcolor%3A%20inherit%3B%0A%7D%0A%0A%2F%2A%20markdown%20v2%20%2A%2F%0Apre%5Bclass%5D%20code%20%7B%0A%20%20background%2Dcolor%3A%20inherit%3B%0A%7D%0A%0A%2F%2A%20formatting%20of%20inline%20code%20%2A%2F%0Acode%20%7B%20%0A%20%20background%2Dcolor%3A%20transparent%3B%0A%20%20color%3A%20%2387b13f%3B%0A%20%20font%2Dsize%3A%2092%25%3B%0A%7D%0A%0A%2F%2A%20formatting%20of%20tables%20%2A%2F%0A%0Atable%2C%20td%2C%20th%20%7B%0A%20%20border%3A%20none%3B%0A%20%20padding%3A%200%200%2E5em%3B%0A%7D%0A%0A%2F%2A%20alternating%20row%20colors%20%2A%2F%0Atbody%20tr%3Anth%2Dchild%28odd%29%20td%20%7B%0A%20%20background%2Dcolor%3A%20%23F8F8F8%3B%0A%7D%0A%0Ablockquote%20%7B%0A%20%20%20color%3A%23666666%3B%0A%20%20%20margin%3A0%3B%0A%20%20%20padding%2Dleft%3A%201em%3B%0A%20%20%20border%2Dleft%3A%200%2E5em%20%23EEE%20solid%3B%0A%7D%0A%0Ahr%20%7B%0A%20%20%20height%3A%200px%3B%0A%20%20%20border%2Dbottom%3A%20none%3B%0A%20%20%20border%2Dtop%2Dwidth%3A%20thin%3B%0A%20%20%20border%2Dtop%2Dstyle%3A%20dotted%3B%0A%20%20%20border%2Dtop%2Dcolor%3A%20%23999999%3B%0A%7D%0A%0Aspan%2Eheader%2Dsection%2Dnumber%2C%20span%2Etoc%2Dsection%2Dnumber%20%7B%0A%20%20padding%2Dright%3A%201em%3B%0A%7D%0A%0A%40media%20print%20%7B%0A%20%20%20%2A%20%7B%0A%20%20%20%20%20%20background%3A%20transparent%20%21important%3B%0A%20%20%20%20%20%20color%3A%20black%20%21important%3B%0A%20%20%20%20%20%20filter%3Anone%20%21important%3B%0A%20%20%20%20%20%20%2Dms%2Dfilter%3A%20none%20%21important%3B%0A%20%20%20%7D%0A%0A%20%20%20body%20%7B%0A%20%20%20%20%20%20font%2Dsize%3A12pt%3B%0A%20%20%20%20%20%20max%2Dwidth%3A100%25%3B%0A%20%20%20%7D%0A%0A%20%20%20a%2C%20a%3Avisited%20%7B%0A%20%20%20%20%20%20text%2Ddecoration%3A%20underline%3B%0A%20%20%20%7D%0A%0A%20%20%20hr%20%7B%0A%20%20%20%20%20%20visibility%3A%20hidden%3B%0A%20%20%20%20%20%20page%2Dbreak%2Dbefore%3A%20always%3B%0A%20%20%20%7D%0A%0A%20%20%20pre%2C%20blockquote%20%7B%0A%20%20%20%20%20%20padding%2Dright%3A%201em%3B%0A%20%20%20%20%20%20page%2Dbreak%2Dinside%3A%20avoid%3B%0A%20%20%20%7D%0A%0A%20%20%20tr%2C%20img%20%7B%0A%20%20%20%20%20%20page%2Dbreak%2Dinside%3A%20avoid%3B%0A%20%20%20%7D%0A%0A%20%20%20img%20%7B%0A%20%20%20%20%20%20max%2Dwidth%3A%20100%25%20%21important%3B%0A%20%20%20%7D%0A%0A%20%20%20%40page%20%3Aleft%20%7B%0A%20%20%20%20%20%20margin%3A%2015mm%2020mm%2015mm%2010mm%3B%0A%20%20%20%7D%0A%0A%20%20%20%40page%20%3Aright%20%7B%0A%20%20%20%20%20%20margin%3A%2015mm%2010mm%2015mm%2020mm%3B%0A%20%20%20%7D%0A%0A%20%20%20p%2C%20h2%2C%20h3%20%7B%0A%20%20%20%20%20%20orphans%3A%203%3B%20widows%3A%203%3B%0A%20%20%20%7D%0A%0A%20%20%20h2%2C%20h3%20%7B%0A%20%20%20%20%20%20page%2Dbreak%2Dafter%3A%20avoid%3B%0A%20%20%20%7D%0A%7D%0A" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+  var links = document.links;  
+  for (var i = 0, linksLength = links.length; i < linksLength; i++)
+    if(links[i].hostname != window.location.hostname)
+      links[i].target = '_blank';
+});
+</script>
+
+</head>
+
+<body>
+
+
+<div id="header">
+<h1 class="title">Working with biOmics package</h1>
+<h4 class="author"><em>Tiago Chedraoui Silva, Tiago Mendes</em></h4>
+<h4 class="date"><em>2015-07-20</em></h4>
+</div>
+
+<h1>Contents</h1>
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#searching-using-ontology-based-algorithm">Searching using ontology-based algorithm</a></li>
+<li><a href="#working-with-encode">Working with Encode</a></li>
+<li><a href="#working-with-roadmap">Working with Roadmap</a></li>
+<li><a href="#biomics-ui">biomics UI</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Technological advances and public databases like The Cancer Genome Atlas (TCGA), The Encyclopedia of DNA Elements (ENCODE), and The NIH Roadmap Epigenomics Mapping Consortium (Roadmap) have provided unprecedented opportunities to interrogate the epigenome of cultured cancer cell lines as well as normal and tumor tissues with high resolution.</p>
+<p>Markedly however, biological information is stored in different formats and there is no current tool to integrate the data, highlighting an urgent need to develop bioinformatic tools and/or computational softwares to overcome this challenge.</p>
+<p>Our expectation is that biOMICs can effectively automate search, retrieve, and analyze the vast (epi)genomic data currently available from TCGA, ENCODE, and Roadmap, and integrate genomics and epigenomics features with researchers own high-throughput data.</p>
+</div>
+<div id="searching-using-ontology-based-algorithm" class="section level1">
+<h1>Searching using ontology-based algorithm</h1>
+<p>In order to correlate their data, we created an ontology-based search algorithm that uses the repository of biomedical ontologies called <a href="http://www.bioportal.bioontology.org">BioPortal</a> to correlate the metadata to an ontology nomenclature.</p>
+<p>The function <code>biOmicsSearch</code> accepts the following parameters:</p>
+<ul>
+<li><strong>term</strong> Term to be searched. Example: ‘brain’ ‘u87’ ‘heart’ ‘lung’ etc.</li>
+<li><strong>experiment</strong> Experiment type (Microarray, MiRNAMicroArray, RRBS, DNAsequencing, ExpressionArray, Firehose, ChipSeq, fiveC, ExonArray, DNAMethylation, MRESeq, RepliSeq, RNASeq, miRNASeq, Rampage Others)</li>
+<li><strong>plot</strong> Create plot that summarize the search results? Default: FALSE</li>
+<li><strong>dir.plot</strong> Directory to save the summary plots. Default: “searchSummary”</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get all sampples from the query and save into tcga folder</span>
+query &lt;-<span class="st"> </span><span class="kw">biOmicsSearch</span>(<span class="dt">term=</span><span class="st">&quot;brain&quot;</span>) </code></pre>
+<div id="dowloading-the-data" class="section level3">
+<h3>Dowloading the data</h3>
+<p>Using the result from <code>biOmicsSearch</code> you can download the data using the function <code>biOmicsDownload</code>. The parameters are:</p>
+<ul>
+<li><strong>lines</strong> Output from biOmicsSearch</li>
+<li><strong>enc.file.type</strong> Type of file to downloaed from encode database</li>
+<li><strong>rmap.file.type</strong> Type of file to downloaed from roadmap database</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get all sampples from the query and save into tcga folder</span>
+query &lt;-<span class="st"> </span><span class="kw">biOmicsSearch</span>(<span class="dt">term=</span><span class="st">&quot;brain&quot;</span>) </code></pre>
+</div>
+</div>
+<div id="working-with-encode" class="section level1">
+<h1>Working with Encode</h1>
+<div id="search" class="section level3">
+<h3>Search</h3>
+<p>You can easily search tcga samples using the <code>encodeSearch</code> function. Using a summary of roadmap datatabase, the function works with the following parameters:</p>
+<ul>
+<li>accession</li>
+<li>biosample</li>
+<li>assay</li>
+<li>lab</li>
+<li>target</li>
+<li>description</li>
+<li>organism</li>
+</ul>
+<p>Some examples of search are shown below</p>
+<pre class="sourceCode r"><code class="sourceCode r">query &lt;-<span class="st"> </span><span class="kw">encodeSearch</span>(<span class="dt">accession =</span> <span class="st">&quot;ENCSR602PHV&quot;</span>)</code></pre>
+<p>Obs: As these terms needs to be exact we validate user input before searching.</p>
+</div>
+<div id="download" class="section level3">
+<h3>Download</h3>
+<p>You can easily download roadmap data using the <code>encode.download</code> function.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get all sampples from the query and save into tcga folder</span>
+<span class="kw">encodeDownload</span>(query,<span class="dt">path=</span><span class="st">&quot;tcga&quot;</span>,<span class="dt">type=</span><span class="st">&quot;fastq&quot;</span>) </code></pre>
+<p>Obs: The function will structure the folders to save the data as: <em>Path given by the user/Experiment folder</em></p>
+</div>
+</div>
+<div id="working-with-roadmap" class="section level1">
+<h1>Working with Roadmap</h1>
+<div id="search-1" class="section level3">
+<h3>Search</h3>
+<p>You can easily search roadmap samples using the <code>roadmapSearch</code> function. Using a summary of roadmap datatabase, the function works with the following parameters:</p>
+<ul>
+<li><strong>samples</strong> Partial or complete name of the sample (“heart”,&quot; heart,fetal day96 U“,”ES-WA7“)</li>
+<li><strong>experiment</strong> Experiments (“H3K4me1”,“smRNA-Seq”)</li>
+<li><strong>NA.Accession</strong></li>
+<li><strong>accession</strong> GEO sample accession Ex: GSM409307</li>
+<li><strong>center</strong></li>
+<li><strong>embargo.end.date</strong></li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get all H1 cell line and IMR90 cell line from platforms H3K4me1 H3K4me3</span>
+query &lt;-<span class="st"> </span><span class="kw">roadmapSearch</span>(<span class="dt">sample =</span> <span class="kw">c</span>(<span class="st">&quot;H1 cell line&quot;</span>,<span class="st">&quot;IMR90 cell line&quot;</span>),
+                       <span class="dt">experiment =</span> <span class="kw">c</span>(<span class="st">&quot;H3K4me1&quot;</span>,<span class="st">&quot;H3K4me3&quot;</span>))</code></pre>
+<p>Obs: As these terms needs to be exact we validate user input before searching.</p>
+</div>
+<div id="roadmap-download" class="section level3">
+<h3>Roadmap download</h3>
+<p>You can easily download roadmap data using the <code>roadmapDownload</code> function. The function accepts the following parameters:</p>
+<ul>
+<li><strong>lines</strong> Output from the search function</li>
+<li><strong>type</strong> Type of data to download (bed,wig, etc) Default: all</li>
+<li><strong>path</strong> Folder to save the file</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get all bed sampples from the query and save into rmap folder</span>
+<span class="kw">roadmapDownload</span>(query, <span class="dt">type =</span> <span class="st">&quot;bed&quot;</span>, <span class="dt">path =</span> <span class="st">&quot;rmap&quot;</span>) </code></pre>
+<p>Obs: The function will structure the folders to save the data as: <em>Path given by the user/Experiment name/Sample name</em></p>
+</div>
+<div id="examples" class="section level3">
+<h3>Examples</h3>
+<pre class="sourceCode r"><code class="sourceCode r">samples &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ES-I3 cell line&quot;</span>, 
+             <span class="st">&quot;ES-WA7 cell line&quot;</span>, 
+             <span class="st">&quot;H1 BMP4 derived mesendoderm cultured cells&quot;</span>, 
+             <span class="st">&quot;H1 cell line&quot;</span>, 
+             <span class="st">&quot;H1 derived mesenchymal stem cells&quot;</span>, 
+             <span class="st">&quot;H9 cell line&quot;</span>, 
+             <span class="st">&quot;HUES48 cell line&quot;</span>, 
+             <span class="st">&quot;HUES64 cell line&quot;</span>, 
+             <span class="st">&quot;HUES6 cell line&quot;</span>, 
+             <span class="st">&quot;adipose derived mesenchymal stem cells&quot;</span>,
+             <span class="st">&quot;UCSF-4 cell line&quot;</span>, 
+             <span class="st">&quot;bone marrow derived mesenchymal stem cells&quot;</span>, 
+             <span class="st">&quot;hESC-derived CD56+ mesoderm cultured cells&quot;</span>, 
+             <span class="st">&quot;iPS-11a cell line&quot;</span>, <span class="st">&quot;iPS-15b cell line&quot;</span>, 
+             <span class="st">&quot;iPS-18a cell line&quot;</span>, <span class="st">&quot;iPS-18c cell line&quot;</span>, 
+             <span class="st">&quot;iPS-20b cell line&quot;</span>, 
+             <span class="st">&quot;iPS DF 19.11 cell line&quot;</span>, 
+             <span class="st">&quot;iPS DF 6.9 cell line&quot;</span>, 
+             <span class="st">&quot;penis foreskin fibroblast primary cells&quot;</span>, 
+             <span class="st">&quot;breast, fibroblast primary cells&quot;</span>)
+
+experiment &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;H3K27me3&quot;</span>,<span class="st">&quot;H3K36me3&quot;</span>,<span class="st">&quot;H3K4me1&quot;</span>,<span class="st">&quot;H3K9me3&quot;</span>,<span class="st">&quot;H3K9ac&quot;</span>,<span class="st">&quot;H3K27ac&quot;</span>)
+
+query &lt;-<span class="st"> </span><span class="kw">roadmapSearch</span>(<span class="dt">experiment =</span> experiment, <span class="dt">sample =</span> samples)
+<span class="kw">roadmapDownload</span>(query, <span class="dt">path =</span> <span class="st">&quot;rmap&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;bed&quot;</span>)</code></pre>
+</div>
+</div>
+<div id="biomics-ui" class="section level1">
+<h1>biomics UI</h1>
+<p>TBD</p>
+<div id="session-info" class="section level3">
+<h3>Session info</h3>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre>
+<pre><code>## R version 3.2.1 (2015-06-18)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu precise (12.04.5 LTS)
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices datasets  utils     methods   base     
+## 
+## other attached packages:
+## [1] biOmics_0.99.0       BiocStyle_1.7.4      shinydashboard_0.5.0
+## [4] BiocInstaller_1.19.8 setwidth_1.0-4      
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.11.6           gtools_3.5.0          assertthat_0.1       
+##  [4] digest_0.6.8          mime_0.3              R6_2.1.0             
+##  [7] GenomeInfoDb_1.5.8    plyr_1.8.3            stats4_3.2.1         
+## [10] evaluate_0.7          RSQLite_1.0.0         ggplot2_1.0.1        
+## [13] curl_0.9.1            gdata_2.17.0          S4Vectors_0.7.10     
+## [16] R.utils_2.1.0         R.oo_1.19.0           rmarkdown_0.7        
+## [19] splines_3.2.1         proto_0.3-10          devtools_1.8.0       
+## [22] downloader_0.4        stringr_1.0.0         RCurl_1.95-4.7       
+## [25] biomaRt_2.25.1        munsell_0.4.2         shiny_0.12.1         
+## [28] httpuv_1.3.2          rversions_1.0.2       BiocGenerics_0.15.3  
+## [31] htmltools_0.2.6       tcltk_3.2.1           roxygen2_4.1.1       
+## [34] IRanges_2.3.14        codetools_0.2-14      XML_3.98-1.3         
+## [37] reshape_0.8.5         MASS_7.3-43           bitops_1.0-6         
+## [40] R.methodsS3_1.7.0     grid_3.2.1            xtable_1.7-4         
+## [43] GGally_0.5.0          gtable_0.1.2          DBI_0.3.1            
+## [46] formatR_1.2           git2r_0.10.1          magrittr_1.5         
+## [49] scales_0.2.5          stringi_0.5-5         pbapply_1.1-1        
+## [52] XVector_0.9.1         reshape2_1.4.1        reutils_0.1.2        
+## [55] xml2_0.1.1            rjson_0.2.15          rols_1.11.6          
+## [58] tools_3.2.1           Biobase_2.29.1        yaml_2.1.13          
+## [61] survival_2.38-3       parallel_3.2.1        SSOAP_0.8-0          
+## [64] AnnotationDbi_1.31.17 colorspace_1.2-6      GenomicRanges_1.21.16
+## [67] XMLSchema_0.7-2       memoise_0.2.1         knitr_1.10.5         
+## [70] exactRankTests_0.8-28</code></pre>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
