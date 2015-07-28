@@ -53,13 +53,6 @@ map.to.bto <- function(term,env) {
 
 is.mapped <- function(term,env) {
 
-    biosample.encode  <- get("biosample.encode",
-                             envir = as.environment("package:biOmics"))
-    biosample.roadmap <- get("biosample.roadmap",
-                             envir = as.environment("package:biOmics"))
-    biosample.tcga    <- get("biosample.tcga",
-                             envir = as.environment("package:biOmics"))
-
     # search in roamap Could be - Accession, Sample.Name,
     # Experiment
     idx <- grep(term, biosample.roadmap$biosample, ignore.case = TRUE)
