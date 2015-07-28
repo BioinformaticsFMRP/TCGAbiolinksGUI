@@ -341,7 +341,7 @@ showResults <- function(solution, exper, plot = FALSE, path) {
 }
 
 is.experiment <- function(experiment) {
-    platforms    <- get("platforms", envir = as.environment("package:biOmics"))
+
     v <- unique(platforms$Standard)
     if(is.null(experiment)){
         return(TRUE)
@@ -430,11 +430,12 @@ roadmapSearch <- function(accession = NULL,
     valid <- validadeRoadmap(accession, sample, experiment, center,
                              NA.Accession, embargo.end.date)
 
+    db <- roadmap.db
+
     if(!(valid)){
         return(NULL)
     }
 
-    db <- get("roadmap.db", envir = as.environment("package:biOmics"))
     if (!is.null(sample)) {
         id <- sapply(sample, function(x) {
             grepl(x,db$Sample.Name,ignore.case = T)
@@ -485,8 +486,7 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
                             embargo.end.date = NULL
 ){
 
-    db <- get("roadmap.db", envir = as.environment("package:biOmics"))
-
+    db <- roadmap.db
     if (!is.null(accession)) {
         if (!length(grep(accession, db$X..GEO.Accession,
                          ignore.case = TRUE)) > 0 ){
@@ -655,7 +655,7 @@ encodeSearch <- function(accession = NULL,
         return(NULL)
     }
 
-    db <- get("encode.db", envir = as.environment("package:biOmics"))
+    db <- encode.db
 
     if (!is.null(biosample)) {
         id <- sapply(biosample, function(x) {
@@ -712,7 +712,7 @@ validadeEncode <- function(accession = NULL, biosample = NULL,
                            description = NULL, organism = NULL
 ){
 
-    db <- get("encode.db", envir = as.environment("package:biOmics"))
+    db <- encode.db
 
     if (!is.null(accession)) {
         if (!length(grep(accession, db$accession,
