@@ -213,14 +213,6 @@ biOmicsSearch <- function(term,
 #' @keywords internal
 showResults <- function(solution, exper, plot = FALSE, path) {
     .e <- environment()
-    biosample.encode  <- get("biosample.encode", envir = as.environment("package:biOmics"))
-    biosample.roadmap <- get("biosample.roadmap", envir = as.environment("package:biOmics"))
-    biosample.tcga    <- get("biosample.tcga", envir = as.environment("package:biOmics"))
-    encode.db     <- get("encode.db", envir = as.environment("package:biOmics"))
-    tcga.db       <- get("tcga.db", envir = as.environment("package:biOmics"))
-    roadmap.db    <- get("roadmap.db", envir = as.environment("package:biOmics"))
-    systems       <- get("systems", envir = as.environment("package:biOmics"))
-    platforms     <- get("platforms", envir = as.environment("package:biOmics"))
 
     # Get the samples that matches the result of the query
     # Databases were matched manually to systems
