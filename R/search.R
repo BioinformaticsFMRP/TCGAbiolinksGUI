@@ -332,7 +332,7 @@ is.experiment <- function(experiment) {
         return(TRUE)
     }
     if ((length(grep(experiment, v, ignore.case = TRUE)) > 0) &
-            (nchar(experiment) >= 3)) {
+        (nchar(experiment) >= 3)) {
         return(TRUE)
     } else {
         df <- as.data.frame(matrix(sort(unique(platforms$Standard)),
@@ -466,6 +466,8 @@ roadmapSearch <- function(accession = NULL,
     return(db)
 }
 
+
+#' @importFrom knitr kable
 validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
                             NA.Accession = NULL, center = NULL,
                             embargo.end.date = NULL
@@ -473,45 +475,52 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
 
     db <- roadmap.db
     if (!is.null(accession)) {
-        if (!length(grep(accession, db$X..GEO.Accession,
-                         ignore.case = TRUE)) > 0 ){
-            cat("=======================================================\n")
-            cat("ERROR: Acession not found. Select from the table above.\n")
-            cat("=======================================================\n")
-            return(FALSE)
-        }
+
+        sapply(accession, function(x) {
+            if (!length(grep(x, db$X..GEO.Accession,
+                             ignore.case = TRUE)) > 0 ) {
+                cat("=======================================================\n")
+                cat(paste0("Acession", x))
+                cat("ERROR: Acession not found. Select from the table above.\n")
+                cat("=======================================================\n")
+                return(FALSE)
+            }})
     }
 
     if (!is.null(sample)) {
-        if (!length(grep(sample, db$Sample.Name,
-                         ignore.case = TRUE)) > 0 ){
-            df <- as.data.frame(matrix(sort(unique(db$Sample.Name)),
-                                       ncol = 3))
-            print(kable(df, col.names = NULL, format = "pandoc",
-                        caption = "Roadmap samples"))
-            cat("=======================================================\n")
-            cat("ERROR: Samples not found. Select from the table above.\n")
-            cat("=======================================================\n")
-            return(FALSE)
-        }
+        sapply(sample, function(x) {
+
+            if (!length(grep(x, db$Sample.Name,
+                             ignore.case = TRUE)) > 0 ) {
+                df <- as.data.frame(matrix(sort(unique(db$Sample.Name)),
+                                           ncol = 3))
+                print(kable(df, col.names = NULL, format = "pandoc",
+                            caption = "Roadmap samples"))
+                cat("=======================================================\n")
+                cat("ERROR: Samples not found. Select from the table above.\n")
+                cat("=======================================================\n")
+                return(FALSE)
+            }})
     }
 
     if (!is.null(experiment)) {
-        if  (!length(grep(experiment, db$Experiment,
-                          ignore.case = TRUE)) > 0 ){
-            df <- as.data.frame(matrix(sort(unique(db$Experiment)),
-                                       ncol = 3))
-            print(kable(df, col.names = NULL, format = "pandoc",
-                        caption = "Roadmap experiments"))
-            cat("==========================================================\n")
-            cat("ERROR: Experiment not found. Select from the table above.\n")
-            cat("==========================================================\n")
-            return(FALSE)
-        }
+        sapply(experiment, function(x) {
+            if  (!length(grep(x, db$Experiment,
+                              ignore.case = TRUE)) > 0 ) {
+                df <- as.data.frame(matrix(sort(unique(db$Experiment)),
+                                           ncol = 3))
+                print(kable(df, col.names = NULL, format = "pandoc",
+                            caption = "Roadmap experiments"))
+                cat("==========================================================\n")
+                cat("ERROR: Experiment not found. Select from the table above.\n")
+                cat("==========================================================\n")
+                return(FALSE)
+            }})
     }
 
     if (!is.null(center)) {
-        if  (!length(grep(center, db$Center, ignore.case = TRUE)) > 0 ){
+        sapply(center, function(x) {
+        if  (!length(grep(x, db$Center, ignore.case = TRUE)) > 0 ){
             df <- as.data.frame(matrix(sort(unique(db$Center)),
                                        ncol = 3))
             print(kable(df, col.names = NULL, format = "pandoc",
@@ -520,17 +529,18 @@ validadeRoadmap <- function(accession = NULL, sample = NULL, experiment = NULL,
             cat("ERROR: Center not found. Select from the table above.\n")
             cat("==========================================================\n")
             return(FALSE)
-        }
+        }})
     }
 
     if (!is.null(NA.Accession)) {
-        if (!length(grep(NA.Accession, db$NA.Accession,
+        sapply(NA.Accession, function(x) {
+        if (!length(grep(x, db$NA.Accession,
                          ignore.case = TRUE)) > 0 ){
             cat("=======================================================\n")
             cat("ERROR: NA.Acession not found. Select from the table above.\n")
             cat("=======================================================\n")
             return(FALSE)
-        }
+        }})
     }
 
     if (!is.null(embargo.end.date)) {
