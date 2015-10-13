@@ -108,6 +108,7 @@ is.mapped <- function(term,env) {
 #'}
 #' @examples inst/examples/biomicsSearch.R
 #' @importFrom rols olsQuery term parents isIdObsolete
+#' @importFrom TCGAbiolinks TCGAquery
 #' @export
 #' @return A dataframe with the results of the query if it
 #'         was successful
@@ -229,7 +230,8 @@ showResults <- function(solution, exper, plot = FALSE, path) {
                                          rmap.samples), ]
     disease <- sapply(strsplit(tcga.samples, split = " - "),
                       function(x) {x[1]})
-    tcga.result <- tcga.db[is.element(tcga.db$Disease, disease),]
+    tcga.result <- TCGAquery(tumor = disease, level = 3)
+
     # Select experiments
     if (! is.null(exper)) {
         message("Filtering by experiment")

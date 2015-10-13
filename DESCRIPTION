@@ -29,18 +29,14 @@ Imports:
     rjson,
     reutils,
     XML,
-    tcltk,
     pbapply,
     rols,
     stringr,
-    GGally,
     GenomicRanges,
     IRanges,
     biomaRt,
-    exactRankTests,
-    ggplot2,
-    survival,
-    parallel
+    parallel,
+    TCGAbiolinks
 VignetteBuilder: knitr
 biocViews:
     Genetics,

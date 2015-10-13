@@ -28,7 +28,6 @@ update <- function(){
     load.platforms(env)
     load.encode(env)
     load.roadmap(env)
-    tcga.db <- get("tcga.db")
     encode.db <- get("encode.db")
     roadmap.db <- get("roadmap.db")
     platform.table <- get("platform.table")
@@ -46,7 +45,6 @@ update <- function(){
              platforms,
              roadmap.db,
              systems,
-             tcga.db,
              platform.table,
              disease.table,
              internal = TRUE, overwrite = T
