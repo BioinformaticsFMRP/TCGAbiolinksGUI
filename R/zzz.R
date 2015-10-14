@@ -28,15 +28,13 @@ update <- function(){
     load.platforms(env)
     load.encode(env)
     load.roadmap(env)
-    encode.db <- get("encode.db")
-    roadmap.db <- get("roadmap.db")
-    platform.table <- get("platform.table")
-    disease.table <- get("disease.table")
-    biosample.encode <- get("biosample.encode")
-    biosample.roadmap <- get("biosample.roadmap")
-    biosample.tcga <- get("biosample.tcga")
-    systems <- get("systems")
-    platforms <- get("platforms")
+    encode.db <- get("encode.db", envir = env)
+    roadmap.db <- get("roadmap.db", envir = env)
+    biosample.encode <- get("biosample.encode", envir = env)
+    biosample.roadmap <- get("biosample.roadmap", envir = env)
+    biosample.tcga <- get("biosample.tcga", envir = env)
+    systems <- get("systems", envir = env)
+    platforms <- get("platforms", envir = env)
 
     use_data(biosample.encode,
              biosample.roadmap,
@@ -45,8 +43,6 @@ update <- function(){
              platforms,
              roadmap.db,
              systems,
-             platform.table,
-             disease.table,
              internal = TRUE, overwrite = T
     )
 

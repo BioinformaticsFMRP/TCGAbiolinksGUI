@@ -4,71 +4,31 @@
 \alias{roadmapSearch}
 \title{Roadmap search}
 \usage{
-roadmapSearch(accession = NULL, sample = NULL, experiment = NULL,
-  NA.Accession = NULL, center = NULL, embargo.end.date = NULL)
+roadmapSearch(sample = NULL, experiment = NULL)
 }
 \arguments{
-\item{accession}{GEO sample accession Ex: GSM409307}
-
 \item{sample}{Example:
 \tabular{ll}{
-H1 cell line  \tab heart, fetal day96 U  \cr
-IMR90 cell line \tab kidney, fetal day122 U\cr
-CD34 primary cells \tab lung, fetal day122 U  \cr
-CD34 mobilized primary cells \tab heart, fetal day101 U \cr
-kidney, fetal day82 F \tab lung, fetal day101 U  \cr
-breast, luminal epithelial cells \tab CD3 primary cells     \cr
-breast, myoepithelial cells      \tab CD19 primary cells    \cr
-breast, stem cells \tab ES-WA7 cell line \cr
-brain, fetal day122 M \tab ES-I3 cell line \cr
-adrenal gland, fetal day96 U     \tab CD34 cultured cells
+H1 cell line  \tab Fetal Heart\cr
+IMR90 fetal lung fibroblasts Cell Line \tab Fetal Kidney\cr
+Aorta \tab lung\cr
+Fetal Adrenal Gland \tab CD34 cultured cells
 }}
 
 \item{experiment}{Examples:
 \tabular{llll}{
-H3K4me1   \tab smRNA-Seq \tab H2BK20ac \tab H4K91ac                     \cr
-H3K4me3   \tab MeDIP-Seq \tab H3K14ac  \tab Exon array                  \cr
-H3K36me3  \tab H3K27ac   \tab H3K23ac  \tab H2BK5ac                     \cr
-H3K9ac    \tab H3K23me2  \tab H3K4ac   \tab  DNase hypersensitivity     \cr
-MRE-Seq   \tab H3K18ac   \tab H3K4me2  \tab RRBS                        \cr
-H3K9me1   \tab H4K5ac    \tab H3K56ac  \tab Digital genomic footprinting\cr
-H3K9me3   \tab H2AK5ac   \tab H3K79me1 \tab ChIP-Seq input              \cr
-H3K27me3  \tab H2BK120ac \tab H3K79me2 \tab H2A.Z                       \cr
-H2AK9ac   \tab H2BK12ac  \tab H4K20me1 \tab H3T11ph                     \cr
-mRNA-Seq  \tab H2BK15ac  \tab H4K8ac   \tab Bisulfite-Seq
+DNase   \tab H2A.Z  \tab H2AK5ac \tab H2BK120ac   \cr
+H2BK12ac   \tab H2BK15ac \tab H2BK20ac  \tab H2BK5ac \cr
+H3K14ac  \tab H3K18ac   \tab H3K23ac  \tab H3K23me2  \cr
+H3K27ac    \tab H3K27me3  \tab H3K36me3   \tab  H3K4ac   \cr
+H3K4me1   \tab H3K4me2   \tab H3K4me3  \tab H4K5ac
 }}
-
-\item{NA.Accession}{Example: NA000020967.1}
-
-\item{center}{Example:
-\tabular{l}{
-UCSD                    \cr
-UCSF-UBC                \cr
-Broad                   \cr
-University of Washington
-}}
-
-\item{embargo.end.date}{Example: 2010-05-03}
 }
 \value{
 Dataframe with the results of the query
-\tabular{llllll}{
- GSM409307 \tab H1 cell line \tab H3K4me1 \tab UCSD \tab
- ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/
- \tab 2010-05-03
-}
 }
 \description{
 Searches in the roadmap database
-}
-\examples{
-query <- roadmapSearch(sample = "H1 cell line")
-
-query <- roadmapSearch(sample = "H1 cell line", experiment = "RRBS")
-
-query <- roadmapSearch(accession = "GSM621357")
-
-query <- roadmapSearch(sample = c("H1 cell line","H9 cell line"),
-                       experiment = c("RRBS","H3K79me2"))
+   Source: https://docs.google.com/spreadsheets/d/1yikGx4MsO9Ei36b64yOy9Vb6oPC5IBGlFbYEt-N6gOM/edit#gid=14
 }
 

@@ -76,11 +76,13 @@ load.encode <- function(env) {
 
 # Load the roadmap table
 load.roadmap <- function(env) {
-    dataRoadmap <- read.csv(paste0("http://www.ncbi.nlm.nih.gov/geo/roadmap/",
-                                   "epigenomics/?view=samples&sort=",
-                                   "acc&mode=csv"),
-                            stringsAsFactors = FALSE)
-    assign("roadmap.db",dataRoadmap, envir = env)
+    # Roadmap database information
+    # http://egg2.wustl.edu/roadmap/web_portal/processed_data.html
+    dataRoadmap <- fread(paste0("https://docs.google.com/spreadsheets/d/",
+                                "1yikGx4MsO9Ei36b64yOy9Vb6oPC5IBGlFbYEt-N6gOM/",
+                                "export?format=tsv&gid=14"),
+                         sep = "\t")
+    assign("roadmap.db", dataRoadmap, envir = env)
 }
 
 #' @importFrom downloader download
