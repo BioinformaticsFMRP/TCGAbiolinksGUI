@@ -147,7 +147,7 @@ biOmicsSearch <- function(term,
         message("Not found in the cache, searching in the ontology...")
         # Term has not been mapped before.
         assign("ont", "BTO" , envir = env)
-        ont <- get("ont",envir = env)
+        ont <- get("ont", envir = env)
         query <- rols::olsQuery(term, ont, exact = TRUE)
 
         if (length(query) > 0) {
@@ -172,16 +172,18 @@ biOmicsSearch <- function(term,
             message("Not found in the cache, not found in BTO...")
 
             ont.vec <- c("EFO", "CL", "UBERON")
-            for (i in seq(ont.vec)) {
-                query <- rols::olsQuery(term, ont.vec[i])
+            for (i in ont.vec) {
+                query <- rols::olsQuery(term, i)
                 if (length(query) > 0) {
                     # term was found in other ontology!
-                    for (i in seq(query)) {
-                        map.to.bto(query[i],env)
+                    for (j in seq(query)) {
+                        map.to.bto(query[j],env)
                         success <- get("success", envir = env)
-                        if (success) {
-                            break
-                        }
+                        if (success)  break
+                    }
+                    if (success) {
+                        message(paste0("Found in:",i,"!"))
+                        break
                     }
                 }
             }
@@ -192,7 +194,7 @@ biOmicsSearch <- function(term,
 
     end.time <- Sys.time()
     time.taken <- end.time - start.time
-    message(paste("Time taken: ", round(time.taken, 2), "s"))
+    message(paste("Time taken: ", round(time.taken, 2), "s \n"))
 
     if (success) {
         return(showResults(solution, experiment, plot, dir.plot))
@@ -206,7 +208,6 @@ biOmicsSearch <- function(term,
 #' @import ggplot2
 #' @keywords internal
 showResults <- function(solution, exper, plot = FALSE, path) {
-    .e <- environment()
 
     # Get the samples that matches the result of the query
     # Databases were matched manually to systems
@@ -301,29 +302,33 @@ showResults <- function(solution, exper, plot = FALSE, path) {
 
     if (plot) {
         message("Summary images were saved in: ", path)
-
         dir.create(path, showWarnings = FALSE, recursive = TRUE)
-        # % Experiments per database
-        g <- ggplot(results,
-                    aes(factor(database), fill = results$Experiment ),
-                    environment = .e, main = "Experiments per database") +
-            geom_bar(position = "fill") +
-            ggtitle("Experiments per database")
-        plot(g)
-        ggsave(g, filename = file.path(path, "experiments.pdf"),
-               height = 14, width = 10, scale = 1.5)
-
-        # % Samples per database
-        g <- ggplot(results, aes(factor(database),
-                                 fill = results$Sample),
-                    environment = .e) +
-            geom_bar(position = "fill") +
-            ggtitle("Samples per database")
-        plot(g)
-        ggsave(g, filename = file.path(path, "samples.pdf"),
-               height = 14, width = 10, scale = 1.5)
+        create.summary.plot(results,"Experiment","Experiment per database","experiment.pdf",path)
+        create.summary.plot(results,"Sample","Samples per database","samples.pdf",path)
     }
     return(results)
+}
+
+create.summary.plot <- function(data, col, title, filename, path){
+    .e <- environment()
+
+    g <- ggplot(data, aes(factor(database),
+                          fill = data[,col]),
+                environment = .e) +
+        geom_bar(position = "fill") +
+        theme_bw() +
+        theme(panel.border = element_blank(),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              axis.line = element_line(colour = "black"),
+              legend.key = element_rect(colour = 'white'),
+              legend.justification=c(1,1), legend.position=c(1,1)) +
+        ggtitle(title) +
+        theme(legend.direction ="vertical",legend.position = "bottom")+
+        guides(fill=guide_legend(ncol=4))
+
+    ggsave(g, filename = file.path(path, "samples.pdf"),
+           height = 14, width = 10, scale = 1.5)
 
 }
 
