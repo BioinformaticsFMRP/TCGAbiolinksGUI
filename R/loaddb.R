@@ -75,6 +75,7 @@ load.encode <- function(env) {
 }
 
 # Load the roadmap table
+#' @importFrom data.table fread
 load.roadmap <- function(env) {
     # Roadmap database information
     # http://egg2.wustl.edu/roadmap/web_portal/processed_data.html

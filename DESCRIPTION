@@ -2,12 +2,10 @@ Package: biOmics
 Title: biOmics
 Version: 0.99.0
 Date: 2015-04-22
-Author:
-    Tiago Chedraoui Silva <tiagochst@gmail.com>,
+Author: Tiago Chedraoui Silva <tiagochst@gmail.com>,
     Tiago Mendes <tmendesilva@gmail.com>
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
-Description:
-    A bioinformatics method to search,
+Description: A bioinformatics method to search,
     analyse and interpret biological data from genomic sequencing
     in public repositories (roadmap,encode,tcga).
 License: GPL (>= 3)
@@ -38,8 +36,7 @@ Imports:
     parallel,
     TCGAbiolinks
 VignetteBuilder: knitr
-biocViews:
-    Genetics,
+biocViews: Genetics,
     DNAMethylation,
     StatisticalMethod,
     DifferentialMethylation,
@@ -49,3 +46,4 @@ biocViews:
     DifferentialExpression,
     Pathways,
     Network
+RoxygenNote: 5.0.1

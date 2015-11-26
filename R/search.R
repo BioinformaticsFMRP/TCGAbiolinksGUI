@@ -324,14 +324,17 @@ create.summary.plot <- function(data, col, title, filename, path){
               legend.key = element_rect(colour = 'white'),
               legend.justification=c(1,1), legend.position=c(1,1)) +
         ggtitle(title) +
+        labs(x="Database", y="Percentage of samples") +
+        scale_fill_discrete(name=col) +
         theme(legend.direction ="vertical",legend.position = "bottom")+
         guides(fill=guide_legend(ncol=4))
 
-    ggsave(g, filename = file.path(path, "samples.pdf"),
+    ggsave(g, filename = file.path(path, filename),
            height = 14, width = 10, scale = 1.5)
 
 }
 
+#' @importFrom knitr kable
 is.experiment <- function(experiment) {
 
     v <- unique(platforms$Standard)

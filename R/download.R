@@ -9,34 +9,42 @@
 #' @examples
 #' query <- biOmicsSearch("u87")
 #' biOmicsDownload(query, enc.file.type = "bam",rmap.file.type = "bed")
-biOmicsDownload <- function(lines=NULL, enc.file.type = NULL,
+biOmicsDownload <- function(lines=NULL,
+                            enc.file.type = NULL,
                             rmap.file.type = NULL) {
 
     if (is.null(lines)) stop("Please set lines parameter")
 
-        encode.lines <- subset(lines, lines$database == "encode")
-        rmap.lines <- subset(lines, lines$database == "roadmap")
-        tcga.lines <- subset(lines, lines$database == "tcga")
+    encode.lines <- subset(lines, lines$database == "encode")
+    rmap.lines <- subset(lines, lines$database == "roadmap")
+    tcga.lines <- subset(lines, lines$database == "tcga")
 
     # -------------- download Encode
     if (dim(encode.lines)[1] > 0) {
+        message("==== Encode download ====")
         encode.lines <- subset(encode.db,
                                encode.db$accession == encode.lines$ID)
-        encodeDownload(encode.lines, enc.file.type)
+        #encodeDownload(encode.lines, enc.file.type)
     }
 
     # -------------- download ROADMAP
     if (dim(rmap.lines)[1] > 0) {
+        message("==== Roadmap download ====")
         rmap.lines <- subset(roadmap.db,
-                            roadmap.db$X..GEO.Accession == rmap.lines$ID)
+                             roadmap.db$EID == rmap.lines$ID)
         roadmapDownload(rmap.lines, rmap.file.type)
     }
     # ---------------- download TCGA TODO: add filters, folder to
+
     # This will be replaced by TCGAbiolinks
-    #if (dim(tcga.lines)[1] > 0) {
-    #    tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
-    #    tcgaDownload(tcga.lines, path = "TCGA")
-    #}
+    if (dim(tcga.lines)[1] > 0) {
+        message("==== TCGA download ====")
+        tcga.db <- TCGAquery()
+        tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
+        TCGAdownload(tcga.lines, path = "TCGA")
+    }
+
+
 }
 
 #' @title Download encode data
@@ -65,8 +73,8 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
         # get list of files
         item <- fromJSON(getURL(url, dirlistonly = TRUE,
                                 .opts = list(ssl.verifypeer = FALSE)
-                                )
-                         )[["files"]]
+        )
+        )[["files"]]
 
         files <- sapply(item, function(x) { x$href })
 
@@ -77,11 +85,13 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
             files <- files[idx]
         }
         # download files
-        for (j in seq_along(files)) {
-            print(files[j])
-            link <- paste0(encode.url, files[j])
+        for (j in files) {
+            link <- gsub("https:","http:",paste0(encode.url, j))
             fileout <- file.path(path, id, basename(link))
-            download(link, fileout)
+
+            # Downloader library is not working here =/
+            if(!file.exists(fileout))
+                download.file(link, fileout, method = "wget")
         }
     }
 
@@ -93,52 +103,19 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
 #' @param path Folder to save the file
 #' @param type extesion of files to be downloaded
 #' @export
-#' @importFrom downloader download
+#' @import AnnotationHub
 #' @importFrom stringr str_replace_all
 #' @return Download romapdata into path
 #' @examples
 #' query <- roadmapSearch(sample = "H1 cell line", experiment = "RRBS")
 #' roadmapDownload(query,type = "bed", path = "roadmap")
 roadmapDownload <- function(lines, type = NULL, path = ".") {
-
-    error <- c()
+    ah = AnnotationHub()
     for (i in 1:dim(lines)[1]) {
-        sample <- str_replace_all(lines[i, ]$Sample.Name, "[^[:alnum:]]","_")
-        expr <- str_replace_all(lines[i, ]$Experiment, "[^[:alnum:]]","_")
-
-        folder <- paste0(path, "/", expr, "/", sample)
-        dir.create(folder, showWarnings = FALSE, recursive = TRUE)
-        url <- lines[i, ]$GEO.FTP
-        if (nchar(url) == 0) {
-            error <- c(error, lines[i, ]$X..GEO.Accession)
-            next
+        epiFiles <- query(ah, c("EpigenomeRoadMap", lines[i,]$EID))
+        for(j in names(epiFiles@.db_uid)){
+            file <- epiFiles[j]$sourceurl
+            download(file,basename(file))
         }
-        filenames <- getFileNames(url)
-        if (!is.null(type)) {
-            idx <- unlist(lapply(type, function(x) {
-                grep(x, filenames)
-            }))
-            filenames <- filenames[idx]
-        }
-        files <- paste0(url, filenames)
-
-        # download files
-        for (j in seq_along(files)) {
-            aux <- paste0(folder, "/", basename(files[j]))
-            if (!file.exists(aux)) {
-                message(paste0("Downloading: ", aux))
-                download(files[j], aux)
-            }
-        }
-    }
-    if (length(error)) {
-        message("=============================")
-        message("         WARNING             ")
-        message("=============================")
-        message("Empty FTP: No files found")
-        invisible(apply(as.array(error), 1,
-                        function(x) message("Accession: ",x))
-                  )
-        message("=============================")
     }
 }
