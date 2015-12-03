@@ -292,9 +292,19 @@ showResults <- function(solution, exper, plot = FALSE, path) {
     colnames(enc.result)[1:3] <- c("ID", "Sample", "Experiment")
     colnames(tcga.result)[c(7, 11, 10)] <- c("ID", "Sample", "Experiment")
 
-    results <- rbind(enc.result[1:3],
-                     rmap.result[c(2,4,1)],
-                     tcga.result[c(7,11, 10)])
+    results <- NULL
+    if(nrow(enc.result) > 0 & is.null(results))  {
+        results <- enc.result[,1:3]
+        if(nrow(rmap.result) > 0 & !is.null(results)) results <- rbind(results, rmap.result[,c(2,4,1)])
+        if(nrow(tcga.result) > 0 & !is.null(results)) results <- rbind(results, tcga.result[,c(7,11, 10)])
+    } else if(nrow(rmap.result) > 0 & is.null(results)) {
+        results <- rmap.result
+        if(nrow(tcga.result) > 0 & !is.null(results)) results <- rbind(results, tcga.result[,c(7,11, 10)])
+    } else if(nrow(tcga.result) > 0 & is.null(results)) {
+        results <- tcga.result
+    }
+
+
     database <- c(rep("encode", nrow(enc.result)),
                   rep("roadmap", nrow(rmap.result)),
                   rep("tcga", nrow(tcga.result)))
@@ -329,8 +339,9 @@ create.summary.plot <- function(data, col, title, filename, path){
         theme(legend.direction ="vertical",legend.position = "bottom")+
         guides(fill=guide_legend(ncol=4))
 
+    plot(g)
     ggsave(g, filename = file.path(path, filename),
-           height = 14, width = 10, scale = 1.5)
+           height = 5, width = 5, scale = 1.5)
 
 }
 
