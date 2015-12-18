@@ -291,7 +291,7 @@ showResults <- function(solution, exper, plot = FALSE, path) {
     colnames(rmap.result)[c(2,4,1)] <- c("ID", "Sample", "Experiment")
     colnames(enc.result)[1:3] <- c("ID", "Sample", "Experiment")
     colnames(tcga.result)[c(7, 11, 10)] <- c("ID", "Sample", "Experiment")
-
+    rmap.result <- as.data.frame(rmap.result)
     results <- NULL
     if(nrow(enc.result) > 0 & is.null(results))  {
         results <- enc.result[,1:3]
