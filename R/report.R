@@ -1,0 +1,144 @@
+# Create Report
+#' @import ReporteRs ggplot2
+create.report <- function(query, path = "report") {
+
+    report.plot <- function(data, col, title){
+        .e <- environment()
+
+        g <- ggplot(data, aes(factor(database),
+                              fill = data[,col]),
+                    environment = .e) +
+            geom_bar(position = "fill") +
+            theme_bw() +
+            theme(panel.border = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.line = element_line(colour = "black"),
+                  legend.key = element_rect(colour = 'white'),
+                  legend.justification=c(1,1), legend.position=c(1,1)) +
+            ggtitle(title) +
+            labs(x="Database", y="Percentage of samples") +
+            scale_fill_discrete(name=col) +
+            theme(legend.direction ="vertical",legend.position = "bottom")+
+            guides(fill=guide_legend(ncol=3))
+
+            return(g)
+    }
+
+    # creating footer
+    footer <- pot( 'Code licensed under ', format = textProperties(color='gray') ) +
+              pot('GPL-3', format = textProperties(color='#428bca'),
+                  hyperlink = 'https://gnu.org/licenses/gpl.html' ) +
+              pot('.', format = textProperties(color='gray') )
+
+    # creating menu
+    menu <- BootstrapMenu (title = 'biOMICs report')
+    menu <- addLinkItem (menu, label = 'Graphs', 'figures.html')
+    menu <- addLinkItem (menu, label = 'Table', 'table.html')
+
+    message("Creating report....")
+
+    # MAIN ---------------------------
+    doc = bsdoc( title = 'my document' )
+    doc = addBootstrapMenu( doc, menu )
+    doc = addFooter( doc, value = footer, par.properties = parCenter( padding = 2 ))
+
+    mkd = "## Summary of results\n"
+    mkd = paste0(mkd,paste0("Mapped to: **",
+                            unlist(unique(sapply(query$Sample,
+                                                 function(x) biosample.tcga[grep(x,biosample.tcga$biosample),"system"]))),
+                            "**"))
+    doc = addMarkdown( doc, text = mkd,
+                         default.par.properties = parProperties(text.align = "justify",
+                                                                padding.left = 0) )
+
+    mkd = "### Number of terms in the system"
+    doc = addMarkdown( doc, text = mkd,
+                         default.par.properties = parProperties(text.align = "justify",
+                                                                padding.left = 0) )
+    doc = addPlot( doc, function() barplot(c(length(unique(query[query$database == "tcga","Sample"])),
+                                                 length(unique(query[query$database == "encode","Sample"])),
+                                                 length(unique(query[query$database == "roadmap","Sample"]))),
+                                               xlab="Nuber of terms",
+                                               legend.text = c(paste0("tcga (n=",length(unique(query[query$database == "tcga","Sample"])),")"),
+                                                               paste0("encode (n=",length(unique(query[query$database == "encode","Sample"])),")"),
+                                                               paste0("roadmap (n=",length(unique(query[query$database == "roadmap","Sample"])),")")),
+                                               col = rainbow(3)),
+                     width = 5, height = 5 )
+
+    mkd = "### Number of samples in the system"
+
+    doc = addMarkdown( doc, text = mkd,
+                         default.par.properties = parProperties(text.align = "justify",
+                                                                padding.left = 0) )
+    doc = addPlot( doc, function() barplot(table(query$database), 	xlab="Nuber of samples",
+                                               legend.text = c(paste0("tcga (n=",nrow(query[query$database == "tcga",]),")"),
+                                                               paste0("encode (n=",nrow(query[query$database == "encode",]),")"),
+                                                               paste0("roadmap (n=",nrow(query[query$database == "roadmap",]),")")),
+                                               col = rainbow(3)),
+                     width = 5, height = 5 )
+
+    # write the doc
+    writeDoc( doc, file =  file.path(path,"main.html" ))
+
+    # Graphs ---------------------------------------------------
+
+    # Creation of doc, a docx object
+    doc = bsdoc( title = 'viomics graphs' )
+    doc = addBootstrapMenu(doc,menu)
+
+    mkd = "# Summary plots"
+    doc = addMarkdown(doc, text = mkd, default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
+
+    # add a plot into doc
+    doc = addPlot(doc, function() plot(report.plot(query,"Experiment","Experiment per database")), width = 15, height = 10 )
+
+    doc = addPlot(doc, function() plot(report.plot(query,"Sample","Samples per database")), width = 15, height = 10 )
+
+    mkd = "# Summary plots by platform "
+    doc = addMarkdown( doc, text = mkd,
+                       default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
+
+    for(i in unique(platforms$Standard)){
+        aux <- subset(query,subset = query$Experiment %in%
+                          platforms[platforms$Standard == i,"Platform"])
+        if(nrow(aux) >0) {
+            mkd = paste0("## Summary for ",i)
+            doc = addMarkdown( doc, text = mkd,
+                                 default.par.properties = parProperties(text.align = "justify",
+                                                                        padding.left = 0) )
+
+
+            # add a plot into doc
+            doc = addPlot( doc, function() plot(report.plot(aux,"Experiment",paste0("Experiment per database - ",i))),
+                             width = 4 *  length(unique(aux$database)), height = 5 )
+
+            # add a plot into doc
+            doc = addPlot( doc, function() plot(report.plot(aux,"Sample",paste0("Samples per database - ",i))),
+                             width = 4 *  length(unique(aux$database)), height = 5 + length(unique(aux$Sample))/10 )
+
+        }
+    }
+
+    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
+
+    # write the doc
+    writeDoc( doc, file = file.path(path,"figures.html" ))
+
+    # Table -----------------------------------------------
+    doc = bsdoc( title = 'my document' )
+    doc = addBootstrapMenu(doc, menu )
+    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
+
+    # add into doc first 10 lines of iris
+    doc = addFlexTable( doc, vanilla.table(query) )
+    # write the doc
+    writeDoc(doc, file =  file.path(path,"table.html"))
+
+    message(paste0("Report saved in fodler:",path))
+}
+
+
+
+
+

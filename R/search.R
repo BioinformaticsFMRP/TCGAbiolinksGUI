@@ -98,8 +98,8 @@ is.mapped <- function(term,env) {
 #'  Search a term using an ontology in the TCGA, ENCODE, ROADMAP databases
 #' @param term Term to be searched. Example: 'brain' 'u87' etc.
 #' @param experiment Experiment type
-#' @param plot Create a summary plot of the result found? Deafult: TRUE
-#' @param dir.plot Directory to save the summary plots. Default: "searchSummary"
+#' @param report Create a summary plot of the result found? Deafult: TRUE
+#' @param dir.report Directory to save the html report. Default: "searchSummary"
 #' \tabular{llll}{
 #'Microarray \tab MiRNAMicroArray \tab RRBS \tab DNAsequencing\cr
 #'ExpressionArray \tab Firehose \tab ChipSeq \tab fiveC \cr
@@ -114,8 +114,8 @@ is.mapped <- function(term,env) {
 #'         was successful
 biOmicsSearch <- function(term,
                           experiment = NULL,
-                          plot = FALSE,
-                          dir.plot = "searchSummary") {
+                          report = FALSE,
+                          dir.report = "searchSummary") {
 
     message(paste("biOmics is searching for:", term, "\nSearching..."))
     start.time <- Sys.time()
@@ -197,7 +197,7 @@ biOmicsSearch <- function(term,
     message(paste("Time taken: ", round(time.taken, 2), "s \n"))
 
     if (success) {
-        return(showResults(solution, experiment, plot, dir.plot))
+        return(showResults(solution, experiment, report, dir.report))
     }
 
     message("Term not found")
@@ -207,7 +207,7 @@ biOmicsSearch <- function(term,
 # show the results to the user
 #' @import ggplot2
 #' @keywords internal
-showResults <- function(solution, exper, plot = FALSE, path) {
+showResults <- function(solution, exper, report = FALSE, path) {
 
     # Get the samples that matches the result of the query
     # Databases were matched manually to systems
@@ -272,21 +272,6 @@ showResults <- function(solution, exper, plot = FALSE, path) {
 
     }
 
-    message("============ Summary of results found ==============")
-    sapply(pat, function(x) {
-        message(paste("|Mapped to:", subset(systems, systems$BTO == x)$system))
-    })
-    message("---------- Number of terms in the system -----------")
-    message(paste0("|TCGA   : ", length(tcga.samples)))
-    message(paste0("|ENCODE : ", length(enc.samples)))
-    message(paste0("|ROADMAP: ", length(rmap.samples)))
-
-    message("--------------- Number of samples ------------------")
-    message(paste0("|TCGA Archives: ", nrow(tcga.result)))
-    message(paste0("|ENCODE : ", nrow(enc.result)))
-    message(paste0("|ROADMAP: ", nrow(rmap.result)))
-    message("====================================================")
-
     # Preparing the output table
     colnames(rmap.result)[c(2,4,1)] <- c("ID", "Sample", "Experiment")
     colnames(enc.result)[1:3] <- c("ID", "Sample", "Experiment")
@@ -310,11 +295,8 @@ showResults <- function(solution, exper, plot = FALSE, path) {
                   rep("tcga", nrow(tcga.result)))
     results <- cbind(database, results)
 
-    if (plot) {
-        message("Summary images were saved in: ", path)
-        dir.create(path, showWarnings = FALSE, recursive = TRUE)
-        create.summary.plot(results,"Experiment","Experiment per database","experiment.pdf",path)
-        create.summary.plot(results,"Sample","Samples per database","samples.pdf",path)
+    if (report) {
+        create.report(results,path = path)
     }
     return(results)
 }
