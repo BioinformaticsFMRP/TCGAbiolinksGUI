@@ -22,14 +22,14 @@ create.report <- function(query, path = "report", system) {
             theme(legend.direction ="vertical",legend.position = "bottom")+
             guides(fill=guide_legend(ncol=3))
 
-            return(g)
+        return(g)
     }
 
     # creating footer
     footer <- pot( 'Code licensed under ', format = textProperties(color='gray') ) +
-              pot('GPL-3', format = textProperties(color='#428bca'),
-                  hyperlink = 'https://gnu.org/licenses/gpl.html' ) +
-              pot('.', format = textProperties(color='gray') )
+        pot('GPL-3', format = textProperties(color='#428bca'),
+            hyperlink = 'https://gnu.org/licenses/gpl.html' ) +
+        pot('.', format = textProperties(color='gray') )
 
     # creating menu
     menu <- BootstrapMenu (title = 'biOMICs report',link = "main.html")
@@ -38,7 +38,7 @@ create.report <- function(query, path = "report", system) {
 
     message("Creating report....")
 
-    # MAIN ---------------------------
+    # MAIN --------------------------------------------------------------
     doc = bsdoc( title = 'my document' )
     doc = addBootstrapMenu( doc, menu )
     doc = addFooter( doc, value = footer, par.properties = parCenter( padding = 2 ))
@@ -46,34 +46,77 @@ create.report <- function(query, path = "report", system) {
     mkd = "## Summary of results\n"
     mkd = paste0(mkd,paste0("Mapped to: **", system ,"**"))
     doc = addMarkdown( doc, text = mkd,
-                         default.par.properties = parProperties(text.align = "justify",
-                                                                padding.left = 0) )
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
 
     mkd = "### Number of terms in the system"
     doc = addMarkdown( doc, text = mkd,
-                         default.par.properties = parProperties(text.align = "justify",
-                                                                padding.left = 0) )
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
     doc = addPlot( doc, function() barplot(c(length(unique(query[query$database == "tcga","Sample"])),
-                                                 length(unique(query[query$database == "encode","Sample"])),
-                                                 length(unique(query[query$database == "roadmap","Sample"]))),
-                                               xlab="Nuber of terms",
-                                               legend.text = c(paste0("tcga (n=",length(unique(query[query$database == "tcga","Sample"])),")"),
-                                                               paste0("encode (n=",length(unique(query[query$database == "encode","Sample"])),")"),
-                                                               paste0("roadmap (n=",length(unique(query[query$database == "roadmap","Sample"])),")")),
-                                               col = rainbow(3)),
-                     width = 5, height = 5 )
+                                             length(unique(query[query$database == "encode","Sample"])),
+                                             length(unique(query[query$database == "roadmap","Sample"]))),
+                                           xlab="Nuber of terms",
+                                           legend.text = c(paste0("tcga (n=",length(unique(query[query$database == "tcga","Sample"])),")"),
+                                                           paste0("encode (n=",length(unique(query[query$database == "encode","Sample"])),")"),
+                                                           paste0("roadmap (n=",length(unique(query[query$database == "roadmap","Sample"])),")")),
+                                           col = rainbow(3)),
+                   width = 5, height = 5 )
 
     mkd = "### Number of samples in the system"
 
     doc = addMarkdown( doc, text = mkd,
-                         default.par.properties = parProperties(text.align = "justify",
-                                                                padding.left = 0) )
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
     doc = addPlot( doc, function() barplot(table(query$database), 	xlab="Nuber of samples",
-                                               legend.text = c(paste0("tcga (n=",nrow(query[query$database == "tcga",]),")"),
-                                                               paste0("encode (n=",nrow(query[query$database == "encode",]),")"),
-                                                               paste0("roadmap (n=",nrow(query[query$database == "roadmap",]),")")),
-                                               col = rainbow(3)),
-                     width = 5, height = 5 )
+                                           legend.text = c(paste0("tcga (n=",nrow(query[query$database == "tcga",]),")"),
+                                                           paste0("encode (n=",nrow(query[query$database == "encode",]),")"),
+                                                           paste0("roadmap (n=",nrow(query[query$database == "roadmap",]),")")),
+                                           col = rainbow(3)),
+                   width = 5, height = 5 )
+
+
+    mkd = "## Downloading the samples
+The next subsections shows how the data seached can be downloaded using different biocondcutor packages"
+    doc = addMarkdown( doc, text = mkd,
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
+
+    mkd = "### Downloading roadmap data with AnnotationHub\n"
+    doc = addMarkdown( doc, text = mkd,
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
+
+    myrcode = 'library(pbapply)
+library(AnnotationHub)
+ah = AnnotationHub()
+epiFiles <- sapply(unique(query[query$database=="roadmap",]$ID), function(x){names(query(ah,c(x,"EpigenomeRoadMap","narrowPeak","H3K4me2"))) })
+epi.marks <- pblapply(unlist(epiFiles), function(x){ah[[x]]})'
+
+    doc = addRScript(doc, text = myrcode )
+
+    mkd = "### Downloading TCGA data with TCGAbiolinks\n"
+    doc = addMarkdown( doc, text = mkd,
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
+
+    myrcode = 'library(tcgabiolinks)
+tcga <- TCGAquery(tumor=query[query$database =="tcga",]$Sample,platform = query[query$database =="tcga",]$Experiment,level = 3)
+TCGAdownload(tcga)'
+
+    doc = addRScript(doc, text = myrcode )
+
+    mkd = "### Downloading ENCODE data with biOMICs\n"
+    doc = addMarkdown( doc, text = mkd,
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
+
+    myrcode = 'library(biOMICs)
+encode <- query[query$database =="encode",]
+biOmicsDownload(encode[1,],enc.file.type="bigWig")'
+
+    doc = addRScript(doc, text = myrcode )
+
 
     # write the doc
     writeDoc( doc, file =  file.path(path,"main.html" ))
@@ -102,17 +145,17 @@ create.report <- function(query, path = "report", system) {
         if(nrow(aux) >0) {
             mkd = paste0("## Summary for ",i)
             doc = addMarkdown( doc, text = mkd,
-                                 default.par.properties = parProperties(text.align = "justify",
-                                                                        padding.left = 0) )
+                               default.par.properties = parProperties(text.align = "justify",
+                                                                      padding.left = 0) )
 
 
             # add a plot into doc
             doc = addPlot( doc, function() plot(report.plot(aux,"Experiment",paste0("Experiment per database - ",i))),
-                             width = 4 *  length(unique(aux$database)), height = 5 )
+                           width = 4 *  length(unique(aux$database)), height = 5 )
 
             # add a plot into doc
             doc = addPlot( doc, function() plot(report.plot(aux,"Sample",paste0("Samples per database - ",i))),
-                             width = 4 *  length(unique(aux$database)), height = 5 + length(unique(aux$Sample))/10 )
+                           width = 4 *  length(unique(aux$database)), height = 5 + length(unique(aux$Sample))/10 )
 
         }
     }

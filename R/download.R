@@ -20,15 +20,15 @@ biOmicsDownload <- function(lines=NULL,
     tcga.lines <- subset(lines, lines$database == "tcga")
 
     # -------------- download Encode
-    if (dim(encode.lines)[1] > 0) {
+    if (nrow(encode.lines) > 0) {
         message("==== Encode download ====")
         encode.lines <- subset(encode.db,
-                               encode.db$accession == encode.lines$ID)
-        #encodeDownload(encode.lines, enc.file.type)
+                               encode.db$accession %in%encode.lines$ID)
+        encodeDownload(encode.lines, enc.file.type)
     }
 
     # -------------- download ROADMAP
-    if (dim(rmap.lines)[1] > 0) {
+    if (nrow(rmap.lines) > 0) {
         message("==== Roadmap download ====")
         rmap.lines <- subset(roadmap.db,
                              roadmap.db$EID == rmap.lines$ID)
@@ -37,7 +37,7 @@ biOmicsDownload <- function(lines=NULL,
     # ---------------- download TCGA TODO: add filters, folder to
 
     # This will be replaced by TCGAbiolinks
-    if (dim(tcga.lines)[1] > 0) {
+    if (nrow(tcga.lines) > 0) {
         message("==== TCGA download ====")
         tcga.db <- TCGAquery()
         tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
@@ -66,8 +66,7 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
     encode.url <- "https://www.encodeproject.org/"
     json <- "/?format=JSON"
 
-    for (i in 1:dim(lines)[1]) {
-        id <- lines$accession[i]
+    for (id in lines$accession) {
         url <- paste0(encode.url, "experiments/", id, json)
         dir.create(file.path(path,id), showWarnings = FALSE, recursive = TRUE)
         # get list of files
@@ -91,7 +90,7 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
 
             # Downloader library is not working here =/
             if(!file.exists(fileout))
-                download.file(link, fileout, method = "wget")
+                download(link, fileout, method = "wget")
         }
     }
 
