@@ -34,7 +34,8 @@ Imports:
     IRanges,
     biomaRt,
     parallel,
-    TCGAbiolinks
+    TCGAbiolinks,
+    ReporteRs (>= 0.8.5)
 VignetteBuilder: knitr
 biocViews: Genetics,
     DNAMethylation,

@@ -1,6 +1,6 @@
 # Create Report
 #' @import ReporteRs ggplot2
-create.report <- function(query, path = "report") {
+create.report <- function(query, path = "report", system) {
 
     report.plot <- function(data, col, title){
         .e <- environment()
@@ -32,7 +32,7 @@ create.report <- function(query, path = "report") {
               pot('.', format = textProperties(color='gray') )
 
     # creating menu
-    menu <- BootstrapMenu (title = 'biOMICs report')
+    menu <- BootstrapMenu (title = 'biOMICs report',link = "main.html")
     menu <- addLinkItem (menu, label = 'Graphs', 'figures.html')
     menu <- addLinkItem (menu, label = 'Table', 'table.html')
 
@@ -44,10 +44,7 @@ create.report <- function(query, path = "report") {
     doc = addFooter( doc, value = footer, par.properties = parCenter( padding = 2 ))
 
     mkd = "## Summary of results\n"
-    mkd = paste0(mkd,paste0("Mapped to: **",
-                            unlist(unique(sapply(query$Sample,
-                                                 function(x) biosample.tcga[grep(x,biosample.tcga$biosample),"system"]))),
-                            "**"))
+    mkd = paste0(mkd,paste0("Mapped to: **", system ,"**"))
     doc = addMarkdown( doc, text = mkd,
                          default.par.properties = parProperties(text.align = "justify",
                                                                 padding.left = 0) )
@@ -135,7 +132,7 @@ create.report <- function(query, path = "report") {
     # write the doc
     writeDoc(doc, file =  file.path(path,"table.html"))
 
-    message(paste0("Report saved in fodler:",path))
+    message(paste0("Report saved in folder:",path))
 }
 
 
