@@ -166,15 +166,15 @@ body <-  dashboardBody(
                     column(1)
                 )
         ),
-        tabItem(tabName = "tcga",
-                fluidRow(
-                    column(1),
-                    column(10,
-                           includeHTML("/home/tiagochst/biomics/searchSummary/main.html")
-                           ),
-                    column(1)
-                )
-        ),
+        #tabItem(tabName = "tcga",
+        #        fluidRow(
+        #            column(1),
+        #            column(10,
+        #                   includeHTML("/home/tiagochst/biomics/searchSummary/main.html")
+        #                   ),
+        #            column(1)
+        #        )
+        #),
         tabItem(tabName = "ontology",
 
                 fluidRow(

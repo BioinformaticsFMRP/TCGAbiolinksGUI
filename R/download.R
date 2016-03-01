@@ -31,7 +31,8 @@ biOmicsDownload <- function(lines=NULL,
     if (nrow(rmap.lines) > 0) {
         message("==== Roadmap download ====")
         rmap.lines <- subset(roadmap.db,
-                             roadmap.db$EID == rmap.lines$ID)
+                             roadmap.db$EID == rmap.lines$ID &
+                             roadmap.db$MARK == rmap.lines$Experiment)
         roadmapDownload(rmap.lines, rmap.file.type)
     }
     # ---------------- download TCGA TODO: add filters, folder to
@@ -86,7 +87,8 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
         }
         # download files
         for (j in files) {
-            link <- gsub("https:","http:",paste0(encode.url, j))
+            #link <- gsub("https:","http:",paste0(encode.url, j))
+            link <- paste0(encode.url, j)
             fileout <- file.path(path, id, basename(link))
 
             # Downloader library is not working here =/
@@ -111,11 +113,13 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
 #' roadmapDownload(query,type = "bed", path = "roadmap")
 roadmapDownload <- function(lines, type = NULL, path = ".") {
     ah = AnnotationHub()
+    if(is.windows()) mode <- "wb" else  mode <- "w"
     for (i in 1:dim(lines)[1]) {
-        epiFiles <- query(ah, c("EpigenomeRoadMap", lines[i,]$EID))
+        epiFiles <- query(ah, c("EpigenomeRoadMap", lines[i,]$EID,lines[i,]$MARK))
         for(j in names(epiFiles@.db_uid)){
             file <- epiFiles[j]$sourceurl
-            download(file,basename(file))
+            if(!file.exists(basename(file)))
+                download(file,basename(file), mode = mode)
         }
     }
 }
