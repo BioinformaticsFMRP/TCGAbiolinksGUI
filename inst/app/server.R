@@ -5,6 +5,13 @@
 #' @keywords internal
 biOMICsServer <- function(input, output, session) {
 
+    volumes <- c('Working directory'=getwd())
+    shinyFileChoose(input, 'file', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyDirChoose(input, 'directory', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileSave(input, 'save', roots=volumes, session=session, restrictions=system.file(package='base'))
+    output$filepaths <- renderPrint({parseFilePaths(volumes, input$file)})
+    output$directorypath <- renderPrint({parseDirPath(volumes, input$directory)})
+    output$savefile <- renderPrint({parseSavePath(volumes, input$save)})
     result <- reactiveValues(g_nbFiles = 0, g_downloaded = 0,
                              df = NULL, downloading = 1)
     setwd(Sys.getenv("HOME"))
@@ -22,11 +29,12 @@ biOMICsServer <- function(input, output, session) {
         }
     })
     observe({
-        if (input$selectDir ) {
-            rmapDir <<- tcltk::tk_choose.dir(getwd(),
-                                             paste0("Choose a suitable folder",
-                                                    " to save the files"))
-        }
+        rmapDir <- "."
+        #if (input$selectDir ) {
+        #    rmapDir <<- tcltk::tk_choose.dir(getwd(),
+        #                                     paste0("Choose a suitable folder",
+        #                                            " to save the files"))
+        #}
         output$rmapDir <- renderText({rmapDir})
     })
 
@@ -222,14 +230,6 @@ biOMICsServer <- function(input, output, session) {
             valueBoxOutput("ontProgressBox", width = NULL)
         }
     })
-    observe({
-        if (input$selectDir ) {
-            ontDir <<- tcltk::tk_choose.dir(getwd(),
-                                            paste0("Choose a suitable folder",
-                                                   " to save the files"))
-        }
-        output$ontDir <- renderText({ontDir})
-    })
 
     output$savedPath <- renderValueBox({
         input$selectDir
@@ -269,12 +269,14 @@ biOMICsServer <- function(input, output, session) {
     output$ontSearchLink <-  renderText({
         if (input$ontSearchDownloadBt ) {
             link <- c()
-            accession <- unlist(input$allRows)
-            for (i in seq(1,length(accession), by = 6)) {
-                index <- which(roadmap.db$X..GEO.Accession ==  accession[i])
-                link <- c(link,as.character(roadmap.db$GEO.FTP[index]))
-            }
-            #geoDownloaderLinks(link,ontDir, TRUE)
+            print(input$allRows)
+            df <- data.frame(database = input$allRows[seq(1, length(input$allRows), 4)],
+                                ID = input$allRows[seq(2, length(input$allRows), 4)],
+                                Sample = input$allRows[seq(3, length(input$allRows), 4)],
+                                Experiment = input$allRows[seq(4, length(input$allRows), 4)])
+            print(df)
+            biOmicsDownload(df)
+
         }}
     )
 
