@@ -78,7 +78,7 @@ load.encode <- function(env) {
 #' @importFrom rjson fromJSON
 #' @keywords internal
 load.encode.files <- function(env) {
-    url <- "https://www.encodeproject.org/files/?format=json"
+    url <- "https://www.encodeproject.org/files/?format=json&limit=all"
     encodeData <- as.data.frame(matrix(ncol = 5))
     colnames(encodeData) <- c("output_type","dataset", "title", "file_format","md5sum")
 
@@ -121,6 +121,7 @@ load.encode.files <- function(env) {
         setTxtProgressBar(pb, i)
     }
     close(pb)
+    encodeData <- encodeData[-1, ]
     assign("encode.db.files",encodeData, envir = env)
 }
 

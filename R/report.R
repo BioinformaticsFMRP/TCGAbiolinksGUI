@@ -137,6 +137,14 @@ biOmicsDownload(encode[1,],enc.file.type="bigWig")'
     # write the doc
     writeDoc( doc, file = file.path(path,"tcga.html" ))
 
+    #---------------- ENCODE file summary ----------------
+    doc = bsdoc( title = 'biomics' )
+    doc = addBootstrapMenu(doc,menu)
+    doc <- encode.report(doc,query[query$database=="encode",])
+    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
+    writeDoc( doc, file = file.path(path,"encode.html" ))
+
+
     # Graphs ---------------------------------------------------
 
     # Creation of doc, a docx object
@@ -186,7 +194,6 @@ biOmicsDownload(encode[1,],enc.file.type="bigWig")'
     doc = addBootstrapMenu(doc, menu )
     doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
 
-    # add into doc first 10 lines of iris
     doc = addFlexTable( doc, vanilla.table(query) )
     # write the doc
     writeDoc(doc, file =  file.path(path,"table.html"))
@@ -274,5 +281,24 @@ tcga.report <- function(doc, query){
     }
     return(doc)
 }
+
+
+#' @importFrom UpSetR upset
+encode.report <- function(doc, query){
+
+        mkd = paste0("## Summary for encode")
+        doc = addMarkdown( doc, text = mkd,
+                           default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
+
+        encode.db.files$dataset <- gsub("experiments","",encode.db.files$dataset)
+        encode.db.files$dataset <- gsub("/","",encode.db.files$dataset)
+        print(encode.db.files)
+        table(encode.db.files$dataset %in% query$ID)
+        encode.db.files <- encode.db.files[encode.db.files$dataset %in% query$ID]
+        print(head(query))
+        doc = addFlexTable( doc, vanilla.table(encode.db.files) )
+    return(doc)
+}
+
 
 
