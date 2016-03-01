@@ -1,14 +1,15 @@
+library(shiny)
+library(shinyFiles)
 header <- dashboardHeader(
     title = "biOMICs"
 )
 
 sidebar <-  dashboardSidebar(
     sidebarMenu(
-        menuItem("Encode" , tabName = "encode" , icon = icon("database")),
-        menuItem("Roadmap", tabName = "roadmap", icon = icon("database")),
-        menuItem("TCGA"   , tabName = "tcga"   , icon = icon("database")),
-        menuItem("Ontology"   , tabName = "ontology"   , icon = icon("database"),
-                 badgeLabel = "new", badgeColor = "green")
+        #menuItem("Encode" , tabName = "encode" , icon = icon("database")),
+        #menuItem("Roadmap", tabName = "roadmap", icon = icon("database")),
+        #menuItem("TCGA"   , tabName = "tcga"   , icon = icon("database")),
+        menuItem("Ontology search" , tabName = "ontology", icon = icon("database"))
     )
 )
 
@@ -169,26 +170,8 @@ body <-  dashboardBody(
                 fluidRow(
                     column(1),
                     column(10,
-                           box(title = "Get bar code", width = NULL,
-                               status = "warning",
-                               solidHeader = TRUE, collapsible = FALSE,
-                               fileInput('file1', 'Upload TCGA file',
-                                         accept = c(
-                                             'text/csv',
-                                             'text/comma-separated-values',
-                                             '.csv'
-                                         )
-                               ),
-                               fileInput('file2', 'Upload barcode filter',
-                                         accept = c(
-                                             'text/plain'
-                                         )),
-                               downloadButton("getTcgaBarCode",
-                                              "Download",
-                                              class = "btn-block btn-warning"
-                               )
-
-                           )),
+                           includeHTML("/home/tiagochst/biomics/searchSummary/main.html")
+                           ),
                     column(1)
                 )
         ),
@@ -200,29 +183,24 @@ body <-  dashboardBody(
                            box(title = "Advanced search",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,
-                               selectInput('ontExpFilter',
+                               selectizeInput('ontExpFilter',
                                            'Experiments filter',
                                            platforms$Standard,
-                                           multiple = TRUE, selectize = TRUE),
-                               selectInput('ontSamplesFilter',
+                                           multiple = TRUE),
+                               selectizeInput('ontSamplesFilter',
                                            'Term',
+                                           c("",
                                            union(
                                                union(
                                                 roadmap.db$Sample.Name,
                                                  encode.db$biosample
                                                ),
-                                               tcga.db$Disease
-                                           ),
-                                           multiple = TRUE, selectize = TRUE),
-                               actionButton("ontSelectDir",
-                                            "Select directory",
-                                            style = "background-color: #F39C12;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 100%",
-                                            icon = icon("folder")),
-                               verbatimTextOutput("ontDir"),
+                                               TCGAbiolinks::TCGAquery()$Disease
+                                           )),
+                                           multiple = FALSE,options = list(create = TRUE),selected = NULL),
+                               shinyDirButton('directory', 'Folder select', 'Please select a folder',
+                                              class='btn action-button', buttonType='warning'),
+                               verbatimTextOutput("directorypath"),
                                actionButton("ontSearchBt",
                                             "search",
                                             style = "background-color: #F39C12;

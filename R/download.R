@@ -62,6 +62,7 @@ biOmicsDownload <- function(lines=NULL,
 #' @return Download encode data into path
 encodeDownload <- function(lines, type = NULL, path = ".") {
     dir.create(path, showWarnings = FALSE, recursive = TRUE)
+    if(is.windows()) mode <- "wb" else  mode <- "w"
 
     encode.url <- "https://www.encodeproject.org/"
     json <- "/?format=JSON"
@@ -90,7 +91,7 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
 
             # Downloader library is not working here =/
             if(!file.exists(fileout))
-                download(link, fileout, method = "wget")
+                download(link, fileout,mode = mode)
         }
     }
 

@@ -269,12 +269,14 @@ biOMICsServer <- function(input, output, session) {
     output$ontSearchLink <-  renderText({
         if (input$ontSearchDownloadBt ) {
             link <- c()
-            accession <- unlist(input$allRows)
-            for (i in seq(1,length(accession), by = 6)) {
-                index <- which(roadmap.db$X..GEO.Accession ==  accession[i])
-                link <- c(link,as.character(roadmap.db$GEO.FTP[index]))
-            }
-            #geoDownloaderLinks(link,ontDir, TRUE)
+            print(input$allRows)
+            df <- data.frame(database = input$allRows[seq(1, length(input$allRows), 4)],
+                                ID = input$allRows[seq(2, length(input$allRows), 4)],
+                                Sample = input$allRows[seq(3, length(input$allRows), 4)],
+                                Experiment = input$allRows[seq(4, length(input$allRows), 4)])
+            print(df)
+            biOmicsDownload(df)
+
         }}
     )
 

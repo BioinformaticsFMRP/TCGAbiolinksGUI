@@ -232,10 +232,13 @@ showResults <- function(solution, exper, report = FALSE, path) {
                                          rmap.samples), ]
     disease <- sapply(strsplit(tcga.samples, split = " - "),
                       function(x) {x[1]})
-    tcga.result <- TCGAquery(tumor = disease, level = 3)
-
+    if(length(disease) > 0) {
+        tcga.result <- TCGAquery(tumor = disease, level = 3)
+    } else {
+        tcga.result <- NULL
+    }
     # Select experiments
-    if (! is.null(exper)) {
+    if (!is.null(exper)) {
         message("Filtering by experiment")
         idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
                                            ignore.case = TRUE), 2],
@@ -276,7 +279,11 @@ showResults <- function(solution, exper, report = FALSE, path) {
     # Preparing the output table
     colnames(rmap.result)[c(2,4,1)] <- c("ID", "Sample", "Experiment")
     colnames(enc.result)[1:3] <- c("ID", "Sample", "Experiment")
-    colnames(tcga.result)[c(7, 11, 10)] <- c("ID", "Sample", "Experiment")
+    if(!is.null(tcga.result)) {
+        colnames(tcga.result)[c(7, 11, 10)] <- c("ID", "Sample", "Experiment")
+    } else {
+        tcga.result <- data.frame()
+    }
     rmap.result <- as.data.frame(rmap.result)
     results <- NULL
     if(nrow(enc.result) > 0 & is.null(results))  {
