@@ -1,5 +1,5 @@
 # Create Report
-#' @import ReporteRs ggplot2
+#' @import ReporteRs ggplot2 UpSetR
 create.report <- function(query, path = "report", system) {
 
     report.plot <- function(data, col, title){
@@ -34,12 +34,13 @@ create.report <- function(query, path = "report", system) {
     # creating menu
     menu <- BootstrapMenu (title = 'biOMICs report',link = "main.html")
     menu <- addLinkItem (menu, label = 'Graphs', 'figures.html')
+    menu <- addLinkItem (menu, label = 'TCGA data summary', 'tcga.html')
     menu <- addLinkItem (menu, label = 'Table', 'table.html')
 
     message("Creating report....")
 
     # MAIN --------------------------------------------------------------
-    doc = bsdoc( title = 'my document' )
+    doc = bsdoc(title = 'biomics' )
     doc = addBootstrapMenu( doc, menu )
     doc = addFooter( doc, value = footer, par.properties = parCenter( padding = 2 ))
 
@@ -121,10 +122,24 @@ biOmicsDownload(encode[1,],enc.file.type="bigWig")'
     # write the doc
     writeDoc( doc, file =  file.path(path,"main.html" ))
 
+    # TGCA data summary
+    # Creation of doc, a docx object
+    doc = bsdoc( title = 'biomics' )
+    doc = addBootstrapMenu(doc,menu)
+
+    mkd = "# Summary plots"
+    doc = addMarkdown(doc, text = mkd, default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
+    doc <- tcga.report(doc,query[query$database=="tcga",])
+
+    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
+
+    # write the doc
+    writeDoc( doc, file = file.path(path,"tcga.html" ))
+
     # Graphs ---------------------------------------------------
 
     # Creation of doc, a docx object
-    doc = bsdoc( title = 'viomics graphs' )
+    doc = bsdoc( title = 'biomics' )
     doc = addBootstrapMenu(doc,menu)
 
     mkd = "# Summary plots"
@@ -166,7 +181,7 @@ biOmicsDownload(encode[1,],enc.file.type="bigWig")'
     writeDoc( doc, file = file.path(path,"figures.html" ))
 
     # Table -----------------------------------------------
-    doc = bsdoc( title = 'my document' )
+    doc = bsdoc( title = 'biomics' )
     doc = addBootstrapMenu(doc, menu )
     doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
 
@@ -178,7 +193,44 @@ biOmicsDownload(encode[1,],enc.file.type="bigWig")'
     message(paste0("Report saved in folder:",path))
 }
 
+#' @importFrom UpSetR upset
+tcga.report <- function(doc, query){
 
+    for(level in 1:3){
+        mkd = paste0("## Summary for level ",level, " data")
+        doc = addMarkdown( doc, text = mkd,
+                           default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
+        x <- TCGAquery(unique(query$Sample),level=level)
+        patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,15))
+        platform <- unique(x$Platform)
+        df <- as.data.frame(matrix(0,nrow=length(patient),ncol=length(platform)+1))
+        colnames(df) <- c("patient", platform)
+        df$patient <- patient
+        for (i in patient){
+            idx <- grep(i,x$barcode)
+            plat <- x[idx,"Platform"]
+            for (j in plat){
+                df[df$patient == i,j] <- 1
+            }
+        }
+        df$patient <- NULL
+        doc = addPlot(doc,
+                      function() {
+                          upset(df, nsets = length(platform),
+                                number.angles = 30,
+                                nintersects = 100,
+                                point.size = 3, name.size = 12,
+                                line.size = 1,
+                                mainbar.y.label = "Platform Intersections",
+                                sets.x.label = "Samples Per Platform",
+                                order.by = "freq",
+                                decreasing = T,
+                                #group.by = "sets",
+                                sets.bar.color = "#56B4E9")
 
+                      },width = 20, height = 15 )
+    }
+    return(doc)
+}
 
 
