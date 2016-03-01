@@ -27,8 +27,10 @@ update <- function(){
     load.systems(env)
     load.platforms(env)
     load.encode(env)
+    load.encode.files(env)
     load.roadmap(env)
     encode.db <- get("encode.db", envir = env)
+    encode.db.files <- get("encode.db.files", envir = env)
     roadmap.db <- get("roadmap.db", envir = env)
     biosample.encode <- get("biosample.encode", envir = env)
     biosample.roadmap <- get("biosample.roadmap", envir = env)
@@ -40,6 +42,7 @@ update <- function(){
              biosample.roadmap,
              biosample.tcga,
              encode.db,
+             encode.db.files,
              platforms,
              roadmap.db,
              systems,

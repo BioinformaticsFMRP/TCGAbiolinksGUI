@@ -74,6 +74,57 @@ load.encode <- function(env) {
     assign("encode.db",encode.db, envir = env)
 }
 
+# Loads encode data
+#' @importFrom rjson fromJSON
+#' @keywords internal
+load.encode.files <- function(env) {
+    url <- "https://www.encodeproject.org/files/?format=json"
+    encodeData <- as.data.frame(matrix(ncol = 5))
+    colnames(encodeData) <- c("output_type","dataset", "title", "file_format","md5sum")
+
+    message(paste0("Loading ", url, "..."))
+    data <- fromJSON(getURL(url, dirlistonly = TRUE, .opts = list(ssl.verifypeer = FALSE)))[["@graph"]]
+
+    pb <- txtProgressBar(style = 3, max = length(data))
+
+    for (i in 1:length(data)) {
+        if (is.null(data[[i]]$output_type)) {
+            output_type <- NA
+        } else {
+            output_type <- data[[i]]$output_type
+        }
+        if (is.null(data[[i]]$dataset)) {
+            dataset <- NA
+        } else {
+            dataset <- data[[i]]$dataset
+        }
+        if (is.null(data[[i]]$title)) {
+            title <- NA
+        } else {
+            title <- data[[i]]$title
+        }
+        if (is.null(data[[i]]$file_format)) {
+            file_format <- NA
+        } else {
+            file_format <- data[[i]]$file_format
+        }
+        if (is.null(data[[i]]$md5sum)) {
+            md5sum <- NA
+        } else {
+            md5sum <- data[[i]]$md5sum
+        }
+
+        encodeData <- rbind(encodeData,
+                            c(output_type, dataset,
+                              title, file_format, md5sum))
+
+        setTxtProgressBar(pb, i)
+    }
+    close(pb)
+    assign("encode.db.files",encodeData, envir = env)
+}
+
+
 # Load the roadmap table
 #' @importFrom data.table fread
 load.roadmap <- function(env) {
@@ -102,13 +153,13 @@ load.biosamples <- function(env) {
     biosample.tcga <- read.delim(file = "tcgatab.tsv", sep = "\t")
 
     biosample.encode <- data.frame(lapply(biosample.encode,
-                                              as.character),
-                                       stringsAsFactors = FALSE)
+                                          as.character),
+                                   stringsAsFactors = FALSE)
     biosample.roadmap <- data.frame(lapply(biosample.roadmap,
-                                               as.character),
-                                        stringsAsFactors = FALSE)
+                                           as.character),
+                                    stringsAsFactors = FALSE)
     biosample.tcga <- data.frame(lapply(biosample.tcga, as.character),
-                                     stringsAsFactors = FALSE)
+                                 stringsAsFactors = FALSE)
 
     if (file.exists("encodetab.tsv")) {
         file.remove("encodetab.tsv")
@@ -133,7 +184,7 @@ load.systems <- function(env) {
     download(url = paste0(gdocs, "1660203777"), destfile = "systemstab.tsv")
     systems <- read.delim(file = "systemstab.tsv", sep = "\t")
     systems <- data.frame(lapply(systems, as.character),
-                              stringsAsFactors = FALSE)
+                          stringsAsFactors = FALSE)
     if (file.exists("systemstab.tsv")) {
         file.remove("systemstab.tsv")
     }
@@ -150,7 +201,7 @@ load.platforms <- function(env) {
     download(paste0(gdocs, "1664832653"), destfile = "platformstab.tsv")
     platforms <- read.delim(file = "platformstab.tsv", sep = "\t")
     platforms <- data.frame(lapply(platforms, as.character),
-                                stringsAsFactors = FALSE)
+                            stringsAsFactors = FALSE)
     if (file.exists("platformstab.tsv")) {
         file.remove("platformstab.tsv")
     }
