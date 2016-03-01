@@ -235,7 +235,11 @@ tcga.report <- function(doc, query){
                                                  '11','12','13','14','20','40','50','60','61')
                           tab <- table(substr(df$patient,14,15))
                           names(tab) <- table.code[names(tab)]
-                          p <- ggplot(as.data.frame(tab), aes(x=Var1,y = Freq,fill=Var1)) + geom_bar(stat="identity") +
+                          tab <- tab[!is.na(names(tab))]
+                          tab <- (as.data.frame(tab))
+                          tab$type <- rownames(tab)
+                          colnames(tab) <- c("Freq","type")
+                          p <- ggplot(tab, aes(x=type,y = Freq,fill=type)) + geom_bar(stat="identity") +
                               theme_bw() +theme(panel.border = element_blank(),
                                                 panel.grid.major = element_blank(),
                                                 panel.grid.minor = element_blank(),
