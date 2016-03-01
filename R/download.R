@@ -23,7 +23,7 @@ biOmicsDownload <- function(lines=NULL,
     if (nrow(encode.lines) > 0) {
         message("==== Encode download ====")
         encode.lines <- subset(encode.db,
-                               encode.db$accession %in%encode.lines$ID)
+                               encode.db$accession %in% encode.lines$ID)
         encodeDownload(encode.lines, enc.file.type)
     }
 
@@ -93,7 +93,7 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
 
             # Downloader library is not working here =/
             if(!file.exists(fileout))
-                download(link, fileout,mode = mode)
+                download.file(link, fileout,mode = mode,method = "wget")
         }
     }
 
