@@ -1,5 +1,6 @@
 # Create Report
-#' @import ReporteRs ggplot2 UpSetR
+#' @import ReporteRs ggplot2
+#' @importFrom UpSetR upset
 create.report <- function(query, path = "report", system) {
 
     report.plot <- function(data, col, title){
@@ -213,7 +214,44 @@ tcga.report <- function(doc, query){
                 df[df$patient == i,j] <- 1
             }
         }
+
+        doc = addPlot(doc,
+                      function() {
+                          table.code <- c("Primary solid Tumor","Recurrent Solid Tumor",
+                                          "Primary Blood Derived Cancer - Peripheral Blood",
+                                          "Recurrent Blood Derived Cancer - Bone Marrow",
+                                          "Additional - New Primary",
+                                          "Metastatic","Additional Metastatic",
+                                          "Human Tumor Original Cells",
+                                          "Primary Blood Derived Cancer - Bone Marrow",
+                                          "Blood Derived Normal","Solid Tissue Normal",
+                                          "Buccal Cell Normal","EBV Immortalized Normal",
+                                          "Bone Marrow Normal","Control Analyte",
+                                          "Recurrent Blood Derived Cancer - Peripheral Blood",
+                                          "Cell Lines","Primary Xenograft Tissue",
+                                          "Cell Line Derived Xenograft Tissue")
+
+                          names(table.code) <- c('01','02','03','04','05','06','07','08','09','10',
+                                                 '11','12','13','14','20','40','50','60','61')
+                          tab <- table(substr(df$patient,14,15))
+                          names(tab) <- table.code[names(tab)]
+                          p <- ggplot(as.data.frame(tab), aes(x=Var1,y = Freq,fill=Var1)) + geom_bar(stat="identity") +
+                              theme_bw() +theme(panel.border = element_blank(),
+                                                panel.grid.major = element_blank(),
+                                                panel.grid.minor = element_blank(),
+                                                axis.line = element_line(colour = "black"),
+                                                legend.key = element_rect(colour = 'white'),
+                                                legend.justification=c(1,1),
+                                                legend.position=c(1,1),
+                                                text = element_text(size=16),
+                                                axis.text.x = element_text(angle = 45, hjust = 1)) + xlab("Type of sample") +
+                              scale_fill_brewer(palette="Set1") + guides(fill=FALSE) + geom_text(aes(label = Freq), size = 4)
+                          plot(p)
+
+                      },width = 6, height = 5 )
+
         df$patient <- NULL
+
         doc = addPlot(doc,
                       function() {
                           upset(df, nsets = length(platform),
