@@ -39,7 +39,22 @@ biOMICsServer <- function(input, output, session) {
             print("End of download")
         }}
     )
-
+    output$system <-  renderText({
+        indexes <- c()
+        query <- data.frame()
+        if (input$ontSearchBt) {
+            link <- c()
+            term <- input$ontSamplesFilter
+            exp <-  input$ontExpFilter
+            print(term)
+            print(exp)
+            query <- biOmicsSearch(input$ontSamplesFilter,
+                                   experiment = input$ontExpFilter)
+            # improve using subset - subset(data,selection,projection)
+            paste0("System: ",
+                   names(sort(table(biosample.encode[biosample.encode$biosample %in% query$Sample,]$system),decreasing = T)[1]))
+        }
+    })
     output$ontSearchtbl <- renderDataTable({
         indexes <- c()
         query <- data.frame()

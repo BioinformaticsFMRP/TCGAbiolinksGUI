@@ -68,6 +68,7 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("search")),
+                               verbatimTextOutput("system"),
                                selectizeInput('ontftypeFilter',
                                               'Encode/Roadmap file filter',
                                               unique(encode.db.files$file_format),
