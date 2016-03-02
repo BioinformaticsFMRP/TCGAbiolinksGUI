@@ -22,7 +22,6 @@ biOMICsServer <- function(input, output, session) {
     output$ontSearchLink <-  renderText({
         getPath <- parseDirPath(volumes, input$folder)
         getFtype <- input$ontftypeFilter
-
         if (input$ontSearchDownloadBt ) {
             link <- c()
 
@@ -37,6 +36,7 @@ biOMICsServer <- function(input, output, session) {
             } else {
                 biOmicsDownload(df, enc.file.type = getFtype, rmap.file.type = getFtype)
             }
+            print("End of download")
         }}
     )
 
