@@ -118,14 +118,16 @@ roadmapDownload <- function(lines, type = NULL, path = ".") {
     if(is.windows()) mode <- "wb" else  mode <- "w"
     for (i in 1:dim(lines)[1]) {
         if(!is.null(type)){
-            epiFiles <- query(ah, c("EpigenomeRoadMap", lines[i,]$EID,lines[i,]$MARK))
-        } else {
             epiFiles <- query(ah, c("EpigenomeRoadMap", lines[i,]$EID,lines[i,]$MARK,type))
+        } else {
+            epiFiles <- query(ah, c("EpigenomeRoadMap", lines[i,]$EID,lines[i,]$MARK))
         }
         for(j in names(epiFiles@.db_uid)){
             file <- epiFiles[j]$sourceurl
-            if(!file.exists(basename(file)))
-                download(file,basename(file), mode = mode)
+            fileout <- file.path(path, lines[i,]$EID, basename(file))
+            dir.create(file.path(path, lines[i,]$EID), showWarnings = FALSE, recursive = TRUE)
+            if(!file.exists(fileout))
+                download(file,fileout, mode = mode)
         }
     }
 }
