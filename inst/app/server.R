@@ -9,7 +9,7 @@ biOMICsServer <- function(input, output, session) {
     setwd(Sys.getenv("HOME"))
     volumes <- c('Working directory'=getwd())
     shinyDirChoose(input, 'folder', roots=volumes, session=session, restrictions=system.file(package='base'))
-    output$directorypath <- renderPrint({parseDirPath(volumes, input$folder)})
+    output$directorypath <- renderText({parseDirPath(volumes, input$folder)})
 
     #----------------- Ontology
 
@@ -30,7 +30,6 @@ biOMICsServer <- function(input, output, session) {
                              Sample = input$allRows[seq(3, length(input$allRows), 5)],
                              Experiment = input$allRows[seq(4, length(input$allRows), 5)],
                              organism = input$allRows[seq(5, length(input$allRows), 5)])
-            print(getPath)
             if(length(getPath) > 0) {
                 biOmicsDownload(df, path = getPath, enc.file.type = getFtype, rmap.file.type = getFtype)
             } else {
@@ -46,8 +45,6 @@ biOMICsServer <- function(input, output, session) {
             link <- c()
             term <- input$ontSamplesFilter
             exp <-  input$ontExpFilter
-            print(term)
-            print(exp)
             query <- biOmicsSearch(input$ontSamplesFilter,
                                    experiment = input$ontExpFilter)
             # improve using subset - subset(data,selection,projection)
@@ -62,8 +59,6 @@ biOMICsServer <- function(input, output, session) {
             link <- c()
             term <- input$ontSamplesFilter
             exp <-  input$ontExpFilter
-            print(term)
-            print(exp)
             query <- biOmicsSearch(input$ontSamplesFilter,
                                    experiment = input$ontExpFilter)
             # improve using subset - subset(data,selection,projection)
