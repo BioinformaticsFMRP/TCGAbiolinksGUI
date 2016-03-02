@@ -3,6 +3,7 @@
 #' @param lines biOmicsSearch output
 #' @param enc.file.type Extension to be downloaed from encode database
 #' @param rmap.file.type Extension to be downloaed from roadmap database
+#' @param path path to save files
 #' @seealso biOmicsSearch
 #' @export
 #' @return Saves the file of the line files
@@ -11,7 +12,8 @@
 #' biOmicsDownload(query, enc.file.type = "bam",rmap.file.type = "bed")
 biOmicsDownload <- function(lines=NULL,
                             enc.file.type = NULL,
-                            rmap.file.type = NULL) {
+                            rmap.file.type = NULL,
+                            path = ".") {
 
     if (is.null(lines)) stop("Please set lines parameter")
 
@@ -24,7 +26,7 @@ biOmicsDownload <- function(lines=NULL,
         message("==== Encode download ====")
         encode.lines <- subset(encode.db,
                                encode.db$accession %in% encode.lines$ID)
-        encodeDownload(encode.lines, enc.file.type)
+        encodeDownload(encode.lines, enc.file.type,file.path("ENCODE",path))
     }
 
     # -------------- download ROADMAP
@@ -33,7 +35,7 @@ biOmicsDownload <- function(lines=NULL,
         rmap.lines <- subset(roadmap.db,
                              roadmap.db$EID == rmap.lines$ID &
                              roadmap.db$MARK == rmap.lines$Experiment)
-        roadmapDownload(rmap.lines, rmap.file.type)
+        roadmapDownload(rmap.lines, rmap.file.type, file.path("ROADMAP",path))
     }
     # ---------------- download TCGA TODO: add filters, folder to
 
@@ -42,7 +44,7 @@ biOmicsDownload <- function(lines=NULL,
         message("==== TCGA download ====")
         tcga.db <- TCGAquery()
         tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
-        TCGAdownload(tcga.lines, path = "TCGA")
+        TCGAdownload(tcga.lines, path = file.path("TCGA",path))
     }
 
 

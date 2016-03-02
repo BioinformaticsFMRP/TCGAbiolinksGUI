@@ -232,6 +232,7 @@ showResults <- function(solution, exper, report = FALSE, path) {
                                          rmap.samples), ]
     disease <- sapply(strsplit(tcga.samples, split = " - "),
                       function(x) {x[1]})
+
     if(length(disease) > 0) {
         tcga.result <- TCGAquery(tumor = disease, level = 3)
     } else {
@@ -260,18 +261,20 @@ showResults <- function(solution, exper, report = FALSE, path) {
         ), 1, any)
         rmap.result <- rmap.result[idx, ]
 
-        idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
-                                           ignore.case = TRUE), 2],
-                            function(x) {
-                                grepl(x,
-                                      tcga.result$baseName,
-                                      ignore.case = TRUE)
-                            }
-        ), 1, any)
-        if (length(idx) > 0) {
-            tcga.result <- tcga.result[idx, ]
-        } else {
-            tcga.result <- tcga.result[1:nrow(tcga.result), ]
+        if(!is.null(tcga.result)){
+            idx <- apply(sapply(platforms[grep(exper, platforms$Standard,
+                                               ignore.case = TRUE), 2],
+                                function(x) {
+                                    grepl(x,
+                                          tcga.result$baseName,
+                                          ignore.case = TRUE)
+                                }
+            ), 1, any)
+            if (length(idx) > 0) {
+                tcga.result <- tcga.result[idx, ]
+            } else {
+                tcga.result <- tcga.result[1:nrow(tcga.result), ]
+            }
         }
 
     }
@@ -294,9 +297,8 @@ showResults <- function(solution, exper, report = FALSE, path) {
         results <- rmap.result
         if(nrow(tcga.result) > 0 & !is.null(results)) results <- rbind(results, tcga.result[,c(7,11, 10)])
     } else if(nrow(tcga.result) > 0 & is.null(results)) {
-        results <- tcga.result
+        results <- tcga.result[,c(7,11, 10)]
     }
-
 
     database <- c(rep("encode", nrow(enc.result)),
                   rep("roadmap", nrow(rmap.result)),

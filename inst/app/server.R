@@ -8,9 +8,8 @@ library(shinyFiles)
 biOMICsServer <- function(input, output, session) {
     setwd(Sys.getenv("HOME"))
     volumes <- c('Working directory'=getwd())
-    volumes <- c('R Installation'=R.home())
-    shinyDirChoose(input, 'directory', roots=volumes, session=session, restrictions=system.file(package='base'))
-    output$directorypath <- renderPrint({parseDirPath(volumes, input$directory)})
+    shinyDirChoose(input, 'folder', roots=volumes, session=session, restrictions=system.file(package='base'))
+    output$directorypath <- renderPrint({parseDirPath(volumes, input$folder)})
 
     #----------------- Ontology
     getontProject <- reactive({c(input$ontProject,"Project","AND") })
@@ -27,10 +26,11 @@ biOMICsServer <- function(input, output, session) {
         if (input$ontSearchDownloadBt ) {
             link <- c()
             print(input$allRows)
-            df <- data.frame(database = input$allRows[seq(1, length(input$allRows), 4)],
-                             ID = input$allRows[seq(2, length(input$allRows), 4)],
-                             Sample = input$allRows[seq(3, length(input$allRows), 4)],
-                             Experiment = input$allRows[seq(4, length(input$allRows), 4)])
+            df <- data.frame(database = input$allRows[seq(1, length(input$allRows), 5)],
+                             ID = input$allRows[seq(2, length(input$allRows), 5)],
+                             Sample = input$allRows[seq(3, length(input$allRows), 5)],
+                             Experiment = input$allRows[seq(4, length(input$allRows), 5)],
+                             organism = input$allRows[seq(5, length(input$allRows), 5)])
             print(df)
             biOmicsDownload(df)
 

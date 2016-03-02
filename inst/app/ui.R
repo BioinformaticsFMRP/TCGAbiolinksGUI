@@ -56,8 +56,9 @@ body <-  dashboardBody(
                                                TCGAbiolinks::TCGAquery()$Disease
                                            )),
                                            multiple = FALSE,options = list(create = TRUE),selected = NULL),
-                               shinyDirButton('directory', 'Folder select', 'Please select a folder',
-                                              class='btn action-button', buttonType='warning'),
+
+                                shinyDirButton('folder', 'Folder select', 'Please select a folder',
+                                              class='shinyDirectories btn-default', buttonType='warning'),
                                verbatimTextOutput("directorypath"),
                                actionButton("ontSearchBt",
                                             "search",
