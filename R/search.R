@@ -303,6 +303,11 @@ showResults <- function(solution, exper, report = FALSE, path) {
                   rep("tcga", nrow(tcga.result)))
     results <- cbind(database, results)
 
+    organism <- c(enc.result[,7],
+                  rep("Homo sapiens", nrow(rmap.result)),
+                  rep("Homo sapiens", nrow(tcga.result)))
+
+    results <- cbind(results, organism)
     if (report) {
         create.report(results,path = path,
                       system = sapply(pat, function(x) {subset(systems, systems$BTO == x)$system}))

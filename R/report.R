@@ -3,28 +3,8 @@
 #' @importFrom UpSetR upset
 create.report <- function(query, path = "report", system) {
 
-    report.plot <- function(data, col, title){
-        .e <- environment()
-
-        g <- ggplot(data, aes(factor(database),
-                              fill = data[,col]),
-                    environment = .e) +
-            geom_bar(position = "fill") +
-            theme_bw() +
-            theme(panel.border = element_blank(),
-                  panel.grid.major = element_blank(),
-                  panel.grid.minor = element_blank(),
-                  axis.line = element_line(colour = "black"),
-                  legend.key = element_rect(colour = 'white'),
-                  legend.justification=c(1,1), legend.position=c(1,1)) +
-            ggtitle(title) +
-            labs(x="Database", y="Percentage of samples") +
-            scale_fill_discrete(name=col) +
-            theme(legend.direction ="vertical",legend.position = "bottom")+
-            guides(fill=guide_legend(ncol=3))
-
-        return(g)
-    }
+    # pages: main.html encode.html tcga.html table.html figures.html
+    pb <- txtProgressBar(min = 0, max = 5, style = 3)
 
     # creating footer
     footer <- pot( 'Code licensed under ', format = textProperties(color='gray') ) +
@@ -36,15 +16,55 @@ create.report <- function(query, path = "report", system) {
     menu <- BootstrapMenu (title = 'biOMICs report',link = "main.html")
     menu <- addLinkItem (menu, label = 'Graphs', 'figures.html')
     menu <- addLinkItem (menu, label = 'TCGA data summary', 'tcga.html')
-    menu <- addLinkItem (menu, label = 'Table', 'table.html')
-
-    message("Creating report....")
+    menu <- addLinkItem (menu, label = 'Encode data summary', 'encode.html')
+    menu <- addLinkItem (menu, label = 'Results table', 'table.html')
 
     # MAIN --------------------------------------------------------------
     doc = bsdoc(title = 'biomics' )
     doc = addBootstrapMenu( doc, menu )
     doc = addFooter( doc, value = footer, par.properties = parCenter( padding = 2 ))
+    doc <- main.report(doc,query,system)
+    writeDoc(doc, file =  file.path(path,"main.html" ))
+    setTxtProgressBar(pb, 1)
 
+
+    #---------------- ENCODE file summary ----------------
+    doc = bsdoc( title = 'biomics' )
+    doc = addBootstrapMenu(doc,menu)
+    doc <- encode.report(doc,query[query$database=="encode",])
+    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
+    writeDoc( doc, file = file.path(path,"encode.html" ))
+    setTxtProgressBar(pb, 3)
+
+    # TCGA --------------------------------------------------------------
+    doc = bsdoc( title = 'biomics' )
+    doc = addBootstrapMenu(doc,menu)
+    doc <- tcga.report(doc,query[query$database=="tcga",])
+    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
+    writeDoc( doc, file = file.path(path,"tcga.html" ))
+    setTxtProgressBar(pb, 2)
+
+    # Graphs ---------------------------------------------------
+    doc = bsdoc( title = 'biomics' )
+    doc = addBootstrapMenu(doc,menu)
+    doc <- figures.report(doc,query)
+    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
+    writeDoc( doc, file = file.path(path,"figures.html" ))
+    setTxtProgressBar(pb, 4)
+
+    # Table -----------------------------------------------
+    doc = bsdoc( title = 'biomics' )
+    doc = addBootstrapMenu(doc, menu )
+    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
+    doc = addFlexTable( doc, vanilla.table(query) )
+    writeDoc(doc, file =  file.path(path,"table.html"))
+    setTxtProgressBar(pb, 5)
+
+    message(paste0("Report saved in folder:",path))
+}
+
+main.report <- function(doc,query,system){
+    message("Creating main page page")
     mkd = "## Summary of results\n"
     mkd = paste0(mkd,paste0("Mapped to: **", system ,"**"))
     doc = addMarkdown( doc, text = mkd,
@@ -78,11 +98,15 @@ create.report <- function(query, path = "report", system) {
                    width = 5, height = 5 )
 
 
-    mkd = "## Downloading the samples
-The next subsections shows how the data seached can be downloaded using different biocondcutor packages"
+    mkd = "## Downloading the samples"
     doc = addMarkdown( doc, text = mkd,
                        default.par.properties = parProperties(text.align = "justify",
                                                               padding.left = 0) )
+    mkd = "The following subsections shows how the data seached can be downloaded using different biocondcutor packages"
+    doc = addMarkdown( doc, text = mkd,
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
+
 
     mkd = "### Downloading roadmap data with AnnotationHub\n"
     doc = addMarkdown( doc, text = mkd,
@@ -118,38 +142,34 @@ encode <- query[query$database =="encode",]
 biOmicsDownload(encode[1,],enc.file.type="bigWig")'
 
     doc = addRScript(doc, text = myrcode )
+    message("Completed main page page")
+    return(doc)
+}
 
+figures.report <-  function(doc, query){
+    message("Creating figures summary page")
+    report.plot <- function(data, col, title){
+        .e <- environment()
 
-    # write the doc
-    writeDoc( doc, file =  file.path(path,"main.html" ))
+        g <- ggplot(data, aes(factor(database),
+                              fill = data[,col]),
+                    environment = .e) +
+            geom_bar(position = "fill") +
+            theme_bw() +
+            theme(panel.border = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.line = element_line(colour = "black"),
+                  legend.key = element_rect(colour = 'white'),
+                  legend.justification=c(1,1), legend.position=c(1,1)) +
+            ggtitle(title) +
+            labs(x="Database", y="Percentage of samples") +
+            scale_fill_discrete(name=col) +
+            theme(legend.direction ="vertical",legend.position = "bottom")+
+            guides(fill=guide_legend(ncol=3))
 
-    # TGCA data summary
-    # Creation of doc, a docx object
-    doc = bsdoc( title = 'biomics' )
-    doc = addBootstrapMenu(doc,menu)
-
-    mkd = "# Summary plots"
-    doc = addMarkdown(doc, text = mkd, default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
-    doc <- tcga.report(doc,query[query$database=="tcga",])
-
-    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
-
-    # write the doc
-    writeDoc( doc, file = file.path(path,"tcga.html" ))
-
-    #---------------- ENCODE file summary ----------------
-    doc = bsdoc( title = 'biomics' )
-    doc = addBootstrapMenu(doc,menu)
-    doc <- encode.report(doc,query[query$database=="encode",])
-    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
-    writeDoc( doc, file = file.path(path,"encode.html" ))
-
-
-    # Graphs ---------------------------------------------------
-
-    # Creation of doc, a docx object
-    doc = bsdoc( title = 'biomics' )
-    doc = addBootstrapMenu(doc,menu)
+        return(g)
+    }
 
     mkd = "# Summary plots"
     doc = addMarkdown(doc, text = mkd, default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
@@ -183,26 +203,14 @@ biOmicsDownload(encode[1,],enc.file.type="bigWig")'
 
         }
     }
-
-    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
-
-    # write the doc
-    writeDoc( doc, file = file.path(path,"figures.html" ))
-
-    # Table -----------------------------------------------
-    doc = bsdoc( title = 'biomics' )
-    doc = addBootstrapMenu(doc, menu )
-    doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
-
-    doc = addFlexTable( doc, vanilla.table(query) )
-    # write the doc
-    writeDoc(doc, file =  file.path(path,"table.html"))
-
-    message(paste0("Report saved in folder:",path))
+    message("Completed figures summary page")
+    return(doc)
 }
-
 #' @importFrom UpSetR upset
 tcga.report <- function(doc, query){
+    message("Creating TCGA summary page")
+    mkd = "# Summary plots"
+    doc = addMarkdown(doc, text = mkd, default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
 
     for(level in 1:3){
         mkd = paste0("## Summary for level ",level, " data")
@@ -279,24 +287,58 @@ tcga.report <- function(doc, query){
 
                       },width = 20, height = 15 )
     }
+    message("Completed TCGA summary page")
     return(doc)
 }
 
 
 #' @importFrom UpSetR upset
 encode.report <- function(doc, query){
+    message("Creating encode summary page")
+    mkd = paste0("## Summary for encode")
+    doc = addMarkdown( doc, text = mkd,
+                       default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
 
-        mkd = paste0("## Summary for encode")
-        doc = addMarkdown( doc, text = mkd,
-                           default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
 
-        encode.db.files$dataset <- gsub("experiments","",encode.db.files$dataset)
-        encode.db.files$dataset <- gsub("/","",encode.db.files$dataset)
-        print(encode.db.files)
-        table(encode.db.files$dataset %in% query$ID)
-        encode.db.files <- encode.db.files[encode.db.files$dataset %in% query$ID]
-        print(head(query))
-        doc = addFlexTable( doc, vanilla.table(encode.db.files) )
+    encode.db.files$dataset <- gsub("experiments","",encode.db.files$dataset)
+    encode.db.files$dataset <- gsub("/","",encode.db.files$dataset)
+    encode.db.files <- encode.db.files[encode.db.files$dataset %in% query$ID,]
+    encode.tab <- merge(encode.db,encode.db.files[,1:4],by.x="accession",by.y="dataset")
+
+    for(j in unique(encode.db$organism)) {
+        mkd = paste0("### Organism:", j)
+        doc = addMarkdown(doc, text = mkd,
+                          default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
+
+        tab <- encode.tab[encode.tab$organism == j,]
+        tab$files <- paste(tab$output_type, tab$title, tab$file_format, sep=",")
+
+        for(i in unique(tab$accession)){
+
+            tab[tab$accession == i,"files"] <- paste(tab[tab$accession == i, "files"], collapse = "\n")
+        }
+        tab <- tab[!duplicated(tab$accession),]
+
+        tab <- tab[,-c(8:10)]
+        colnames(tab)[8] <- "Files: description,title,type"
+
+        options( "ReporteRs-fontsize" = 10 )
+        tab <- vanilla.table(tab)
+
+
+        tab = setFlexTableWidths( tab, widths = c(1, # accession
+                                                  1, # biosample
+                                                  2, # assay
+                                                  1, # lab
+                                                  1, # target
+                                                  2, # description
+                                                  1,   # organism
+                                                  5))  # files
+        tab = setZebraStyle( tab, odd = "#E1EEf4", even = "white" )
+        doc = addFlexTable( doc, tab,width=50)
+    }
+    message("Completed encode summary page")
+
     return(doc)
 }
 
