@@ -9,7 +9,7 @@
 #' @export
 #' @return Open a connection to shiny
 biOmicsApp <- function() {
-    shiny::runApp(system.file("app", package = "biOmics"))
+    shiny::runApp(system.file("app", package = "biOmics"),launch.browser=TRUE)
 }
 
 is.windows <- function() {
