@@ -4,7 +4,7 @@
 create.report <- function(query, path = "report", system) {
 
     # pages: main.html encode.html tcga.html table.html figures.html
-    pb <- txtProgressBar(min = 0, max = 5, style = 3)
+    pb <- txtProgressBar(min = 0, max = 6, style = 3)
 
     # creating footer
     footer <- pot( 'Code licensed under ', format = textProperties(color='gray') ) +
@@ -18,6 +18,7 @@ create.report <- function(query, path = "report", system) {
     menu <- addLinkItem (menu, label = 'TCGA data summary', 'tcga.html')
     menu <- addLinkItem (menu, label = 'Encode data summary', 'encode.html')
     menu <- addLinkItem (menu, label = 'Results table', 'table.html')
+    menu <- addLinkItem (menu, label = 'Downloading the data', 'download.html')
 
     # MAIN --------------------------------------------------------------
     doc = bsdoc(title = 'biomics' )
@@ -26,6 +27,14 @@ create.report <- function(query, path = "report", system) {
     doc <- main.report(doc,query,system)
     writeDoc(doc, file =  file.path(path,"main.html" ))
     setTxtProgressBar(pb, 1)
+
+    # Download --------------------------------------------------------------
+    doc = bsdoc(title = 'biomics' )
+    doc = addBootstrapMenu( doc, menu )
+    doc = addFooter( doc, value = footer, par.properties = parCenter( padding = 2 ))
+    doc <- download.report(doc,query)
+    writeDoc(doc, file =  file.path(path,"download.html" ))
+    setTxtProgressBar(pb, 2)
 
 
     #---------------- ENCODE file summary ----------------
@@ -42,7 +51,7 @@ create.report <- function(query, path = "report", system) {
     doc <- tcga.report(doc,query[query$database=="tcga",])
     doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
     writeDoc( doc, file = file.path(path,"tcga.html" ))
-    setTxtProgressBar(pb, 2)
+    setTxtProgressBar(pb, 4)
 
     # Graphs ---------------------------------------------------
     doc = bsdoc( title = 'biomics' )
@@ -50,7 +59,7 @@ create.report <- function(query, path = "report", system) {
     doc <- figures.report(doc,query)
     doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
     writeDoc( doc, file = file.path(path,"figures.html" ))
-    setTxtProgressBar(pb, 4)
+    setTxtProgressBar(pb, 5)
 
     # Table -----------------------------------------------
     doc = bsdoc( title = 'biomics' )
@@ -58,46 +67,13 @@ create.report <- function(query, path = "report", system) {
     doc = addFooter(doc, value = footer, par.properties = parCenter( padding = 2 ))
     doc = addFlexTable( doc, vanilla.table(query) )
     writeDoc(doc, file =  file.path(path,"table.html"))
-    setTxtProgressBar(pb, 5)
+    setTxtProgressBar(pb, 6)
 
     message(paste0("Report saved in folder:",path))
 }
 
-main.report <- function(doc,query,system){
-    message("Creating main page page")
-    mkd = "## Summary of results\n"
-    mkd = paste0(mkd,paste0("Mapped to: **", system ,"**"))
-    doc = addMarkdown( doc, text = mkd,
-                       default.par.properties = parProperties(text.align = "justify",
-                                                              padding.left = 0) )
-
-    mkd = "### Number of terms in the system"
-    doc = addMarkdown( doc, text = mkd,
-                       default.par.properties = parProperties(text.align = "justify",
-                                                              padding.left = 0) )
-    doc = addPlot( doc, function() barplot(c(length(unique(query[query$database == "tcga","Sample"])),
-                                             length(unique(query[query$database == "encode","Sample"])),
-                                             length(unique(query[query$database == "roadmap","Sample"]))),
-                                           xlab="Nuber of terms",
-                                           legend.text = c(paste0("tcga (n=",length(unique(query[query$database == "tcga","Sample"])),")"),
-                                                           paste0("encode (n=",length(unique(query[query$database == "encode","Sample"])),")"),
-                                                           paste0("roadmap (n=",length(unique(query[query$database == "roadmap","Sample"])),")")),
-                                           col = rainbow(3)),
-                   width = 5, height = 5 )
-
-    mkd = "### Number of samples in the system"
-
-    doc = addMarkdown( doc, text = mkd,
-                       default.par.properties = parProperties(text.align = "justify",
-                                                              padding.left = 0) )
-    doc = addPlot( doc, function() barplot(table(query$database), 	xlab="Nuber of samples",
-                                           legend.text = c(paste0("tcga (n=",nrow(query[query$database == "tcga",]),")"),
-                                                           paste0("encode (n=",nrow(query[query$database == "encode",]),")"),
-                                                           paste0("roadmap (n=",nrow(query[query$database == "roadmap",]),")")),
-                                           col = rainbow(3)),
-                   width = 5, height = 5 )
-
-
+download.report <- function(doc,query){
+    message("Creating help page for downloading")
     mkd = "## Downloading the samples"
     doc = addMarkdown( doc, text = mkd,
                        default.par.properties = parProperties(text.align = "justify",
@@ -142,6 +118,46 @@ encode <- query[query$database =="encode",]
 biOmicsDownload(encode[1,],enc.file.type="bigWig")'
 
     doc = addRScript(doc, text = myrcode )
+    message("Completed help page for downloading")
+    return(doc)
+}
+
+main.report <- function(doc,query,system){
+    message("Creating main page page")
+    mkd = "## Summary of results\n"
+    mkd = paste0(mkd,paste0("Mapped to: **", system ,"**"))
+    doc = addMarkdown( doc, text = mkd,
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
+
+    mkd = "### Number of terms in the system"
+    doc = addMarkdown( doc, text = mkd,
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
+    doc = addPlot( doc, function() barplot(c(length(unique(query[query$database == "tcga","Sample"])),
+                                             length(unique(query[query$database == "encode","Sample"])),
+                                             length(unique(query[query$database == "roadmap","Sample"]))),
+                                           xlab="Nuber of terms",
+                                           legend.text = c(paste0("tcga (n=",length(unique(query[query$database == "tcga","Sample"])),")"),
+                                                           paste0("encode (n=",length(unique(query[query$database == "encode","Sample"])),")"),
+                                                           paste0("roadmap (n=",length(unique(query[query$database == "roadmap","Sample"])),")")),
+                                           col = rainbow(3)),
+                   width = 5, height = 5 )
+
+    mkd = "### Number of samples in the system"
+
+    doc = addMarkdown( doc, text = mkd,
+                       default.par.properties = parProperties(text.align = "justify",
+                                                              padding.left = 0) )
+    doc = addPlot( doc, function() barplot(table(query$database), 	xlab="Nuber of samples",
+                                           legend.text = c(paste0("tcga (n=",nrow(query[query$database == "tcga",]),")"),
+                                                           paste0("encode (n=",nrow(query[query$database == "encode",]),")"),
+                                                           paste0("roadmap (n=",nrow(query[query$database == "roadmap",]),")")),
+                                           col = rainbow(3)),
+                   width = 5, height = 5 )
+
+
+
     message("Completed main page page")
     return(doc)
 }
