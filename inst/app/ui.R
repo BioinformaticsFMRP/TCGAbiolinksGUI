@@ -68,6 +68,10 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("search")),
+                               selectizeInput('ontftypeFilter',
+                                              'Encode/Roadmap file filter',
+                                              unique(encode.db.files$file_format),
+                                              multiple = TRUE),
                                actionButton("ontSearchDownloadBt",
                                             "Download selected",
                                             style = "background-color: #F39C12;

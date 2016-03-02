@@ -12,9 +12,6 @@ biOMICsServer <- function(input, output, session) {
     output$directorypath <- renderPrint({parseDirPath(volumes, input$folder)})
 
     #----------------- Ontology
-    getontProject <- reactive({c(input$ontProject,"Project","AND") })
-    getontSearch  <- reactive({c(input$ontSearch,NULL,NULL)        })
-    getontType    <- reactive({c(input$ontType,"Filter","AND")     })
 
     output$savedFiles <- renderUI({
         if (input$ontSearchDownloadBt ) {
@@ -23,17 +20,23 @@ biOMICsServer <- function(input, output, session) {
     })
 
     output$ontSearchLink <-  renderText({
+        getPath <- parseDirPath(volumes, input$folder)
+        getFtype <- input$ontftypeFilter
+
         if (input$ontSearchDownloadBt ) {
             link <- c()
-            print(input$allRows)
+
             df <- data.frame(database = input$allRows[seq(1, length(input$allRows), 5)],
                              ID = input$allRows[seq(2, length(input$allRows), 5)],
                              Sample = input$allRows[seq(3, length(input$allRows), 5)],
                              Experiment = input$allRows[seq(4, length(input$allRows), 5)],
                              organism = input$allRows[seq(5, length(input$allRows), 5)])
-            print(df)
-            biOmicsDownload(df)
-
+            print(getPath)
+            if(length(getPath) > 0) {
+                biOmicsDownload(df, path = getPath, enc.file.type = getFtype, rmap.file.type = getFtype)
+            } else {
+                biOmicsDownload(df, enc.file.type = getFtype, rmap.file.type = getFtype)
+            }
         }}
     )
 

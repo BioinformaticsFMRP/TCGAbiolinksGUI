@@ -26,7 +26,7 @@ biOmicsDownload <- function(lines=NULL,
         message("==== Encode download ====")
         encode.lines <- subset(encode.db,
                                encode.db$accession %in% encode.lines$ID)
-        encodeDownload(encode.lines, enc.file.type,file.path("ENCODE",path))
+        encodeDownload(encode.lines, enc.file.type,file.path(path,"ENCODE"))
     }
 
     # -------------- download ROADMAP
@@ -35,7 +35,7 @@ biOmicsDownload <- function(lines=NULL,
         rmap.lines <- subset(roadmap.db,
                              roadmap.db$EID == rmap.lines$ID &
                              roadmap.db$MARK == rmap.lines$Experiment)
-        roadmapDownload(rmap.lines, rmap.file.type, file.path("ROADMAP",path))
+        roadmapDownload(rmap.lines, rmap.file.type, file.path(path,"ROADMAP"))
     }
     # ---------------- download TCGA TODO: add filters, folder to
 
@@ -44,7 +44,7 @@ biOmicsDownload <- function(lines=NULL,
         message("==== TCGA download ====")
         tcga.db <- TCGAquery()
         tcga.lines <- tcga.db[tcga.db$name == tcga.lines$ID,]
-        TCGAdownload(tcga.lines, path = file.path("TCGA",path))
+        TCGAdownload(tcga.lines, path = file.path(path,"TCGA"))
     }
 
 
@@ -117,7 +117,11 @@ roadmapDownload <- function(lines, type = NULL, path = ".") {
     ah = AnnotationHub()
     if(is.windows()) mode <- "wb" else  mode <- "w"
     for (i in 1:dim(lines)[1]) {
-        epiFiles <- query(ah, c("EpigenomeRoadMap", lines[i,]$EID,lines[i,]$MARK))
+        if(!is.null(type)){
+            epiFiles <- query(ah, c("EpigenomeRoadMap", lines[i,]$EID,lines[i,]$MARK))
+        } else {
+            epiFiles <- query(ah, c("EpigenomeRoadMap", lines[i,]$EID,lines[i,]$MARK,type))
+        }
         for(j in names(epiFiles@.db_uid)){
             file <- epiFiles[j]$sourceurl
             if(!file.exists(basename(file)))
