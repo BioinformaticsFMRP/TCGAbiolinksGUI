@@ -34,11 +34,13 @@ systemSearch <- function(term,env) {
                 parentTerm <- derives_from(res[[1]])
                 if (!is.null(parentTerm)) from <- "=> Derives from: "
             }
-            if (!is.null(parentTerm)  & length(parentTerm@x) > 0){
-                message(paste0(from, parentTerm@x[[1]]@label))
-                sapply(names(parentTerm@x), function(x) {
-                    systemSearch(x,env)
-                })
+            if (!is.null(parentTerm)){
+                if( length(parentTerm@x) > 0){
+                    message(paste0(from, parentTerm@x[[1]]@label))
+                    sapply(names(parentTerm@x), function(x) {
+                        systemSearch(x,env)
+                    })
+                }
             }
             return()
         }
@@ -199,23 +201,23 @@ biOmicsSearch <- function(term,
         # reach BTO
         #if (!get("success", envir = env)) {
         #    message("Not found in the cache, not found in BTO...")
-         #
-         #   ont.vec <- c("EFO", "CL", "UBERON")
-         #   for (i in ont.vec) {
-         #       query <- rols::olsQuery(term, i)
-         #       if (length(query) > 0) {
-                    # term was found in other ontology!
-         #           for (j in seq(query)) {
-         #               map.to.bto(query[j],env)
-         #               success <- get("success", envir = env)
-         #               if (success)  break
-         #           }
-         #           if (success) {
-         #               message(paste0("Found in:",i,"!"))
-         #               break
-         #           }
-         #       }
-         #   }
+        #
+        #   ont.vec <- c("EFO", "CL", "UBERON")
+        #   for (i in ont.vec) {
+        #       query <- rols::olsQuery(term, i)
+        #       if (length(query) > 0) {
+        # term was found in other ontology!
+        #           for (j in seq(query)) {
+        #               map.to.bto(query[j],env)
+        #               success <- get("success", envir = env)
+        #               if (success)  break
+        #           }
+        #           if (success) {
+        #               message(paste0("Found in:",i,"!"))
+        #               break
+        #           }
+        #       }
+        #   }
         #}
         success <- get("success", envir = env)
         solution <- get("solution", envir = env)
