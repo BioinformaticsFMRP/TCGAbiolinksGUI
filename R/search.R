@@ -6,15 +6,30 @@ systemSearch <- function(term,env) {
     systems <- get("systems", envir = as.environment("package:biOmics"))
 
     if (!success) {
+        # If the bto is a system return it
         found <- intersect(term, systems$BTO)
         if (length(found) > 0) {
             assign("success", TRUE, envir = env)
             assign("solution", found, envir = env)
             return()
         } else {
-            parentTerm <- rols::parents(term[1], ont)
-            parentTerm <- names(parentTerm)
-            sapply(parentTerm, function(x) {
+            # Otherwise get parents/part_of and repeat the process
+            res <- olsSearch(OlsSearch(term, ont, exact = TRUE))
+            parentTerm <- part_of(as(res, "Terms")[[1]])
+
+            if (is.null(parentTerm)) {
+                parentTerm <- parents(as(res, "Terms")[[1]])
+                if (!is.null(parentTerm)) from <- "=> Son of: "
+            } else {
+                from <- "=> Part of: "
+            }
+            if (is.null(parentTerm) | length(parentTerm@x) == 0){
+                message("Search using deverives from")
+                parentTerm <- derives_from(as(res, "Terms")[[1]])
+                if (!is.null(parentTerm)) from <- "=> Derives from: "
+            }
+            if (!is.null(parentTerm)) message(paste0(from, parentTerm@x[[1]]@label))
+            sapply(names(parentTerm@x), function(x) {
                 systemSearch(x,env)
             })
             return()
@@ -143,32 +158,41 @@ biOmicsSearch <- function(term,
     }
 
     # Step 2: search for the term in the BTO ontology.
-    if (!success) {
+    if (!get("success", envir = env)) {
         message("Not found in the cache, searching in the ontology...")
         # Term has not been mapped before.
         assign("ont", "BTO" , envir = env)
         ont <- get("ont", envir = env)
-        query <- rols::olsQuery(term, ont, exact = TRUE)
 
-        if (length(query) > 0) {
-            term.found <- names(query)
-            systemSearch(term.found,env)
+        # Step 1: try searching for exact terms
+        query <- OlsSearch(q = term, ontology = ont, exact = TRUE)
+        if (query@numFound) {
+            res <- olsSearch(query)
+            # term.found should be BTO:0000142
+            term.found <- res@response$obo_id
+            systemSearch(term.found, env)
         } else {
-            query <- rols::olsQuery(term, ont, exact = FALSE)
-            if (length(query) > 0) {
-                term.found <- names(query)
-                sapply(term.found, function(x) {
-                    if (!rols::isIdObsolete(x, ont)) {
-                        systemSearch(x,env)
+            # Step 2: Search for non exact terms
+            query <- OlsSearch(q = term, ontology = ont, exact = FALSE)
+            print(query)
+            if (query@numFound) {
+                res <- olsSearch(query)
+                # term.found should be BTO:0000142
+                sapply(as(res,"Terms")@x, function(x) {
+
+                    if (!isObsolete(x)) {
+                        print(x@obo_id)
+                        systemSearch(x@obo_id,env)
                     }
                 })
             }
         }
 
+
         # Not found in bto or cache we are going to search in other
         # ontologies and see if from the other ontologies we can
         # reach BTO
-        if (!success) {
+        if (!get("success", envir = env)) {
             message("Not found in the cache, not found in BTO...")
 
             ont.vec <- c("EFO", "CL", "UBERON")
@@ -199,7 +223,6 @@ biOmicsSearch <- function(term,
     if (success) {
         return(showResults(solution, experiment, report, dir.report))
     }
-
     message("Term not found")
     return(NULL)
 }
@@ -310,9 +333,14 @@ showResults <- function(solution, exper, report = FALSE, path) {
                   rep("Homo sapiens", nrow(tcga.result)))
 
     results <- cbind(results, organism)
+    system <- sapply(pat, function(x) {subset(systems, systems$BTO == x)$system})
     if (report) {
-        create.report(results,path = path,
-                      system = sapply(pat, function(x) {subset(systems, systems$BTO == x)$system}))
+        create.report(results,path = path, system =system)
+    } else {
+        message("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+        message(paste0("|    Mapped to: ", system))
+        message("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+
     }
     return(results)
 }
