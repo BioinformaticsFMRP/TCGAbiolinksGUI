@@ -15,7 +15,7 @@ systemSearch <- function(term,env) {
         } else {
             # Otherwise get parents/part_of and repeat the process
             res <- olsSearch(OlsSearch(term, ont, exact = TRUE))
-            parentTerm <- part_of(as(res, "Terms")[[1]])
+            suppressMessages({parentTerm <- part_of(as(res, "Terms")[[1]])})
 
             if (is.null(parentTerm)) {
                 parentTerm <- parents(as(res, "Terms")[[1]])
@@ -24,7 +24,6 @@ systemSearch <- function(term,env) {
                 from <- "=> Part of: "
             }
             if (is.null(parentTerm) | length(parentTerm@x) == 0){
-                message("Search using deverives from")
                 parentTerm <- derives_from(as(res, "Terms")[[1]])
                 if (!is.null(parentTerm)) from <- "=> Derives from: "
             }
@@ -174,14 +173,11 @@ biOmicsSearch <- function(term,
         } else {
             # Step 2: Search for non exact terms
             query <- OlsSearch(q = term, ontology = ont, exact = FALSE)
-            print(query)
             if (query@numFound) {
                 res <- olsSearch(query)
                 # term.found should be BTO:0000142
                 sapply(as(res,"Terms")@x, function(x) {
-
                     if (!isObsolete(x)) {
-                        print(x@obo_id)
                         systemSearch(x@obo_id,env)
                     }
                 })
