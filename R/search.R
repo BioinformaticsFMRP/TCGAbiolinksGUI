@@ -1,5 +1,6 @@
 
 # internal: used by biOmicsSearch
+#' @importFrom  rols OlsSearch olsSearch part_of parents derives_from
 systemSearch <- function(term,env) {
     success <- get("success", envir = env)
     ont <- get("ont", envir = env)
@@ -15,22 +16,30 @@ systemSearch <- function(term,env) {
         } else {
             # Otherwise get parents/part_of and repeat the process
             res <- olsSearch(OlsSearch(term, ont, exact = TRUE))
-            suppressMessages({parentTerm <- part_of(as(res, "Terms")[[1]])})
-
+            res <- as(res, "Terms")[[1]]
+            parentTerm <- parents(res)
             if (is.null(parentTerm)) {
-                parentTerm <- parents(as(res, "Terms")[[1]])
-                if (!is.null(parentTerm)) from <- "=> Son of: "
+                parentTerm <- part_of(res)
+                if (!is.null(parentTerm)) from <- "=> Part of: "
+            }  else if (!is.null(parentTerm) & length(parentTerm@x) == 0){
+                parentTerm <- suppressMessages({part_of(res)})
+                if (!is.null(parentTerm)) from <- "=> Part of: "
             } else {
-                from <- "=> Part of: "
+                from <-  "=> Son of: "
             }
-            if (is.null(parentTerm) | length(parentTerm@x) == 0){
-                parentTerm <- derives_from(as(res, "Terms")[[1]])
+            if (is.null(parentTerm)){
+                parentTerm <- derives_from(res)
+                if (!is.null(parentTerm)) from <- "=> Derives from: "
+            } else if (!is.null(parentTerm) & length(parentTerm@x) == 0){
+                parentTerm <- derives_from(res[[1]])
                 if (!is.null(parentTerm)) from <- "=> Derives from: "
             }
-            if (!is.null(parentTerm)) message(paste0(from, parentTerm@x[[1]]@label))
-            sapply(names(parentTerm@x), function(x) {
-                systemSearch(x,env)
-            })
+            if (!is.null(parentTerm)  & length(parentTerm@x) > 0){
+                message(paste0(from, parentTerm@x[[1]]@label))
+                sapply(names(parentTerm@x), function(x) {
+                    systemSearch(x,env)
+                })
+            }
             return()
         }
     }
@@ -121,7 +130,7 @@ is.mapped <- function(term,env) {
 #'RNASeq \tab miRNASeq \tab Rampage \tab Others
 #'}
 #' @examples inst/examples/biomicsSearch.R
-#' @importFrom rols olsQuery term parents isIdObsolete
+#' @importFrom rols OlsSearch olsSearch isObsolete
 #' @importFrom TCGAbiolinks TCGAquery
 #' @export
 #' @return A dataframe with the results of the query if it
@@ -188,26 +197,26 @@ biOmicsSearch <- function(term,
         # Not found in bto or cache we are going to search in other
         # ontologies and see if from the other ontologies we can
         # reach BTO
-        if (!get("success", envir = env)) {
-            message("Not found in the cache, not found in BTO...")
-
-            ont.vec <- c("EFO", "CL", "UBERON")
-            for (i in ont.vec) {
-                query <- rols::olsQuery(term, i)
-                if (length(query) > 0) {
+        #if (!get("success", envir = env)) {
+        #    message("Not found in the cache, not found in BTO...")
+         #
+         #   ont.vec <- c("EFO", "CL", "UBERON")
+         #   for (i in ont.vec) {
+         #       query <- rols::olsQuery(term, i)
+         #       if (length(query) > 0) {
                     # term was found in other ontology!
-                    for (j in seq(query)) {
-                        map.to.bto(query[j],env)
-                        success <- get("success", envir = env)
-                        if (success)  break
-                    }
-                    if (success) {
-                        message(paste0("Found in:",i,"!"))
-                        break
-                    }
-                }
-            }
-        }
+         #           for (j in seq(query)) {
+         #               map.to.bto(query[j],env)
+         #               success <- get("success", envir = env)
+         #               if (success)  break
+         #           }
+         #           if (success) {
+         #               message(paste0("Found in:",i,"!"))
+         #               break
+         #           }
+         #       }
+         #   }
+        #}
         success <- get("success", envir = env)
         solution <- get("solution", envir = env)
     }
@@ -231,7 +240,7 @@ showResults <- function(solution, exper, report = FALSE, path) {
     # Get the samples that matches the result of the query
     # Databases were matched manually to systems
     pat <- unlist(strsplit(solution[1], ","))
-
+    return(sapply(pat, function(x) {subset(systems, systems$BTO == x)$system}))
     idx <- apply(sapply(pat, function(x) {
         grepl(x, biosample.encode$BTO)
     }), 1, any)
@@ -329,9 +338,10 @@ showResults <- function(solution, exper, report = FALSE, path) {
                   rep("Homo sapiens", nrow(tcga.result)))
 
     results <- cbind(results, organism)
+    print(pat)
     system <- sapply(pat, function(x) {subset(systems, systems$BTO == x)$system})
     if (report) {
-        create.report(results,path = path, system =system)
+        create.report(results,path = path, system = system)
     } else {
         message("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
         message(paste0("|    Mapped to: ", system))

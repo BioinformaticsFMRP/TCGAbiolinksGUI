@@ -4,7 +4,8 @@
 \alias{biOmicsDownload}
 \title{biOmicsDownload}
 \usage{
-biOmicsDownload(lines = NULL, enc.file.type = NULL, rmap.file.type = NULL)
+biOmicsDownload(lines = NULL, enc.file.type = NULL, rmap.file.type = NULL,
+  path = ".")
 }
 \arguments{
 \item{lines}{biOmicsSearch output}
@@ -12,6 +13,8 @@ biOmicsDownload(lines = NULL, enc.file.type = NULL, rmap.file.type = NULL)
 \item{enc.file.type}{Extension to be downloaed from encode database}
 
 \item{rmap.file.type}{Extension to be downloaed from roadmap database}
+
+\item{path}{path to save files}
 }
 \value{
 Saves the file of the line files
