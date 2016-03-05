@@ -242,7 +242,7 @@ showResults <- function(solution, exper, report = FALSE, path) {
     # Get the samples that matches the result of the query
     # Databases were matched manually to systems
     pat <- unlist(strsplit(solution[1], ","))
-    return(sapply(pat, function(x) {subset(systems, systems$BTO == x)$system}))
+    #return(sapply(pat, function(x) {subset(systems, systems$BTO == x)$system}))
     idx <- apply(sapply(pat, function(x) {
         grepl(x, biosample.encode$BTO)
     }), 1, any)
