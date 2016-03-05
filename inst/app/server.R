@@ -7,18 +7,11 @@ library(shinyFiles)
 #' @keywords internal
 biOMICsServer <- function(input, output, session) {
     setwd(Sys.getenv("HOME"))
+
     volumes <- c('Working directory'=getwd())
     shinyDirChoose(input, 'folder', roots=volumes, session=session, restrictions=system.file(package='base'))
     output$directorypath <- renderText({parseDirPath(volumes, input$folder)})
-
     #----------------- Ontology
-
-    output$savedFiles <- renderUI({
-        if (input$ontSearchDownloadBt ) {
-            valueBoxOutput("ontProgressBox", width = NULL)
-        }
-    })
-
     output$ontSearchLink <-  renderText({
         getPath <- parseDirPath(volumes, input$folder)
         getFtype <- input$ontftypeFilter
@@ -42,20 +35,19 @@ biOMICsServer <- function(input, output, session) {
     dataInput <- reactive({
         indexes <- c()
         query <- data.frame()
-            link <- c()
-            term <- input$ontSamplesFilter
-            exp <-  input$ontExpFilter
-            query <- biOmicsSearch(input$ontSamplesFilter,
-                                   experiment = input$ontExpFilter)
-            # improve using subset - subset(data,selection,projection)
-            return(list(system = names(sort(table(biosample.encode[biosample.encode$biosample %in% query$Sample,]$system),decreasing = T)[1]),
-                        result = query))
+        link <- c()
+        term <- input$ontSamplesFilter
+        exp <-  input$ontExpFilter
+        query <- biOmicsSearch(input$ontSamplesFilter,
+                               experiment = input$ontExpFilter)
+        # improve using subset - subset(data,selection,projection)
+        return(list(system = names(sort(table(biosample.encode[biosample.encode$biosample %in% query$Sample,]$system),decreasing = T)[1]),
+                    result = query))
     })
 
     output$system <-  renderText({
         if (input$ontSearchBt) {
             paste0("System: ", dataInput()$system)
-
         }
     })
     output$ontSearchtbl <- renderDataTable({
@@ -67,7 +59,7 @@ biOMICsServer <- function(input, output, session) {
                    scrollX = TRUE,
                    jQueryUI = TRUE,
                    pagingType = "full",
-                   lengthMenu = c(10, 50, 100, -1),
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
                    language.emptyTable = "No results found",
                    "dom" = 'T<"clear">lfrtip',
                    "oTableTools" = list(
@@ -83,13 +75,94 @@ biOMICsServer <- function(input, output, session) {
                            )
                        )
                    )
-    ), callback = "function(table) {
-      table.on('click.dt', 'tr', function() {
-        Shiny.onInputChange('allRows',
-                            table.rows('.selected').data().toArray());
-      });
-
-    }"
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
 
+    #------------- TCGA ------------------
+
+    # Table render
+    output$tcgaSearchtbl <- renderDataTable({
+        tumor = input$tcgaTumorFilter
+        platform = input$tcgaExpFilter
+        level = input$tcgaLevelFilter
+        if (input$tcgaSearchBt) {
+            tbl <- TCGAquery(tumor = tumor,
+                             platform = platform,
+                             level = level)
+            tbl$Level <- stringr::str_extract(tbl$name,"Level_[1-3]|mage-tab|aux")
+            tbl <- tbl[,c(1,10,11,12,13,7,8)]
+        }
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+    )
+
+    # Download
+    shinyDirChoose(input, 'tcgafolder', roots=volumes, session=session,
+                   restrictions=system.file(package='base'))
+    output$tcgadirectorypath <- renderText({parseDirPath(volumes, input$tcgafolder)})
+
+    output$tcgaSearchLink <-  renderText({
+
+        # Files types
+        ftype <- NULL
+        rnaseqFtype <- input$tcgaFrnaseqtypeFilter
+        rnaseqv2Ftype <- input$tcgaFrnaseqv2typeFilter
+        gwsFtype <- input$tcgaFgwstypeFilter
+
+        # Dir to save the files
+        getPath <- parseDirPath(volumes, input$tcgafolder)
+        if (length(getPath) == 0) getPath <- "."
+        samplesType <- input$tcgasamplestypeFilter
+        if (input$tcgaDownloadBt ) {
+
+            withProgress(message = 'Download in progress',
+                         detail = 'This may take a while...', value = 0, {
+                             df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
+                             x <- TCGAquery()
+                             x <- x[x$name %in% df$name,]
+
+                             for (i in 1:nrow(x)) {
+                                 incProgress(1/nrow(x))
+                                    if (x$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
+                                    if (x$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
+                                    if (x$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
+                                    if (length(samplesType) == 0) {
+                                        samples <- NULL
+                                    } else {
+                                        samples <- unlist(lapply(samplesType,function(type){
+                                            s <- unlist(str_split(x$barcode,","))
+                                            s[grep(type,substr(s,14,15))]
+                                        }))
+                                    }
+                                     TCGAdownload(x, path = getPath,type = ftype,samples = samples)
+                             }})
+            print("End of download")
+        }
+
+    })
+
+    getSamples <- function(types,data){
+
+
+
+    }
 }
+
