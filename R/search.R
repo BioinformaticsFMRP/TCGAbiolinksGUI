@@ -1,6 +1,6 @@
 
 # internal: used by biOmicsSearch
-#' @importFrom  rols OlsSearch olsSearch part_of parents derives_from
+#' @importFrom  rols OlsSearch olsSearch partOf parents derivesFrom
 systemSearch <- function(term,env) {
     success <- get("success", envir = env)
     ont <- get("ont", envir = env)
@@ -19,19 +19,19 @@ systemSearch <- function(term,env) {
             res <- as(res, "Terms")[[1]]
             parentTerm <- parents(res)
             if (is.null(parentTerm)) {
-                parentTerm <- part_of(res)
+                parentTerm <- partOf(res)
                 if (!is.null(parentTerm)) from <- "=> Part of: "
             }  else if (!is.null(parentTerm) & length(parentTerm@x) == 0){
-                parentTerm <- suppressMessages({part_of(res)})
+                parentTerm <- suppressMessages({partOf(res)})
                 if (!is.null(parentTerm)) from <- "=> Part of: "
             } else {
                 from <-  "=> Son of: "
             }
             if (is.null(parentTerm)){
-                parentTerm <- derives_from(res)
+                parentTerm <- derivesFrom(res)
                 if (!is.null(parentTerm)) from <- "=> Derives from: "
             } else if (!is.null(parentTerm) & length(parentTerm@x) == 0){
-                parentTerm <- derives_from(res[[1]])
+                parentTerm <- derivesFrom(res[[1]])
                 if (!is.null(parentTerm)) from <- "=> Derives from: "
             }
             if (!is.null(parentTerm)){
