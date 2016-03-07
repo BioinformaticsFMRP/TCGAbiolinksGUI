@@ -25,8 +25,8 @@ sidebar <-  dashboardSidebar(
     sidebarMenu(
         menuItem("Ontology search" , tabName = "ontology", icon = icon("search")),
         #menuItem("Report" , tabName = "report", icon = icon("book")),
-        menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search"))
-        #menuItem("ROADMAP search" , tabName = "roadmap", icon = icon("search")),
+        menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
+        menuSubItem("TCGA - OncoPrint" , tabName = "tcgaOncoPrint")
         #menuItem("ENCOCDE search" , tabName = "encode", icon = icon("search"))
     )
 )
@@ -148,7 +148,7 @@ body <-  dashboardBody(
                                selectizeInput('tcgaFrnaseqv2typeFilter',
                                               'RNASeqV2 File type filter',
                                               c("junction_quantification",
-                                                 "rsem.genes.results",
+                                                "rsem.genes.results",
                                                 "rsem.isoforms.results",
                                                 "rsem.genes.normalized_results",
                                                 "rsem.isoforms.normalized_results",
@@ -176,6 +176,45 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("download")),
                                textOutput('tcgaSearchLink')
+                           )
+                    )
+                )
+        ),
+        tabItem(tabName = "tcgaOncoPrint",
+                fluidRow(
+                    column(9, dataTableOutput('maftbl')),
+                    column(3,
+                           box(title = "Download",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               shinyDirButton('maffolder', 'Folder select', 'Please select a folder',
+                                              class='shinyDirectories btn-default', buttonType='warning'),
+                               verbatimTextOutput("mafdirectorypath"),
+                               actionButton("mafDownloadBt",
+                                            "Download selected",
+                                            style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                            icon = icon("download")),
+                               textOutput('mafDownloadfTxt')
+                           ),box(title = "Oncoprint",width = NULL,
+                                 status = "warning",
+                                 solidHeader = FALSE, collapsible = FALSE,
+                                 fileInput('maffile', 'Choose maf File',
+                                           accept=c(".maf")),
+                                 #shinyFilesButton('maffile', 'Select maf file', 'Please select a maf', FALSE,
+                                 #                class='shinyDirectories btn-default', buttonType='warning'),
+                                 verbatimTextOutput("maffile"),
+                                 actionButton("oncoprintPlot",
+                                              "Plot oncoprint",
+                                              style = "background-color: #F39C12;
+                                              color: #FFFFFF;
+                                              margin-left: auto;
+                                              margin-right: auto;
+                                              width: 100%",
+                                              icon = icon("picture-o"))
                            )
                     )
                 )

@@ -1,9 +1,12 @@
 library(shiny)
 library(shinyFiles)
+options(shiny.maxRequestSize=300*1024^2)
+
 #' @title  Server side
 #' @description Server side - Download data from roadmap project
 #' @param input - input signal
 #' @param output - output signal
+#' @importFrom downloader download
 #' @keywords internal
 biOMICsServer <- function(input, output, session) {
     setwd(Sys.getenv("HOME"))
@@ -141,28 +144,78 @@ biOMICsServer <- function(input, output, session) {
 
                              for (i in 1:nrow(x)) {
                                  incProgress(1/nrow(x))
-                                    if (x$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
-                                    if (x$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
-                                    if (x$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
-                                    if (length(samplesType) == 0) {
-                                        samples <- NULL
-                                    } else {
-                                        samples <- unlist(lapply(samplesType,function(type){
-                                            s <- unlist(str_split(x$barcode,","))
-                                            s[grep(type,substr(s,14,15))]
-                                        }))
-                                    }
-                                     TCGAdownload(x, path = getPath,type = ftype,samples = samples)
+                                 if (x$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
+                                 if (x$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
+                                 if (x$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
+                                 if (length(samplesType) == 0) {
+                                     samples <- NULL
+                                 } else {
+                                     samples <- unlist(lapply(samplesType,function(type){
+                                         s <- unlist(str_split(x$barcode,","))
+                                         s[grep(type,substr(s,14,15))]
+                                     }))
+                                 }
+                                 TCGAdownload(x, path = getPath,type = ftype,samples = samples)
                              }})
             print("End of download")
         }
 
     })
 
-    getSamples <- function(types,data){
+    #------------- MAF
 
+    # Table render
+    output$maftbl <- renderDataTable({
+        all.df[,c(10,1,2,4,5,7)]
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+    )
 
+    # Download
+    shinyDirChoose(input, 'maffolder', roots=volumes, session=session,
+                   restrictions=system.file(package='base'))
+    output$mafdirectorypath <- renderText({parseDirPath(volumes, input$maffolder)})
 
-    }
+    output$mafDownloadfTxt <-  renderText({
+
+        # Dir to save the files
+        getPath <- parseDirPath(volumes, input$maffolder)
+        if (length(getPath) == 0) getPath <- "."
+        if (input$mafDownloadBt ) {
+
+            withProgress(message = 'Download in progress',
+                         detail = 'This may take a while...', value = 0, {
+                             df <- data.frame(name = input$allRows[seq(5, length(input$allRows), 7)])
+                             print(df)
+                             df <-   maf.files[maf.files$Archive.Name %in% df$name,]
+
+                             for (i in 1:nrow(df)) {
+                                 incProgress(1/nrow(df))
+                                 fout <- file.path(getPath,basename(df[1,]$Deploy.Location))
+                                 if (!file.exists(fout))  downloader::download(df[1,]$Deploy.Location,fout)
+                             }})
+            print("End of download")
+        }
+
+    })
+
 }
 

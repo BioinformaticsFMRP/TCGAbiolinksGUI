@@ -29,6 +29,8 @@ update <- function(){
     load.encode(env)
     load.encode.files(env)
     load.roadmap(env)
+    load.maf(env)
+    maf.files <- get("maf.files", envir = env)
     encode.db <- get("encode.db", envir = env)
     encode.db.files <- get("encode.db.files", envir = env)
     roadmap.db <- get("roadmap.db", envir = env)
@@ -46,6 +48,7 @@ update <- function(){
              platforms,
              roadmap.db,
              systems,
+             maf.files,
              internal = TRUE, overwrite = T
     )
 

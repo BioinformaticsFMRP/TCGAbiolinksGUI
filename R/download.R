@@ -109,6 +109,7 @@ encodeDownload <- function(lines, type = NULL, path = ".") {
 #' @export
 #' @import AnnotationHub
 #' @importFrom stringr str_replace_all
+#' @importFrom downloader download
 #' @return Download romapdata into path
 #' @examples
 #' query <- roadmapSearch(sample = "H1 cell line", experiment = "RRBS")
