@@ -52,6 +52,7 @@ biOMICsServer <- function(input, output, session) {
     observe({
         if(input$ontReport){
             create.report(dataInput()$result, system = dataInput()$system)
+            create.report(dataInput()$result, path = paste0(getwd(),"/report") ,system = dataInput()$system)
         }
     })
     output$system <-  renderText({
