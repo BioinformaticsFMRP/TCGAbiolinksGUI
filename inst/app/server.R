@@ -216,9 +216,19 @@ biOMICsServer <- function(input, output, session) {
         }
 
     })
+    mut <- function(){
+        inFile <- input$maffile
+
+        if (is.null(inFile)) return(NULL)
+        ret <- read.table(inFile$datapath, fill = TRUE,
+                          comment.char = "#", header = TRUE, sep = "\t", quote='')
+        return(ret)
+
+    }
     plotting <- reactive({
         if(input$oncoprintPlot){
-            create.oncoprint(mut=mut,genes=mut$Hugo_Symbol[1:20])
+            mut <- mut()
+            create.oncoprint(mut=mut,genes=input$oncoGenes)
         }
     })
     output$oncoPlot <- renderPlot({
@@ -226,7 +236,9 @@ biOMICsServer <- function(input, output, session) {
             plotting()
         }
     })
-
+    observe({
+        updateSelectizeInput(session, 'oncoGenes', choices = as.character(mut()$Hugo_Symbol), server = TRUE)
+    })
 
 }
 
