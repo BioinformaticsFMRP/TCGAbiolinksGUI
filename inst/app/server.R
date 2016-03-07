@@ -203,7 +203,7 @@ biOMICsServer <- function(input, output, session) {
     output$mafdirectorypath <- renderText({parseDirPath(volumes, input$maffolder)})
 
     output$mafDownloadfTxt <-  renderText({
-
+        maf.files <- get.obj("maf.files")
         # Dir to save the files
         getPath <- parseDirPath(volumes, input$maffolder)
         if (length(getPath) == 0) getPath <- "."
