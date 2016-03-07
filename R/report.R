@@ -1,6 +1,7 @@
 # Create Report
 #' @import ReporteRs ggplot2
 #' @importFrom UpSetR upset
+#' @export
 create.report <- function(query, path = "report", system) {
 
     # pages: main.html encode.html tcga.html table.html figures.html
