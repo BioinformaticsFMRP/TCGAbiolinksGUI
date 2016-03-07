@@ -2,6 +2,7 @@ library(shiny)
 library(shinyFiles)
 options(shiny.maxRequestSize=300*1024^2)
 
+
 #' @title  Server side
 #' @description Server side - Download data from roadmap project
 #' @param input - input signal
@@ -44,10 +45,15 @@ biOMICsServer <- function(input, output, session) {
         query <- biOmicsSearch(input$ontSamplesFilter,
                                experiment = input$ontExpFilter)
         # improve using subset - subset(data,selection,projection)
+        biosample.encode <- get.obj("biosample.encode")
         return(list(system = names(sort(table(biosample.encode[biosample.encode$biosample %in% query$Sample,]$system),decreasing = T)[1]),
                     result = query))
     })
-
+    observe({
+        if(input$ontReport){
+            create.report(dataInput()$result, system = dataInput()$system)
+        }
+    })
     output$system <-  renderText({
         if (input$ontSearchBt) {
             paste0("System: ", dataInput()$system)
@@ -166,6 +172,7 @@ biOMICsServer <- function(input, output, session) {
 
     # Table render
     output$maftbl <- renderDataTable({
+        maf.files <- get.obj("maf.files")
         maf.files[,c(10,1,2,4,5,7)]
     },
     options = list(pageLength = 10,
@@ -238,6 +245,22 @@ biOMICsServer <- function(input, output, session) {
     })
     observe({
         updateSelectizeInput(session, 'oncoGenes', choices = as.character(mut()$Hugo_Symbol), server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'ontExpFilter', choices = as.character(get.obj("platforms")$Standard), server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'ontSamplesFilter', choices = as.character(c("",
+                                                                                   union(
+                                                                                       union(
+                                                                                           get.obj("roadmap.db")$Sample.Name,
+                                                                                                   get.obj("encode.db")$biosample
+                                                                                       ),
+                                                                                       TCGAbiolinks::TCGAquery()$Disease
+                                                                                   ))), server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'ontftypeFilter', choices = as.character(unique(get.obj("encode.db.files")$file_format)), server = TRUE)
     })
 
 }

@@ -5,7 +5,7 @@
 #' @param color named vector for the plot
 #' @param height pdf height
 #' @importFrom ComplexHeatmap oncoPrint
-#' @importFrom grid gpar
+#' @importFrom grid gpar grid.rect
 #' @importFrom reshape2 dcast acast
 #' @examples
 #' mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM", archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
@@ -59,17 +59,6 @@ create.oncoprint <- function (mut,
     if(!missing(height)) height <- length(genes)/2
     if(!missing(filename)) pdf(filename,width = 20,height = height)
 
-    if(missing(bottom_annotation)) {
-        bottom_annotation <- NULL
-    } else {
-        annotation <- NULL
-        bottom_annotation <-  HeatmapAnnotation(annotation_height = unit(0.3, "cm"),
-                                                df = NULL,
-                                                #col = list(Type = c("LGG"="green", "GBM"="orange")),
-                                                annotation_legend_param = list(title_gp = gpar(fontsize = 16, fontface = "bold"),
-                                                                               labels_gp = gpar(fontsize = 16), # size labels
-                                                                               grid_height = unit(8, "mm")))
-    }
     p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                    row_order = NULL,
                    remove_empty_columns = FALSE,
@@ -81,7 +70,7 @@ create.oncoprint <- function (mut,
                    #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
                    #column_title_gp = gpar(fontsize = 11),
                    row_barplot_width = unit(4, "cm"), #size barplot
-                   bottom_annotation = bottom_annotation,
+                   #bottom_annotation = bottom_annotation,
                    heatmap_legend_param = list(title = "Mutations", at = c("DEL", "INS", "SNP"),
                                                labels = c("DEL", "INS", "SNP"),
                                                title_gp = gpar(fontsize = 16, fontface = "bold"),

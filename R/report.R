@@ -315,7 +315,6 @@ encode.report <- function(doc, query){
     doc = addMarkdown( doc, text = mkd,
                        default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
 
-
     encode.db.files$dataset <- gsub("experiments","",encode.db.files$dataset)
     encode.db.files$dataset <- gsub("/","",encode.db.files$dataset)
     encode.db.files <- encode.db.files[encode.db.files$dataset %in% query$ID,]
@@ -327,6 +326,7 @@ encode.report <- function(doc, query){
                           default.par.properties = parProperties(text.align = "justify", padding.left = 0) )
 
         tab <- encode.tab[encode.tab$organism == j,]
+        if(nrow(tab) == 0) next # no rows for that organism
         tab$files <- paste(tab$output_type, tab$title, tab$file_format, sep=",")
 
         for(i in unique(tab$accession)){

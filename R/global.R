@@ -32,3 +32,8 @@ setOptionsProgressBar <- function(title, label) {
     opb <- pbapply::pboptions(type = "txt", char = "+", title = title,
         label = label)
 }
+
+#' @export
+get.obj <- function(obj){
+    return(get(obj))
+}

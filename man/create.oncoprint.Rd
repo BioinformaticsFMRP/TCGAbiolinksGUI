@@ -4,22 +4,27 @@
 \alias{create.oncoprint}
 \title{Creating a oncoprint}
 \usage{
-create.oncoprint(mut, genes, filename, color)
+create.oncoprint(mut, genes, filename, color, bottom_annotation, height)
 }
 \arguments{
-\item{mut}{Mutation file}
+\item{mut}{Mutation file (see TCGAquery_maf from TCGAbiolinks)}
 
 \item{genes}{Gene list}
 
 \item{filename}{name of the pdf}
 
-\item{color}{for the graph}
+\item{color}{named vector for the plot}
+
+\item{height}{pdf height}
 }
 \description{
 Creating a oncoprint
 }
 \examples{
 mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM", archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
-create.oncoprint(mut=mut,genes=mut$Hugo_Symbol[1:10])
+create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10])
+create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
+                 filename = "onco.pdf",
+                 color=c("DEL"="purple","INS"="yellow","SNP"="brown"))
 }
 

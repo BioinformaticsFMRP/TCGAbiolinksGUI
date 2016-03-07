@@ -1,6 +1,7 @@
 library(shiny)
 library(shinyFiles)
 library(ggvis)
+library(TCGAbiolinks)
 
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
@@ -67,23 +68,14 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = FALSE,
                                selectizeInput('ontExpFilter',
                                               'Experiments filter',
-                                              platforms$Standard,
+                                              NULL,
                                               multiple = TRUE),
                                selectizeInput('ontSamplesFilter',
                                               'Term',
-                                              c("",
-                                                union(
-                                                    union(
-                                                        roadmap.db$Sample.Name,
-                                                        encode.db$biosample
-                                                    ),
-                                                    TCGAbiolinks::TCGAquery()$Disease
-                                                )),
+                                              choices=NULL,
                                               multiple = FALSE,options = list(create = TRUE),selected = NULL),
 
-                               shinyDirButton('folder', 'Folder select', 'Please select a folder',
-                                              class='shinyDirectories btn-default', buttonType='warning'),
-                               verbatimTextOutput("directorypath"),
+
                                actionButton("ontSearchBt",
                                             "search",
                                             style = "background-color: #F39C12;
@@ -92,10 +84,16 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("search")),
-                               verbatimTextOutput("system"),
+                               verbatimTextOutput("system")),
+                           box(title = "Download",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               shinyDirButton('folder', 'Folder select', 'Please select a folder',
+                                              class='shinyDirectories btn-default', buttonType='warning'),
+                               verbatimTextOutput("directorypath"),
                                selectizeInput('ontftypeFilter',
                                               'Encode/Roadmap file filter',
-                                              unique(encode.db.files$file_format),
+                                              choices=NULL,
                                               multiple = TRUE),
                                actionButton("ontSearchDownloadBt",
                                             "Download selected",
@@ -107,7 +105,26 @@ body <-  dashboardBody(
                                             icon = icon("download")),
 
                                textOutput('ontSearchLink')
-                           )
+                           ),  box(title = "Report",width = NULL,
+                                   status = "warning",
+                                   solidHeader = FALSE, collapsible = FALSE,
+                                   actionButton("ontReport",
+                                                "Create report",
+                                                style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 49%",
+                                                icon = icon("book")),
+                                   actionButton("openReport",
+                                                a("View report",href=paste0("report/main.html")),
+                                                style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 49%",
+                                                icon = icon("eye")))
+
                     )
 
                 )
