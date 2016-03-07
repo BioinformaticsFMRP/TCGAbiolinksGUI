@@ -206,7 +206,6 @@ body <-  dashboardBody(
                                  solidHeader = FALSE, collapsible = FALSE,
                                  fileInput('maffile', 'Choose maf File',
                                            accept=c(".maf")),
-                                 verbatimTextOutput("maffile"),
                                  actionButton("oncoprintPlot",
                                               "Plot oncoprint",
                                               style = "background-color: #F39C12;
@@ -214,7 +213,10 @@ body <-  dashboardBody(
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                              icon = icon("picture-o"))
+                                              icon = icon("picture-o")),
+                                 selectizeInput('oncoGenes',
+                                                "genes",
+                                                choices = NULL,  multiple = TRUE)
                            )
                     )
 
