@@ -166,7 +166,7 @@ biOMICsServer <- function(input, output, session) {
 
     # Table render
     output$maftbl <- renderDataTable({
-        all.df[,c(10,1,2,4,5,7)]
+        maf.files[,c(10,1,2,4,5,7)]
     },
     options = list(pageLength = 10,
                    scrollX = TRUE,
@@ -216,6 +216,17 @@ biOMICsServer <- function(input, output, session) {
         }
 
     })
+    plotting <- reactive({
+        if(input$oncoprintPlot){
+            create.oncoprint(mut=mut,genes=mut$Hugo_Symbol[1:20])
+        }
+    })
+    output$oncoPlot <- renderPlot({
+        if(input$oncoprintPlot){
+            plotting()
+        }
+    })
+
 
 }
 

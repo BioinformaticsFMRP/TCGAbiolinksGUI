@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyFiles)
+library(ggvis)
 
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
@@ -182,7 +183,8 @@ body <-  dashboardBody(
         ),
         tabItem(tabName = "tcgaOncoPrint",
                 fluidRow(
-                    column(9, dataTableOutput('maftbl')),
+                    column(9, dataTableOutput('maftbl'),
+                           plotOutput("oncoPlot", click = "plot_click",height=800)),
                     column(3,
                            box(title = "Download",width = NULL,
                                status = "warning",
@@ -204,8 +206,6 @@ body <-  dashboardBody(
                                  solidHeader = FALSE, collapsible = FALSE,
                                  fileInput('maffile', 'Choose maf File',
                                            accept=c(".maf")),
-                                 #shinyFilesButton('maffile', 'Select maf file', 'Please select a maf', FALSE,
-                                 #                class='shinyDirectories btn-default', buttonType='warning'),
                                  verbatimTextOutput("maffile"),
                                  actionButton("oncoprintPlot",
                                               "Plot oncoprint",
@@ -217,6 +217,7 @@ body <-  dashboardBody(
                                               icon = icon("picture-o"))
                            )
                     )
+
                 )
         )
     )
