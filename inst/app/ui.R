@@ -1,6 +1,5 @@
 library(shiny)
 library(shinyFiles)
-library(ggvis)
 library(TCGAbiolinks)
 
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
@@ -194,7 +193,25 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("download")),
                                textOutput('tcgaSearchLink')
-                           )
+                           ),
+                           box(title = "Prepare",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               radioButtons("prepareRb", "Data type:",
+                                            c("SummarizedExperiment" = TRUE,
+                                              "Dataframe" = FALSE)),
+                               shinyDirButton('tcgapreparefolder', 'Folder to save', 'Please select a folder',
+                                              class='shinyDirectories btn-default', buttonType='warning'),
+                               verbatimTextOutput("tcgapreparedir"),
+                               actionButton("tcgaPrepareBt",
+                                            "Prepare data",
+                                            style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                            icon = icon("cogs")),
+                               textOutput('tcgaprepare'))
                     )
                 )
         ),

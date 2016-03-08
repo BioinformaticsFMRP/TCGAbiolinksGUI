@@ -60,6 +60,50 @@ biOMICsServer <- function(input, output, session) {
             paste0("System: ", dataInput()$system)
         }
     })
+
+    output$tcgaprepare <-  renderText({
+        if (input$tcgaPrepareBt) {
+            # read the data from the downloaded path
+            # prepare it
+
+            # Files types
+            ftype <- NULL
+            rnaseqFtype <- input$tcgaFrnaseqtypeFilter
+            rnaseqv2Ftype <- input$tcgaFrnaseqv2typeFilter
+            gwsFtype <- input$tcgaFgwstypeFilter
+
+            # Dir to saved the files
+            getPath <- parseDirPath(volumes, input$tcgafolder)
+            if (length(getPath) == 0) getPath <- "."
+            samplesType <- input$tcgasamplestypeFilter
+
+            withProgress(message = 'Prepare in progress',
+                         detail = 'This may take a while...', value = 0, {
+                             df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
+                             x <- TCGAquery()
+                             x <- x[x$name %in% df$name,]
+
+                             if (length(unique(x$Platform)) > 1) stop("Can only prepre one platform")
+                             if (x$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
+                             if (x$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
+                             if (x$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
+                             if (length(samplesType) == 0) {
+                                 samples <- NULL
+                             } else {
+                                 samples <- unlist(lapply(samplesType,function(type){
+                                     s <- unlist(str_split(x$barcode,","))
+                                     s[grep(type,substr(s,14,15))]
+                                 }))
+                             }
+                             TCGAprepare(x,dir = getPath, summarizedExperiment = input$prepareRb,
+                                         save = T, type = ftype, samples = samples  )
+                             print("End of Prepare")
+                         })
+
+        }
+    })
+
+
     output$ontSearchtbl <- renderDataTable({
         if (input$ontSearchBt) {
             dataInput()$result
@@ -128,6 +172,10 @@ biOMICsServer <- function(input, output, session) {
     shinyDirChoose(input, 'tcgafolder', roots=volumes, session=session,
                    restrictions=system.file(package='base'))
     output$tcgadirectorypath <- renderText({parseDirPath(volumes, input$tcgafolder)})
+    shinyDirChoose(input, 'tcgapreparefolder', roots=volumes, session=session,
+                   restrictions=system.file(package='base'))
+    output$tcgapreparedir <- renderText({parseDirPath(volumes, input$tcgapreparefolder)})
+
 
     output$tcgaSearchLink <-  renderText({
 
@@ -255,7 +303,7 @@ biOMICsServer <- function(input, output, session) {
                                                                                    union(
                                                                                        union(
                                                                                            get.obj("roadmap.db")$Sample.Name,
-                                                                                                   get.obj("encode.db")$biosample
+                                                                                           get.obj("encode.db")$biosample
                                                                                        ),
                                                                                        TCGAbiolinks::TCGAquery()$Disease
                                                                                    ))), server = TRUE)
