@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyFiles)
+library(SummarizedExperiment)
 options(shiny.maxRequestSize=300*1024^2)
 
 
@@ -77,29 +78,44 @@ biOMICsServer <- function(input, output, session) {
             if (length(getPath) == 0) getPath <- "."
             samplesType <- input$tcgasamplestypeFilter
 
+            filename <- parseDirPath(volumes, input$tcgapreparefolder)
+            if(length(filename) == 0) filename <- "."
+            if(length(input$tcgapreparefile) > 0) filename <- file.path(filename,input$tcgapreparefile)
+
             withProgress(message = 'Prepare in progress',
                          detail = 'This may take a while...', value = 0, {
                              df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
                              x <- TCGAquery()
                              x <- x[x$name %in% df$name,]
-
-                             if (length(unique(x$Platform)) > 1) stop("Can only prepre one platform")
-                             if (x$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
-                             if (x$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
-                             if (x$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
-                             if (length(samplesType) == 0) {
-                                 samples <- NULL
-                             } else {
-                                 samples <- unlist(lapply(samplesType,function(type){
-                                     s <- unlist(str_split(x$barcode,","))
-                                     s[grep(type,substr(s,14,15))]
-                                 }))
+                             for (i in unique(x$Platform)) {
+                                 incProgress(1/length(unique(x$Platform)))
+                                 aux <- x[x$Platform ==i,]
+                                 ftype <- NULL
+                                 if (i == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
+                                 if (i == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
+                                 if (i == "Genome_Wide_SNP_6") ftype <- gwsFtype
+                                 if (length(samplesType) == 0) {
+                                     samples <- NULL
+                                 } else {
+                                     samples <- unlist(lapply(samplesType,function(type){
+                                         s <- unlist(str_split(aux$barcode,","))
+                                         s[grep(type,substr(s,14,15))]
+                                     }))
+                                 }
+                                 if(!(length(unique(x$Platform)) == 1 &
+                                      length(input$tcgapreparefile) > 0)){
+                                     filename <- NULL
+                                 }
+                                 trash <- TCGAprepare(aux,dir = getPath,
+                                                      summarizedExperiment = as.logical(input$prepareRb),
+                                                      save = TRUE,
+                                                      type = ftype,
+                                                      filename=filename,
+                                                      samples = samples)
                              }
-                             TCGAprepare(x,dir = getPath, summarizedExperiment = input$prepareRb,
-                                         save = T, type = ftype, samples = samples  )
-                             print("End of Prepare")
-                         })
 
+                         })
+            print("End of Prepare")
         }
     })
 
@@ -199,14 +215,15 @@ biOMICsServer <- function(input, output, session) {
 
                              for (i in 1:nrow(x)) {
                                  incProgress(1/nrow(x))
-                                 if (x$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
-                                 if (x$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
-                                 if (x$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
+                                 aux <- x[i,]
+                                 if (aux$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
+                                 if (aux$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
+                                 if (aux$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
                                  if (length(samplesType) == 0) {
                                      samples <- NULL
                                  } else {
                                      samples <- unlist(lapply(samplesType,function(type){
-                                         s <- unlist(str_split(x$barcode,","))
+                                         s <- unlist(str_split(aux$barcode,","))
                                          s[grep(type,substr(s,14,15))]
                                      }))
                                  }
@@ -311,6 +328,57 @@ biOMICsServer <- function(input, output, session) {
     observe({
         updateSelectizeInput(session, 'ontftypeFilter', choices = as.character(unique(get.obj("encode.db.files")$file_format)), server = TRUE)
     })
+
+    ## DMR analysis
+    output$tcgadmr <-  renderText({
+        if (input$dmrAnalysis) {
+            # read the data from the downloaded path
+            # prepare it
+            se <- dmrdata()
+            group1 <- input$dmrgroup1
+            group2 <- input$dmrgroup2
+
+            withProgress(message = 'Prepare in progress',
+                         detail = 'This may take a while...', value = 0, {
+                             TCGAanalyze_DMR(data = se,
+                                             groupCol = input$dmrgroupCol,
+                                             group1 = input$dmrgroup1,
+                                             group2 = input$dmrgroup2,
+                                             p.cut=input$dmrpvalue,
+                                             diffmean.cut=input$dmrthrsld,
+                                             cores = input$dmrcores)
+
+                         })
+            print("End of Prepare")
+        }
+    })
+
+    dmrdata <- function(){
+        inFile <- input$dmrfile
+        if (is.null(inFile)) return(NULL)
+        se <- get(load(input$dmrfile$datapath))
+        return(se)
+    }
+
+    observe({
+        updateSelectizeInput(session, 'dmrgroup1', choices = {
+            if(!is.null(dmrdata()) & input$dmrgroupCol !="")
+                as.character(colData(dmrdata())[,input$dmrgroupCol])
+        }, server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'dmrgroup2', choices = {
+
+            if(!is.null(dmrdata()) & input$dmrgroupCol !="")
+                as.character(colData(dmrdata())[,input$dmrgroupCol])
+            }, server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'dmrgroupCol', choices = {
+            if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
+            }, server = TRUE)
+    })
+
 
 }
 

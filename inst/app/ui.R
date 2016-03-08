@@ -27,8 +27,8 @@ sidebar <-  dashboardSidebar(
         menuItem("Ontology search" , tabName = "ontology", icon = icon("search")),
         #menuItem("Report" , tabName = "report", icon = icon("book")),
         menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
-        menuSubItem("TCGA - OncoPrint" , tabName = "tcgaOncoPrint")
-        #menuItem("ENCOCDE search" , tabName = "encode", icon = icon("search"))
+        menuSubItem("TCGA - OncoPrint" , tabName = "tcgaOncoPrint"),
+        menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask"))
     )
 )
 
@@ -254,6 +254,43 @@ body <-  dashboardBody(
                            )
                     )
 
+                )
+        ),
+        tabItem(tabName = "dmr",
+
+                fluidRow(
+                    column(9, plotOutput("dmrPlot",height=800)),
+                    column(3,
+                           box(title = "DMR analysis",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               fileInput('dmrfile', 'Select DNA methylation SummarizedExperiment object',
+                                         accept=c(".rda")),
+                               numericInput("dmrthrsld", "DNA methylation threshold",
+                                            min = 0, max = 1, value = 0, step = 0.05),
+                               numericInput("dmrpvalue", "P-value adj cut-off",
+                                            min = 0, max = 1, value = 0.05, step = 0.001),
+                               sliderInput("dmrcores", "Cores",step=1,
+                                           min = 1, max = parallel::detectCores(), value = 1),
+                               selectizeInput('dmrgroupCol',
+                                              "Group column",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('dmrgroup1',
+                                              "Group 1",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('dmrgroup2',
+                                              "Group 2",
+                                              choices = NULL,  multiple = FALSE),
+                               actionButton("dmrAnalysis",
+                                            "DMR analysis",
+                                            style = "background-color: #F39C12;
+                                              color: #FFFFFF;
+                                              margin-left: auto;
+                                              margin-right: auto;
+                                              width: 100%",
+                                            icon = icon("flask"))
+                           )
+                    )
                 )
         )
     )
