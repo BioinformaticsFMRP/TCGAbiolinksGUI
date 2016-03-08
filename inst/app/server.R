@@ -376,7 +376,16 @@ biOMICsServer <- function(input, output, session) {
             if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
             }, server = TRUE)
     })
-
+    observe({
+        updateSelectizeInput(session, 'meanmetsubgroupCol', choices = {
+            if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
+        }, server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'meanmetgroupCol', choices = {
+            if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
+        }, server = TRUE)
+    })
 
 }
 

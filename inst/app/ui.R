@@ -261,11 +261,14 @@ body <-  dashboardBody(
                 fluidRow(
                     column(9, plotOutput("dmrPlot",height=800)),
                     column(3,
+                           box(title = "DNA methylation object",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               fileInput('dmrfile', 'Select SummarizedExperiment object',
+                                         accept=c(".rda"))),
                            box(title = "DMR analysis",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,
-                               fileInput('dmrfile', 'Select DNA methylation SummarizedExperiment object',
-                                         accept=c(".rda")),
                                numericInput("dmrthrsld", "DNA methylation threshold",
                                             min = 0, max = 1, value = 0, step = 0.05),
                                numericInput("dmrpvalue", "P-value adj cut-off",
@@ -290,6 +293,25 @@ body <-  dashboardBody(
                                               width: 100%",
                                             icon = icon("flask")),
                                textOutput('tcgadmr')
+                           ),
+                           box(title = "Mean DNA methylation",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               selectizeInput('meanmetgroupCol',
+                                              "Group column",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('meanmetsubgroupCol',
+                                              "Sub group column",
+                                              choices = NULL,  multiple = FALSE),
+                               actionButton("meanmetAnalysis",
+                                            "DNA mean methylation plot",
+                                            style = "background-color: #F39C12;
+                                              color: #FFFFFF;
+                                              margin-left: auto;
+                                              margin-right: auto;
+                                              width: 100%",
+                                            icon = icon("eye")),
+                               textOutput('tcgameanmet')
                            )
                     )
                 )
