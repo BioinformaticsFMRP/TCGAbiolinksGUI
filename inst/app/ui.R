@@ -288,7 +288,8 @@ body <-  dashboardBody(
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("flask"))
+                                            icon = icon("flask")),
+                               textOutput('tcgadmr')
                            )
                     )
                 )

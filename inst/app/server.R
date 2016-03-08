@@ -335,12 +335,10 @@ biOMICsServer <- function(input, output, session) {
             # read the data from the downloaded path
             # prepare it
             se <- dmrdata()
-            group1 <- input$dmrgroup1
-            group2 <- input$dmrgroup2
-
-            withProgress(message = 'Prepare in progress',
+            se <- subset(se,subset = (rowSums(is.na(assay(se))) == 0))
+            withProgress(message = 'DME analysis in progress',
                          detail = 'This may take a while...', value = 0, {
-                             TCGAanalyze_DMR(data = se,
+                             met <- TCGAanalyze_DMR(data = se,
                                              groupCol = input$dmrgroupCol,
                                              group1 = input$dmrgroup1,
                                              group2 = input$dmrgroup2,
@@ -349,7 +347,7 @@ biOMICsServer <- function(input, output, session) {
                                              cores = input$dmrcores)
 
                          })
-            print("End of Prepare")
+            print("End of DMR analysis")
         }
     })
 
