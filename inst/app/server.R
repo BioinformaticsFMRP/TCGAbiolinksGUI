@@ -21,24 +21,38 @@ biOMICsServer <- function(input, output, session) {
     output$reportdirectorypath <- renderText({parseDirPath(volumes, input$reportfolder)})
 
     #----------------- Ontology
-    output$ontSearchLink <-  renderText({
+    observeEvent(input$ontSearchDownloadBt , {
+
+        if(length(input$allRows) == 0) {
+            createAlert(session, "alert", "exampleAlert", title = "Invalid selection", type = "danger",
+                        message = "Please select the samples to download.", append = FALSE)
+            return()
+        } else {
+            closeAlert(session, "exampleAlert")
+        }
+
         getPath <- parseDirPath(volumes, input$folder)
         getFtype <- input$ontftypeFilter
-        if (input$ontSearchDownloadBt ) {
-            link <- c()
 
-            df <- data.frame(database = input$allRows[seq(1, length(input$allRows), 5)],
-                             ID = input$allRows[seq(2, length(input$allRows), 5)],
-                             Sample = input$allRows[seq(3, length(input$allRows), 5)],
-                             Experiment = input$allRows[seq(4, length(input$allRows), 5)],
-                             organism = input$allRows[seq(5, length(input$allRows), 5)])
-            if(length(getPath) > 0) {
-                biOmicsDownload(df, path = getPath, enc.file.type = getFtype, rmap.file.type = getFtype)
-            } else {
-                biOmicsDownload(df, enc.file.type = getFtype, rmap.file.type = getFtype)
-            }
-            print("End of download")
-        }}
+        link <- c()
+
+        df <- data.frame(database = input$allRows[seq(1, length(input$allRows), 5)],
+                         ID = input$allRows[seq(2, length(input$allRows), 5)],
+                         Sample = input$allRows[seq(3, length(input$allRows), 5)],
+                         Experiment = input$allRows[seq(4, length(input$allRows), 5)],
+                         organism = input$allRows[seq(5, length(input$allRows), 5)])
+        withProgress(message = 'Downloading data',
+                     detail = 'This may take a while...', value = 0, {
+                         if(length(getPath) > 0) {
+                             biOmicsDownload(df, path = getPath, enc.file.type = getFtype, rmap.file.type = getFtype)
+                         } else {
+                             biOmicsDownload(df, enc.file.type = getFtype, rmap.file.type = getFtype)
+                         }
+
+                     })
+        createAlert(session, "alert", "exampleAlert", title = "Download completed", type = "info",
+                    message = "Your download has been completed.", append = FALSE)
+    }
     )
 
     dataInput <- reactive({
@@ -79,11 +93,10 @@ biOMICsServer <- function(input, output, session) {
                      })
     })
 
-    output$system <-  renderText({
-        if (input$ontSearchBt) {
+    observeEvent(input$ontSearchBt, {
+        output$system <-  renderText({
             paste0("System: ", dataInput()$system)
-        }
-    })
+        })})
 
     output$tcgaprepare <-  renderText({
         if (input$tcgaPrepareBt) {
@@ -142,70 +155,98 @@ biOMICsServer <- function(input, output, session) {
         }
     })
 
+    observeEvent(input$ontSearchBt, {
 
-    output$ontSearchtbl <- renderDataTable({
-        if (input$ontSearchBt) {
-            dataInput()$result
+        if(nchar(input$ontSamplesFilter) < 3) {
+            createAlert(session, "alert", "exampleAlert", title = "Invalid term", type = "danger",
+                        message = "Input should be creater  than 3 characters.", append = FALSE)
+            return()
+        } else {
+            closeAlert(session, "exampleAlert")
         }
-    },
-    options = list(pageLength = 10,
-                   scrollX = TRUE,
-                   jQueryUI = TRUE,
-                   pagingType = "full",
-                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                   language.emptyTable = "No results found",
-                   "dom" = 'T<"clear">lfrtip',
-                   "oTableTools" = list(
-                       "sSelectedClass" = "selected",
-                       "sRowSelect" = "os",
-                       "sSwfPath" = paste0("//cdnjs.cloudflare.com/ajax/",
-                                           "libs/datatables-tabletools/",
-                                           "2.2.3/swf/copy_csv_xls.swf"),
-                       "aButtons" = list(
-                           list("sExtends" = "collection",
-                                "sButtonText" = "Save",
-                                "aButtons" = c("csv","xls")
+        output$ontSearchtbl <- renderDataTable({
+            dataInput()$result
+        },
+        options = list(pageLength = 10,
+                       scrollX = TRUE,
+                       jQueryUI = TRUE,
+                       pagingType = "full",
+                       lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                       language.emptyTable = "No results found",
+                       "dom" = 'T<"clear">lfrtip',
+                       "oTableTools" = list(
+                           "sSelectedClass" = "selected",
+                           "sRowSelect" = "os",
+                           "sSwfPath" = paste0("//cdnjs.cloudflare.com/ajax/",
+                                               "libs/datatables-tabletools/",
+                                               "2.2.3/swf/copy_csv_xls.swf"),
+                           "aButtons" = list(
+                               list("sExtends" = "collection",
+                                    "sButtonText" = "Save",
+                                    "aButtons" = c("csv","xls")
+                               )
                            )
                        )
-                   )
-    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )
+        ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+        )})
 
     #------------- TCGA ------------------
 
     # Table render
-    output$tcgaSearchtbl <- renderDataTable({
-        tumor = input$tcgaTumorFilter
-        platform = input$tcgaExpFilter
-        level = input$tcgaLevelFilter
-        if (input$tcgaSearchBt) {
-            tbl <- TCGAquery(tumor = tumor,
-                             platform = platform,
-                             level = level)
-            tbl$Level <- stringr::str_extract(tbl$name,"Level_[1-3]|mage-tab|aux")
-            tbl <- tbl[,c(1,10,11,12,13,7,8)]
-        }
-    },
-    options = list(pageLength = 10,
-                   scrollX = TRUE,
-                   jQueryUI = TRUE,
-                   pagingType = "full",
-                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                   language.emptyTable = "No results found",
-                   "dom" = 'T<"clear">lfrtip',
-                   "oTableTools" = list(
-                       "sSelectedClass" = "selected",
-                       "sRowSelect" = "os",
-                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                       "aButtons" = list(
-                           list("sExtends" = "collection",
-                                "sButtonText" = "Save",
-                                "aButtons" = c("csv","xls")
+    observeEvent(input$tcgaSearchBt, {
+        output$tcgaSearchtbl <- renderDataTable({
+            tumor = input$tcgaTumorFilter
+            platform = input$tcgaExpFilter
+            level = input$tcgaLevelFilter
+
+            tbl <- data.frame()
+            if(length(level) > 0){
+                for(i in level){
+                    tbl <- rbind(tbl,
+                                 TCGAquery(tumor = tumor,
+                                     platform = platform,
+                                     level = i))
+                }
+            } else {
+                tbl <- TCGAquery(tumor = tumor,
+                                 platform = platform,
+                                 level = level)
+            }
+            if(is.null(tbl)){
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", type = "warning",
+                            message = "Sorry there are no results for your query.", append = FALSE)
+                return()
+            } else if(nrow(tbl) ==0) {
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", type = "warning",
+                            message = "Sorry there are no results for your query.", append = FALSE)
+                return()
+            } else {
+                closeAlert(session, "tcgasearchAlert")
+                tbl$Level <- stringr::str_extract(tbl$name,"Level_[1-3]|mage-tab|aux")
+                tbl <- tbl[,c(1,10,11,12,13,7,8)]
+            }
+
+        },
+        options = list(pageLength = 10,
+                       scrollX = TRUE,
+                       jQueryUI = TRUE,
+                       pagingType = "full",
+                       lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                       language.emptyTable = "No results found",
+                       "dom" = 'T<"clear">lfrtip',
+                       "oTableTools" = list(
+                           "sSelectedClass" = "selected",
+                           "sRowSelect" = "os",
+                           "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                           "aButtons" = list(
+                               list("sExtends" = "collection",
+                                    "sButtonText" = "Save",
+                                    "aButtons" = c("csv","xls")
+                               )
                            )
                        )
-                   )
-    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )
+        ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+        )})
 
     # Download
     shinyDirChoose(input, 'tcgafolder', roots=volumes, session=session,

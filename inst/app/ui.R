@@ -127,7 +127,7 @@ body <-  dashboardBody(
         ),
         tabItem(tabName = "tcgaSearch",
                 fluidRow(
-                    column(9, dataTableOutput('tcgaSearchtbl')),
+                    column(9, bsAlert("tcgasearchmessage"), dataTableOutput('tcgaSearchtbl')),
                     column(3,
                            box(title = "Advanced search",width = NULL,
                                status = "warning",
