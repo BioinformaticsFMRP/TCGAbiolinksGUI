@@ -204,8 +204,8 @@ biOMICsServer <- function(input, output, session) {
                 for(i in level){
                     tbl <- rbind(tbl,
                                  TCGAquery(tumor = tumor,
-                                     platform = platform,
-                                     level = i))
+                                           platform = platform,
+                                           level = i))
                 }
             } else {
                 tbl <- TCGAquery(tumor = tumor,
@@ -419,21 +419,30 @@ biOMICsServer <- function(input, output, session) {
         inFile <- input$dmrfile
         if (is.null(inFile)) return(NULL)
         se <- get(load(input$dmrfile$datapath))
+
+        if(class(se)!= class(SummarizedExperiment())){
+            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", type = "danger",
+                        message = "Sorry, but I'm expecting a Summarized Experiment object", append = FALSE)
+            return(NULL)
+        }
         return(se)
+
     }
 
     observe({
         updateSelectizeInput(session, 'dmrgroup1', choices = {
-            if(!is.null(dmrdata()) & input$dmrgroupCol !="")
-                as.character(colData(dmrdata())[,input$dmrgroupCol])
-        }, server = TRUE)
+            if(class(dmrdata())== class(SummarizedExperiment())){
+                if(!is.null(dmrdata()) & input$dmrgroupCol !="" )
+                    as.character(colData(dmrdata())[,input$dmrgroupCol])
+            }}, server = TRUE)
     })
     observe({
         updateSelectizeInput(session, 'dmrgroup2', choices = {
+            if(class(dmrdata())== class(SummarizedExperiment())){
 
-            if(!is.null(dmrdata()) & input$dmrgroupCol !="")
-                as.character(colData(dmrdata())[,input$dmrgroupCol])
-        }, server = TRUE)
+                if(!is.null(dmrdata()) & input$dmrgroupCol !="")
+                    as.character(colData(dmrdata())[,input$dmrgroupCol])
+            }}, server = TRUE)
     })
     observe({
         updateSelectizeInput(session, 'dmrgroupCol', choices = {
