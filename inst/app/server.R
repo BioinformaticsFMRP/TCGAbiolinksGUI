@@ -1,6 +1,7 @@
 library(shiny)
 library(shinyFiles)
 library(SummarizedExperiment)
+library(shinyBS)
 options(shiny.maxRequestSize=300*1024^2)
 
 
@@ -16,6 +17,9 @@ biOMICsServer <- function(input, output, session) {
     volumes <- c('Working directory'=getwd())
     shinyDirChoose(input, 'folder', roots=volumes, session=session, restrictions=system.file(package='base'))
     output$directorypath <- renderText({parseDirPath(volumes, input$folder)})
+    shinyDirChoose(input, 'reportfolder', roots=volumes, session=session, restrictions=system.file(package='base'))
+    output$reportdirectorypath <- renderText({parseDirPath(volumes, input$reportfolder)})
+
     #----------------- Ontology
     output$ontSearchLink <-  renderText({
         getPath <- parseDirPath(volumes, input$folder)
@@ -50,12 +54,31 @@ biOMICsServer <- function(input, output, session) {
         return(list(system = names(sort(table(biosample.encode[biosample.encode$biosample %in% query$Sample,]$system),decreasing = T)[1]),
                     result = query))
     })
-    observe({
-        if(input$ontReport){
-            create.report(dataInput()$result, system = dataInput()$system)
-            create.report(dataInput()$result, path = paste0(getwd(),"/report") ,system = dataInput()$system)
+
+    observeEvent(input$ontReport, {
+        result <- dataInput()$result
+        print(result)
+        if(is.null(result)) {
+            createAlert(session, "alert", "exampleAlert", title = "No system", type = "danger",
+                        message = "No system was found. I can't create a report.", append = FALSE)
+            return()
+
         }
+        else if(is.null(input$reportfolder)) {
+            createAlert(session, "alert", "exampleAlert", title = "No folder", type = "danger",
+                        message = "Please select a folder to create the report", append = FALSE)
+            return()
+        }  else {
+            closeAlert(session, "exampleAlert")
+        }
+
+        withProgress(message = 'Creating report...',
+                     detail = 'This may take a while...', value = 0, {
+                         #create.report(dataInput()$result, system = dataInput()$system)
+                         create.report(dataInput()$result, path = file.path(parseDirPath(volumes, input$reportfolder),"report"), system = dataInput()$system)
+                     })
     })
+
     output$system <-  renderText({
         if (input$ontSearchBt) {
             paste0("System: ", dataInput()$system)
@@ -339,12 +362,12 @@ biOMICsServer <- function(input, output, session) {
             withProgress(message = 'DME analysis in progress',
                          detail = 'This may take a while...', value = 0, {
                              met <- TCGAanalyze_DMR(data = se,
-                                             groupCol = input$dmrgroupCol,
-                                             group1 = input$dmrgroup1,
-                                             group2 = input$dmrgroup2,
-                                             p.cut=input$dmrpvalue,
-                                             diffmean.cut=input$dmrthrsld,
-                                             cores = input$dmrcores)
+                                                    groupCol = input$dmrgroupCol,
+                                                    group1 = input$dmrgroup1,
+                                                    group2 = input$dmrgroup2,
+                                                    p.cut=input$dmrpvalue,
+                                                    diffmean.cut=input$dmrthrsld,
+                                                    cores = input$dmrcores)
 
                          })
             print("End of DMR analysis")
@@ -369,12 +392,12 @@ biOMICsServer <- function(input, output, session) {
 
             if(!is.null(dmrdata()) & input$dmrgroupCol !="")
                 as.character(colData(dmrdata())[,input$dmrgroupCol])
-            }, server = TRUE)
+        }, server = TRUE)
     })
     observe({
         updateSelectizeInput(session, 'dmrgroupCol', choices = {
             if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
-            }, server = TRUE)
+        }, server = TRUE)
     })
     observe({
         updateSelectizeInput(session, 'meanmetsubgroupCol', choices = {
@@ -387,5 +410,46 @@ biOMICsServer <- function(input, output, session) {
         }, server = TRUE)
     })
 
-}
+    mean.plotting <- reactive({
+        library(ggvis)
 
+        # Make data set with categorical x
+        mtc <- mtcars
+        mtc$cyl <- factor(mtc$cyl)
+        mtc %>% ggvis(~cyl, ~mpg) %>% layer_boxplots()
+        # Set the width of the boxes to half the space between tick marks
+        mtc %>% ggvis(~cyl, ~mpg) %>% layer_boxplots(width = 0.5)
+
+        # Continuous x: boxes fill width between data values
+        mtcars %>% ggvis(~cyl, ~mpg) %>% layer_boxplots()
+        # Setting width=0.5 makes it 0.5 wide in the data space, which is 1/4 of the
+        # distance between data values in this particular case.
+        mtcars %>% ggvis(~cyl, ~mpg) %>% layer_boxplots(width = 0.5)
+
+        if(input$meanmetPlot){
+
+            if(input$meanmetgroupCol =="") {
+                group <- NULL
+            } else {
+                group <- input$meanmetgroupCol
+            }
+            if(input$meanmetsubgroupCol =="") {
+                subgroup <- NULL
+            } else {
+                subgroup <- input$meanmetsubgroupCol
+            }
+
+            TCGAbiolinks::TCGAvisualize_meanMethylation(data=dmrdata(),
+                                                        groupCol=group,
+                                                        subgroupCol=subgroup,
+                                                        filename = NULL)
+        }
+    })
+
+    output$dmrPlot <- renderPlot({
+        if(input$meanmetPlot){
+            mean.plotting()
+        }
+    }, width = "auto", height = "auto")
+
+}

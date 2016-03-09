@@ -1,7 +1,7 @@
 library(shiny)
 library(shinyFiles)
 library(TCGAbiolinks)
-
+library(shinyBS)
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
 names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
@@ -60,7 +60,7 @@ body <-  dashboardBody(
         tabItem(tabName = "ontology",
 
                 fluidRow(
-                    column(9, dataTableOutput('ontSearchtbl')),
+                    column(9, bsAlert("alert"),dataTableOutput('ontSearchtbl')),
                     column(3,
                            box(title = "Advanced search",width = NULL,
                                status = "warning",
@@ -107,6 +107,9 @@ body <-  dashboardBody(
                            ),  box(title = "Report",width = NULL,
                                    status = "warning",
                                    solidHeader = FALSE, collapsible = FALSE,
+                                   shinyDirButton('reportfolder', 'Folder for save the report', 'Please select a folder',
+                                                  class='shinyDirectories btn-default', buttonType='warning'),
+                                   verbatimTextOutput("reportdirectorypath"),
                                    actionButton("ontReport",
                                                 "Create report",
                                                 style = "background-color: #F39C12;
@@ -114,16 +117,10 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 49%",
-                                                icon = icon("book")),
-                                   actionButton("openReport",
-                                                a("View report",href=paste0("report/main.html")),
-                                                style = "background-color: #F39C12;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 49%",
-                                                icon = icon("eye")))
-
+                                                icon = icon("book"))),
+                           singleton(
+                               tags$head(tags$script(src = "message-handler.js"))
+                           )
                     )
 
                 )
@@ -303,7 +300,7 @@ body <-  dashboardBody(
                                selectizeInput('meanmetsubgroupCol',
                                               "Sub group column",
                                               choices = NULL,  multiple = FALSE),
-                               actionButton("meanmetAnalysis",
+                               actionButton("meanmetPlot",
                                             "DNA mean methylation plot",
                                             style = "background-color: #F39C12;
                                               color: #FFFFFF;
