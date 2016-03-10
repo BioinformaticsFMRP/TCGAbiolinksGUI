@@ -383,10 +383,10 @@ biOMICsServer <- function(input, output, session) {
                                                         "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))
                          })
         })})
-
+    observeEvent(input$oncoprintPlot , {
     output$oncoPlot <- renderUI({
-        plotOutput("oncoploting", width = paste0(isolate(input$oncowidth), "%"), height = isolate(input$oncoheight))
-    })
+        plotOutput("oncoploting", width = paste0(isolate({input$oncowidth}), "%"), height = isolate({input$oncoheight}))
+    })})
 
     observe({
         updateSelectizeInput(session, 'oncoGenes', choices = as.character(mut()$Hugo_Symbol), server = TRUE)

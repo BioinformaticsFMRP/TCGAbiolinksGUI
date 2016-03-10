@@ -90,7 +90,7 @@ body <-  dashboardBody(
                                               choices=NULL,
                                               multiple = TRUE),
 
-                               shinyDirButton('folder', 'Folder select', 'Please select a folder',
+                               shinyDirButton('folder', 'Download folder', 'Please select a folder',
                                               class='shinyDirectories btn-default', buttonType='warning'),
 
                                actionButton("ontSearchDownloadBt",
@@ -99,7 +99,7 @@ body <-  dashboardBody(
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
-                                            width: 53%",
+                                            width: 45%",
                                             icon = icon("download")),
                                bsTooltip("ontSearchDownloadBt", "Only downloads the files that were selected",
                                          "left"),
