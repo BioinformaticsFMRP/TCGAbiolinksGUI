@@ -61,8 +61,8 @@ body <-  dashboardBody(
         tabItem(tabName = "ontology",
 
                 fluidRow(
-                    column(9, bsAlert("alert"),dataTableOutput('ontSearchtbl')),
-                    column(3,
+                    column(10, bsAlert("alert"),dataTableOutput('ontSearchtbl')),
+                    column(2,
                            box(title = "Advanced search",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,
@@ -85,40 +85,39 @@ body <-  dashboardBody(
                            box(title = "Download",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,
-                               shinyDirButton('folder', 'Folder select', 'Please select a folder',
-                                              class='shinyDirectories btn-default', buttonType='warning'),
-                               verbatimTextOutput("directorypath"),
                                selectizeInput('ontftypeFilter',
                                               'Encode/Roadmap file filter',
                                               choices=NULL,
                                               multiple = TRUE),
+
+                               shinyDirButton('folder', 'Folder select', 'Please select a folder',
+                                              class='shinyDirectories btn-default', buttonType='warning'),
+
                                actionButton("ontSearchDownloadBt",
-                                            "Download selected",
+                                            "Download",
                                             style = "background-color: #F39C12;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
-                                            width: 100%",
+                                            width: 53%",
                                             icon = icon("download")),
-
+                               bsTooltip("ontSearchDownloadBt", "Only downloads the files that were selected",
+                                         "left"),
                                textOutput('ontSearchLink')
                            ),  box(title = "Report",width = NULL,
                                    status = "warning",
                                    solidHeader = FALSE, collapsible = FALSE,
-                                   shinyDirButton('reportfolder', 'Folder for save the report', 'Please select a folder',
+                                   shinyDirButton('reportfolder', 'Report folder', 'Please select a folder where the report will be created',
                                                   class='shinyDirectories btn-default', buttonType='warning'),
-                                   verbatimTextOutput("reportdirectorypath"),
                                    actionButton("ontReport",
                                                 "Create report",
                                                 style = "background-color: #F39C12;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
-                                            width: 49%",
+                                            width: 53%",
                                                 icon = icon("book"))),
-                           singleton(
-                               tags$head(tags$script(src = "message-handler.js"))
-                           )
+                                bsAlert("ontdownloaddirmessage")
                     )
 
                 )

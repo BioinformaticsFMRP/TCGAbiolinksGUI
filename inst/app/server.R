@@ -16,9 +16,19 @@ biOMICsServer <- function(input, output, session) {
 
     volumes <- c('Working directory'=getwd())
     shinyDirChoose(input, 'folder', roots=volumes, session=session, restrictions=system.file(package='base'))
-    output$directorypath <- renderText({parseDirPath(volumes, input$folder)})
     shinyDirChoose(input, 'reportfolder', roots=volumes, session=session, restrictions=system.file(package='base'))
     output$reportdirectorypath <- renderText({parseDirPath(volumes, input$reportfolder)})
+
+    observeEvent(input$folder , {
+        closeAlert(session, "ontdownloaddirAlert")
+        createAlert(session, "ontdownloaddirmessage", "ontdownloaddirAlert", title = "Download folder", type = "success",
+                    message =   parseDirPath(volumes, input$folder), append = TRUE)
+    })
+    observeEvent(input$reportfolder , {
+        closeAlert(session, "ontreportdirAlert")
+        createAlert(session, "ontdownloaddirmessage", "ontreportdirAlert", title = "Report folder", type = "success",
+                    message =  parseDirPath(volumes, input$reportfolder), append = TRUE)
+    })
 
     #----------------- Ontology
     observeEvent(input$ontSearchDownloadBt , {
@@ -58,18 +68,18 @@ biOMICsServer <- function(input, output, session) {
     dataInput <- reactive({
         withProgress(message = 'Searching in progress',
                      detail = 'This may take a while...', value = 0, {
-        indexes <- c()
-        query <- data.frame()
-        link <- c()
-        term <- input$ontSamplesFilter
-        exp <-  input$ontExpFilter
-        query <- biOmicsSearch(input$ontSamplesFilter,
-                               experiment = input$ontExpFilter)
-        # improve using subset - subset(data,selection,projection)
-        biosample.encode <- get.obj("biosample.encode")
-        return(list(system = names(sort(table(biosample.encode[biosample.encode$biosample %in% query$Sample,]$system),decreasing = T)[1]),
-                    result = query))
-    })})
+                         indexes <- c()
+                         query <- data.frame()
+                         link <- c()
+                         term <- input$ontSamplesFilter
+                         exp <-  input$ontExpFilter
+                         query <- biOmicsSearch(input$ontSamplesFilter,
+                                                experiment = input$ontExpFilter)
+                         # improve using subset - subset(data,selection,projection)
+                         biosample.encode <- get.obj("biosample.encode")
+                         return(list(system = names(sort(table(biosample.encode[biosample.encode$biosample %in% query$Sample,]$system),decreasing = T)[1]),
+                                     result = query))
+                     })})
 
     observeEvent(input$ontReport, {
         result <- dataInput()$result
