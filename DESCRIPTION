@@ -21,6 +21,7 @@ Suggests:
 Imports:
     shiny (>= 0.11.1),
     downloader,
+    ComplexHeatmap (>= 1.9.3),
     gdata,
     RCurl,
     R.utils,
@@ -35,6 +36,10 @@ Imports:
     biomaRt,
     parallel,
     TCGAbiolinks,
+    shinyjs,
+    shinyBS,
+    shinyFiles,
+    shiny,
     ReporteRs (>= 0.8.5)
 VignetteBuilder: knitr
 biocViews: Genetics,

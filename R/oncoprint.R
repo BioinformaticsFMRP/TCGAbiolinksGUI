@@ -19,14 +19,15 @@ create.oncoprint <- function (mut,
                               filename,
                               color,
                               bottom_annotation,
-                              height){
+                              height,
+                              label.title = "Mutation",
+                              font.size = 16){
 
-    if(missing(genes)) stop("Missing genes argument")
     if(missing(mut))   stop("Missing mut argument")
 
-    mut <- subset(mut,mut$Hugo_Symbol %in% genes)
+    if(!missing(genes) & !is.null(genes)) mut <- subset(mut, mut$Hugo_Symbol %in% genes)
     mut$value <- 1
-    mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value")
+    mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value",fill = 0)
 
     columns <- colnames(mat)[-c(1:2)]
     if(missing(color)){
@@ -54,6 +55,9 @@ create.oncoprint <- function (mut,
         },
         SNP = function(x, y, w, h) {
             grid.rect(x, y, w-unit(0.5, "mm"), h*0.33, gp = gpar(fill = color["SNP"], col = NA))
+        },
+        DNP = function(x, y, w, h) {
+            grid.rect(x, y, w-unit(0.5, "mm"), h*0.33, gp = gpar(fill = color["DNP"], col = NA))
         }
     )
     alt = intersect(names(alter_fun), c("background",as.character(columns)))
@@ -67,17 +71,17 @@ create.oncoprint <- function (mut,
                    remove_empty_columns = FALSE,
                    column_order = NULL, # Do not sort the columns
                    alter_fun = alter_fun, col = color,
-                   row_names_gp = gpar(fontsize = 16),  # set size for row names
-                   pct_gp = gpar(fontsize = 16), # set size for percentage labels
-                   axis_gp = gpar(fontsize = 16),# size of axis
+                   row_names_gp = gpar(fontsize = font.size),  # set size for row names
+                   pct_gp = gpar(fontsize = font.size), # set size for percentage labels
+                   axis_gp = gpar(fontsize = font.size),# size of axis
                    #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
                    #column_title_gp = gpar(fontsize = 11),
-                   row_barplot_width = unit(4, "cm"), #size barplot
+                   row_barplot_width = unit(2, "cm"), #size barplot
                    #bottom_annotation = bottom_annotation,
-                   heatmap_legend_param = list(title = "Mutations", at = names(color),
+                   heatmap_legend_param = list(title = label.title, at = names(color),
                                                labels = names(color),
-                                               title_gp = gpar(fontsize = 16, fontface = "bold"),
-                                               labels_gp = gpar(fontsize = 16), # size labels
+                                               title_gp = gpar(fontsize = font.size, fontface = "bold"),
+                                               labels_gp = gpar(fontsize = font.size), # size labels
                                                grid_height = unit(8, "mm") # vertical distance labels
                    )
     )

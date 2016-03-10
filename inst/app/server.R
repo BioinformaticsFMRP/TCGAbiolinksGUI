@@ -362,17 +362,21 @@ biOMICsServer <- function(input, output, session) {
         return(ret)
 
     }
-    plotting <- reactive({
-        if(input$oncoprintPlot){
+    observeEvent(input$oncoprintPlot , {
+        output$oncoploting <- renderPlot({
             mut <- mut()
-            create.oncoprint(mut=mut,genes=input$oncoGenes)
-        }
+            withProgress(message = 'Creating plot',
+                         detail = 'This may take a while...', value = 0, {
+                             create.oncoprint(mut=mut,genes=isolate(input$oncoGenes),
+                                              color = c("SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
+                                                        "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))
+                         })
+        })})
+
+    output$oncoPlot <- renderUI({
+        plotOutput("oncoploting", width = paste0(isolate(input$oncowidth), "%"), height = isolate(input$oncoheight))
     })
-    output$oncoPlot <- renderPlot({
-        if(input$oncoprintPlot){
-            plotting()
-        }
-    })
+
     observe({
         updateSelectizeInput(session, 'oncoGenes', choices = as.character(mut()$Hugo_Symbol), server = TRUE)
     })
