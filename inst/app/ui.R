@@ -74,8 +74,6 @@ body <-  dashboardBody(
                                               'Term',
                                               choices=NULL,
                                               multiple = FALSE,options = list(create = TRUE),selected = NULL),
-
-
                                actionButton("ontSearchBt",
                                             "search",
                                             style = "background-color: #F39C12;
@@ -83,8 +81,7 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                            icon = icon("search")),
-                               verbatimTextOutput("system")),
+                                            icon = icon("search"))),
                            box(title = "Download",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,

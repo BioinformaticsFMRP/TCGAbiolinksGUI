@@ -56,6 +56,8 @@ biOMICsServer <- function(input, output, session) {
     )
 
     dataInput <- reactive({
+        withProgress(message = 'Searching in progress',
+                     detail = 'This may take a while...', value = 0, {
         indexes <- c()
         query <- data.frame()
         link <- c()
@@ -67,10 +69,11 @@ biOMICsServer <- function(input, output, session) {
         biosample.encode <- get.obj("biosample.encode")
         return(list(system = names(sort(table(biosample.encode[biosample.encode$biosample %in% query$Sample,]$system),decreasing = T)[1]),
                     result = query))
-    })
+    })})
 
     observeEvent(input$ontReport, {
         result <- dataInput()$result
+
         print(result)
         if(is.null(result)) {
             createAlert(session, "alert", "exampleAlert", title = "No system", type = "danger",
@@ -92,11 +95,6 @@ biOMICsServer <- function(input, output, session) {
                          create.report(dataInput()$result, path = file.path(parseDirPath(volumes, input$reportfolder),"report"), system = dataInput()$system)
                      })
     })
-
-    observeEvent(input$ontSearchBt, {
-        output$system <-  renderText({
-            paste0("System: ", dataInput()$system)
-        })})
 
     output$tcgaprepare <-  renderText({
         if (input$tcgaPrepareBt) {
@@ -159,13 +157,16 @@ biOMICsServer <- function(input, output, session) {
 
         if(nchar(input$ontSamplesFilter) < 3) {
             createAlert(session, "alert", "exampleAlert", title = "Invalid term", type = "danger",
-                        message = "Input should be creater  than 3 characters.", append = FALSE)
+                        message = "Input should be creater than 3 characters.", append = FALSE)
             return()
         } else {
             closeAlert(session, "exampleAlert")
         }
         output$ontSearchtbl <- renderDataTable({
-            dataInput()$result
+            data <- isolate({dataInput()})
+            createAlert(session, "alert", "exampleAlert", title = "Term mapped to the system:", type = "info",
+                        message = data$system , append = FALSE)
+            result <- data$result
         },
         options = list(pageLength = 10,
                        scrollX = TRUE,
