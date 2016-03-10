@@ -33,6 +33,8 @@ create.oncoprint <- function (mut,
     if(missing(color)){
         color <- c(rainbow(length(columns)))
         names(color) <- columns
+    } else{
+        color <- color[columns]
     }
     mat$value <- ""
     for ( i in columns){
