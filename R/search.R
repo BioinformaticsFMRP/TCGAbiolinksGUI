@@ -4,7 +4,6 @@
 systemSearch <- function(term,env) {
     success <- get("success", envir = env)
     ont <- get("ont", envir = env)
-    systems <- get("systems", envir = as.environment("package:biOmics"))
 
     if (!success) {
         # If the bto is a system return it

@@ -108,60 +108,60 @@ biOMICsServer <- function(input, output, session) {
 
     observeEvent(input$tcgaPrepareBt, {
 
-            # read the data from the downloaded path
-            # prepare it
+        # read the data from the downloaded path
+        # prepare it
 
-            # Files types
-            ftype <- NULL
-            rnaseqFtype <- isolate({input$tcgaFrnaseqtypeFilter})
-            rnaseqv2Ftype <- isolate({input$tcgaFrnaseqv2typeFilter})
-            gwsFtype <- isolate({input$tcgaFgwstypeFilter})
+        # Files types
+        ftype <- NULL
+        rnaseqFtype <- isolate({input$tcgaFrnaseqtypeFilter})
+        rnaseqv2Ftype <- isolate({input$tcgaFrnaseqv2typeFilter})
+        gwsFtype <- isolate({input$tcgaFgwstypeFilter})
 
-            # Dir to saved the files
-            getPath <- parseDirPath(volumes, input$tcgafolder)
-            if (length(getPath) == 0) getPath <- "."
-            samplesType <- input$tcgasamplestypeFilter
+        # Dir to saved the files
+        getPath <- parseDirPath(volumes, input$tcgafolder)
+        if (length(getPath) == 0) getPath <- "."
+        samplesType <- input$tcgasamplestypeFilter
 
-            save.dir <- parseDirPath(volumes, input$tcgapreparefolder)
-            if(length(save.dir) == 0) {
-                filename <- isolate({input$tcgafilename})
-            } else {
-                filename <- file.path(save.dir,isolate({input$tcgafilename}))
-            }
+        save.dir <- parseDirPath(volumes, input$tcgapreparefolder)
+        if(length(save.dir) == 0) {
+            filename <- isolate({input$tcgafilename})
+        } else {
+            filename <- file.path(save.dir,isolate({input$tcgafilename}))
+        }
 
-            withProgress(message = 'Prepare in progress',
-                         detail = 'This may take a while...', value = 0, {
-                             df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
-                             x <- TCGAquery()
-                             x <- x[x$name %in% df$name,]
-                             for (i in unique(x$Platform)) {
-                                 incProgress(1/length(unique(x$Platform)))
-                                 aux <- x[x$Platform ==i,]
-                                 ftype <- NULL
-                                 if (i == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
-                                 if (i == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
-                                 if (i == "Genome_Wide_SNP_6") ftype <- gwsFtype
-                                 if (length(samplesType) == 0) {
-                                     samples <- NULL
-                                 } else {
-                                     samples <- unlist(lapply(samplesType,function(type){
-                                         s <- unlist(str_split(aux$barcode,","))
-                                         s[grep(type,substr(s,14,15))]
-                                     }))
-                                 }
-
-                                 trash <- TCGAprepare(aux,dir = getPath,
-                                                      summarizedExperiment = isolate({as.logical(input$prepareRb)}),
-                                                      save = TRUE,
-                                                      type = ftype,
-                                                      filename=filename,
-                                                      samples = samples,
-                                                      add.subtype = isolate({input$addSubTypeTCGA}))
+        withProgress(message = 'Prepare in progress',
+                     detail = 'This may take a while...', value = 0, {
+                         df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
+                         x <- TCGAquery()
+                         x <- x[x$name %in% df$name,]
+                         for (i in unique(x$Platform)) {
+                             incProgress(1/length(unique(x$Platform)))
+                             aux <- x[x$Platform ==i,]
+                             ftype <- NULL
+                             if (i == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
+                             if (i == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
+                             if (i == "Genome_Wide_SNP_6") ftype <- gwsFtype
+                             if (length(samplesType) == 0) {
+                                 samples <- NULL
+                             } else {
+                                 samples <- unlist(lapply(samplesType,function(type){
+                                     s <- unlist(str_split(aux$barcode,","))
+                                     s[grep(type,substr(s,14,15))]
+                                 }))
                              }
 
-                         })
-            createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Prepare completed", style =  "success",
-                        content = paste0("Saved in: ", filename), append = FALSE)
+                             trash <- TCGAprepare(aux,dir = getPath,
+                                                  summarizedExperiment = isolate({as.logical(input$prepareRb)}),
+                                                  save = TRUE,
+                                                  type = ftype,
+                                                  filename=filename,
+                                                  samples = samples,
+                                                  add.subtype = isolate({input$addSubTypeTCGA}))
+                         }
+
+                     })
+        createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Prepare completed", style =  "success",
+                    content = paste0("Saved in: ", filename), append = FALSE)
     })
 
     observeEvent(input$ontSearchBt, {
@@ -294,30 +294,30 @@ biOMICsServer <- function(input, output, session) {
         samplesType <- input$tcgasamplestypeFilter
 
 
-            withProgress(message = 'Download in progress',
-                         detail = 'This may take a while...', value = 0, {
-                             df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
-                             x <- TCGAquery()
-                             x <- x[x$name %in% df$name,]
+        withProgress(message = 'Download in progress',
+                     detail = 'This may take a while...', value = 0, {
+                         df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
+                         x <- TCGAquery()
+                         x <- x[x$name %in% df$name,]
 
-                             for (i in 1:nrow(x)) {
-                                 incProgress(1/nrow(x))
-                                 aux <- x[i,]
-                                 if (aux$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
-                                 if (aux$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
-                                 if (aux$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
-                                 if (length(samplesType) == 0) {
-                                     samples <- NULL
-                                 } else {
-                                     samples <- unlist(lapply(samplesType,function(type){
-                                         s <- unlist(str_split(aux$barcode,","))
-                                         s[grep(type,substr(s,14,15))]
-                                     }))
-                                 }
-                                 TCGAdownload(x, path = getPath,type = ftype,samples = samples)
-                             }})
-            createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Download completed", style =  "success",
-                        content =  paste0("Saved in: ", getPath), append = FALSE)
+                         for (i in 1:nrow(x)) {
+                             incProgress(1/nrow(x))
+                             aux <- x[i,]
+                             if (aux$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
+                             if (aux$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
+                             if (aux$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
+                             if (length(samplesType) == 0) {
+                                 samples <- NULL
+                             } else {
+                                 samples <- unlist(lapply(samplesType,function(type){
+                                     s <- unlist(str_split(aux$barcode,","))
+                                     s[grep(type,substr(s,14,15))]
+                                 }))
+                             }
+                             TCGAdownload(x, path = getPath,type = ftype,samples = samples)
+                         }})
+        createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Download completed", style =  "success",
+                    content =  paste0("Saved in: ", getPath), append = FALSE)
     })
 
     #------------- MAF
@@ -410,9 +410,9 @@ biOMICsServer <- function(input, output, session) {
         })})
     observeEvent(input$oncoprintPlot , {
         updateCollapse(session, "collapseOnco", open = "Oncoprint")
-    output$oncoPlot <- renderUI({
-        plotOutput("oncoploting", width = paste0(isolate({input$oncowidth}), "%"), height = isolate({input$oncoheight}))
-    })})
+        output$oncoPlot <- renderUI({
+            plotOutput("oncoploting", width = paste0(isolate({input$oncowidth}), "%"), height = isolate({input$oncoheight}))
+        })})
 
     observe({
         updateSelectizeInput(session, 'oncoGenes', choices = as.character(mut()$Hugo_Symbol), server = TRUE)
@@ -435,25 +435,22 @@ biOMICsServer <- function(input, output, session) {
     })
 
     ## DMR analysis
-    output$tcgadmr <-  renderText({
-        if (input$dmrAnalysis) {
-            # read the data from the downloaded path
-            # prepare it
-            se <- dmrdata()
-            se <- subset(se,subset = (rowSums(is.na(assay(se))) == 0))
-            withProgress(message = 'DME analysis in progress',
-                         detail = 'This may take a while...', value = 0, {
-                             met <- TCGAanalyze_DMR(data = se,
-                                                    groupCol = input$dmrgroupCol,
-                                                    group1 = input$dmrgroup1,
-                                                    group2 = input$dmrgroup2,
-                                                    p.cut=input$dmrpvalue,
-                                                    diffmean.cut=input$dmrthrsld,
-                                                    cores = input$dmrcores)
+    observeEvent(input$dmrAnalysis , {
 
-                         })
-            print("End of DMR analysis")
-        }
+        # read the data from the downloaded path
+        # prepare it
+        se <- isolate({dmrdata()})
+        se <- subset(se,subset = (rowSums(is.na(assay(se))) == 0))
+        withProgress(message = 'DME analysis in progress',
+                     detail = 'This may take a while...', value = 0, {
+                         met <- TCGAanalyze_DMR(data = se,
+                                                groupCol = isolate({input$dmrgroupCol}),
+                                                group1 = isolate({input$dmrgroup1}),
+                                                group2 = isolate({input$dmrgroup2}),
+                                                p.cut = isolate({input$dmrpvalue}),
+                                                diffmean.cut = isolate({input$dmrthrsld}),
+                                                cores = isolate({input$dmrcores}))
+                     })
     })
 
     dmrdata <- function(){
