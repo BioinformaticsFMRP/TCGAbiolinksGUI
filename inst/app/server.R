@@ -352,6 +352,12 @@ biOMICsServer <- function(input, output, session) {
                    restrictions=system.file(package='base'))
     output$mafdirectorypath <- renderText({parseDirPath(volumes, input$maffolder)})
 
+    observeEvent(input$maffolder , {
+        closeAlert(session, "oncoddirAlert")
+        createAlert(session, "oncoddirmessage", "oncoddirAlert", title = "Download folder", type = "success",
+                    message =  parseDirPath(volumes, input$maffolder), append = TRUE)
+    })
+
     output$mafDownloadfTxt <-  renderText({
         maf.files <- get.obj("maf.files")
         # Dir to save the files

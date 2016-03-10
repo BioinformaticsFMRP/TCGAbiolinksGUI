@@ -210,25 +210,26 @@ body <-  dashboardBody(
         ),
         tabItem(tabName = "tcgaOncoPrint",
                 fluidRow(
-                    column(9, dataTableOutput('maftbl'),
+                    column(10, dataTableOutput('maftbl'),
                            uiOutput("oncoPlot")),
-                    column(3,
+                    column(2,
                            box(title = "Download",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyDirButton('maffolder', 'Folder select', 'Please select a folder',
                                               class='shinyDirectories btn-default', buttonType='warning'),
-                               verbatimTextOutput("mafdirectorypath"),
                                actionButton("mafDownloadBt",
-                                            "Download selected",
+                                            "Download",
                                             style = "background-color: #F39C12;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
-                                            width: 100%",
+                                            width: 50%",
                                             icon = icon("download")),
                                textOutput('mafDownloadfTxt')
-                           ),box(title = "Oncoprint",width = NULL,
+                           ),
+                           bsAlert("oncoddirmessage"),
+                           box(title = "Oncoprint",width = NULL,
                                  status = "warning",
                                  solidHeader = FALSE, collapsible = FALSE,
                                  fileInput('maffile', 'Choose maf File',
