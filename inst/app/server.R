@@ -262,10 +262,20 @@ biOMICsServer <- function(input, output, session) {
     # Download
     shinyDirChoose(input, 'tcgafolder', roots=volumes, session=session,
                    restrictions=system.file(package='base'))
-    output$tcgadirectorypath <- renderText({parseDirPath(volumes, input$tcgafolder)})
     shinyDirChoose(input, 'tcgapreparefolder', roots=volumes, session=session,
                    restrictions=system.file(package='base'))
-    output$tcgapreparedir <- renderText({parseDirPath(volumes, input$tcgapreparefolder)})
+
+    observeEvent(input$tcgafolder , {
+        closeAlert(session, "tcgadownloaddirAlert")
+        createAlert(session, "tcgaddirmessage", "tcgadownloaddirAlert", title = "Download folder", type = "success",
+                    message =  parseDirPath(volumes, input$tcgafolder), append = TRUE)
+    })
+
+    observeEvent(input$tcgapreparefolder , {
+        closeAlert(session, "tcgapreparedirAlert")
+        createAlert(session, "tcgaddirmessage", "tcgapreparedirAlert", title = "Prepare folder", type = "success",
+                    message =  parseDirPath(volumes, input$tcgapreparefolder), append = TRUE)
+    })
 
 
     output$tcgaSearchLink <-  renderText({

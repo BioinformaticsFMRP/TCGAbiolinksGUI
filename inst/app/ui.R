@@ -124,8 +124,8 @@ body <-  dashboardBody(
         ),
         tabItem(tabName = "tcgaSearch",
                 fluidRow(
-                    column(9, bsAlert("tcgasearchmessage"), dataTableOutput('tcgaSearchtbl')),
-                    column(3,
+                    column(10, bsAlert("tcgasearchmessage"), dataTableOutput('tcgaSearchtbl')),
+                    column(2,
                            box(title = "Advanced search",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,
@@ -177,17 +177,16 @@ body <-  dashboardBody(
                                               multiple = TRUE),
                                shinyDirButton('tcgafolder', 'Folder select', 'Please select a folder',
                                               class='shinyDirectories btn-default', buttonType='warning'),
-                               verbatimTextOutput("tcgadirectorypath"),
                                actionButton("tcgaDownloadBt",
-                                            "Download selected",
+                                            "Download",
                                             style = "background-color: #F39C12;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
-                                            width: 100%",
-                                            icon = icon("download")),
-                               textOutput('tcgaSearchLink')
+                                            width: 50%",
+                                            icon = icon("download"))
                            ),
+
                            box(title = "Prepare",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,
@@ -196,16 +195,16 @@ body <-  dashboardBody(
                                               "Dataframe" = FALSE)),
                                shinyDirButton('tcgapreparefolder', 'Folder to save', 'Please select a folder',
                                               class='shinyDirectories btn-default', buttonType='warning'),
-                               verbatimTextOutput("tcgapreparedir"),
                                actionButton("tcgaPrepareBt",
                                             "Prepare data",
                                             style = "background-color: #F39C12;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
-                                            width: 100%",
+                                            width: 50%",
                                             icon = icon("cogs")),
-                               textOutput('tcgaprepare'))
+                               textOutput('tcgaprepare')),
+                           bsAlert("tcgaddirmessage")
                     )
                 )
         ),
