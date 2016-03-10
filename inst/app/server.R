@@ -1,6 +1,7 @@
 library(shiny)
 library(shinyFiles)
 library(SummarizedExperiment)
+library(TCGAbiolinks)
 library(shinyBS)
 options(shiny.maxRequestSize=300*1024^2)
 
@@ -458,9 +459,10 @@ biOMICsServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         se <- get(load(input$dmrfile$datapath))
 
-        if(class(se)!= class(SummarizedExperiment())){
+        if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
             createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
-                        content = "Sorry, but I'm expecting a Summarized Experiment object", append = FALSE)
+                        content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
+                                         class(se)), append = FALSE)
             return(NULL)
         }
         return(se)
@@ -498,46 +500,58 @@ biOMICsServer <- function(input, output, session) {
         }, server = TRUE)
     })
 
-    mean.plotting <- reactive({
-        library(ggvis)
-
-        # Make data set with categorical x
-        mtc <- mtcars
-        mtc$cyl <- factor(mtc$cyl)
-        mtc %>% ggvis(~cyl, ~mpg) %>% layer_boxplots()
-        # Set the width of the boxes to half the space between tick marks
-        mtc %>% ggvis(~cyl, ~mpg) %>% layer_boxplots(width = 0.5)
-
-        # Continuous x: boxes fill width between data values
-        mtcars %>% ggvis(~cyl, ~mpg) %>% layer_boxplots()
-        # Setting width=0.5 makes it 0.5 wide in the data space, which is 1/4 of the
-        # distance between data values in this particular case.
-        mtcars %>% ggvis(~cyl, ~mpg) %>% layer_boxplots(width = 0.5)
-
-        if(input$meanmetPlot){
-
-            if(input$meanmetgroupCol =="") {
+    observeEvent(input$meanmetPlot , {
+        output$mean.plotting <- renderPlot({
+            if(isolate({input$meanmetgroupCol}) =="") {
                 group <- NULL
             } else {
-                group <- input$meanmetgroupCol
+                group <- isolate({input$meanmetgroupCol})
             }
-            if(input$meanmetsubgroupCol =="") {
+
+            if(isolate({input$meanmetsubgroupCol}) =="") {
                 subgroup <- NULL
             } else {
-                subgroup <- input$meanmetsubgroupCol
+                subgroup <- isolate({input$meanmetsubgroupCol})
             }
+            withProgress(message = 'Creating plot',
+                         detail = 'This may take a while...', value = 0, {
+                             TCGAvisualize_meanMethylation(data=dmrdata(),
+                                                                   groupCol=group,
+                                                                   subgroupCol=subgroup,
+                                                                   filename = NULL)
+                         })
+        })})
 
-            TCGAbiolinks::TCGAvisualize_meanMethylation(data=dmrdata(),
-                                                        groupCol=group,
-                                                        subgroupCol=subgroup,
-                                                        filename = NULL)
-        }
-    })
+    observeEvent(input$meanmetPlot , {
+        updateCollapse(session, "collapseDmr", open = "Mean Methylation")
+        output$dmrPlot <- renderUI({
+            plotOutput("mean.plotting", width = paste0(isolate({input$meanmetwidth}), "%"), height = isolate({input$meanmetheight}))
+        })})
 
-    output$dmrPlot <- renderPlot({
-        if(input$meanmetPlot){
-            mean.plotting()
-        }
-    }, width = "auto", height = "auto")
+    output$probesSE <- renderDataTable({
+        data <- dmrdata()
+        if(is.null(data))
+       as.data.frame(values(data))
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+    )
 
 }

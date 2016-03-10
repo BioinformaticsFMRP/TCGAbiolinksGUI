@@ -266,8 +266,11 @@ body <-  dashboardBody(
         tabItem(tabName = "dmr",
 
                 fluidRow(
-                    column(9, plotOutput("dmrPlot",height=800)),
-                    column(3,
+                    column(10,  bsAlert("dmrmessage"),
+                           bsCollapse(id = "collapseDmr", open = "Mean Methylation",
+                                      bsCollapsePanel("Probes info", dataTableOutput('probesSE'), style = "default"),
+                                      bsCollapsePanel("Mean Methylation", uiOutput("dmrPlot"), style = "default"))),
+                    column(2,
                            box(title = "DNA methylation object",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,
@@ -298,8 +301,7 @@ body <-  dashboardBody(
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("flask")),
-                               textOutput('tcgadmr')
+                                            icon = icon("flask"))
                            ),
                            box(title = "Mean DNA methylation",width = NULL,
                                status = "warning",
@@ -310,6 +312,8 @@ body <-  dashboardBody(
                                selectizeInput('meanmetsubgroupCol',
                                               "Sub group column",
                                               choices = NULL,  multiple = FALSE),
+                               sliderInput("meanmetwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("meanmetheight", "Plot Height (px)", min = 0, max = 800, value = 400),
                                actionButton("meanmetPlot",
                                             "DNA mean methylation plot",
                                             style = "background-color: #F39C12;
@@ -317,8 +321,8 @@ body <-  dashboardBody(
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("eye")),
-                               textOutput('tcgameanmet')
+                                            icon = icon("eye"))
+
                            )
                     )
                 )
