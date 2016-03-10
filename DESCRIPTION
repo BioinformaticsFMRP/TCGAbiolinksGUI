@@ -37,7 +37,7 @@ Imports:
     parallel,
     TCGAbiolinks,
     shinyjs,
-    shinyBS,
+    shinyBS  (>= 0.62),
     shinyFiles,
     shiny,
     ReporteRs (>= 0.8.5)

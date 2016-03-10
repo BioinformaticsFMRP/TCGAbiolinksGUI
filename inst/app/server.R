@@ -21,21 +21,21 @@ biOMICsServer <- function(input, output, session) {
 
     observeEvent(input$folder , {
         closeAlert(session, "ontdownloaddirAlert")
-        createAlert(session, "ontdownloaddirmessage", "ontdownloaddirAlert", title = "Download folder", type = "success",
-                    message =   parseDirPath(volumes, input$folder), append = TRUE)
+        createAlert(session, "ontdownloaddirmessage", "ontdownloaddirAlert", title = "Download folder", style =  "success",
+                    content =   parseDirPath(volumes, input$folder), append = TRUE)
     })
     observeEvent(input$reportfolder , {
         closeAlert(session, "ontreportdirAlert")
-        createAlert(session, "ontdownloaddirmessage", "ontreportdirAlert", title = "Report folder", type = "success",
-                    message =  parseDirPath(volumes, input$reportfolder), append = TRUE)
+        createAlert(session, "ontdownloaddirmessage", "ontreportdirAlert", title = "Report folder", style =  "success",
+                    content =  parseDirPath(volumes, input$reportfolder), append = TRUE)
     })
 
     #----------------- Ontology
     observeEvent(input$ontSearchDownloadBt , {
 
         if(length(input$allRows) == 0) {
-            createAlert(session, "alert", "exampleAlert", title = "Invalid selection", type = "danger",
-                        message = "Please select the samples to download.", append = FALSE)
+            createAlert(session, "alert", "exampleAlert", title = "Invalid selection", style =  "danger",
+                        content = "Please select the samples to download.", append = FALSE)
             return()
         } else {
             closeAlert(session, "exampleAlert")
@@ -60,8 +60,8 @@ biOMICsServer <- function(input, output, session) {
                          }
 
                      })
-        createAlert(session, "alert", "exampleAlert", title = "Download completed", type = "info",
-                    message = "Your download has been completed.", append = FALSE)
+        createAlert(session, "alert", "exampleAlert", title = "Download completed", style =  "info",
+                    content = "Your download has been completed.", append = FALSE)
     }
     )
 
@@ -86,14 +86,14 @@ biOMICsServer <- function(input, output, session) {
 
         print(result)
         if(is.null(result)) {
-            createAlert(session, "alert", "exampleAlert", title = "No system", type = "danger",
-                        message = "No system was found. I can't create a report.", append = FALSE)
+            createAlert(session, "alert", "exampleAlert", title = "No system", style =  "danger",
+                        content = "No system was found. I can't create a report.", append = FALSE)
             return()
 
         }
         else if(is.null(input$reportfolder)) {
-            createAlert(session, "alert", "exampleAlert", title = "No folder", type = "danger",
-                        message = "Please select a folder to create the report", append = FALSE)
+            createAlert(session, "alert", "exampleAlert", title = "No folder", style =  "danger",
+                        content = "Please select a folder to create the report", append = FALSE)
             return()
         }  else {
             closeAlert(session, "exampleAlert")
@@ -160,23 +160,24 @@ biOMICsServer <- function(input, output, session) {
                              }
 
                          })
-            createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Prepare completed", type = "success",
-                        message = paste0("Saved in: ", filename), append = FALSE)
+            createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Prepare completed", style =  "success",
+                        content = paste0("Saved in: ", filename), append = FALSE)
     })
 
     observeEvent(input$ontSearchBt, {
 
         if(nchar(input$ontSamplesFilter) < 3) {
-            createAlert(session, "alert", "exampleAlert", title = "Invalid term", type = "danger",
-                        message = "Input should be creater than 3 characters.", append = FALSE)
+            closeAlert(session, "exampleAlert")
+            createAlert(session, "alert", "exampleAlert", title = "Invalid term", style =  "danger",
+                        content = "Input should be creater than 3 characters.", append = FALSE)
             return()
         } else {
             closeAlert(session, "exampleAlert")
         }
         output$ontSearchtbl <- renderDataTable({
             data <- isolate({dataInput()})
-            createAlert(session, "alert", "exampleAlert", title = "Term mapped to the system:", type = "info",
-                        message = data$system , append = FALSE)
+            createAlert(session, "alert", "exampleAlert", title = "Term mapped to the system:", style =  "info",
+                        content = data$system , append = FALSE)
             result <- data$result
         },
         options = list(pageLength = 10,
@@ -225,12 +226,12 @@ biOMICsServer <- function(input, output, session) {
                                  level = level)
             }
             if(is.null(tbl)){
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", type = "warning",
-                            message = "Sorry there are no results for your query.", append = FALSE)
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                            content = "Sorry there are no results for your query.", append = FALSE)
                 return()
             } else if(nrow(tbl) ==0) {
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", type = "warning",
-                            message = "Sorry there are no results for your query.", append = FALSE)
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                            content = "Sorry there are no results for your query.", append = FALSE)
                 return()
             } else {
                 closeAlert(session, "tcgasearchAlert")
@@ -268,14 +269,14 @@ biOMICsServer <- function(input, output, session) {
 
     observeEvent(input$tcgafolder , {
         closeAlert(session, "tcgadownloaddirAlert")
-        createAlert(session, "tcgaddirmessage", "tcgadownloaddirAlert", title = "Download folder", type = "success",
-                    message =  parseDirPath(volumes, input$tcgafolder), append = TRUE)
+        createAlert(session, "tcgaddirmessage", "tcgadownloaddirAlert", title = "Download folder", style =  "success",
+                    content =  parseDirPath(volumes, input$tcgafolder), append = TRUE)
     })
 
     observeEvent(input$tcgapreparefolder , {
         closeAlert(session, "tcgapreparedirAlert")
-        createAlert(session, "tcgaddirmessage", "tcgapreparedirAlert", title = "Prepare folder", type = "success",
-                    message =  parseDirPath(volumes, input$tcgapreparefolder), append = TRUE)
+        createAlert(session, "tcgaddirmessage", "tcgapreparedirAlert", title = "Prepare folder", style =  "success",
+                    content =  parseDirPath(volumes, input$tcgapreparefolder), append = TRUE)
     })
 
 
@@ -315,8 +316,8 @@ biOMICsServer <- function(input, output, session) {
                                  }
                                  TCGAdownload(x, path = getPath,type = ftype,samples = samples)
                              }})
-            createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Download completed", type = "success",
-                        message =  paste0("Saved in: ", getPath), append = FALSE)
+            createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Download completed", style =  "success",
+                        content =  paste0("Saved in: ", getPath), append = FALSE)
     })
 
     #------------- MAF
@@ -350,12 +351,11 @@ biOMICsServer <- function(input, output, session) {
     # Download
     shinyDirChoose(input, 'maffolder', roots=volumes, session=session,
                    restrictions=system.file(package='base'))
-    output$mafdirectorypath <- renderText({parseDirPath(volumes, input$maffolder)})
 
     observeEvent(input$maffolder , {
         closeAlert(session, "oncoddirAlert")
-        createAlert(session, "oncoddirmessage", "oncoddirAlert", title = "Download folder", type = "success",
-                    message =  parseDirPath(volumes, input$maffolder), append = TRUE)
+        createAlert(session, "oncoddirmessage", "oncoddirAlert", title = "Download folder", style = "success",
+                    content =  parseDirPath(volumes, input$maffolder), append = TRUE)
     })
 
     output$mafDownloadfTxt <-  renderText({
@@ -393,20 +393,23 @@ biOMICsServer <- function(input, output, session) {
         output$oncoploting <- renderPlot({
             mut <- isolate({mut()})
             if(is.null(mut)){
-                createAlert(session, "oncomessage", "oncoAlert", title = "Error", type = "danger",
-                            message = "Please select a file", append = TRUE)
+                createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
+                            content = "Please select a file", append = TRUE)
                 return(NULL)
             } else{
                 closeAlert(session, "oncoAlert")
             }
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
+
                              create.oncoprint(mut=mut,genes=isolate(input$oncoGenes),
                                               color = c("SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
                                                         "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))
+
                          })
         })})
     observeEvent(input$oncoprintPlot , {
+        updateCollapse(session, "collapseOnco", open = "Oncoprint")
     output$oncoPlot <- renderUI({
         plotOutput("oncoploting", width = paste0(isolate({input$oncowidth}), "%"), height = isolate({input$oncoheight}))
     })})
@@ -459,8 +462,8 @@ biOMICsServer <- function(input, output, session) {
         se <- get(load(input$dmrfile$datapath))
 
         if(class(se)!= class(SummarizedExperiment())){
-            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", type = "danger",
-                        message = "Sorry, but I'm expecting a Summarized Experiment object", append = FALSE)
+            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
+                        content = "Sorry, but I'm expecting a Summarized Experiment object", append = FALSE)
             return(NULL)
         }
         return(se)

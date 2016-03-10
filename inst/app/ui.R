@@ -214,8 +214,11 @@ body <-  dashboardBody(
         ),
         tabItem(tabName = "tcgaOncoPrint",
                 fluidRow(
-                    column(10,  bsAlert("oncomessage"),dataTableOutput('maftbl'),
-                           uiOutput("oncoPlot")),
+                    column(10,  bsAlert("oncomessage"),
+                           bsCollapse(id = "collapseOnco", open = "MAF files to download",
+                                      bsCollapsePanel("MAF files to download", dataTableOutput('maftbl'), style = "default"),
+                                      bsCollapsePanel("Oncoprint", uiOutput("oncoPlot"), style = "default")
+                           )),
                     column(2,
                            box(title = "Download",width = NULL,
                                status = "warning",

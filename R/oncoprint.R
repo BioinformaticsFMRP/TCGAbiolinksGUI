@@ -4,7 +4,7 @@
 #' @param filename name of the pdf
 #' @param color named vector for the plot
 #' @param height pdf height
-#' @importFrom ComplexHeatmap oncoPrint
+#' @importFrom ComplexHeatmap oncoPrint draw
 #' @importFrom grid gpar grid.rect
 #' @importFrom reshape2 dcast acast
 #' @examples
@@ -87,6 +87,6 @@ create.oncoprint <- function (mut,
                                                grid_height = unit(8, "mm") # vertical distance labels
                    )
     )
-    print(p)
     if(!missing(filename)) dev.off()
+    draw(p)
 }
