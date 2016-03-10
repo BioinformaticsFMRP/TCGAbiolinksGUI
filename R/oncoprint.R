@@ -23,23 +23,26 @@ create.oncoprint <- function (mut,
 
     if(missing(genes)) stop("Missing genes argument")
     if(missing(mut))   stop("Missing mut argument")
-    if(missing(color))   color = c("DEL" = "#008000", "INS" = "red", "SNP" = "blue")
 
     mut <- subset(mut,mut$Hugo_Symbol %in% genes)
-    mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type)
+    mut$value <- 1
+    mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value")
 
-    columns <- c("DEL","INS","SNP")
-    columns <- columns[columns %in% colnames(mat)]
-    for( i in columns){
+    columns <- colnames(mat)[-c(1:2)]
+    if(missing(color)){
+        color <- c(rainbow(length(columns)))
+        names(color) <- columns
+    }
+    mat$value <- ""
+    for ( i in columns){
         mat[,i] <-  replace(mat[,i],mat[,i]>0,paste0(i,";"))
         mat[,i] <-  replace(mat[,i],mat[,i]==0,"")
+        mat$value <- paste0(mat$value,mat[,i])
     }
 
-    mat$value <- paste0(mat$SNP,mat$INS,mat$DEL)
     mat <- acast(mat, Tumor_Sample_Barcode~Hugo_Symbol, value.var="value",fill="")
     rownames(mat) <-  substr(rownames(mat),1,12)
-
-    alter_fun_list = list(
+    alter_fun = list(
         background = function(x, y, w, h) {
             grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = "#CCCCCC", col = NA))
         },
@@ -53,9 +56,9 @@ create.oncoprint <- function (mut,
             grid.rect(x, y, w-unit(0.5, "mm"), h*0.33, gp = gpar(fill = color["SNP"], col = NA))
         }
     )
-
+    alt = intersect(names(alter_fun), c("background",as.character(columns)))
+    alter_fun <- alter_fun[alt]
     mat <- t(mat)
-
     if(!missing(height)) height <- length(genes)/2
     if(!missing(filename)) pdf(filename,width = 20,height = height)
 
@@ -63,7 +66,7 @@ create.oncoprint <- function (mut,
                    row_order = NULL,
                    remove_empty_columns = FALSE,
                    column_order = NULL, # Do not sort the columns
-                   alter_fun_list = alter_fun_list, col = color,
+                   alter_fun = alter_fun, col = color,
                    row_names_gp = gpar(fontsize = 16),  # set size for row names
                    pct_gp = gpar(fontsize = 16), # set size for percentage labels
                    axis_gp = gpar(fontsize = 16),# size of axis
@@ -71,8 +74,8 @@ create.oncoprint <- function (mut,
                    #column_title_gp = gpar(fontsize = 11),
                    row_barplot_width = unit(4, "cm"), #size barplot
                    #bottom_annotation = bottom_annotation,
-                   heatmap_legend_param = list(title = "Mutations", at = c("DEL", "INS", "SNP"),
-                                               labels = c("DEL", "INS", "SNP"),
+                   heatmap_legend_param = list(title = "Mutations", at = names(color),
+                                               labels = names(color),
                                                title_gp = gpar(fontsize = 16, fontface = "bold"),
                                                labels_gp = gpar(fontsize = 16), # size labels
                                                grid_height = unit(8, "mm") # vertical distance labels
