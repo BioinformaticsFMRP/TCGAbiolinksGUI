@@ -193,6 +193,11 @@ body <-  dashboardBody(
                                radioButtons("prepareRb", "Data type:",
                                             c("SummarizedExperiment" = TRUE,
                                               "Dataframe" = FALSE)),
+                               conditionalPanel(
+                                   condition = "input.prepareRb == 'TRUE'",
+                                checkboxInput("addSubTypeTCGA", "Add information about subtypes", value = FALSE, width = NULL)
+                               ),
+                               textInput("tcgafilename", "File name", value = "data.rda", width = NULL, placeholder = NULL),
                                shinyDirButton('tcgapreparefolder', 'Folder to save', 'Please select a folder',
                                               class='shinyDirectories btn-default', buttonType='warning'),
                                actionButton("tcgaPrepareBt",
@@ -202,15 +207,14 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 50%",
-                                            icon = icon("cogs")),
-                               textOutput('tcgaprepare')),
+                                            icon = icon("cogs"))),
                            bsAlert("tcgaddirmessage")
                     )
                 )
         ),
         tabItem(tabName = "tcgaOncoPrint",
                 fluidRow(
-                    column(10, dataTableOutput('maftbl'),
+                    column(10,  bsAlert("oncomessage"),dataTableOutput('maftbl'),
                            uiOutput("oncoPlot")),
                     column(2,
                            box(title = "Download",width = NULL,

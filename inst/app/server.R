@@ -106,25 +106,28 @@ biOMICsServer <- function(input, output, session) {
                      })
     })
 
-    output$tcgaprepare <-  renderText({
-        if (input$tcgaPrepareBt) {
+    observeEvent(input$tcgaPrepareBt, {
+
             # read the data from the downloaded path
             # prepare it
 
             # Files types
             ftype <- NULL
-            rnaseqFtype <- input$tcgaFrnaseqtypeFilter
-            rnaseqv2Ftype <- input$tcgaFrnaseqv2typeFilter
-            gwsFtype <- input$tcgaFgwstypeFilter
+            rnaseqFtype <- isolate({input$tcgaFrnaseqtypeFilter})
+            rnaseqv2Ftype <- isolate({input$tcgaFrnaseqv2typeFilter})
+            gwsFtype <- isolate({input$tcgaFgwstypeFilter})
 
             # Dir to saved the files
             getPath <- parseDirPath(volumes, input$tcgafolder)
             if (length(getPath) == 0) getPath <- "."
             samplesType <- input$tcgasamplestypeFilter
 
-            filename <- parseDirPath(volumes, input$tcgapreparefolder)
-            if(length(filename) == 0) filename <- "."
-            if(length(input$tcgapreparefile) > 0) filename <- file.path(filename,input$tcgapreparefile)
+            save.dir <- parseDirPath(volumes, input$tcgapreparefolder)
+            if(length(save.dir) == 0) {
+                filename <- isolate({input$tcgafilename})
+            } else {
+                filename <- file.path(save.dir,isolate({input$tcgafilename}))
+            }
 
             withProgress(message = 'Prepare in progress',
                          detail = 'This may take a while...', value = 0, {
@@ -146,21 +149,19 @@ biOMICsServer <- function(input, output, session) {
                                          s[grep(type,substr(s,14,15))]
                                      }))
                                  }
-                                 if(!(length(unique(x$Platform)) == 1 &
-                                      length(input$tcgapreparefile) > 0)){
-                                     filename <- NULL
-                                 }
+
                                  trash <- TCGAprepare(aux,dir = getPath,
-                                                      summarizedExperiment = as.logical(input$prepareRb),
+                                                      summarizedExperiment = isolate({as.logical(input$prepareRb)}),
                                                       save = TRUE,
                                                       type = ftype,
                                                       filename=filename,
-                                                      samples = samples)
+                                                      samples = samples,
+                                                      add.subtype = isolate({input$addSubTypeTCGA}))
                              }
 
                          })
-            print("End of Prepare")
-        }
+            createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Prepare completed", type = "success",
+                        message = paste0("Saved in: ", filename), append = FALSE)
     })
 
     observeEvent(input$ontSearchBt, {
@@ -278,19 +279,19 @@ biOMICsServer <- function(input, output, session) {
     })
 
 
-    output$tcgaSearchLink <-  renderText({
+    observeEvent(input$tcgaDownloadBt,{
 
         # Files types
         ftype <- NULL
-        rnaseqFtype <- input$tcgaFrnaseqtypeFilter
-        rnaseqv2Ftype <- input$tcgaFrnaseqv2typeFilter
-        gwsFtype <- input$tcgaFgwstypeFilter
+        rnaseqFtype <- isolate({input$tcgaFrnaseqtypeFilter})
+        rnaseqv2Ftype <- isolate({input$tcgaFrnaseqv2typeFilter})
+        gwsFtype <- isolate({input$tcgaFgwstypeFilter})
 
         # Dir to save the files
         getPath <- parseDirPath(volumes, input$tcgafolder)
         if (length(getPath) == 0) getPath <- "."
         samplesType <- input$tcgasamplestypeFilter
-        if (input$tcgaDownloadBt ) {
+
 
             withProgress(message = 'Download in progress',
                          detail = 'This may take a while...', value = 0, {
@@ -314,9 +315,8 @@ biOMICsServer <- function(input, output, session) {
                                  }
                                  TCGAdownload(x, path = getPath,type = ftype,samples = samples)
                              }})
-            print("End of download")
-        }
-
+            createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Download completed", type = "success",
+                        message =  paste0("Saved in: ", getPath), append = FALSE)
     })
 
     #------------- MAF
@@ -391,7 +391,14 @@ biOMICsServer <- function(input, output, session) {
     }
     observeEvent(input$oncoprintPlot , {
         output$oncoploting <- renderPlot({
-            mut <- mut()
+            mut <- isolate({mut()})
+            if(is.null(mut)){
+                createAlert(session, "oncomessage", "oncoAlert", title = "Error", type = "danger",
+                            message = "Please select a file", append = TRUE)
+                return(NULL)
+            } else{
+                closeAlert(session, "oncoAlert")
+            }
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
                              create.oncoprint(mut=mut,genes=isolate(input$oncoGenes),
