@@ -530,8 +530,7 @@ biOMICsServer <- function(input, output, session) {
 
     output$probesSE <- renderDataTable({
         data <- dmrdata()
-        if(is.null(data))
-       as.data.frame(values(data))
+        if(!is.null(data)) as.data.frame(values(data))
     },
     options = list(pageLength = 10,
                    scrollX = TRUE,
