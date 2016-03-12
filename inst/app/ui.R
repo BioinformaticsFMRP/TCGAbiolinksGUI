@@ -3,6 +3,7 @@ library(shinyFiles)
 library(TCGAbiolinks)
 library(shinyBS)
 library(shinyjs)
+library(SummarizedExperiment)
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
 names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
@@ -232,15 +233,16 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 50%",
-                                            icon = icon("download")),
-                               textOutput('mafDownloadfTxt')
+                                            icon = icon("download"))
                            ),
                            bsAlert("oncoddirmessage"),
                            box(title = "Oncoprint",width = NULL,
                                  status = "warning",
                                  solidHeader = FALSE, collapsible = FALSE,
-                                 fileInput('maffile', 'Choose maf File',
-                                           accept=c(".maf")),
+                                 #fileInput('maffile', 'Choose maf File',
+                                 #          accept=c(".maf")),
+                                 shinyFilesButton('maffile', 'Select maf file', 'Please select a maf file',
+                                                multiple = FALSE, buttonType='warning'),
                                  selectizeInput('oncoGenes',
                                                 "genes",
                                                 choices = NULL,  multiple = TRUE),

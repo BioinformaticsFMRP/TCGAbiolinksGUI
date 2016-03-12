@@ -359,12 +359,11 @@ biOMICsServer <- function(input, output, session) {
                     content =  parseDirPath(volumes, input$maffolder), append = TRUE)
     })
 
-    output$mafDownloadfTxt <-  renderText({
+    observeEvent(input$mafDownloadBt , {
         maf.files <- get.obj("maf.files")
         # Dir to save the files
         getPath <- parseDirPath(volumes, input$maffolder)
         if (length(getPath) == 0) getPath <- "."
-        if (input$mafDownloadBt ) {
 
             withProgress(message = 'Download in progress',
                          detail = 'This may take a while...', value = 0, {
@@ -377,15 +376,18 @@ biOMICsServer <- function(input, output, session) {
                                  fout <- file.path(getPath,basename(df[1,]$Deploy.Location))
                                  if (!file.exists(fout))  downloader::download(df[1,]$Deploy.Location,fout)
                              }})
-            print("End of download")
-        }
-
+            closeAlert(session, "oncoAlert")
+            createAlert(session, "oncomessage", "oncoAlert", title = "Download completed", style = "success",
+                        content =  paste0("Saved file: ",fout), append = TRUE)
     })
+    shinyFileChoose(input, 'maffile', roots=volumes, session=session, restrictions=system.file(package='base'))
     mut <- function(){
-        inFile <- input$maffile
-
-        if (is.null(inFile)) return(NULL)
-        ret <- read.table(inFile$datapath, fill = TRUE,
+        #inFile <- input$maffile
+        #if (is.null(inFile)) return(NULL)
+        inFile <- parseFilePaths(volumes, input$maffile)
+        if (nrow(inFile) == 0) return(NULL)
+        file <- as.character(inFile$datapath)
+        ret <- read.table(file, fill = TRUE,
                           comment.char = "#", header = TRUE, sep = "\t", quote='')
         return(ret)
 
