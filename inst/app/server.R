@@ -161,8 +161,9 @@ biOMICsServer <- function(input, output, session) {
                          }
 
                      })
-        createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Prepare completed", style =  "success",
-                    content = paste0("Saved in: ", filename), append = FALSE)
+        closeAlert(session, "tcgaAlert")
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
+                    content =  paste0("Saved in: ", getPath), append = FALSE)
     })
 
     observeEvent(input$ontSearchBt, {
@@ -317,7 +318,7 @@ biOMICsServer <- function(input, output, session) {
                              }
                              TCGAdownload(x, path = getPath,type = ftype,samples = samples)
                          }})
-        createAlert(session, "tcgasearchmessage", "tcgaprepareAlert", title = "Download completed", style =  "success",
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Download completed", style =  "success",
                     content =  paste0("Saved in: ", getPath), append = FALSE)
     })
 
@@ -381,6 +382,7 @@ biOMICsServer <- function(input, output, session) {
                         content =  paste0("Saved file: ",fout), append = TRUE)
     })
     shinyFileChoose(input, 'maffile', roots=volumes, session=session, restrictions=system.file(package='base'))
+
     mut <- function(){
         #inFile <- input$maffile
         #if (is.null(inFile)) return(NULL)
@@ -455,11 +457,13 @@ biOMICsServer <- function(input, output, session) {
                                                 cores = isolate({input$dmrcores}))
                      })
     })
+    shinyFileChoose(input, 'dmrfile', roots=volumes, session=session, restrictions=system.file(package='base'))
 
     dmrdata <- function(){
         inFile <- input$dmrfile
         if (is.null(inFile)) return(NULL)
-        se <- get(load(input$dmrfile$datapath))
+        file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
+        se <- get(load(file))
 
         if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
             createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
