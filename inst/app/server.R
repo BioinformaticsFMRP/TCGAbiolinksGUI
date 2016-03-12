@@ -475,18 +475,18 @@ biOMICsServer <- function(input, output, session) {
 
     }
 
-    observe({
+    observeEvent(input$dmrgroupCol , {
         updateSelectizeInput(session, 'dmrgroup1', choices = {
-            if(class(dmrdata())== class(SummarizedExperiment())){
-                if(!is.null(dmrdata()) & input$dmrgroupCol !="" )
+            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+                if (!is.null(dmrdata()) & input$dmrgroupCol != "" )
                     as.character(colData(dmrdata())[,input$dmrgroupCol])
             }}, server = TRUE)
     })
-    observe({
+    observeEvent(input$dmrgroupCol , {
         updateSelectizeInput(session, 'dmrgroup2', choices = {
-            if(class(dmrdata())== class(SummarizedExperiment())){
+            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
 
-                if(!is.null(dmrdata()) & input$dmrgroupCol !="")
+                if (!is.null(dmrdata()) & input$dmrgroupCol != "")
                     as.character(colData(dmrdata())[,input$dmrgroupCol])
             }}, server = TRUE)
     })
