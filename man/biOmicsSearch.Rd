@@ -5,7 +5,7 @@
 \title{Searches a term in TCGA, ENCODE, ROADMAP}
 \usage{
 biOmicsSearch(term, experiment = NULL, report = FALSE,
-  dir.report = "searchSummary")
+  dir.report = "searchSummary", use.cache = TRUE)
 }
 \arguments{
 \item{term}{Term to be searched. Example: 'brain' 'u87' etc.}
@@ -14,7 +14,9 @@ biOmicsSearch(term, experiment = NULL, report = FALSE,
 
 \item{report}{Create a summary plot of the result found? Deafult: TRUE}
 
-\item{dir.report}{Directory to save the html report. Default: "searchSummary"
+\item{dir.report}{Directory to save the html report. Default: "searchSummary"}
+
+\item{use.cache}{Use pre assigned terms? Default: TRUE
 \tabular{llll}{
 Microarray \tab MiRNAMicroArray \tab RRBS \tab DNAsequencing\cr
 ExpressionArray \tab Firehose \tab ChipSeq \tab fiveC \cr

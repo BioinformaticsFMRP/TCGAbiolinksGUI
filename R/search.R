@@ -1,5 +1,25 @@
 
 # internal: used by biOmicsSearch
+#' @importFrom stringr str_split
+update.terms <- function(db="tcga"){
+    if(db == "tcga"){
+        tcga.biosamples <- trimws(sapply(str_split(unique(biosample.tcga$biosample),"\\("), function(x) x[[2]]))
+        tcga.biosamples <- gsub("\\)","",tcga.biosamples)
+        x <- data.frame(biosample=tcga.biosamples,	BTO=NA)
+        pb <- txtProgressBar(min = 0, max = nrow(data), style = 3)
+        for(i in tcga.biosamples){
+            print(i)
+            system <- biOmicsSearch(i, use.cache = FALSE, return.system = TRUE)
+            x[x$biosample==i,]$BTO <- system
+            setTxtProgressBar(pb, which(tcga.biosamples$biosample == i))
+        }
+        close(pb)
+        return(x)
+    }
+    return(NULL)
+}
+
+# internal: used by biOmicsSearch
 #' @importFrom  rols OlsSearch olsSearch partOf parents derivesFrom
 systemSearch <- function(term,env) {
     success <- get("success", envir = env)
@@ -7,7 +27,8 @@ systemSearch <- function(term,env) {
 
     if (!success) {
         # If the bto is a system return it
-        found <- intersect(term, systems$BTO)
+        found <- grep(term, systems$BTO)
+
         if (length(found) > 0) {
             assign("success", TRUE, envir = env)
             assign("solution", found, envir = env)
@@ -51,23 +72,52 @@ map.to.bto <- function(term,env) {
     # Does the term exists in BTO?
     aux <- term
     names(aux) <- NULL
-    query <- rols::olsQuery(aux, "BTO", exact = FALSE)
-
-    if (length(query) > 0) {
-        # term found in BTO
-        term.found <- names(query)
-        sapply(term.found, function(x) {
+    res <- olsSearch(OlsSearch(term, exact = TRUE, rows = 1)) # some term in other ontology
+    if(length(res@response$label) > 1) {
+        name <- res@response$label[1]
+    } else {
+        name <- res@response$label
+    }
+    query <- OlsSearch(name, "BTO", exact = FALSE) # is this term found mapepd to bto?
+    if (query@numFound) {
+        res.bto <- olsSearch(query)
+        sapply(res.bto@response$obo_id, function(x) {
             if (!success) {
                 systemSearch(x, env)
             }
         })
     }
+    success <- get("success", envir = env)
     if (success) {
         return()
     } else {
-        ontology <- unlist(strsplit(names(term), ":"))[1]
-        parentTerm <- rols::parents(names(term), ontology)
-
+        # if term not found in BTO, what about its parents?
+        res <- as(res, "Terms")[[1]]
+        parentTerm <- parents(res)
+        if (is.null(parentTerm)) {
+            parentTerm <- partOf(res)
+            if (!is.null(parentTerm)) from <- "=> Part of: "
+        }  else if (!is.null(parentTerm) & length(parentTerm@x) == 0){
+            parentTerm <- suppressMessages({partOf(res)})
+            if (!is.null(parentTerm)) from <- "=> Part of: "
+        } else {
+            from <-  "=> Son of: "
+        }
+        if (is.null(parentTerm)){
+            parentTerm <- derivesFrom(res)
+            if (!is.null(parentTerm)) from <- "=> Derives from: "
+        } else if (!is.null(parentTerm) & length(parentTerm@x) == 0){
+            parentTerm <- derivesFrom(res[[1]])
+            if (!is.null(parentTerm)) from <- "=> Derives from: "
+        }
+        if (!is.null(parentTerm)){
+            if( length(parentTerm@x) > 0){
+                message(paste0(from, parentTerm@x[[1]]@label))
+                sapply(names(parentTerm@x), function(x) {
+                    systemSearch(x,env)
+                })
+            }
+        }
         for (i in seq(parentTerm)) {
             map.to.bto(parentTerm[i])
         }
@@ -124,6 +174,7 @@ is.mapped <- function(term,env) {
 #' @param experiment Experiment type
 #' @param report Create a summary plot of the result found? Deafult: TRUE
 #' @param dir.report Directory to save the html report. Default: "searchSummary"
+#' @param use.cache Use pre assigned terms? Default: TRUE
 #' \tabular{llll}{
 #'Microarray \tab MiRNAMicroArray \tab RRBS \tab DNAsequencing\cr
 #'ExpressionArray \tab Firehose \tab ChipSeq \tab fiveC \cr
@@ -139,7 +190,9 @@ is.mapped <- function(term,env) {
 biOmicsSearch <- function(term,
                           experiment = NULL,
                           report = FALSE,
-                          dir.report = "searchSummary") {
+                          dir.report = "searchSummary",
+                          use.cache = TRUE,
+                          return.system=F) {
 
     message(paste("biOmics is searching for:", term, "\nSearching..."))
     start.time <- Sys.time()
@@ -160,7 +213,7 @@ biOmicsSearch <- function(term,
     }
 
     # Step 1: verify if term search has been mapped by us.
-    if (!success) {
+    if (!success & use.cache) {
         is.mapped(term, env)
         success <- get("success", envir = env)
         solution <- get("solution", envir = env)
@@ -185,7 +238,6 @@ biOmicsSearch <- function(term,
             query <- OlsSearch(q = term, ontology = ont, exact = FALSE)
             if (query@numFound) {
                 res <- olsSearch(query)
-                # term.found should be BTO:0000142
                 sapply(as(res,"Terms")@x, function(x) {
                     if (!isObsolete(x)) {
                         systemSearch(x@obo_id,env)
@@ -193,31 +245,33 @@ biOmicsSearch <- function(term,
                 })
             }
         }
+    }
+    success <- get("success", envir = env)
+    solution <- get("solution", envir = env)
+    # Not found in bto or cache we are going to search in other
+    # ontologies and see if from the other ontologies we can
+    # reach BTO
+    if (!success) {
+        message("Not found in the cache, not found in BTO...")
 
+        ont.vec <- c("EFO", "CL", "UBERON")
+        for (i in ont.vec) {
+            query <- OlsSearch(q = term, ontology = i, exact = TRUE)
+            print(query)
+            if (query@numFound) {
+                res <- olsSearch(query)
+                term.found <- res@response$obo_id
+                print(term.found)
+                map.to.bto(term.found,env)
+                success <- get("success", envir = env)
+                if (success)  break
+            }
+            if (success) {
+                message(paste0("Found in:",i,"!"))
+                break
+            }
+        }
 
-        # Not found in bto or cache we are going to search in other
-        # ontologies and see if from the other ontologies we can
-        # reach BTO
-        #if (!get("success", envir = env)) {
-        #    message("Not found in the cache, not found in BTO...")
-        #
-        #   ont.vec <- c("EFO", "CL", "UBERON")
-        #   for (i in ont.vec) {
-        #       query <- rols::olsQuery(term, i)
-        #       if (length(query) > 0) {
-        # term was found in other ontology!
-        #           for (j in seq(query)) {
-        #               map.to.bto(query[j],env)
-        #               success <- get("success", envir = env)
-        #               if (success)  break
-        #           }
-        #           if (success) {
-        #               message(paste0("Found in:",i,"!"))
-        #               break
-        #           }
-        #       }
-        #   }
-        #}
         success <- get("success", envir = env)
         solution <- get("solution", envir = env)
     }
@@ -227,6 +281,7 @@ biOmicsSearch <- function(term,
     message(paste("Time taken: ", round(time.taken, 2), "s \n"))
 
     if (success) {
+        if(return.system) return(solution)
         return(showResults(solution, experiment, report, dir.report))
     }
     message("Term not found")
