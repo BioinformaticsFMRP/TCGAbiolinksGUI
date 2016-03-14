@@ -1,13 +1,13 @@
 
 # internal: used by biOmicsSearch
 #' @importFrom stringr str_split
-update.terms <- function(db="tcga"){
-    if(db == "tcga"){
-        tcga.biosamples <- trimws(sapply(str_split(unique(biosample.tcga$biosample),"\\("), function(x) x[[2]]))
-        tcga.biosamples <- gsub("\\)","",tcga.biosamples)
-        x <- data.frame(biosample=tcga.biosamples,	BTO=NA)
-        pb <- txtProgressBar(min = 0, max = nrow(data), style = 3)
-        for(i in tcga.biosamples){
+update.terms <- function(db="all"){
+    if(db == "tcga" || db == "all"){
+        samples <- trimws(sapply(str_split(unique(biosample.tcga$biosample),"\\("), function(x) x[[2]]))
+        samples <- gsub("\\)","",samples)
+        x <- data.frame(biosample=samples,	BTO=NA)
+        pb <- txtProgressBar(min = 0, max = nrow(x), style = 3)
+        for(i in samples){
             print(i)
             system <- biOmicsSearch(i, use.cache = FALSE, return.system = TRUE)
             x[x$biosample==i,]$BTO <- system
@@ -15,8 +15,38 @@ update.terms <- function(db="tcga"){
         }
         close(pb)
         return(x)
+        write.csv2(x,file = "tcgaresults.csv")
     }
-    return(NULL)
+    if(db == "encode" || db == "all"){
+        samples <- unique(encode.db$biosample)
+        x <- data.frame(biosample=samples,	BTO=NA)
+        pb <- txtProgressBar(min = 0, max = nrow(x), style = 3)
+        for(i in samples){
+            print(i)
+            system <- biOmicsSearch(i, use.cache = FALSE, return.system = TRUE)
+            x[x$biosample==i,]$BTO <- system
+            setTxtProgressBar(pb, which(tcga.biosamples$biosample == i))
+        }
+        close(pb)
+        return(x)
+        write.csv2(x,file = "encoderesults.csv")
+    }
+    if(db == "roadmap" || db == "all"){
+        samples <- unique(unique(roadmap.db$`Standardised epigenome name`))
+        x <- data.frame(biosample=samples,	BTO=NA)
+        pb <- txtProgressBar(min = 0, max = nrow(x), style = 3)
+        for(i in samples){
+            print(i)
+            system <- biOmicsSearch(i, use.cache = FALSE, return.system = TRUE)
+            x[x$biosample==i,]$BTO <- system
+            setTxtProgressBar(pb, which(tcga.biosamples$biosample == i))
+        }
+        close(pb)
+        return(x)
+        write.csv2(x,file = "roadmapresults.csv")
+    }
+
+    return()
 }
 
 # internal: used by biOmicsSearch
@@ -27,7 +57,7 @@ systemSearch <- function(term,env) {
     visited <- get("visited", envir = env)
     if(grepl(term,visited)) return()
     assign("visited", paste(visited,term,sep=","), envir = env)
-    if (!success) {
+    #if (!success) {
         # If the bto is a system return it
         found <- intersect(term, systems$BTO)
 
@@ -67,7 +97,7 @@ systemSearch <- function(term,env) {
             }
             return()
         }
-    }
+    #}
 }
 
 map.to.bto <- function(term,env) {
