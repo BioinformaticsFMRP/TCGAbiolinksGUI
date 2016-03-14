@@ -24,14 +24,17 @@ update.terms <- function(db="tcga"){
 systemSearch <- function(term,env) {
     success <- get("success", envir = env)
     ont <- get("ont", envir = env)
-
+    visited <- get("visited", envir = env)
+    if(grepl(term,visited)) return()
+    assign("visited", paste(visited,term,sep=","), envir = env)
     if (!success) {
         # If the bto is a system return it
-        found <- grep(term, systems$BTO)
+        found <- intersect(term, systems$BTO)
 
         if (length(found) > 0) {
             assign("success", TRUE, envir = env)
-            assign("solution", found, envir = env)
+            solution <- get("solution", envir = env)
+            assign("solution", paste(solution,found,sep=","), envir = env)
             return()
         } else {
             # Otherwise get parents/part_of and repeat the process
@@ -198,8 +201,9 @@ biOmicsSearch <- function(term,
     start.time <- Sys.time()
     env <- new.env()
     assign('success', FALSE, envir = env)
+    assign('visited', "", envir = env)
     success <- get("success", envir = env)
-    assign('solution',FALSE, envir = env )
+    assign('solution',"", envir = env )
     assign('exper', experiment, envir = env)
 
     # Step 0: verify if term is valid.
