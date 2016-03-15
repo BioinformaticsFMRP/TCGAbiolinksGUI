@@ -394,6 +394,58 @@ biOMICsServer <- function(input, output, session) {
         ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
         )})
 
+    observeEvent(input$tcgaClinicalBt, {
+        output$tcgaSearchtbl <- renderDataTable({
+            tumor <- isolate({input$tcgatumorClinicalFilter})
+            type <- isolate({input$tcgaClinicalFilter})
+
+            tbl <- data.frame()
+            withProgress( message = 'Prepare in progress',
+                          detail = 'This may take a while...', value = 0, {
+                              result = tryCatch({
+                                  tbl <- rbind(tbl, TCGAquery_clinic(tumor = tumor,clinical_data_type = type))
+
+                              }, error = function(e) {
+                                  createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                                              content = "Sorry there are clinical files for your query.", append = FALSE)
+                              })
+                          })
+            if(is.null(tbl)){
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                            content = "Sorry there are clinical files for your query.", append = FALSE)
+                return()
+            } else if(nrow(tbl) ==0) {
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                            content = "Sorry there are clinical files for your query.", append = FALSE)
+                return()
+            } else {
+                closeAlert(session, "tcgasearchAlert")
+                if (isolate({input$saveClinical})) save(tbl, file = paste0(tumor,"_clinic_",type,".rda"))
+                return(tbl)
+            }
+
+        },
+        options = list(pageLength = 10,
+                       scrollX = TRUE,
+                       jQueryUI = TRUE,
+                       pagingType = "full",
+                       lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                       language.emptyTable = "No results found",
+                       "dom" = 'T<"clear">lfrtip',
+                       "oTableTools" = list(
+                           "sSelectedClass" = "selected",
+                           "sRowSelect" = "os",
+                           "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                           "aButtons" = list(
+                               list("sExtends" = "collection",
+                                    "sButtonText" = "Save",
+                                    "aButtons" = c("csv","xls")
+                               )
+                           )
+                       )
+        ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+        )})
+
     #------------- MAF
 
     # Table render
