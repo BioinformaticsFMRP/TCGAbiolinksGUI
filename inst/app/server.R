@@ -134,21 +134,24 @@ biOMICsServer <- function(input, output, session) {
                           df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
                           x <- TCGAquery()
                           x <- x[x$name %in% df$name,]
-
+                          if(length(unique(x$Platform)) > 1 & !all(grepl("humanmethylation",unique(x$Platform),ignore.case = TRUE))) {
+                              print("We can't prepare these data together")
+                              return(NULL)
+                          }
                           ftype <- NULL
-                          if (x$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
-                          if (x$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
-                          if (x$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
+                          if ("IlluminaHiSeq_RNASeqV2" %in% unique(x$Platform)) ftype <- rnaseqv2Ftype
+                          if ("IlluminaHiSeq_RNASeq"  %in% unique(x$Platform)) ftype <- rnaseqFtype
+                          if ("Genome_Wide_SNP_6" %in% unique(x$Platform)) ftype <- gwsFtype
                           if (length(samplesType) == 0) {
                               samples <- NULL
                           } else {
                               samples <- unlist(lapply(samplesType,function(type){
-                                  s <- unlist(str_split(aux$barcode,","))
+                                  s <- unlist(str_split(x$barcode,","))
                                   s[grep(type,substr(s,14,15))]
                               }))
                           }
 
-                          trash <- TCGAprepare(aux,dir = getPath,
+                          trash <- TCGAprepare(x,dir = getPath,
                                                summarizedExperiment = isolate({as.logical(input$prepareRb)}),
                                                save = TRUE,
                                                type = ftype,
@@ -441,7 +444,7 @@ biOMICsServer <- function(input, output, session) {
         # prepare it
         se <- isolate({dmrdata()})
         se <- subset(se,subset = (rowSums(is.na(assay(se))) == 0))
-        withProgress(message = 'DME analysis in progress',
+        withProgress(message = 'DMR analysis in progress',
                      detail = 'This may take a while...', value = 0, {
                          met <- TCGAanalyze_DMR(data = se,
                                                 groupCol = isolate({input$dmrgroupCol}),
