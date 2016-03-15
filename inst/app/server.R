@@ -32,8 +32,8 @@ biOMICsServer <- function(input, output, session) {
 
     #----------------- Ontology
     observeEvent(input$ontSearchDownloadBt , {
-
-        if(length(input$allRows) == 0) {
+        selected.rows <- isolate({input$allRows})
+        if( length(selected.rows) == 0) {
             createAlert(session, "alert", "exampleAlert", title = "Invalid selection", style =  "danger",
                         content = "Please select the samples to download.", append = FALSE)
             return()
@@ -41,16 +41,16 @@ biOMICsServer <- function(input, output, session) {
             closeAlert(session, "exampleAlert")
         }
 
-        getPath <- parseDirPath(volumes, input$folder)
+        getPath <- parseDirPath(volumes, isolate({input$folder}))
         getFtype <- input$ontftypeFilter
 
         link <- c()
 
-        df <- data.frame(database = input$allRows[seq(1, length(input$allRows), 5)],
-                         ID = input$allRows[seq(2, length(input$allRows), 5)],
-                         Sample = input$allRows[seq(3, length(input$allRows), 5)],
-                         Experiment = input$allRows[seq(4, length(input$allRows), 5)],
-                         organism = input$allRows[seq(5, length(input$allRows), 5)])
+        df <- data.frame(database =selected.rows[seq(1, length(selected.rows) , 5)],
+                         ID =selected.rows[seq(2, length(selected.rows) , 5)],
+                         Sample = selected.rows[seq(3, length(selected.rows) , 5)],
+                         Experiment = selected.rows[seq(4, length(selected.rows) , 5)],
+                         organism = selected.rows[seq(5, length(selected.rows) , 5)])
         withProgress(message = 'Downloading data',
                      detail = 'This may take a while...', value = 0, {
                          if(length(getPath) > 0) {
@@ -62,8 +62,7 @@ biOMICsServer <- function(input, output, session) {
                      })
         createAlert(session, "alert", "exampleAlert", title = "Download completed", style =  "info",
                     content = "Your download has been completed.", append = FALSE)
-    }
-    )
+    })
 
     dataInput <- reactive({
         withProgress(message = 'Searching in progress',
@@ -71,10 +70,9 @@ biOMICsServer <- function(input, output, session) {
                          indexes <- c()
                          query <- data.frame()
                          link <- c()
-                         term <- input$ontSamplesFilter
-                         exp <-  input$ontExpFilter
-                         query <- biOmicsSearch(input$ontSamplesFilter,
-                                                experiment = input$ontExpFilter)
+                         term <- isolate({input$ontSamplesFilter})
+                         exp <-  isolate({input$ontExpFilter})
+                         query <- biOmicsSearch(term, experiment = exp)
                          # improve using subset - subset(data,selection,projection)
                          biosample.encode <- get.obj("biosample.encode")
                          return(list(system = names(sort(table(biosample.encode[biosample.encode$biosample %in% query$Sample,]$system),decreasing = T)[1]),
@@ -102,7 +100,7 @@ biOMICsServer <- function(input, output, session) {
         withProgress(message = 'Creating report...',
                      detail = 'This may take a while...', value = 0, {
                          #create.report(dataInput()$result, system = dataInput()$system)
-                         create.report(dataInput()$result, path = file.path(parseDirPath(volumes, input$reportfolder),"report"), system = dataInput()$system)
+                         create.report(result, path = file.path(parseDirPath(volumes, input$reportfolder),"report"), system = dataInput()$system)
                      })
     })
 
@@ -608,5 +606,108 @@ biOMICsServer <- function(input, output, session) {
                    )
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
+
+
+    observeEvent(input$heatmapPlot , {
+        output$heatmap.plotting <- renderPlot({
+            data <- isolate({dmrdata()})
+            colmdata <- isolate({input$colmetadataheatmap})
+            rowmdata <- isolate({input$rowmetadataheatmap})
+            cluster_rows  <- isolate({input$heatmap.clusterrows})
+            show_column_names <- isolate({input$heatmap.show.col.names})
+            show_row_names <- isolate({input$heatmap.show.row.names})
+            cluster_columns  <- isolate({input$heatmap.clustercol})
+            # Get hypo methylated and hypermethylated probes
+            idx <- grep("status",colnames(values(data)))
+            probes <- which(values(data)[,idx[1]] %in% c("Hypermethylated","Hypomethylated"))
+            data <- data[probes,]
+
+            # col.metadata
+            col.metadata <- NULL
+            print(colmdata)
+            if(!is.null(colmdata)) {
+                if(length(colmdata) > 0) col.metadata <- subset(colData(data), select=c("patient",colmdata))
+            }
+            # row.metadata
+            row.metadata <- NULL
+            print(rowmdata)
+            if(!is.null(rowmdata)) {
+                if(length(colmdata) > 0) row.metadata <- subset(values(data), select=c(rowmdata))
+            }
+
+            withProgress(message = 'Creating plot',
+                         detail = 'This may take a while...', value = 0, {
+                            p <-  TCGAvisualize_Heatmap(data=assay(data),
+                                                   col.metadata=col.metadata,
+                                                   row.metadata=row.metadata,
+                                                   title = "Heatmap",
+                                                   cluster_rows = cluster_rows,
+                                                   show_column_names = show_column_names,
+                                                   cluster_columns = cluster_columns,
+                                                   show_row_names = show_row_names,
+                                                   type = "methylation")
+                            incProgress(1/2)
+                            ComplexHeatmap::draw(p)
+                         })
+        })})
+
+    observeEvent(input$heatmapPlot , {
+        updateCollapse(session, "collapseDmr", open = "DMR plots")
+        output$dmrPlot <- renderUI({
+            plotOutput("heatmap.plotting", width = paste0(isolate({input$meanmetwidth}), "%"), height = isolate({input$meanmetheight}))
+        })})
+
+    observe({
+        data <- dmrdata()
+        updateSelectizeInput(session, 'colmetadataheatmap', choices = {
+            if(!is.null(data)) as.character(colnames(colData(data)))
+        }, server = TRUE)
+    })
+    observe({
+        data <- dmrdata()
+        updateSelectizeInput(session, 'rowmetadataheatmap', choices = {
+            if(!is.null(data)) as.character(colnames(values(data)))
+        }, server = TRUE)
+    })
+
+    #-------------------- EA
+    observeEvent(input$eaplot , {
+        updateCollapse(session, "collapseEA", open = "EA plots")
+        output$eaPlot <- renderUI({
+            plotOutput("ea.plotting", width = paste0(isolate({input$eawidth}), "%"), height = isolate({input$eaheight}))
+        })})
+
+    observeEvent(input$eaplot , {
+        output$ea.plotting <- renderPlot({
+            withProgress(message = 'Creating plot',
+                         detail = 'This may take a while...', value = 0, {
+                             ansEA <- TCGAanalyze_EAcomplete(TFname="DEA genes Normal Vs Tumor",isolate({input$eagenes}))
+
+                             ResMF <- NULL
+                             ResBP <- NULL
+                             ResCC <- NULL
+                             ResPat <- NULL
+                             if(length(grep("NA",ansEA$ResBP)) != ncol(ansEA$ResBP)) ResBP <- ansEA$ResBP
+                             if(length(grep("NA",ansEA$ResCC)) != ncol(ansEA$ResCC)) ResCC <- ansEA$ResCC
+                             if(length(grep("NA",ansEA$ResMF)) != ncol(ansEA$ResMF)) ResMF <- ansEA$ResMF
+                             if(length(grep("NA",ansEA$ResPat)) != ncol(ansEA$ResPat)) ResPat <- ansEA$ResPat
+
+                             # Enrichment Analysis EA (TCGAVisualize)
+                             # Gene Ontology (GO) and Pathway enrichment barPlot
+
+                             TCGAvisualize_EAbarplot(tf = rownames(ansEA$ResBP),
+                                                     GOBPTab = ResBP,
+                                                     GOCCTab = ResCC,
+                                                     GOMFTab = ResMF,
+                                                     PathTab = ResPat,
+                                                     color = c(isolate({input$colBP}),
+                                                               isolate({input$colCC}),
+                                                               isolate({input$colMF}),
+                                                               isolate({input$colPat})),
+                                                     nRGTab = isolate({input$eagenes}),
+                                                     nBar = isolate({input$nBar}),
+                                                     filename = NULL)
+                         })
+        })})
 
 }

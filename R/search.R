@@ -11,7 +11,7 @@ update.terms <- function(db="all"){
             print(i)
             system <- biOmicsSearch(i, use.cache = FALSE, return.system = TRUE)
             x[x$biosample==i,]$BTO <- system
-            setTxtProgressBar(pb, which(tcga.biosamples$biosample == i))
+            setTxtProgressBar(pb, which(samples== i))
         }
         close(pb)
         return(x)
@@ -25,7 +25,7 @@ update.terms <- function(db="all"){
             print(i)
             system <- biOmicsSearch(i, use.cache = FALSE, return.system = TRUE)
             x[x$biosample==i,]$BTO <- system
-            setTxtProgressBar(pb, which(tcga.biosamples$biosample == i))
+            setTxtProgressBar(pb, which(samples == i))
         }
         close(pb)
         return(x)
@@ -39,7 +39,7 @@ update.terms <- function(db="all"){
             print(i)
             system <- biOmicsSearch(i, use.cache = FALSE, return.system = TRUE)
             x[x$biosample==i,]$BTO <- system
-            setTxtProgressBar(pb, which(tcga.biosamples$biosample == i))
+            setTxtProgressBar(pb, which(samples == i))
         }
         close(pb)
         return(x)
@@ -57,15 +57,20 @@ systemSearch <- function(term,env) {
     visited <- get("visited", envir = env)
     if(grepl(term,visited)) return()
     assign("visited", paste(visited,term,sep=","), envir = env)
-    #if (!success) {
+    if (!success) {
         # If the bto is a system return it
         found <- intersect(term, systems$BTO)
 
         if (length(found) > 0) {
             assign("success", TRUE, envir = env)
             solution <- get("solution", envir = env)
-            assign("solution", paste(solution,found,sep=","), envir = env)
-            return()
+            if(solution == "")  {
+                assign("solution", paste(found), envir = env)
+                return()
+            } else {
+                assign("solution", paste(solution,found,sep=","), envir = env)
+                return()
+            }
         } else {
             # Otherwise get parents/part_of and repeat the process
             res <- olsSearch(OlsSearch(term, ont, exact = TRUE))
@@ -97,7 +102,7 @@ systemSearch <- function(term,env) {
             }
             return()
         }
-    #}
+    }
 }
 
 map.to.bto <- function(term,env) {
@@ -348,8 +353,8 @@ showResults <- function(solution, exper, report = FALSE, path) {
     enc.result <- encode.db[is.element(encode.db$biosample, enc.samples),]
     rmap.result <- roadmap.db[is.element(roadmap.db$`Standardised epigenome name`,
                                          rmap.samples), ]
-    disease <- sapply(strsplit(tcga.samples, split = " - "),
-                      function(x) {x[1]})
+    disease <- trimws(sapply(str_split(unique(tcga.samples),"\\("), function(x) x[[1]]))
+    disease <- gsub("\\)","",disease)
 
     if(length(disease) > 0) {
         tcga.result <- TCGAquery(tumor = disease, level = 3)
@@ -430,6 +435,7 @@ showResults <- function(solution, exper, report = FALSE, path) {
     results <- cbind(results, organism)
     print(pat)
     system <- sapply(pat, function(x) {subset(systems, systems$BTO == x)$system})
+
     if (report) {
         create.report(results,path = path, system = system)
     } else {

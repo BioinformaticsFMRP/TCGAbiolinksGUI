@@ -30,7 +30,9 @@ sidebar <-  dashboardSidebar(
         #menuItem("Report" , tabName = "report", icon = icon("book")),
         menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
         menuSubItem("TCGA - OncoPrint" , tabName = "tcgaOncoPrint"),
-        menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask"))
+        menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask")),
+        menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
+
     )
 )
 
@@ -178,7 +180,7 @@ body <-  dashboardBody(
                                                   multiple = TRUE)
                                ),
                                conditionalPanel(
-                                   condition = "input.tcgaExpFilter.indexOf('genome_wide_snp_6') > -1 && !input.tcgaExpFilter ",
+                                   condition = "input.tcgaExpFilter.indexOf('Genome_Wide_SNP_6') > -1 && !input.tcgaExpFilter ",
                                    selectizeInput('tcgaFgwstypeFilter',
                                                   'genome_wide_snp_6 File type filter',
                                                   c("hg18.seg","hg19.seg","nocnv_hg18.seg","nocnv_hg19.seg"),
@@ -339,8 +341,6 @@ body <-  dashboardBody(
                                selectizeInput('meanmetsubgroupCol',
                                               "Sub group column",
                                               choices = NULL,  multiple = FALSE),
-                               sliderInput("meanmetwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("meanmetheight", "Plot Height (px)", min = 0, max = 800, value = 400),
                                actionButton("meanmetPlot",
                                             "DNA mean methylation plot",
                                             style = "background-color: #F39C12;
@@ -350,6 +350,67 @@ body <-  dashboardBody(
                                               width: 100%",
                                             icon = icon("eye"))
 
+                           ),
+                           box(title = "Heatmap",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               selectizeInput('colmetadataheatmap',
+                                              "Annotations to the columns",
+                                              choices = NULL,  multiple = TRUE),
+                               selectizeInput('rowmetadataheatmap',
+                                              "Annotations for rows",
+                                              choices = NULL,  multiple = TRUE),
+                               checkboxInput("heatmap.clusterrows", "Cluster rows?", value = FALSE, width = NULL),
+                               checkboxInput("heatmap.clustercol", "Cluster columns?", value = FALSE, width = NULL),
+                               checkboxInput("heatmap.show.row.names", "Show row names?", value = FALSE, width = NULL),
+                               checkboxInput("heatmap.show.col.names", "Show col names?", value = FALSE, width = NULL),
+                               actionButton("heatmapPlot",
+                                            "Heatmap plot",
+                                            style = "background-color: #F39C12;
+                                              color: #FFFFFF;
+                                              margin-left: auto;
+                                              margin-right: auto;
+                                              width: 100%",
+                                            icon = icon("eye"))
+                           ),
+                           box(title = "Plot controls",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               sliderInput("meanmetwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("meanmetheight", "Plot Height (px)", min = 0, max = 800, value = 400))
+                    )
+                )
+        ),
+        tabItem(tabName = "ea",
+
+                fluidRow(
+                    column(10,
+                           bsCollapse(id = "collapseEA", open = "EA plots",
+                                      bsCollapsePanel("EA plots", uiOutput("eaPlot"), style = "default"))),
+                    column(2,
+                           box(title = "EA analysis",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               selectizeInput('eagenes',
+                                              "Genes",
+                                              choices = unique(rownames(TCGAbiolinks:::EAGenes)),
+                                              multiple = TRUE),
+                               sliderInput("nBar", "Number of bar histogram to show",
+                                           step=1, min = 1, max = 20, value = 10),
+                               colourInput("colBP", "Biological Process", value = "orange"),
+                               colourInput("colCC", "Cellular Component colour", value = "cyan"),
+                               colourInput("colMF", "Molecular function colour", value = "green"),
+                               colourInput("colPat", "Pathways colour", value = "yellow"),
+                               sliderInput("eawidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("eaheight", "Plot Height (px)", min = 0, max = 1000, value = 1000),
+                               actionButton("eaplot",
+                                            "EA barplot",
+                                            style = "background-color: #F39C12;
+                                              color: #FFFFFF;
+                                              margin-left: auto;
+                                              margin-right: auto;
+                                              width: 100%",
+                                            icon = icon("eye"))
                            )
                     )
                 )
