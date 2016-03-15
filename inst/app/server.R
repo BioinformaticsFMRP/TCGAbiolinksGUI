@@ -534,13 +534,15 @@ biOMICsServer <- function(input, output, session) {
                                                    xlab =  expression(paste(
                                                        "DNA Methylation difference (",beta,"-values)")
                                                    ),
-                                                   color = c("black", "red", "darkgreen"),
+                                                   color = c(isolate({input$colinsignificant}),
+                                                             isolate({input$colHypermethylated}),
+                                                             isolate({input$colHypomethylated})),
                                                    title =  paste("Volcano plot", "(", group2, "vs", group1,")"),
                                                    legend=  "Legend",
                                                    label = label,
                                                    names = NULL,
-                                                   x.cut = isolate({input$dmrthrsld}),
-                                                   y.cut = isolate({input$dmrpvalue}),
+                                                   x.cut = isolate({as.numeric(input$dmrthrsld)}),
+                                                   y.cut = isolate({as.numeric(input$dmrpvalue)}),
                                                    filename = NULL)
                          })
 

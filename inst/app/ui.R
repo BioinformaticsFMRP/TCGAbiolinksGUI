@@ -314,7 +314,13 @@ body <-  dashboardBody(
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("flask")),
+                                            icon = icon("flask"))),
+                           box(title = "Volcano plot analysis",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               colourInput("colHypomethylated", "Hypomethylated colour", value = "darkgreen"),
+                               colourInput("colHypermethylated", "Hypermethylate colour", value = "red"),
+                               colourInput("colinsignificant", "Insignificant colour", value = "black"),
                                actionButton("volcanoPlot",
                                             "Volcano plot",
                                             style = "background-color: #F39C12;
