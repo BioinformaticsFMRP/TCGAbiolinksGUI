@@ -26,7 +26,7 @@ header <- dashboardHeader(
 
 sidebar <-  dashboardSidebar(
     sidebarMenu(
-        menuItem("Ontology search" , tabName = "ontology", icon = icon("search")),
+        menuItem("biOMICs search" , tabName = "ontology", icon = icon("search")),
         #menuItem("Report" , tabName = "report", icon = icon("book")),
         menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
         menuSubItem("TCGA - OncoPrint" , tabName = "tcgaOncoPrint"),
@@ -118,7 +118,7 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 53%",
                                                 icon = icon("book"))),
-                                bsAlert("ontdownloaddirmessage")
+                           bsAlert("ontdownloaddirmessage")
                     )
 
                 )
@@ -137,7 +137,7 @@ body <-  dashboardBody(
                                selectizeInput('tcgaExpFilter',
                                               'Platforms filter',
                                               unique(TCGAquery()$Platform),
-                                              multiple = TRUE),
+                                              multiple = TRUE, selected = NULL),
                                selectizeInput('tcgaLevelFilter',
                                               'Level filter',
                                               c(1:3),
@@ -152,30 +152,39 @@ body <-  dashboardBody(
                                             icon = icon("search"))),
                            box(title = "Download",width = NULL,
                                status = "warning",
-                               solidHeader = FALSE, collapsible = FALSE,
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput('tcgasamplestypeFilter',
                                               'Sample type filter',
                                               table.code,
                                               multiple = TRUE),
-                               selectizeInput('tcgaFrnaseqv2typeFilter',
-                                              'RNASeqV2 File type filter',
-                                              c("junction_quantification",
-                                                "rsem.genes.results",
-                                                "rsem.isoforms.results",
-                                                "rsem.genes.normalized_results",
-                                                "rsem.isoforms.normalized_results",
-                                                "bt.exon_quantification"),
-                                              multiple = TRUE),
-                               selectizeInput('tcgaFrnaseqtypeFilter',
-                                              'RNASeq File type filter',
-                                              c("exon.quantification",
-                                                "spljxn.quantification",
-                                                "gene.quantification"),
-                                              multiple = TRUE),
-                               selectizeInput('tcgaFgwstypeFilter',
-                                              'genome_wide_snp_6 File type filter',
-                                              c("hg18.seg","hg19.seg","nocnv_hg18.seg","nocnv_hg19.seg"),
-                                              multiple = TRUE),
+                               conditionalPanel(
+                                   condition = "input.tcgaExpFilter.indexOf('IlluminaHiSeq_RNASeqV2') > -1",
+                                   selectizeInput('tcgaFrnaseqv2typeFilter',
+                                                  'RNASeqV2 File type filter',
+                                                  c("junction_quantification",
+                                                    "rsem.genes.results",
+                                                    "rsem.isoforms.results",
+                                                    "rsem.genes.normalized_results",
+                                                    "rsem.isoforms.normalized_results",
+                                                    "bt.exon_quantification"),
+                                                  multiple = TRUE)
+                               ),  conditionalPanel(
+                                   condition = "input.tcgaExpFilter.indexOf('IlluminaHiSeq_RNASeq') > -1",
+                                   selectizeInput('tcgaFrnaseqtypeFilter',
+                                                  'RNASeq File type filter',
+                                                  c("exon.quantification",
+                                                    "spljxn.quantification",
+                                                    "gene.quantification"),
+                                                  multiple = TRUE)
+                               ),
+                               conditionalPanel(
+                                   condition = "input.tcgaExpFilter.indexOf('genome_wide_snp_6') > -1 && !input.tcgaExpFilter ",
+                                   selectizeInput('tcgaFgwstypeFilter',
+                                                  'genome_wide_snp_6 File type filter',
+                                                  c("hg18.seg","hg19.seg","nocnv_hg18.seg","nocnv_hg19.seg"),
+                                                  multiple = TRUE)
+                               ),
+
                                shinyDirButton('tcgafolder', 'Folder select', 'Please select a folder',
                                               class='shinyDirectories btn-default', buttonType='warning'),
                                actionButton("tcgaDownloadBt",
@@ -190,13 +199,13 @@ body <-  dashboardBody(
 
                            box(title = "Prepare",width = NULL,
                                status = "warning",
-                               solidHeader = FALSE, collapsible = FALSE,
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                radioButtons("prepareRb", "Data type:",
                                             c("SummarizedExperiment" = TRUE,
                                               "Dataframe" = FALSE)),
                                conditionalPanel(
                                    condition = "input.prepareRb == 'TRUE'",
-                                checkboxInput("addSubTypeTCGA", "Add information about subtypes", value = FALSE, width = NULL)
+                                   checkboxInput("addSubTypeTCGA", "Add information about subtypes", value = FALSE, width = NULL)
                                ),
                                textInput("tcgafilename", "File name", value = "data.rda", width = NULL, placeholder = NULL),
                                shinyDirButton('tcgapreparefolder', 'Folder to save', 'Please select a folder',
@@ -237,29 +246,29 @@ body <-  dashboardBody(
                            ),
                            bsAlert("oncoddirmessage"),
                            box(title = "Oncoprint",width = NULL,
-                                 status = "warning",
-                                 solidHeader = FALSE, collapsible = FALSE,
-                                 #fileInput('maffile', 'Choose maf File',
-                                 #          accept=c(".maf")),
-                                 shinyFilesButton('maffile', 'Select maf file', 'Please select a maf file',
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               #fileInput('maffile', 'Choose maf File',
+                               #          accept=c(".maf")),
+                               shinyFilesButton('maffile', 'Select maf file', 'Please select a maf file',
                                                 multiple = FALSE, buttonType='warning'),
-                                 selectizeInput('oncoGenes',
-                                                "genes",
-                                                choices = NULL,  multiple = TRUE),
-                                 colourInput("colDEL", "DEL colour", value = "red"),
-                                 colourInput("colINS", "INS colour", value = "blue"),
-                                 colourInput("colSNP", "SNP colour", value = "green"),
-                                 colourInput("colDNP", "DNP colour", value = "purple"),
-                                 sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                                 sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 800, value = 400),
-                                 actionButton("oncoprintPlot",
-                                              "Plot oncoprint",
-                                              style = "background-color: #F39C12;
+                               selectizeInput('oncoGenes',
+                                              "genes",
+                                              choices = NULL,  multiple = TRUE),
+                               colourInput("colDEL", "DEL colour", value = "red"),
+                               colourInput("colINS", "INS colour", value = "blue"),
+                               colourInput("colSNP", "SNP colour", value = "green"),
+                               colourInput("colDNP", "DNP colour", value = "purple"),
+                               sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 800, value = 400),
+                               actionButton("oncoprintPlot",
+                                            "Plot oncoprint",
+                                            style = "background-color: #F39C12;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                              icon = icon("picture-o"))
+                                            icon = icon("picture-o"))
                            )
                     )
 
@@ -278,11 +287,11 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('dmrfile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
                                                 multiple = FALSE, buttonType='warning')),
-                               #fileInput('dmrfile', 'Select SummarizedExperiment object',
-                               #         accept=c(".rda"))),
+                           #fileInput('dmrfile', 'Select SummarizedExperiment object',
+                           #         accept=c(".rda"))),
                            box(title = "DMR analysis",width = NULL,
                                status = "warning",
-                               solidHeader = FALSE, collapsible = FALSE,
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                numericInput("dmrthrsld", "DNA methylation threshold",
                                             min = 0, max = 1, value = 0, step = 0.05),
                                numericInput("dmrpvalue", "P-value adj cut-off",
@@ -309,7 +318,7 @@ body <-  dashboardBody(
                            ),
                            box(title = "Mean DNA methylation",width = NULL,
                                status = "warning",
-                               solidHeader = FALSE, collapsible = FALSE,
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput('meanmetgroupCol',
                                               "Group column",
                                               choices = NULL,  multiple = FALSE),

@@ -130,37 +130,33 @@ biOMICsServer <- function(input, output, session) {
             filename <- file.path(save.dir,isolate({input$tcgafilename}))
         }
 
-        withProgress(message = 'Prepare in progress',
-                     detail = 'This may take a while...', value = 0, {
-                         df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
-                         x <- TCGAquery()
-                         x <- x[x$name %in% df$name,]
-                         for (i in unique(x$Platform)) {
-                             incProgress(1/length(unique(x$Platform)))
-                             aux <- x[x$Platform ==i,]
-                             ftype <- NULL
-                             if (i == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
-                             if (i == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
-                             if (i == "Genome_Wide_SNP_6") ftype <- gwsFtype
-                             if (length(samplesType) == 0) {
-                                 samples <- NULL
-                             } else {
-                                 samples <- unlist(lapply(samplesType,function(type){
-                                     s <- unlist(str_split(aux$barcode,","))
-                                     s[grep(type,substr(s,14,15))]
-                                 }))
-                             }
+        withProgress( message = 'Prepare in progress',
+                      detail = 'This may take a while...', value = 0, {
+                          df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
+                          x <- TCGAquery()
+                          x <- x[x$name %in% df$name,]
 
-                             trash <- TCGAprepare(aux,dir = getPath,
-                                                  summarizedExperiment = isolate({as.logical(input$prepareRb)}),
-                                                  save = TRUE,
-                                                  type = ftype,
-                                                  filename=filename,
-                                                  samples = samples,
-                                                  add.subtype = isolate({input$addSubTypeTCGA}))
-                         }
+                          ftype <- NULL
+                          if (i == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
+                          if (i == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
+                          if (i == "Genome_Wide_SNP_6") ftype <- gwsFtype
+                          if (length(samplesType) == 0) {
+                              samples <- NULL
+                          } else {
+                              samples <- unlist(lapply(samplesType,function(type){
+                                  s <- unlist(str_split(aux$barcode,","))
+                                  s[grep(type,substr(s,14,15))]
+                              }))
+                          }
 
-                     })
+                          trash <- TCGAprepare(aux,dir = getPath,
+                                               summarizedExperiment = isolate({as.logical(input$prepareRb)}),
+                                               save = TRUE,
+                                               type = ftype,
+                                               filename=filename,
+                                               samples = samples,
+                                               add.subtype = isolate({input$addSubTypeTCGA}))
+                      })
         closeAlert(session, "tcgaAlert")
         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
                     content =  paste0("Saved in: ", getPath), append = FALSE)
@@ -366,20 +362,20 @@ biOMICsServer <- function(input, output, session) {
         getPath <- parseDirPath(volumes, input$maffolder)
         if (length(getPath) == 0) getPath <- "."
 
-            withProgress(message = 'Download in progress',
-                         detail = 'This may take a while...', value = 0, {
-                             df <- data.frame(name = input$allRows[seq(5, length(input$allRows), 7)])
-                             print(df)
-                             df <-   maf.files[maf.files$Archive.Name %in% df$name,]
+        withProgress(message = 'Download in progress',
+                     detail = 'This may take a while...', value = 0, {
+                         df <- data.frame(name = input$allRows[seq(5, length(input$allRows), 7)])
+                         print(df)
+                         df <-   maf.files[maf.files$Archive.Name %in% df$name,]
 
-                             for (i in 1:nrow(df)) {
-                                 incProgress(1/nrow(df))
-                                 fout <- file.path(getPath,basename(df[1,]$Deploy.Location))
-                                 if (!file.exists(fout))  downloader::download(df[1,]$Deploy.Location,fout)
-                             }})
-            closeAlert(session, "oncoAlert")
-            createAlert(session, "oncomessage", "oncoAlert", title = "Download completed", style = "success",
-                        content =  paste0("Saved file: ",fout), append = TRUE)
+                         for (i in 1:nrow(df)) {
+                             incProgress(1/nrow(df))
+                             fout <- file.path(getPath,basename(df[1,]$Deploy.Location))
+                             if (!file.exists(fout))  downloader::download(df[1,]$Deploy.Location,fout)
+                         }})
+        closeAlert(session, "oncoAlert")
+        createAlert(session, "oncomessage", "oncoAlert", title = "Download completed", style = "success",
+                    content =  paste0("Saved file: ",fout), append = TRUE)
     })
     shinyFileChoose(input, 'maffile', roots=volumes, session=session, restrictions=system.file(package='base'))
 
@@ -522,9 +518,9 @@ biOMICsServer <- function(input, output, session) {
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
                              TCGAvisualize_meanMethylation(data=dmrdata(),
-                                                                   groupCol=group,
-                                                                   subgroupCol=subgroup,
-                                                                   filename = NULL)
+                                                           groupCol=group,
+                                                           subgroupCol=subgroup,
+                                                           filename = NULL)
                          })
         })})
 
