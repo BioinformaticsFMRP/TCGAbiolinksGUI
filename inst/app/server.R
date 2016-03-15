@@ -14,7 +14,6 @@ options(shiny.maxRequestSize=300*1024^2)
 #' @keywords internal
 biOMICsServer <- function(input, output, session) {
     setwd(Sys.getenv("HOME"))
-
     volumes <- c('Working directory'=getwd())
     shinyDirChoose(input, 'folder', roots=volumes, session=session, restrictions=system.file(package='base'))
     shinyDirChoose(input, 'reportfolder', roots=volumes, session=session, restrictions=system.file(package='base'))
@@ -521,18 +520,24 @@ biOMICsServer <- function(input, output, session) {
             diffcol <- paste("diffmean",group1,group2,sep = ".")
             pcol <- paste("p.value.adj",group1,group2,sep = ".")
 
+
+            label <- c("Not Significant",
+                       "Hypermethylated",
+                       "Hypomethylated")
+            label[2:3] <-  paste(label[2:3], "in", group2)
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
-                           TCGAVisualize_volcano(x = values(data)[,diffcol],
+                             TCGAVisualize_volcano(x = values(data)[,diffcol],
                                                    y = values(data)[,pcol],
                                                    ylab =   expression(paste(-Log[10],
                                                                              " (FDR corrected -P values)")),
                                                    xlab =  expression(paste(
                                                        "DNA Methylation difference (",beta,"-values)")
                                                    ),
-                                                   title = NULL,
+                                                   color = c("black", "red", "darkgreen"),
+                                                   title =  paste("Volcano plot", "(", group2, "vs", group1,")"),
                                                    legend=  "Legend",
-                                                   label = NULL,
+                                                   label = label,
                                                    names = NULL,
                                                    x.cut = isolate({input$dmrthrsld}),
                                                    y.cut = isolate({input$dmrpvalue}),
@@ -569,8 +574,8 @@ biOMICsServer <- function(input, output, session) {
             plotOutput("mean.plotting", width = paste0(isolate({input$meanmetwidth}), "%"), height = isolate({input$meanmetheight}))
         })})
     observeEvent(input$volcanoPlot , {
-        updateCollapse(session, "collapseDmr", open = "Volcano plot")
-        output$volcano <- renderUI({
+        updateCollapse(session, "collapseDmr", open = "DMR plots")
+        output$dmrPlot <- renderUI({
             plotOutput("volcano.plot", width = paste0(isolate({input$meanmetwidth}), "%"), height = isolate({input$meanmetheight}))
         })})
 
