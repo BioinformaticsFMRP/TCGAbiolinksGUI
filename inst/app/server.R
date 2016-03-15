@@ -318,6 +318,82 @@ biOMICsServer <- function(input, output, session) {
                     content =  paste0("Saved in: ", getPath), append = FALSE)
     })
 
+    # Subtype
+
+    observeEvent(input$tcgaSubtypeBt, {
+        output$tcgaSearchtbl <- renderDataTable({
+            tumor <- isolate({input$tcgasubtypeFilter})
+            tbl <- data.frame()
+
+
+            result = tryCatch({
+                tbl <- rbind(tbl, TCGAquery_subtype(tumor = tumor))
+
+
+            }, error = function(e) {
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                            content = "Sorry there are subtypes for your query.", append = FALSE)
+            })
+
+            if(is.null(tbl)){
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                            content = "Sorry there are subtypes for your query.", append = FALSE)
+                return()
+            } else if(nrow(tbl) ==0) {
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                            content = "Sorry there are subtypes for your query.", append = FALSE)
+                return()
+            } else {
+                closeAlert(session, "tcgasearchAlert")
+                doi <- c("aml"="doi:10.1056/NEJMoa1301689",
+                         "blca"="doi:10.1038/nature12965",
+                         "brca"="doi:10.1038/nature11412",
+                         "coad"="doi:10.1038/nature11252",
+                         "gbm"="doi:10.1016/j.cell.2015.12.028",
+                         "lgg"="doi:10.1016/j.cell.2015.12.028",
+                         "hnsc"="doi:10.1038/nature14129",
+                         "kich"="doi:10.1016/j.ccr.2014.07.014",
+                         "kirc"="doi:10.1038/nature12222",
+                         "kirp"="doi:10.1056/NEJMoa1505917",
+                         "lihc"="",
+                         "luad"="doi:10.1038/nature13385",
+                         "lusc"="doi:10.1038/nature11404",
+                         "ovca"= "doi:10.1038/nature10166",
+                         "pancan"="doi:10.1016/j.cell.2014.06.049",
+                         "prad"="doi:10.1016/j.cell.2015.10.025",
+                         "skcm"="doi:10.1016/j.cell.2015.05.044",
+                         "stad"="doi:10.1038/nature13480",
+                         "thca"="doi:10.1016/j.cell.2014.09.050",
+                         "ucec"="doi:10.1038/nature12113",
+                         "ucs"="")
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Source of the data", style =  "warning",
+                            content = paste0(doi[tumor]), append = FALSE)
+                if (isolate({input$saveSubtype})) save(tbl, file = paste0(tumor,"_subtype.rda"))
+                return(tbl)
+            }
+
+        },
+        options = list(pageLength = 10,
+                       scrollX = TRUE,
+                       jQueryUI = TRUE,
+                       pagingType = "full",
+                       lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                       language.emptyTable = "No results found",
+                       "dom" = 'T<"clear">lfrtip',
+                       "oTableTools" = list(
+                           "sSelectedClass" = "selected",
+                           "sRowSelect" = "os",
+                           "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                           "aButtons" = list(
+                               list("sExtends" = "collection",
+                                    "sButtonText" = "Save",
+                                    "aButtons" = c("csv","xls")
+                               )
+                           )
+                       )
+        ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+        )})
+
     #------------- MAF
 
     # Table render
@@ -637,17 +713,17 @@ biOMICsServer <- function(input, output, session) {
 
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
-                            p <-  TCGAvisualize_Heatmap(data=assay(data),
-                                                   col.metadata=col.metadata,
-                                                   row.metadata=row.metadata,
-                                                   title = "Heatmap",
-                                                   cluster_rows = cluster_rows,
-                                                   show_column_names = show_column_names,
-                                                   cluster_columns = cluster_columns,
-                                                   show_row_names = show_row_names,
-                                                   type = "methylation")
-                            incProgress(1/2)
-                            ComplexHeatmap::draw(p)
+                             p <-  TCGAvisualize_Heatmap(data=assay(data),
+                                                         col.metadata=col.metadata,
+                                                         row.metadata=row.metadata,
+                                                         title = "Heatmap",
+                                                         cluster_rows = cluster_rows,
+                                                         show_column_names = show_column_names,
+                                                         cluster_columns = cluster_columns,
+                                                         show_row_names = show_row_names,
+                                                         type = "methylation")
+                             incProgress(1/2)
+                             ComplexHeatmap::draw(p)
                          })
         })})
 

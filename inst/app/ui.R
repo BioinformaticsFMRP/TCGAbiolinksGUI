@@ -220,7 +220,38 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 50%",
                                             icon = icon("cogs"))),
-                           bsAlert("tcgaddirmessage")
+                           bsAlert("tcgaddirmessage"),
+                           box(title = "Subtype search",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               selectizeInput('tcgasubtypeFilter',
+                                              'Tumor filter',
+                                              c("brca"="brca",
+                                                "coad"="coad",
+                                                "gbm"="gbm",
+                                                "hnsc"="hnsc",
+                                                "kich"="kich",
+                                                "kirp"="kirp",
+                                                "kirc"="kirc",
+                                                "lgg"="lgg",
+                                                "luad"="luad",
+                                                "lusc"="lusc",
+                                                "prad"="prad",
+                                                "pancan"="pancan",
+                                                "read"="read",
+                                                "skcm"="skcm",
+                                                "stad"="stad",
+                                                "thca"="thca", "ucec"="ucec"),
+                                              multiple = FALSE),
+                               checkboxInput("saveSubtype", "Save as rda?", value = FALSE, width = NULL),
+                               actionButton("tcgaSubtypeBt",
+                                            "TCGA Subtype Search",
+                                            style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                            icon = icon("search")))
                     )
                 )
         ),
