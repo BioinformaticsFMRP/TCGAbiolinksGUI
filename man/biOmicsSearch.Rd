@@ -5,7 +5,7 @@
 \title{Searches a term in TCGA, ENCODE, ROADMAP}
 \usage{
 biOmicsSearch(term, experiment = NULL, report = FALSE,
-  dir.report = "searchSummary", use.cache = TRUE)
+  dir.report = "searchSummary", use.cache = TRUE, return.system = F)
 }
 \arguments{
 \item{term}{Term to be searched. Example: 'brain' 'u87' etc.}

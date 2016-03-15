@@ -136,9 +136,9 @@ biOMICsServer <- function(input, output, session) {
                           x <- x[x$name %in% df$name,]
 
                           ftype <- NULL
-                          if (i == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
-                          if (i == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
-                          if (i == "Genome_Wide_SNP_6") ftype <- gwsFtype
+                          if (x$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
+                          if (x$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
+                          if (x$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
                           if (length(samplesType) == 0) {
                               samples <- NULL
                           } else {
