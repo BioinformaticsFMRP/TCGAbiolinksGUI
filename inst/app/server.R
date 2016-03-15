@@ -502,6 +502,45 @@ biOMICsServer <- function(input, output, session) {
         }, server = TRUE)
     })
 
+
+    observeEvent(input$volcanoPlot , {
+        output$volcano.plot <- renderPlot({
+            if(isolate({input$dmrgroup1}) == "") {
+                group1 <- NULL
+            } else {
+                group1 <- isolate({input$dmrgroup1})
+            }
+
+            if(isolate({input$dmrgroup2}) == "") {
+                group2 <- NULL
+            } else {
+                group2 <- isolate({input$dmrgroup2})
+            }
+
+            data <- isolate({dmrdata()})
+            diffcol <- paste("diffmean",group1,group2,sep = ".")
+            pcol <- paste("p.value.adj",group1,group2,sep = ".")
+
+            withProgress(message = 'Creating plot',
+                         detail = 'This may take a while...', value = 0, {
+                           TCGAVisualize_volcano(x = values(data)[,diffcol],
+                                                   y = values(data)[,pcol],
+                                                   ylab =   expression(paste(-Log[10],
+                                                                             " (FDR corrected -P values)")),
+                                                   xlab =  expression(paste(
+                                                       "DNA Methylation difference (",beta,"-values)")
+                                                   ),
+                                                   title = NULL,
+                                                   legend=  "Legend",
+                                                   label = NULL,
+                                                   names = NULL,
+                                                   x.cut = isolate({input$dmrthrsld}),
+                                                   y.cut = isolate({input$dmrpvalue}),
+                                                   filename = NULL)
+                         })
+
+        })})
+
     observeEvent(input$meanmetPlot , {
         output$mean.plotting <- renderPlot({
             if(isolate({input$meanmetgroupCol}) =="") {
@@ -525,9 +564,14 @@ biOMICsServer <- function(input, output, session) {
         })})
 
     observeEvent(input$meanmetPlot , {
-        updateCollapse(session, "collapseDmr", open = "Mean Methylation")
+        updateCollapse(session, "collapseDmr", open = "DMR plots")
         output$dmrPlot <- renderUI({
             plotOutput("mean.plotting", width = paste0(isolate({input$meanmetwidth}), "%"), height = isolate({input$meanmetheight}))
+        })})
+    observeEvent(input$volcanoPlot , {
+        updateCollapse(session, "collapseDmr", open = "Volcano plot")
+        output$volcano <- renderUI({
+            plotOutput("volcano.plot", width = paste0(isolate({input$meanmetwidth}), "%"), height = isolate({input$meanmetheight}))
         })})
 
     output$probesSE <- renderDataTable({

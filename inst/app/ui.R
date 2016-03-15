@@ -278,9 +278,10 @@ body <-  dashboardBody(
 
                 fluidRow(
                     column(10,  bsAlert("dmrmessage"),
-                           bsCollapse(id = "collapseDmr", open = "Mean Methylation",
+                           bsCollapse(id = "collapseDmr", open = "DMR plots",
                                       bsCollapsePanel("Probes info", dataTableOutput('probesSE'), style = "default"),
-                                      bsCollapsePanel("Mean Methylation", uiOutput("dmrPlot"), style = "default"))),
+                                      bsCollapsePanel("DMR plots", uiOutput("dmrPlot"), style = "default"),
+                                      bsCollapsePanel("Volcano plot", uiOutput("volcano"), style = "default"))),
                     column(2,
                            box(title = "DNA methylation object",width = NULL,
                                status = "warning",
@@ -314,7 +315,15 @@ body <-  dashboardBody(
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("flask"))
+                                            icon = icon("flask")),
+                               actionButton("volcanoPlot",
+                                            "Volcano plot",
+                                            style = "background-color: #F39C12;
+                                              color: #FFFFFF;
+                                              margin-left: auto;
+                                              margin-right: auto;
+                                              width: 100%",
+                                            icon = icon("eye"))
                            ),
                            box(title = "Mean DNA methylation",width = NULL,
                                status = "warning",
