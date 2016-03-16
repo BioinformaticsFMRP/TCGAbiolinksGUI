@@ -1147,7 +1147,83 @@ biOMICsServer <- function(input, output, session) {
                    )
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
+    # -------------- Starburst plot
+    observeEvent(input$starburstPlot , {
+        output$starburst.plot <- renderPlot({
+            g1 <- isolate({input$starburstgroup1})
+            g2 <- isolate({input$starburstgroup2})
+            logFC.cut <- isolate({input$starburstexpFC})
+            exp.p.cut <- isolate({input$starburstexFDR})
+            diffmean.cut <- isolate({input$starburstmetdiff})
+            met.p.cut <- isolate({input$starburstmetFDR})
+            exp <- result.dea.data()
+            met <-result.dmr.data()
 
+            withProgress(message = 'Creating plot',
+                         detail = 'This may take a while...', value = 0, {
+                             TCGAvisualize_starburst(met = met,
+                                                     exp = exp,
+                                                     group1 = g1,
+                                                     group2 = g2,
+                                                     exp.p.cut = exp.p.cut,
+                                                     met.p.cut = met.p.cut,
+                                                     diffmean.cut = diffmean.cut,
+                                                     logFC.cut = logFC.cut,
+                                                     filename = NULL)
+                         })
 
+        })})
+
+    observeEvent(input$starburstPlot , {
+        updateCollapse(session, "collapsedea", open = "dea plots")
+        output$starburstPlot <- renderUI({
+            plotOutput("starburst.plot", width = paste0(isolate({input$starburstwidth}), "%"), height = isolate({input$starburstheight}))
+        })})
+    observe({
+        updateSelectizeInput(session, 'starburstgroup1', choices = {
+            if(!is.null(result.dea.data())) {
+                x <- as.character(colnames(result.dea.data()))
+                x[-which(x %in% c("mRNA", "logFC","FDR", "Delta","status"))]
+            }
+        }, server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'starburstgroup2', choices = {
+            if(!is.null(result.dea.data())) {
+                x <- as.character(colnames(result.dea.data()))
+                x[-which(x %in% c("mRNA", "logFC","FDR", "Delta","status"))]
+            }
+        }, server = TRUE)
+    })
+    result.dea.data <- function(){
+        inFile <- input$starburstexpfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, input$starburstexpfile)$datapath)
+        se <- get(load(file))
+
+        if(class(se)!= class(data.frame())){
+            createAlert(session, "deamessage", "deaAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a Data frame object, but I got a: ",
+                                         class(se)), append = FALSE)
+            return(NULL)
+        }
+        return(se)
+    }
+    result.dmr.data <- function(){
+        inFile <- input$starburstmetfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath)
+        se <- get(load(file))
+
+        if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+            createAlert(session, "deamessage", "deaAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
+                                         class(se)), append = FALSE)
+            return(NULL)
+        }
+        return(se)
+    }
+    shinyFileChoose(input, 'starburstmetfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'starburstexpfile', roots=volumes, session=session, restrictions=system.file(package='base'))
 
 }

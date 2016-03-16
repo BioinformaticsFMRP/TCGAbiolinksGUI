@@ -34,8 +34,8 @@ sidebar <-  dashboardSidebar(
         menuItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o")),
         menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask")),
         menuItem("DEA analysis" , tabName = "dea", icon = icon("flask")),
+        menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
         menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
-
     )
 )
 
@@ -632,6 +632,53 @@ body <-  dashboardBody(
                                sliderInput("deawidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("deaheight", "Plot Height (px)", min = 0, max = 800, value = 400))
                     )
+                )
+        ),
+        tabItem(tabName = "starburst",
+                fluidRow(
+                    column(10,  bsAlert("starburstmessage"),
+                           bsCollapse(id = "collapsestarburst", open = "starburst plots",
+                                      bsCollapsePanel("starburst plots", uiOutput("starburstPlot"), style = "default"))),
+                    column(2,
+                           box(title = "Gene expression object",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               shinyFilesButton('starburstmetfile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
+                                                multiple = FALSE, buttonType='warning'),
+                               shinyFilesButton('starburstexpfile', 'Select expression result', 'Please select expression result object',
+                                                multiple = FALSE, buttonType='warning')),
+                           box(title = "starburst analysis",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               numericInput("starburstexpFC", "Log FC threshold",
+                                            min = 0, max = 10, value = 0, step = 0.05),
+                               numericInput("starburstexFDR", "Expression FDR cut-off",
+                                            min = 0, max = 1, value = 0.05, step = 0.001),
+                               numericInput("starburstmetdiff", "Mean DNA methylation difference threshold",
+                                            min = 0, max = 1, value = 0, step = 0.05),
+                               numericInput("starburstmetFDR", "Methylation FDR cut-off",
+                                            min = 0, max = 1, value = 0.05, step = 0.001),
+                               selectizeInput('starburstgroup1',
+                                              "Group 1",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('starburstgroup2',
+                                              "Group 2",
+                                              choices = NULL,  multiple = FALSE),
+                               actionButton("starburstPlot",
+                                            "starburst plot",
+                                            style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                            icon = icon("eye"))),
+                           box(title = "Plot controls",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               sliderInput("starburstwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("starburstheight", "Plot Height (px)", min = 0, max = 800, value = 400))
+                    )
+
                 )
         )
     )
