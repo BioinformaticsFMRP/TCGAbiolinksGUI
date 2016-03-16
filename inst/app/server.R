@@ -1147,31 +1147,44 @@ biOMICsServer <- function(input, output, session) {
                    )
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
+
+    starburst <- function(){
+        g1 <- isolate({input$starburstgroup1})
+        g2 <- isolate({input$starburstgroup2})
+        logFC.cut <- isolate({input$starburstexpFC})
+        exp.p.cut <- isolate({input$starburstexFDR})
+        diffmean.cut <- isolate({input$starburstmetdiff})
+        met.p.cut <- isolate({input$starburstmetFDR})
+        exp <- result.dea.data()
+        met <-result.dmr.data()
+
+        colors <- c(isolate({input$sbcolInsignigicant}),
+                    isolate({input$sbcolUpHypo}),
+                    isolate({input$sbcolDownHypo}),
+                    isolate({input$sbcolHypo}),
+                    isolate({input$sbcolHyper}),
+                    isolate({input$sbcolUp}),
+                    isolate({input$sbcolDown}),
+                    isolate({input$sbcolUpHyper}),
+                    isolate({input$sbcolDownHyper}))
+        result <- TCGAvisualize_starburst(met = met,
+                                          exp = exp,
+                                          group1 = g1,
+                                          group2 = g2,
+                                          color = colors,
+                                          exp.p.cut = exp.p.cut,
+                                          met.p.cut = met.p.cut,
+                                          diffmean.cut = diffmean.cut,
+                                          logFC.cut = logFC.cut,
+                                          return.plot = TRUE)
+    }
     # -------------- Starburst plot
     observeEvent(input$starburstPlot , {
         output$starburst.plot <- renderPlot({
-            g1 <- isolate({input$starburstgroup1})
-            g2 <- isolate({input$starburstgroup2})
-            logFC.cut <- isolate({input$starburstexpFC})
-            exp.p.cut <- isolate({input$starburstexFDR})
-            diffmean.cut <- isolate({input$starburstmetdiff})
-            met.p.cut <- isolate({input$starburstmetFDR})
-            exp <- result.dea.data()
-            met <-result.dmr.data()
-
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
-                             TCGAvisualize_starburst(met = met,
-                                                     exp = exp,
-                                                     group1 = g1,
-                                                     group2 = g2,
-                                                     exp.p.cut = exp.p.cut,
-                                                     met.p.cut = met.p.cut,
-                                                     diffmean.cut = diffmean.cut,
-                                                     logFC.cut = logFC.cut,
-                                                     return.plot = TRUE)
+                             starburst()$plot
                          })
-
         })})
 
     observeEvent(input$starburstPlot , {
@@ -1225,5 +1238,31 @@ biOMICsServer <- function(input, output, session) {
     }
     shinyFileChoose(input, 'starburstmetfile', roots=volumes, session=session, restrictions=system.file(package='base'))
     shinyFileChoose(input, 'starburstexpfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+
+
+    output$starburstResult <- renderDataTable({
+        data <- starburst()$starburst
+        if(!is.null(data)) as.data.frame(data)
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+    )
 
 }
