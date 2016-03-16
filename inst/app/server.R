@@ -869,6 +869,36 @@ biOMICsServer <- function(input, output, session) {
         return(df)
     }
 
+    observe({
+        groupCol <-  input$profileplotgroup
+        na.rm.groups <-  input$profileplotrmnagroup
+        data <- isolate({profileplotdata()})
+
+
+        if(na.rm.groups){
+                    data <- data[!is.na(data[,groupCol]),]
+                    data <- data[which(data[,groupCol] != "NA"),]
+                }
+        x <- length(unique(data[,groupCol]))
+        m1 <- 0
+        m3 <- 0
+
+        if (x == 2) { m1 <- -5.0; m3 <-  1.8}
+        if (x == 3) { m1 <- -5.0; m3 <-  0.0}
+        if (x == 5) { m1 <- -4.8; m3 <- -1.5}
+        if (x == 6) { m1 <- -4.8; m3 <- -2.0}
+        if (x == 7) { m1 <- -4.8; m3 <- -2.1}
+        if (x == 8) { m1 <- -4.8; m3 <- -2.5}
+
+        # Control the value, min, max, and step.
+        # Step size is 2 when input value is even; 1 when value is odd.
+        updateSliderInput(session, "margin1", value = m1,
+                          min = -10, max = 10, step = 0.1)
+        updateSliderInput(session, "margin3", value = m3,
+                          min = -10, max = 10, step = 0.1)
+
+    })
+
     observeEvent(input$profileplotBt , {
         output$profile.plotting <- renderPlot({
             data <- isolate({profileplotdata()})
@@ -876,6 +906,11 @@ biOMICsServer <- function(input, output, session) {
             groupCol <-  isolate({input$profileplotgroup})
             na.rm.groups <-  isolate({input$profileplotrmnagroup})
             na.rm.subtypes  <-  isolate({input$profileplotrmnasub})
+            m1  <-  isolate({input$margin1})
+            m2  <-  isolate({input$margin2})
+            m3  <-  isolate({input$margin3})
+            m4  <-  isolate({input$margin4})
+
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
 
@@ -883,8 +918,8 @@ biOMICsServer <- function(input, output, session) {
                                                        groupCol=groupCol,
                                                        subtypeCol=subtypeCol,
                                                        na.rm.groups = na.rm.groups,
-                                                       na.rm.subtypes = na.rm.subtypes)
-                                                       #plot.margin=c(-4.2,-2.5,-0.0,2))
+                                                       na.rm.subtypes = na.rm.subtypes,
+                                                       plot.margin=c(m1,m2,m3,m4))
 
                          })
         })})

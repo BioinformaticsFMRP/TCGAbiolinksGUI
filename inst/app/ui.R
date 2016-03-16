@@ -521,6 +521,14 @@ body <-  dashboardBody(
                            box(title = "Plot controls",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               numericInput("margin1", "Move upper line of vertical bar",
+                                            min = -10, max = 10, value = 0.0, step = 0.1),
+                               numericInput("margin2", "Move right line of vertical bar",
+                                            min = -10, max = 10, value = 0.0, step = 0.1),
+                               numericInput("margin3", "Move bottom line of vertical bar",
+                                            min = -10, max = 10, value = 0.0, step = 0.1),
+                               numericInput("margin4", "Move left line of vertical bar",
+                                            min = -10, max = 10, value = 0.0, step = 0.1),
                                sliderInput("profilewidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("profileheight", "Plot Height (px)", min = 0, max = 800, value = 800))
                     )
