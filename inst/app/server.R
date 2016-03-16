@@ -3,6 +3,7 @@ library(shinyFiles)
 library(SummarizedExperiment)
 library(TCGAbiolinks)
 library(shinyBS)
+library(stringr)
 options(shiny.maxRequestSize=300*1024^2)
 
 
@@ -311,8 +312,13 @@ biOMICsServer <- function(input, output, session) {
                                      s <- unlist(str_split(aux$barcode,","))
                                      s[grep(type,substr(s,14,15))]
                                  }))
+                                 print(samples)
                              }
-                             TCGAdownload(x, path = getPath,type = ftype,samples = samples)
+                             if(is.null(samples)){
+                                 TCGAdownload(x, path = getPath,type = ftype)
+                             } else if (length(samples) > 0){
+                                TCGAdownload(x, path = getPath,type = ftype,samples = samples)
+                             }
                          }})
         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Download completed", style =  "success",
                     content =  paste0("Saved in: ", getPath), append = FALSE)
@@ -876,9 +882,9 @@ biOMICsServer <- function(input, output, session) {
 
 
         if(na.rm.groups){
-                    data <- data[!is.na(data[,groupCol]),]
-                    data <- data[which(data[,groupCol] != "NA"),]
-                }
+            data <- data[!is.na(data[,groupCol]),]
+            data <- data[which(data[,groupCol] != "NA"),]
+        }
         x <- length(unique(data[,groupCol]))
         m1 <- 0
         m3 <- 0
@@ -958,8 +964,9 @@ biOMICsServer <- function(input, output, session) {
         df <- get(load(file))
 
         if (class(df) != class(data.frame())){
-            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, but I'm expecting a data frameobject, but I got a: ",
+            closeAlert(session, "survivalAlert")
+            createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a data frame object, but I got a: ",
                                          class(df)), append = FALSE)
             return(NULL)
         }
@@ -970,7 +977,12 @@ biOMICsServer <- function(input, output, session) {
         output$survival.plotting <- renderPlot({
             data <- isolate({survivalplotdata()})
             clusterCol <-  isolate({input$survivalplotgroup})
-
+            closeAlert(session, "survivalAlert")
+            if(length(unique(data[,clusterCol])) == 1){
+                createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
+                            content = paste0("Sorry, but I'm expecting at least two groups"), append = FALSE)
+                return(NULL)
+            }
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
 
@@ -987,5 +999,149 @@ biOMICsServer <- function(input, output, session) {
             plotOutput("survival.plotting", width = paste0(isolate({input$survivalwidth}), "%"), height = isolate({input$survivalheight}))
         })})
     shinyFileChoose(input, 'survivalplotfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+
+    # -------------------------------------------------
+    # DEA
+    # -------------------------------------------------
+    observeEvent(input$deaAnalysis , {
+        # read the data from the downloaded path
+        # prepare it
+        se <- isolate({deadata()})
+
+        g1 <- isolate({input$deagroup1})
+        g2 <- isolate({input$deagroup2})
+        groupCol <-  isolate({input$deagroupCol})
+        idx.g1 <- which(colData(se)[,groupCol] == g1)
+        samples.g1 <- colData(se)[idx.g1,"barcode"]
+        idx.g2 <- which(colData(se)[,groupCol] == g2)
+        samples.g2 <- colData(se)[idx.g2,"barcode"]
+        method <- isolate({input$deamethod})
+        fdr.cut <- isolate({input$deapvalue})
+        logFC.cut <- isolate({input$deathrsld})
+        print(samples.g1)
+        print(samples.g2)
+        withProgress(message = 'dea analysis in progress',
+                     detail = 'This may take a while...', value = 0, {
+                         exp <- TCGAanalyze_DEA(mat1 = assay(se[,samples.g1]),
+                                                mat2 = assay(se[,samples.g2]),
+                                                Cond1type = g1 ,
+                                                Cond2type = g2,
+                                                #fdr.cut  = fdr.cut,
+                                                #logFC.cut = logFC.cut,
+                                                method = method)
+                     })
+        exp$status <- "Insignificant"
+        exp[exp$logFC >= logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Upregulated in ", g1)
+        exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g1)
+
+        save(exp, file = paste0("result_dea_", g1, "_", g2,".rda"))
+        createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "danger",
+                    content = paste0("Results saved in: result_dea_", g1, "_", g2,".rda"), append = FALSE)
+    })
+    shinyFileChoose(input, 'deafile', roots=volumes, session=session, restrictions=system.file(package='base'))
+
+    deadata <- function(){
+        inFile <- input$deafile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, input$deafile)$datapath)
+        se <- get(load(file))
+
+        if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+            createAlert(session, "deamessage", "deaAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
+                                         class(se)), append = FALSE)
+            return(NULL)
+        }
+        return(se)
+    }
+
+    observeEvent(input$deagroupCol , {
+        updateSelectizeInput(session, 'deagroup1', choices = {
+            if (class(deadata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+                if (!is.null(deadata()) & input$deagroupCol != "" )
+                    as.character(colData(deadata())[,input$deagroupCol])
+            }}, server = TRUE)
+    })
+    observeEvent(input$deagroupCol , {
+        updateSelectizeInput(session, 'deagroup2', choices = {
+            if (class(deadata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+
+                if (!is.null(deadata()) & input$deagroupCol != "")
+                    as.character(colData(deadata())[,input$deagroupCol])
+            }}, server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'deagroupCol', choices = {
+            if(!is.null(deadata())) as.character(colnames(colData(deadata())))
+        }, server = TRUE)
+    })
+
+    observeEvent(input$volcanodeaPlot , {
+        output$volcano.dea.plot <- renderPlot({
+            g1 <- isolate({input$deagroup1})
+            g2 <- isolate({input$deagroup2})
+            fdr.cut <- isolate({input$deapvalue})
+            logFC.cut <- isolate({input$deathrsld})
+            dea.result <- get(load( paste0("result_dea_", g1, "_", g2,".rda")))
+
+            label <- c("Not Significant",
+                       "Upregulated",
+                       "Downregulated")
+            label[2:3] <-  paste(label[2:3], "in", group2)
+
+
+            withProgress(message = 'Creating plot',
+                         detail = 'This may take a while...', value = 0, {
+                              TCGAVisualize_volcano(x = dea.result$logFC,
+                                                    y = dea.result$FDR,
+                                                    ylab =   expression(paste(-Log[10],
+                                                                              " (FDR corrected -P values)")),
+                                                    xlab = " Gene expression fold change (Log2)",
+                                                    color = c(isolate({input$coldeainsignificant}),
+                                                              isolate({input$colUpregulated}),
+                                                              isolate({input$colDownregulated})),
+                                                    title =  paste("Volcano plot", "(", g2, "vs", g1,")"),
+                                                    legend=  "Legend",
+                                                    label = label,
+                                                    names = NULL,
+                                                    x.cut = isolate({as.numeric(input$deathrsld)}),
+                                                    y.cut = isolate({as.numeric(input$deapvalue)}),
+                                                    filename = NULL)
+                         })
+
+        })})
+
+    observeEvent(input$volcanodeaPlot , {
+        updateCollapse(session, "collapsedea", open = "dea plots")
+        output$deaPlot <- renderUI({
+            plotOutput("volcano.dea.plot", width = paste0(isolate({input$deawidth}), "%"), height = isolate({input$deaheight}))
+        })})
+
+    output$deaSE <- renderDataTable({
+        data <- deadata()
+        if(!is.null(data)) as.data.frame(values(data))
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+    )
+
+
 
 }

@@ -33,6 +33,7 @@ sidebar <-  dashboardSidebar(
         menuItem("Profile plot" , tabName = "tcgaProfilePlot", icon = icon("picture-o")),
         menuItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o")),
         menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask")),
+        menuItem("DEA analysis" , tabName = "dea", icon = icon("flask")),
         menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
 
     )
@@ -537,7 +538,7 @@ body <-  dashboardBody(
         ),
         tabItem(tabName = "tcgasurvival",
                 fluidRow(
-                    column(10,  bsAlert("survivalplotmessage"),
+                    column(10,  bsAlert("survivalmessage"),
                            bsCollapse(id = "collapsesurvivalplot", open = "survival plot",
                                       bsCollapsePanel("survival plot", uiOutput("survivalplot"), style = "default")
                            )),
@@ -565,6 +566,71 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("survivalwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("survivalheight", "Plot Height (px)", min = 0, max = 800, value = 800))
+                    )
+                )
+        ),
+        tabItem(tabName = "dea",
+
+                fluidRow(
+                    column(10,  bsAlert("deamessage"),
+                           bsCollapse(id = "collapsedea", open = "DEA plots",
+                                      bsCollapsePanel("Genes info", dataTableOutput('deaSE'), style = "default"),
+                                      bsCollapsePanel("DEA plots", uiOutput("deaPlot"), style = "default"))),
+                    column(2,
+                           box(title = "Gene expression object",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               shinyFilesButton('deafile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
+                                                multiple = FALSE, buttonType='warning')),
+                           box(title = "dea analysis",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               numericInput("deathrsld", "Log FC threshold",
+                                            min = 0, max = 1, value = 0, step = 0.05),
+                               numericInput("deapvalue", "P-value adj cut-off",
+                                            min = 0, max = 1, value = 0.05, step = 0.001),
+                               selectizeInput('deagroupCol',
+                                              "Group column",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('deagroup1',
+                                              "Group 1",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('deagroup2',
+                                              "Group 2",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('deamethod',
+                                              "DEA test method",
+                                              choices = c("glmLRT","exactTest"),
+                                              multiple = FALSE),
+                               actionButton("deaAnalysis",
+                                            "dea analysis",
+                                            style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                            icon = icon("flask"))),
+                           box(title = "Volcano plot analysis",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               colourInput("colUpregulated", "Upregulated genes colour", value = "red"),
+                               colourInput("colDownregulated", "Down regulated colour", value = "darkgreen"),
+                               colourInput("coldeainsignificant", "Insignificant colour", value = "black"),
+                               actionButton("volcanodeaPlot",
+                                            "Volcano plot",
+                                            style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                            icon = icon("eye"))
+                           ),
+
+                           box(title = "Plot controls",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               sliderInput("deawidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("deaheight", "Plot Height (px)", min = 0, max = 800, value = 400))
                     )
                 )
         )
