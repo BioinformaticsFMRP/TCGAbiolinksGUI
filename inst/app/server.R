@@ -1169,7 +1169,7 @@ biOMICsServer <- function(input, output, session) {
                                                      met.p.cut = met.p.cut,
                                                      diffmean.cut = diffmean.cut,
                                                      logFC.cut = logFC.cut,
-                                                     filename = NULL)
+                                                     return.plot = TRUE)
                          })
 
         })})
