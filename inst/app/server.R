@@ -837,5 +837,63 @@ biOMICsServer <- function(input, output, session) {
                                                      filename = NULL)
                          })
         })})
+    #----------------------------------------------------------
+    #  Profile plot
+    #-----------------------------------------------------------
+    observe({
+        data <- profileplotdata()
+        updateSelectizeInput(session, 'profileplotgroup', choices = {
+            if(!is.null(data)) as.character(colnames(data))
+        }, server = TRUE)
+    })
+
+    observe({
+        data <- profileplotdata()
+        updateSelectizeInput(session, 'profileplotsubtype', choices = {
+            if(!is.null(data)) as.character(colnames(data))
+        }, server = TRUE)
+    })
+
+    profileplotdata <- function(){
+        inFile <- input$profileplotfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
+        df <- get(load(file))
+
+        if (class(df) != class(data.frame())){
+            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a data frameobject, but I got a: ",
+                                         class(df)), append = FALSE)
+            return(NULL)
+        }
+        return(df)
+    }
+
+    observeEvent(input$profileplotBt , {
+        output$profile.plotting <- renderPlot({
+            data <- isolate({profileplotdata()})
+            subtypeCol <- isolate({input$profileplotsubtype})
+            groupCol <-  isolate({input$profileplotgroup})
+            na.rm.groups <-  isolate({input$profileplotrmnagroup})
+            na.rm.subtypes  <-  isolate({input$profileplotrmnasub})
+            withProgress(message = 'Creating plot',
+                         detail = 'This may take a while...', value = 0, {
+
+                             TCGAvisualize_profilePlot(data = data,
+                                                       groupCol=groupCol,
+                                                       subtypeCol=subtypeCol,
+                                                       na.rm.groups = na.rm.groups,
+                                                       na.rm.subtypes = na.rm.subtypes)
+                                                       #plot.margin=c(-4.2,-2.5,-0.0,2))
+
+                         })
+        })})
+
+    observeEvent(input$profileplotBt , {
+        updateCollapse(session, "collapseprofileplot", open = "Profile plot")
+        output$profileplot <- renderUI({
+            plotOutput("profile.plotting", width = paste0(isolate({input$profilewidth}), "%"), height = isolate({input$profileheight}))
+        })})
+    shinyFileChoose(input, 'profileplotfile', roots=volumes, session=session, restrictions=system.file(package='base'))
 
 }

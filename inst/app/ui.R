@@ -30,6 +30,7 @@ sidebar <-  dashboardSidebar(
         #menuItem("Report" , tabName = "report", icon = icon("book")),
         menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
         menuSubItem("TCGA - OncoPrint" , tabName = "tcgaOncoPrint"),
+        menuSubItem("TCGA - Profile plot" , tabName = "tcgaProfilePlot"),
         menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask")),
         menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
 
@@ -483,6 +484,45 @@ body <-  dashboardBody(
                                               width: 100%",
                                             icon = icon("eye"))
                            )
+                    )
+                )
+        ),
+        tabItem(tabName = "tcgaProfilePlot",
+                fluidRow(
+                    column(10,  bsAlert("profileplotmessage"),
+                           bsCollapse(id = "collapseprofileplot", open = "Profile plot",
+                                      bsCollapsePanel("Profile plot", uiOutput("profileplot"), style = "default")
+                           )),
+                    column(2,
+                           box(title = "Profile plot",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               shinyFilesButton('profileplotfile', 'Select rda file', 'Please select a rda file with a data frame',
+                                                multiple = FALSE, buttonType='warning'),
+                               selectizeInput('profileplotgroup',
+                                              'Column with the group information',
+                                              choices=NULL,
+                                              multiple = FALSE),
+                               selectizeInput('profileplotsubtype',
+                                              'Column with the subtype information',
+                                              choices=NULL,
+                                              multiple = FALSE),
+                               checkboxInput("profileplotrmnagroup", " Remove the NA groups?", value = FALSE, width = NULL),
+                               checkboxInput("profileplotrmnasub", " Remove the NA subtypes?", value = FALSE, width = NULL),
+                               actionButton("profileplotBt",
+                                            "Plot profile plot",
+                                            style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                            icon = icon("eye"))
+                           ),
+                           box(title = "Plot controls",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               sliderInput("profilewidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("profileheight", "Plot Height (px)", min = 0, max = 800, value = 800))
                     )
                 )
         )
