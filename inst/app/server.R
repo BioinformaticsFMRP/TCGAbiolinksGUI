@@ -317,7 +317,7 @@ biOMICsServer <- function(input, output, session) {
                              if(is.null(samples)){
                                  TCGAdownload(x, path = getPath,type = ftype)
                              } else if (length(samples) > 0){
-                                TCGAdownload(x, path = getPath,type = ftype,samples = samples)
+                                 TCGAdownload(x, path = getPath,type = ftype,samples = samples)
                              }
                          }})
         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Download completed", style =  "success",
@@ -1029,10 +1029,16 @@ biOMICsServer <- function(input, output, session) {
                                                 #fdr.cut  = fdr.cut,
                                                 #logFC.cut = logFC.cut,
                                                 method = method)
+                         exp <- TCGAanalyze_LevelTab(exp,
+                                                     typeCond1 = g1,
+                                                     typeCond2 = g2,
+                                                     TableCond1 = assay(se[,samples.g1]),
+                                                     TableCond2 = assay(se[,samples.g2]))
+                         exp$status <- "Insignificant"
+                         exp[exp$logFC >= logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Upregulated in ", g1)
+                         exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g1)
                      })
-        exp$status <- "Insignificant"
-        exp[exp$logFC >= logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Upregulated in ", g1)
-        exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g1)
+
 
         save(exp, file = paste0("result_dea_", g1, "_", g2,".rda"))
         createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "danger",
@@ -1092,21 +1098,21 @@ biOMICsServer <- function(input, output, session) {
 
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
-                              TCGAVisualize_volcano(x = dea.result$logFC,
-                                                    y = dea.result$FDR,
-                                                    ylab =   expression(paste(-Log[10],
-                                                                              " (FDR corrected -P values)")),
-                                                    xlab = " Gene expression fold change (Log2)",
-                                                    color = c(isolate({input$coldeainsignificant}),
-                                                              isolate({input$colUpregulated}),
-                                                              isolate({input$colDownregulated})),
-                                                    title =  paste("Volcano plot", "(", g2, "vs", g1,")"),
-                                                    legend=  "Legend",
-                                                    label = label,
-                                                    names = NULL,
-                                                    x.cut = isolate({as.numeric(input$deathrsld)}),
-                                                    y.cut = isolate({as.numeric(input$deapvalue)}),
-                                                    filename = NULL)
+                             TCGAVisualize_volcano(x = dea.result$logFC,
+                                                   y = dea.result$FDR,
+                                                   ylab =   expression(paste(-Log[10],
+                                                                             " (FDR corrected -P values)")),
+                                                   xlab = " Gene expression fold change (Log2)",
+                                                   color = c(isolate({input$coldeainsignificant}),
+                                                             isolate({input$colUpregulated}),
+                                                             isolate({input$colDownregulated})),
+                                                   title =  paste("Volcano plot", "(", g2, "vs", g1,")"),
+                                                   legend=  "Legend",
+                                                   label = label,
+                                                   names = NULL,
+                                                   x.cut = isolate({as.numeric(input$deathrsld)}),
+                                                   y.cut = isolate({as.numeric(input$deapvalue)}),
+                                                   filename = NULL)
                          })
 
         })})
