@@ -931,4 +931,61 @@ biOMICsServer <- function(input, output, session) {
         })})
     shinyFileChoose(input, 'profileplotfile', roots=volumes, session=session, restrictions=system.file(package='base'))
 
+    #------------------------------------------------
+    # Survival plot
+    # -----------------------------------------------
+    #----------------------------------------------------------
+    #  Profile plot
+    #-----------------------------------------------------------
+    observe({
+        data <- survivalplotdata()
+        updateSelectizeInput(session, 'survivalplotgroup', choices = {
+            if(!is.null(data)) as.character(colnames(data))
+        }, server = TRUE)
+    })
+
+    observe({
+        data <- survivalplotdata()
+        updateSelectizeInput(session, 'survivalplotsubtype', choices = {
+            if(!is.null(data)) as.character(colnames(data))
+        }, server = TRUE)
+    })
+
+    survivalplotdata <- function(){
+        inFile <- input$survivalplotfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
+        df <- get(load(file))
+
+        if (class(df) != class(data.frame())){
+            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a data frameobject, but I got a: ",
+                                         class(df)), append = FALSE)
+            return(NULL)
+        }
+        return(df)
+    }
+
+    observeEvent(input$survivalplotBt , {
+        output$survival.plotting <- renderPlot({
+            data <- isolate({survivalplotdata()})
+            clusterCol <-  isolate({input$survivalplotgroup})
+
+            withProgress(message = 'Creating plot',
+                         detail = 'This may take a while...', value = 0, {
+
+                             TCGAanalyze_survival(data = data,
+                                                  clusterCol = clusterCol,
+                                                  filename = NULL)
+
+                         })
+        })})
+
+    observeEvent(input$survivalplotBt , {
+        updateCollapse(session, "collapsesurvivalplot", open = "survival plot")
+        output$survivalplot <- renderUI({
+            plotOutput("survival.plotting", width = paste0(isolate({input$survivalwidth}), "%"), height = isolate({input$survivalheight}))
+        })})
+    shinyFileChoose(input, 'survivalplotfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+
 }

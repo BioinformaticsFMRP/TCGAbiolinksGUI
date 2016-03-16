@@ -29,8 +29,9 @@ sidebar <-  dashboardSidebar(
         menuItem("biOMICs search" , tabName = "ontology", icon = icon("search")),
         #menuItem("Report" , tabName = "report", icon = icon("book")),
         menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
-        menuSubItem("TCGA - OncoPrint" , tabName = "tcgaOncoPrint"),
-        menuSubItem("TCGA - Profile plot" , tabName = "tcgaProfilePlot"),
+        menuItem("OncoPrint" , tabName = "tcgaOncoPrint", icon = icon("picture-o")),
+        menuItem("Profile plot" , tabName = "tcgaProfilePlot", icon = icon("picture-o")),
+        menuItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o")),
         menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask")),
         menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
 
@@ -531,6 +532,39 @@ body <-  dashboardBody(
                                             min = -10, max = 10, value = 0.0, step = 0.1),
                                sliderInput("profilewidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("profileheight", "Plot Height (px)", min = 0, max = 800, value = 800))
+                    )
+                )
+        ),
+        tabItem(tabName = "tcgasurvival",
+                fluidRow(
+                    column(10,  bsAlert("survivalplotmessage"),
+                           bsCollapse(id = "collapsesurvivalplot", open = "survival plot",
+                                      bsCollapsePanel("survival plot", uiOutput("survivalplot"), style = "default")
+                           )),
+                    column(2,
+                           box(title = "survival plot",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               shinyFilesButton('survivalplotfile', 'Select rda file', 'Please select a rda file with a data frame',
+                                                multiple = FALSE, buttonType='warning'),
+                               selectizeInput('survivalplotgroup',
+                                              'Column with the group information',
+                                              choices=NULL,
+                                              multiple = FALSE),
+                               actionButton("survivalplotBt",
+                                            "Plot survival plot",
+                                            style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                            icon = icon("eye"))
+                           ),
+                           box(title = "Plot controls",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               sliderInput("survivalwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("survivalheight", "Plot Height (px)", min = 0, max = 800, value = 800))
                     )
                 )
         )
