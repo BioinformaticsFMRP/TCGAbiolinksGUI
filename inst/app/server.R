@@ -1022,6 +1022,22 @@ biOMICsServer <- function(input, output, session) {
         print(samples.g2)
         withProgress(message = 'dea analysis in progress',
                      detail = 'This may take a while...', value = 0, {
+
+
+                         # normalization of genes
+                         if(isolate({input$deanormalization})) {
+                             exp <- TCGAanalyze_Normalization(tabDF = assay(se),
+                                                              geneInfo = TCGAbiolinks::geneInfo,
+                                                              method = isolate({input$deanormalizationmet})
+                             )
+                         }
+                         # quantile filter of genes
+                         if(isolate({input$deafilter})) {
+                             dataFilt <- TCGAanalyze_Filtering(tabDF = exp,
+                                                               method = isolate({input$deafilteringmet}),
+                                                               qnt.cut =  isolate({input$deafilteringcut}))
+                         }
+
                          exp <- TCGAanalyze_DEA(mat1 = assay(se[,samples.g1]),
                                                 mat2 = assay(se[,samples.g2]),
                                                 Cond1type = g1 ,
@@ -1093,7 +1109,7 @@ biOMICsServer <- function(input, output, session) {
             label <- c("Not Significant",
                        "Upregulated",
                        "Downregulated")
-            label[2:3] <-  paste(label[2:3], "in", group2)
+            label[2:3] <-  paste(label[2:3], "in", g2)
 
 
             withProgress(message = 'Creating plot',

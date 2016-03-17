@@ -582,6 +582,32 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('deafile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
                                                 multiple = FALSE, buttonType='warning')),
+                           box(title = "Normalization of genes",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               checkboxInput("deanormalization", "Normalization of genes?", value = FALSE, width = NULL),
+                               conditionalPanel(
+                                   condition = "input.deanormalization == TRUE",
+                                   selectizeInput('deanormalizationmet',
+                                                  "Normalization of genes method",
+                                                  choices = c("gcContent","geneLength"),
+                                                  multiple = FALSE)
+                               )
+                           ),
+                           box(title = "Quantile filter of genes",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               checkboxInput("deafilter", "Quantile filter of genes?", value = FALSE, width = NULL),
+                               conditionalPanel(
+                                   condition = "input.deafilter == 'TRUE'",
+                                   selectizeInput('deafilteringmet',
+                                                  "DEA test method",
+                                                  choices = c("quantile","varFilter","filter1","filter2"),
+                                                  multiple = FALSE),
+                                   numericInput("deafilteringcut", "Move upper line of vertical bar",
+                                                min = 0, max = 1, value = 0.25, step = 0.1)
+                               )
+                           ),
                            box(title = "dea analysis",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
