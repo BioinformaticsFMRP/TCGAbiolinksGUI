@@ -544,7 +544,7 @@ biOMICsServer <- function(input, output, session) {
             mut <- isolate({mut()})
             annotation <- isolate({annotation.maf()})
             cols <- isolate({input$mafAnnotationcols})
-            print(cols)
+
             if(is.null(cols)) {
                 annotation <- NULL
             } else {
@@ -562,6 +562,7 @@ biOMICsServer <- function(input, output, session) {
                          detail = 'This may take a while...', value = 0, {
 
                              create.oncoprint(mut=mut,genes=isolate(input$oncoGenes),annotation = annotation,
+                                              annotation.position=isolate(input$mafAnnotationpos),
                                               color = c("SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
                                                         "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))
 

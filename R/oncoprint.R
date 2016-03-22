@@ -89,8 +89,9 @@ create.oncoprint <- function (mut,
             length(unique(annotation[,x]))
         }))
         col.annot <- sapply(colnames(annotation), function(x) {
-            idx <- which(colnames(annotation) == x) - 1
-            ret <- rainbow(length(unique(annotation[,x])),start = idx/n.col,alpha=0.5)
+            #idx <- which(colnames(annotation) == x) - 1
+            #ret <- rainbow(length(unique(annotation[,x])),start = idx/n.col,alpha=0.5)
+            ret <- rainbow(length(unique(annotation[,x])),alpha=0.5)
             names(ret) <- as.character(unique(annotation[,x]))
             return(ret)
         })
