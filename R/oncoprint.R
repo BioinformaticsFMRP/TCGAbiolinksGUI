@@ -77,7 +77,8 @@ create.oncoprint <- function (mut,
     if(!missing(height)) height <- length(genes)/2
     if(!missing(filename)) pdf(filename,width = 20,height = height)
 
-    if(!missing(annotation)){
+    if(missing(annotation)) annotation <- NULL
+    if(!is.null(annotation)){
         idx <- match(substr(colnames(mat),1,12),annotation$bcr_patient_barcode)
         stopifnot(all(annotation$bcr_patient_barcode[idx] ==substr(colnames(mat),1,12) ))
         annotation <- annotation[idx,]
@@ -85,12 +86,12 @@ create.oncoprint <- function (mut,
         annotation$bcr_patient_barcode <- NULL
 
         n.col <- sum(sapply(colnames(annotation), function(x) {
-            length(unique(clin[,x]))
+            length(unique(annotation[,x]))
         }))
         col.annot <- sapply(colnames(annotation), function(x) {
             idx <- which(colnames(annotation) == x) - 1
-            ret <- rainbow(length(unique(clin[,x])),start = idx/n.col,alpha=0.5)
-            names(ret) <- as.character(unique(clin[,x]))
+            ret <- rainbow(length(unique(annotation[,x])),start = idx/n.col,alpha=0.5)
+            names(ret) <- as.character(unique(annotation[,x]))
             return(ret)
         })
         annotHeatmap <- HeatmapAnnotation(df=annotation,
@@ -100,7 +101,7 @@ create.oncoprint <- function (mut,
                                                                        labels_gp=gpar(fontsize=font.size),#sizelabels
                                                                        grid_height=unit(8,"mm")))
     }
-    if(missing(annotation)){
+    if(is.null(annotation)){
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,
                        remove_empty_columns = FALSE,
@@ -119,7 +120,7 @@ create.oncoprint <- function (mut,
                                                    grid_height = unit(8, "mm") # vertical distance labels
                        )
         )
-    } else if(!missing(annotation) & annotation.position == "bottom"){
+    } else if(!is.null(annotation) & annotation.position == "bottom"){
 
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,

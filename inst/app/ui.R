@@ -73,7 +73,7 @@ body <-  dashboardBody(
 
                 fluidRow(
                     column(10,  bsAlert("alert"),
-                           bsCollapse(id = "collapseOnco", open = "Search results",
+                           bsCollapse(id = "collapseonto", open = "Search results",
                                       bsCollapsePanel("Search results", dataTableOutput('ontSearchtbl'), style = "default"),
                                       bsCollapsePanel("biomicssummary", uiOutput("biomicssummary"), style = "default")
                            )),
@@ -333,10 +333,13 @@ body <-  dashboardBody(
                            box(title = "Oncoprint",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = FALSE,
-                               #fileInput('maffile', 'Choose maf File',
-                               #          accept=c(".maf")),
                                shinyFilesButton('maffile', 'Select maf file', 'Please select a maf file',
                                                 multiple = FALSE, buttonType='warning'),
+                               shinyFilesButton('mafAnnotation', 'Select annotation file', 'Please select a file with the annotation data frame ',
+                                                multiple = FALSE, buttonType='warning'),
+                               selectizeInput('mafAnnotationcols',
+                                              "Annotation columns",
+                                              choices = NULL,  multiple = TRUE),
                                selectizeInput('oncoGenes',
                                               "genes",
                                               choices = NULL,  multiple = TRUE),

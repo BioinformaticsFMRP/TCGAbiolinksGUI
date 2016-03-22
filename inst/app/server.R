@@ -512,7 +512,21 @@ biOMICsServer <- function(input, output, session) {
                     content =  paste0("Saved file: ",fout), append = TRUE)
     })
     shinyFileChoose(input, 'maffile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'mafAnnotation', roots=volumes, session=session, restrictions=system.file(package='base'))
+    annotation.maf <- function(){
+        inFile <- input$mafAnnotation
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, input$mafAnnotation)$datapath)
+        se <- get(load(file))
 
+        if(class(se)!= class(data.frame())){
+            createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a Data frame object, but I got a: ",
+                                         class(se)), append = FALSE)
+            return(NULL)
+        }
+        return(se)
+    }
     mut <- function(){
         #inFile <- input$maffile
         #if (is.null(inFile)) return(NULL)
@@ -525,8 +539,18 @@ biOMICsServer <- function(input, output, session) {
 
     }
     observeEvent(input$oncoprintPlot , {
+
         output$oncoploting <- renderPlot({
             mut <- isolate({mut()})
+            annotation <- isolate({annotation.maf()})
+            cols <- isolate({input$mafAnnotationcols})
+            print(cols)
+            if(is.null(cols)) {
+                annotation <- NULL
+            } else {
+                annotation <- annotation[,cols]
+            }
+
             if(is.null(mut)){
                 createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
                             content = "Please select a file", append = TRUE)
@@ -537,7 +561,7 @@ biOMICsServer <- function(input, output, session) {
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
 
-                             create.oncoprint(mut=mut,genes=isolate(input$oncoGenes),
+                             create.oncoprint(mut=mut,genes=isolate(input$oncoGenes),annotation = annotation,
                                               color = c("SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
                                                         "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))
 
@@ -548,6 +572,9 @@ biOMICsServer <- function(input, output, session) {
         output$oncoPlot <- renderUI({
             plotOutput("oncoploting", width = paste0(isolate({input$oncowidth}), "%"), height = isolate({input$oncoheight}))
         })})
+    observe({
+        updateSelectizeInput(session, 'mafAnnotationcols', choices = as.character(colnames(annotation.maf())), server = TRUE)
+    })
 
     observe({
         updateSelectizeInput(session, 'oncoGenes', choices = as.character(mut()$Hugo_Symbol), server = TRUE)
