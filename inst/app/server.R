@@ -1018,8 +1018,6 @@ biOMICsServer <- function(input, output, session) {
         method <- isolate({input$deamethod})
         fdr.cut <- isolate({input$deapvalue})
         logFC.cut <- isolate({input$deathrsld})
-        print(samples.g1)
-        print(samples.g2)
         withProgress(message = 'dea analysis in progress',
                      detail = 'This may take a while...', value = 0, {
 
@@ -1164,6 +1162,54 @@ biOMICsServer <- function(input, output, session) {
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
 
+    #----------------------------------------------
+    #                 DEA Pathview
+    observeEvent(input$pathwaygraphBt , {
+
+        pathway.id <- isolate({input$pathway.id})
+        kegg.native <- isolate({input$kegg.native.checkbt})
+        g1 <- isolate({input$deagroup1})
+        g2 <- isolate({input$deagroup2})
+        data <- get(load( paste0("result_dea_", g1, "_", g2,".rda")))
+
+        gene <- strsplit(data$mRNA,"\\|")
+        data$SYMBOL <- unlist(lapply(gene,function(x) x[1]))
+
+        # Converting Gene symbol to geneID
+        library(clusterProfiler)
+        eg = as.data.frame(bitr(data$SYMBOL,
+                                fromType="SYMBOL",
+                                toType="ENTREZID",
+                                annoDb="org.Hs.eg.db"))
+        eg <- eg[!duplicated(eg$SYMBOL),]
+
+        data <- merge(data,eg,by="SYMBOL")
+
+        data <- subset(data, select = c("ENTREZID", "logFC"))
+        genelistDEGs <- as.numeric(data$logFC)
+        names(genelistDEGs) <- data$ENTREZID
+        withProgress(message = 'Creating pathway graph',
+                     detail = 'This may take a while...', value = 0, {
+                         require("pathview")
+                         # pathway.id: hsa05214 is the glioma pathway
+                         # limit: sets the limit for gene expression legend and color
+                         hsa05214 <- pathview(gene.data  = genelistDEGs,
+                                              pathway.id = pathway.id,
+                                              species    = "hsa",
+                                              kegg.native = kegg.native,
+                                              limit      = list(gene=as.integer(max(abs(genelistDEGs)))))
+                     })
+        if(kegg.native) {
+            extension <- ".pathview.png"
+        } else {
+            extension <- ".pathview.pdf"
+        }
+
+        createAlert(session, "deamessage", "deaAlert", title = "Pathway graph created", style =  "active",
+                    content = paste0("Results saved in: ", pathway.id,extension), append = FALSE)
+
+    })
+    #----------------------------------------------
     starburst <- function(){
         g1 <- isolate({input$starburstgroup1})
         g2 <- isolate({input$starburstgroup2})

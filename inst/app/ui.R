@@ -4,6 +4,11 @@ library(TCGAbiolinks)
 library(shinyBS)
 library(shinyjs)
 library(SummarizedExperiment)
+library(pathview)
+data(paths.hsa)
+pathways.id <- names(paths.hsa)
+names(pathways.id) <- unname(paths.hsa)
+
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
 names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
@@ -651,7 +656,23 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("eye"))
                            ),
-
+                           box(title = "Pathway graphs",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               selectizeInput('pathway.id',
+                                              "pathway ID",
+                                              choices = pathways.id,
+                                              multiple = FALSE),
+                               checkboxInput("kegg.native.checkbt", "Native KEGG?", value = TRUE, width = NULL),
+                               actionButton("pathwaygraphBt",
+                                            "Create pathway file",
+                                            style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                            icon = icon("file-pdf-o"))
+                           ),
                            box(title = "Plot controls",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
