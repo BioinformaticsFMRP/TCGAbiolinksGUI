@@ -4,7 +4,7 @@
 #' @param filename name of the pdf
 #' @param color named vector for the plot
 #' @param height pdf height
-#' @importFrom ComplexHeatmap oncoPrint draw
+#' @importFrom ComplexHeatmap oncoPrint draw HeatmapAnnotation
 #' @importFrom grid gpar grid.rect
 #' @importFrom reshape2 dcast acast
 #' @examples
@@ -13,15 +13,24 @@
 #' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
 #'                  filename = "onco.pdf",
 #'                  color=c("DEL"="purple","INS"="yellow","SNP"="brown"))
+#' clin <- TCGAbiolinks::TCGAquery_clinic("gbm","clinical_patient")
+#' clin <- clin[,c("bcr_patient_barcode","disease","gender")]
+#' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
+#'                  filename = "onco.pdf",
+#'                  annotation = clin,
+#'                  color=c("DEL"="purple","INS"="yellow","SNP"="brown"),font.size=10)
+#'
 #' @export
 create.oncoprint <- function (mut,
                               genes,
                               filename,
                               color,
-                              bottom_annotation,
+                              annotation.position = "bottom",
+                              annotation,
                               height,
                               label.title = "Mutation",
                               font.size = 16){
+
 
     if(missing(mut))   stop("Missing mut argument")
 
@@ -68,25 +77,92 @@ create.oncoprint <- function (mut,
     if(!missing(height)) height <- length(genes)/2
     if(!missing(filename)) pdf(filename,width = 20,height = height)
 
-    p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
-                   row_order = NULL,
-                   remove_empty_columns = FALSE,
-                   column_order = NULL, # Do not sort the columns
-                   alter_fun = alter_fun, col = color,
-                   row_names_gp = gpar(fontsize = font.size),  # set size for row names
-                   pct_gp = gpar(fontsize = font.size), # set size for percentage labels
-                   axis_gp = gpar(fontsize = font.size),# size of axis
-                   #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
-                   #column_title_gp = gpar(fontsize = 11),
-                   row_barplot_width = unit(2, "cm"), #size barplot
-                   #bottom_annotation = bottom_annotation,
-                   heatmap_legend_param = list(title = label.title, at = names(color),
-                                               labels = names(color),
-                                               title_gp = gpar(fontsize = font.size, fontface = "bold"),
-                                               labels_gp = gpar(fontsize = font.size), # size labels
-                                               grid_height = unit(8, "mm") # vertical distance labels
-                   )
-    )
+    if(!missing(annotation)){
+        idx <- match(substr(colnames(mat),1,12),annotation$bcr_patient_barcode)
+        stopifnot(all(annotation$bcr_patient_barcode[idx] ==substr(colnames(mat),1,12) ))
+        annotation <- annotation[idx,]
+
+        annotation$bcr_patient_barcode <- NULL
+
+        n.col <- sum(sapply(colnames(annotation), function(x) {
+            length(unique(clin[,x]))
+        }))
+        col.annot <- sapply(colnames(annotation), function(x) {
+            idx <- which(colnames(annotation) == x) - 1
+            ret <- rainbow(length(unique(clin[,x])),start = idx/n.col,alpha=0.5)
+            names(ret) <- as.character(unique(clin[,x]))
+            return(ret)
+        })
+        annotHeatmap <- HeatmapAnnotation(df=annotation,
+                                          col=col.annot,
+                                          annotation_legend_param=list(title_gp=gpar(fontsize=font.size,
+                                                                                     fontface="bold"),
+                                                                       labels_gp=gpar(fontsize=font.size),#sizelabels
+                                                                       grid_height=unit(8,"mm")))
+    }
+    if(missing(annotation)){
+        p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+                       row_order = NULL,
+                       remove_empty_columns = FALSE,
+                       column_order = NULL, # Do not sort the columns
+                       alter_fun = alter_fun, col = color,
+                       row_names_gp = gpar(fontsize = font.size),  # set size for row names
+                       pct_gp = gpar(fontsize = font.size), # set size for percentage labels
+                       axis_gp = gpar(fontsize = font.size),# size of axis
+                       #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
+                       #column_title_gp = gpar(fontsize = 11),
+                       row_barplot_width = unit(2, "cm"), #size barplot
+                       heatmap_legend_param = list(title = label.title, at = names(color),
+                                                   labels = names(color),
+                                                   title_gp = gpar(fontsize = font.size, fontface = "bold"),
+                                                   labels_gp = gpar(fontsize = font.size), # size labels
+                                                   grid_height = unit(8, "mm") # vertical distance labels
+                       )
+        )
+    } else if(!missing(annotation) & annotation.position == "bottom"){
+
+        p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+                       row_order = NULL,
+                       remove_empty_columns = FALSE,
+                       column_order = NULL, # Do not sort the columns
+                       alter_fun = alter_fun, col = color,
+                       row_names_gp = gpar(fontsize = font.size),  # set size for row names
+                       pct_gp = gpar(fontsize = font.size), # set size for percentage labels
+                       axis_gp = gpar(fontsize = font.size),# size of axis
+                       #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
+                       #column_title_gp = gpar(fontsize = 11),
+                       row_barplot_width = unit(2, "cm"), #size barplot
+                       bottom_annotation = annotHeatmap,
+                       heatmap_legend_param = list(title = label.title, at = names(color),
+                                                   labels = names(color),
+                                                   title_gp = gpar(fontsize = font.size, fontface = "bold"),
+                                                   labels_gp = gpar(fontsize = font.size), # size labels
+                                                   grid_height = unit(8, "mm") # vertical distance labels
+                       )
+        )
+
+    } else {
+        p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+                       row_order = NULL,
+                       remove_empty_columns = FALSE,
+                       column_order = NULL, # Do not sort the columns
+                       alter_fun = alter_fun, col = color,
+                       row_names_gp = gpar(fontsize = font.size),  # set size for row names
+                       pct_gp = gpar(fontsize = font.size), # set size for percentage labels
+                       axis_gp = gpar(fontsize = font.size),# size of axis
+                       #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
+                       #column_title_gp = gpar(fontsize = 11),
+                       row_barplot_width = unit(2, "cm"), #size barplot
+                       top_annotation = annotHeatmap,
+                       heatmap_legend_param = list(title = label.title, at = names(color),
+                                                   labels = names(color),
+                                                   title_gp = gpar(fontsize = font.size, fontface = "bold"),
+                                                   labels_gp = gpar(fontsize = font.size), # size labels
+                                                   grid_height = unit(8, "mm") # vertical distance labels
+                       )
+        )
+    }
+
     if(!missing(filename)) dev.off()
     draw(p)
 }

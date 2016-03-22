@@ -72,7 +72,11 @@ body <-  dashboardBody(
         tabItem(tabName = "ontology",
 
                 fluidRow(
-                    column(10, bsAlert("alert"),dataTableOutput('ontSearchtbl')),
+                    column(10,  bsAlert("alert"),
+                           bsCollapse(id = "collapseOnco", open = "Search results",
+                                      bsCollapsePanel("Search results", dataTableOutput('ontSearchtbl'), style = "default"),
+                                      bsCollapsePanel("biomicssummary", uiOutput("biomicssummary"), style = "default")
+                           )),
                     column(2,
                            box(title = "Advanced search",width = NULL,
                                status = "warning",

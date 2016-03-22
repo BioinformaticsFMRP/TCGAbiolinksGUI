@@ -4,8 +4,8 @@
 \alias{create.oncoprint}
 \title{Creating a oncoprint}
 \usage{
-create.oncoprint(mut, genes, filename, color, bottom_annotation, height,
-  label.title = "Mutation", font.size = 16)
+create.oncoprint(mut, genes, filename, color, annotation.position = "bottom",
+  annotation, height, label.title = "Mutation", font.size = 16)
 }
 \arguments{
 \item{mut}{Mutation file (see TCGAquery_maf from TCGAbiolinks)}
@@ -27,5 +27,12 @@ create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10])
 create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
                  filename = "onco.pdf",
                  color=c("DEL"="purple","INS"="yellow","SNP"="brown"))
+clin <- TCGAbiolinks::TCGAquery_clinic("gbm","clinical_patient")
+clin <- clin[,c("bcr_patient_barcode","disease","ethnicity","gender")]
+create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
+                 filename = "onco.pdf",
+                 annotation = clin,
+                 color=c("DEL"="purple","INS"="yellow","SNP"="brown"))
+
 }
 
