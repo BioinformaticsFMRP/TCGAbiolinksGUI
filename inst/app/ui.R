@@ -430,6 +430,19 @@ body <-  dashboardBody(
                                selectizeInput('meanmetsubgroupCol',
                                               "Sub group column",
                                               choices = NULL,  multiple = FALSE),
+                               checkboxInput("meanmetplotjitter", "Plot jitters?", value = TRUE, width = NULL),
+                               conditionalPanel(
+                                   condition = "input.meanmetplotjitter == TRUE",
+                                   selectizeInput('meanmetsort',
+                                                  "Sort method",
+                                                  choices = c("None"=NULL,
+                                                              "Ascending by mean"="mean.asc",
+                                                              "Descending by mean"="mean.desc",
+                                                              "Ascending by median"="median.asc",
+                                                              "Descending by median"="median.desc"),
+                                                  multiple = FALSE)
+                               ),
+                               sliderInput("meanmetAxisAngle", "Decimal:",   min = 0, max = 360, value = 90, step= 45),
                                actionButton("meanmetPlot",
                                             "DNA mean methylation plot",
                                             style = "background-color: #F39C12;

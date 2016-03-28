@@ -713,6 +713,11 @@ biOMICsServer <- function(input, output, session) {
 
     observeEvent(input$meanmetPlot , {
         output$mean.plotting <- renderPlot({
+
+            jitter <- isolate({input$meanmetplotjitter})
+            sort <- isolate({input$meanmetsort})
+            angle <- isolate({input$meanmetAxisAngle})
+        
             if(isolate({input$meanmetgroupCol}) =="") {
                 group <- NULL
             } else {
@@ -726,10 +731,22 @@ biOMICsServer <- function(input, output, session) {
             }
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
-                             TCGAvisualize_meanMethylation(data=dmrdata(),
-                                                           groupCol=group,
-                                                           subgroupCol=subgroup,
-                                                           filename = NULL)
+                             if(is.null(sort)){
+                                 TCGAvisualize_meanMethylation(data=dmrdata(),
+                                                               groupCol=group,
+                                                               subgroupCol=subgroup,
+                                                               filename = NULL,
+                                                               plot.jitter = jitter,
+                                                               axis.text.x.angle = angle )
+                             } else {
+                                 TCGAvisualize_meanMethylation(data=dmrdata(),
+                                                               groupCol=group,
+                                                               subgroupCol=subgroup,
+                                                               filename = NULL,
+                                                               plot.jitter = jitter,
+                                                               axis.text.x.angle = angle,
+                                                               sort=sort)
+                             }
                          })
         })})
 
