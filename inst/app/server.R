@@ -203,7 +203,6 @@ biOMICsServer <- function(input, output, session) {
         )})
 
     #------------- TCGA ------------------
-
     # Table render
     observeEvent(input$tcgaSearchBt, {
         output$tcgaSearchtbl <- renderDataTable({
@@ -1118,6 +1117,17 @@ biOMICsServer <- function(input, output, session) {
     # -------------------------------------------------
     # DEA
     # -------------------------------------------------
+    #--------------------- START controlling show/hide states -----------------
+    #shinyjs::hide("deanormalizationmet")
+    #shinyjs::hide("deanormalizationmet")
+    observeEvent(input$deanormalization, {
+        shinyjs::toggle("deanormalizationmet")
+    })
+    observeEvent(input$deafilter, {
+        shinyjs::toggle("deafilteringmet")
+        shinyjs::toggle("deafilteringcut")
+    })
+    #----------------------- END controlling show/hide states -----------------
     observeEvent(input$deaAnalysis , {
         # read the data from the downloaded path
         # prepare it

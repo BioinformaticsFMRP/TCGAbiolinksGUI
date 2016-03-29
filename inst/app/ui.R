@@ -218,10 +218,7 @@ body <-  dashboardBody(
                                radioButtons("prepareRb", "Data type:",
                                             c("SummarizedExperiment" = TRUE,
                                               "Dataframe" = FALSE)),
-                               conditionalPanel(
-                                   condition = "input.prepareRb == 'TRUE'",
-                                   checkboxInput("addSubTypeTCGA", "Add information about subtypes", value = FALSE, width = NULL)
-                               ),
+                               checkboxInput("addSubTypeTCGA", "Add information about subtypes", value = FALSE, width = NULL),
                                textInput("tcgafilename", "File name", value = "data.rda", width = NULL, placeholder = NULL),
                                shinyDirButton('tcgapreparefolder', 'Folder to save', 'Please select a folder',
                                               class='shinyDirectories btn-default', buttonType='warning'),
@@ -355,10 +352,10 @@ body <-  dashboardBody(
                            ),
                            box(title = "Colors control",width = NULL,  status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               colourInput("colDEL", "DEL colour", value = "red"),
-                               colourInput("colINS", "INS colour", value = "blue"),
-                               colourInput("colSNP", "SNP colour", value = "green"),
-                               colourInput("colDNP", "DNP colour", value = "purple")),
+                               colourInput("colDEL", "DEL color", value = "red"),
+                               colourInput("colINS", "INS color", value = "blue"),
+                               colourInput("colSNP", "SNP color", value = "green"),
+                               colourInput("colDNP", "DNP color", value = "purple")),
                            box(title = "Size control",width = NULL,  status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
@@ -421,9 +418,9 @@ body <-  dashboardBody(
                            box(title = "Volcano plot",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               colourInput("colHypomethylated", "Hypomethylated colour", value = "darkgreen"),
-                               colourInput("colHypermethylated", "Hypermethylate colour", value = "red"),
-                               colourInput("colinsignificant", "Insignificant colour", value = "black"),
+                               colourInput("colHypomethylated", "Hypomethylated color", value = "darkgreen"),
+                               colourInput("colHypermethylated", "Hypermethylate color", value = "red"),
+                               colourInput("colinsignificant", "Insignificant color", value = "black"),
                                checkboxInput("dmrNamesVolcano", "Add probe names?", value = FALSE, width = NULL),
                                checkboxInput("dmrNamesVolcanoFill", "Fill names?", value = TRUE, width = NULL),
                                actionButton("volcanoPlot",
@@ -514,9 +511,9 @@ body <-  dashboardBody(
                                sliderInput("nBar", "Number of bar histogram to show",
                                            step=1, min = 1, max = 20, value = 10),
                                colourInput("colBP", "Biological Process", value = "orange"),
-                               colourInput("colCC", "Cellular Component colour", value = "cyan"),
-                               colourInput("colMF", "Molecular function colour", value = "green"),
-                               colourInput("colPat", "Pathways colour", value = "yellow"),
+                               colourInput("colCC", "Cellular Component color", value = "cyan"),
+                               colourInput("colMF", "Molecular function color", value = "green"),
+                               colourInput("colPat", "Pathways color", value = "yellow"),
                                sliderInput("eawidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("eaheight", "Plot Height (px)", min = 0, max = 1000, value = 1000),
                                actionButton("eaplot",
@@ -630,27 +627,23 @@ body <-  dashboardBody(
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                checkboxInput("deanormalization", "Normalization of genes?", value = FALSE, width = NULL),
-                               conditionalPanel(
-                                   condition = "input.deanormalization == TRUE",
-                                   selectizeInput('deanormalizationmet',
-                                                  "Normalization of genes method",
-                                                  choices = c("gcContent","geneLength"),
-                                                  multiple = FALSE)
-                               )
+                               useShinyjs(),
+                               selectizeInput('deanormalizationmet',
+                                              "Normalization of genes method",
+                                              choices = c("gcContent","geneLength"),
+                                              multiple = FALSE)
                            ),
                            box(title = "Quantile filter of genes",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                checkboxInput("deafilter", "Quantile filter of genes?", value = FALSE, width = NULL),
-                               conditionalPanel(
-                                   condition = "input.deafilter == 'TRUE'",
-                                   selectizeInput('deafilteringmet',
-                                                  "DEA test method",
-                                                  choices = c("quantile","varFilter","filter1","filter2"),
-                                                  multiple = FALSE),
-                                   numericInput("deafilteringcut", "Move upper line of vertical bar",
-                                                min = 0, max = 1, value = 0.25, step = 0.1)
-                               )
+
+                               selectizeInput('deafilteringmet',
+                                              "DEA test method",
+                                              choices = c("quantile","varFilter","filter1","filter2"),
+                                              multiple = FALSE),
+                               numericInput("deafilteringcut", "Threshold selected as mean for filtering",
+                                            min = 0, max = 1, value = 0.25, step = 0.1)
                            ),
                            box(title = "dea analysis",width = NULL,
                                status = "warning",
@@ -680,12 +673,12 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("flask"))),
-                           box(title = "Volcano plot analysis",width = NULL,
+                           box(title = "Volcano plot",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               colourInput("colUpregulated", "Upregulated genes colour", value = "red"),
-                               colourInput("colDownregulated", "Down regulated colour", value = "darkgreen"),
-                               colourInput("coldeainsignificant", "Insignificant colour", value = "black"),
+                               colourInput("colUpregulated", "Upregulated genes color", value = "red"),
+                               colourInput("colDownregulated", "Down regulated color", value = "darkgreen"),
+                               colourInput("coldeainsignificant", "Insignificant color", value = "black"),
                                actionButton("volcanodeaPlot",
                                             "Volcano plot",
                                             style = "background-color: #F39C12;
@@ -753,15 +746,8 @@ body <-  dashboardBody(
                                               "Group 2",
                                               choices = NULL,  multiple = FALSE),
                                checkboxInput("starburstNames", "Add genes names?", value = FALSE, width = NULL),
-                               checkboxInput("starburstNamesFill", "Fill names?", value = TRUE, width = NULL),
-                               actionButton("starburstPlot",
-                                            "starburst plot",
-                                            style = "background-color: #F39C12;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 100%",
-                                            icon = icon("eye"))),
+                               checkboxInput("starburstNamesFill", "Fill names?", value = TRUE, width = NULL)
+                           ),
                            box(title = "Colors control",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
@@ -778,9 +764,16 @@ body <-  dashboardBody(
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("starburstwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("starburstheight", "Plot Height (px)", min = 0, max = 800, value = 400))
+                               sliderInput("starburstheight", "Plot Height (px)", min = 0, max = 800, value = 400)),
+                           actionButton("starburstPlot",
+                                        "starburst plot",
+                                        style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                        icon = icon("eye"))
                     )
-
                 )
         ),
         tabItem(tabName = "elmer",
