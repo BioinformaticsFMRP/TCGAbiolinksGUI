@@ -475,7 +475,27 @@ biOMICsServer <- function(input, output, session) {
         ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
         )})
 
-    #------------- MAF
+    #----------------------------------------------------------------------
+    #                                         MAF
+    #----------------------------------------------------------------------
+
+    #-------------------------START controlling show/hide states -----------------
+    shinyjs::hide("mafAnnotationcols")
+    shinyjs::hide("mafAnnotationpos")
+    shinyjs::hide("oncoGenes")
+    observeEvent(input$mafAnnotation, {
+        if(!is.null(annotation.maf())){
+            shinyjs::show("mafAnnotationcols")
+            shinyjs::show("mafAnnotationpos")
+        }
+    })
+    observeEvent(input$maffile, {
+        if(!is.null(mut())){
+            shinyjs::show("oncoGenes")
+        }
+    })
+
+    #-------------------------END controlling show/hide states -----------------
 
     # Table render
     output$maftbl <- renderDataTable({
@@ -625,7 +645,7 @@ biOMICsServer <- function(input, output, session) {
         updateSelectizeInput(session, 'ontftypeFilter', choices = as.character(unique(get.obj("encode.db.files")$file_format)), server = TRUE)
     })
 
-    ## DMR analysis
+    ##----------------------------------- DMR analysis
     observeEvent(input$dmrAnalysis , {
 
         # read the data from the downloaded path
@@ -1285,6 +1305,11 @@ biOMICsServer <- function(input, output, session) {
 
     })
     #----------------------------------------------
+    observeEvent(input$starburstNames, {
+        toggle("starburstNamesFill")
+    })
+
+
     starburst <- function(){
         g1 <- isolate({input$starburstgroup1})
         g2 <- isolate({input$starburstgroup2})

@@ -318,7 +318,7 @@ body <-  dashboardBody(
                     column(2,
                            box(title = "Download",width = NULL,
                                status = "warning",
-                               solidHeader = FALSE, collapsible = FALSE,
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                shinyDirButton('maffolder', 'Folder select', 'Please select a folder',
                                               class='shinyDirectories btn-default', buttonType='warning'),
                                actionButton("mafDownloadBt",
@@ -331,39 +331,49 @@ body <-  dashboardBody(
                                             icon = icon("download"))
                            ),
                            bsAlert("oncoddirmessage"),
-                           box(title = "Oncoprint",width = NULL,
+                           box(title = "Oncoprint data",width = NULL,
                                status = "warning",
-                               solidHeader = FALSE, collapsible = FALSE,
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                shinyFilesButton('maffile', 'Select maf file', 'Please select a maf file',
                                                 multiple = FALSE, buttonType='warning'),
+                               selectizeInput('oncoGenes',
+                                              "genes",
+                                              choices = NULL,  multiple = TRUE)
+                           ),
+                           box(title = "Oncoprint metadata",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                shinyFilesButton('mafAnnotation', 'Select annotation file', 'Please select a file with the annotation data frame ',
                                                 multiple = FALSE, buttonType='warning'),
+                               useShinyjs(),
                                selectizeInput('mafAnnotationcols',
                                               "Annotation columns",
                                               choices = NULL,  multiple = TRUE),
                                selectizeInput('mafAnnotationpos',
                                               "Annotation position",
-                                              choices = c("top","bottom"),selected = "top",  multiple = FALSE),
-                               selectizeInput('oncoGenes',
-                                              "genes",
-                                              choices = NULL,  multiple = TRUE),
+                                              choices = c("top","bottom"),selected = "top",  multiple = FALSE)
+                           ),
+                           box(title = "Colors control",width = NULL,  status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                colourInput("colDEL", "DEL colour", value = "red"),
                                colourInput("colINS", "INS colour", value = "blue"),
                                colourInput("colSNP", "SNP colour", value = "green"),
-                               colourInput("colDNP", "DNP colour", value = "purple"),
+                               colourInput("colDNP", "DNP colour", value = "purple")),
+                           box(title = "Size control",width = NULL,  status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 800, value = 400),
-                               actionButton("oncoprintPlot",
-                                            "Plot oncoprint",
-                                            style = "background-color: #F39C12;
+                               sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 800, value = 400)
+                           ),
+                           actionButton("oncoprintPlot",
+                                        "Plot oncoprint",
+                                        style = "background-color: #F39C12;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("picture-o"))
+                                        icon = icon("picture-o")
                            )
                     )
-
                 )
         ),
         tabItem(tabName = "dmr",
@@ -709,6 +719,7 @@ body <-  dashboardBody(
         ),
         tabItem(tabName = "starburst",
                 fluidRow(
+                    useShinyjs(),
                     column(10,  bsAlert("starburstmessage"),
                            bsCollapse(id = "collapsestarburst", open = "starburst plots",
                                       bsCollapsePanel("starburst result - probe gene pairs", dataTableOutput('starburstResult'), style = "default"),
@@ -783,17 +794,17 @@ body <-  dashboardBody(
                                                 multiple = FALSE, buttonType='warning'),
                                shinyFilesButton('elmerexpfile', 'Select expression object', 'Please select gene expression object',
                                                 multiple = FALSE, buttonType='warning'),
-                           numericInput("elmermetnacut", "cut-off NA samples (%)",
-                                        min = 0, max = 1, value = 0.2, step = 0.1),
-                           actionButton("elmerpreparemee",
-                                        "Create mee object",
-                                        style = "background-color: #F39C12;
+                               numericInput("elmermetnacut", "cut-off NA samples (%)",
+                                            min = 0, max = 1, value = 0.2, step = 0.1),
+                               actionButton("elmerpreparemee",
+                                            "Create mee object",
+                                            style = "background-color: #F39C12;
                                         color: #FFFFFF;
                                         margin-left: auto;
                                         margin-right: auto;
                                         width: 100%",
-                                        icon = icon("floppy-o")))
-                           )
+                                            icon = icon("floppy-o")))
+                    )
                 )
         )
     )
