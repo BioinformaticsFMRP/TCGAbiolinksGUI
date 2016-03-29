@@ -25,6 +25,18 @@ names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
                        "Cell Lines","Primary Xenograft Tissue",
                        "Cell Line Derived Xenograft Tissue")
 
+inputTextarea <- function(inputId, value="", nrows, ncols) {
+    tagList(
+        singleton(tags$head(tags$script(src = "textarea.js"))),
+        tags$textarea(id = inputId,
+                      class = "inputtextarea",
+                      rows = nrows,
+                      cols = ncols,
+                      as.character(value))
+    )
+}
+
+
 header <- dashboardHeader(
     title = "biOMICs"
 )
@@ -265,10 +277,18 @@ body <-  dashboardBody(
                            box(title = "Clinica data search",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE,
+                               radioButtons("clinicalSearchType", "Search by:",
+                                            c("Tumor" = TRUE,
+                                              "Samples" = FALSE)),
+                               useShinyjs(),
                                selectizeInput('tcgatumorClinicalFilter',
                                               'Tumor filter',
                                               unique(TCGAquery()$Disease),
                                               multiple = FALSE),
+                               bsTooltip("clinicalBarcode", "Barcodes separeted by ;",
+                                         "left"),
+                               useShinyjs(),
+                               inputTextarea('clinicalBarcode', '', 2, 35),
                                selectizeInput('tcgaClinicalFilter',
                                               'Clinical file type filter',
                                               c("biospecimen_aliquot",

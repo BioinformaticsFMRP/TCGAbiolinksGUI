@@ -203,6 +203,18 @@ biOMICsServer <- function(input, output, session) {
         )})
 
     #------------- TCGA ------------------
+    #--------------------- START controlling show/hide states -----------------
+    shinyjs::hide("tcgatumorClinicalFilter")
+    #shinyjs::hide("deanormalizationmet")
+    observeEvent(input$clinicalSearchType, {
+        shinyjs::toggle("clinicalBarcode")
+        shinyjs::toggle("tcgatumorClinicalFilter")
+    })
+    #observeEvent(input$deafilter, {
+    #    shinyjs::toggle("tcgatumorClinicalFilter")
+    #    shinyjs::toggle("clinicalBarcode")
+    #})
+    #----------------------- END controlling show/hide states -----------------
     # Table render
     observeEvent(input$tcgaSearchBt, {
         output$tcgaSearchtbl <- renderDataTable({
