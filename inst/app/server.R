@@ -938,9 +938,24 @@ biOMICsServer <- function(input, output, session) {
                                                      filename = NULL)
                          })
         })})
-    #----------------------------------------------------------
-    #  Profile plot
-    #-----------------------------------------------------------
+    #--------------------------------------------------------------------------
+    #                           Profile plot
+    #--------------------------------------------------------------------------
+    #--------------------- START controlling show/hide states -----------------
+    shinyjs::hide("profileplotgroup")
+    shinyjs::hide("profileplotsubtype")
+    shinyjs::hide("profileplotrmnagroup")
+    shinyjs::hide("profileplotrmnasub")
+    observeEvent(input$profileplotfile, {
+        if(!is.null(profileplotdata())){
+            shinyjs::show("profileplotgroup")
+            shinyjs::show("profileplotsubtype")
+            shinyjs::show("profileplotrmnagroup")
+            shinyjs::show("profileplotrmnasub")
+        }
+    })
+    #----------------------- END controlling show/hide states -----------------
+
     observe({
         data <- profileplotdata()
         updateSelectizeInput(session, 'profileplotgroup', choices = {
@@ -1035,9 +1050,14 @@ biOMICsServer <- function(input, output, session) {
     #------------------------------------------------
     # Survival plot
     # -----------------------------------------------
-    #----------------------------------------------------------
-    #  Profile plot
-    #-----------------------------------------------------------
+    #--------------------- START controlling show/hide states -----------------
+    shinyjs::hide("survivalplotgroup")
+    observeEvent(input$survivalplotfile, {
+        if(!is.null(survivalplotdata())){
+            shinyjs::show("survivalplotgroup")
+        }
+    })
+    #----------------------- END controlling show/hide states -----------------
     observe({
         data <- survivalplotdata()
         updateSelectizeInput(session, 'survivalplotgroup', choices = {

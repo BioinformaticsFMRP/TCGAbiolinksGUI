@@ -394,12 +394,13 @@ body <-  dashboardBody(
                            box(title = "DMR analysis",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               sliderInput("dmrcores", "Cores",step=1,
+                                           min = 1, max = parallel::detectCores(), value = 1),
                                numericInput("dmrthrsld", "DNA methylation threshold",
                                             min = 0, max = 1, value = 0, step = 0.05),
                                numericInput("dmrpvalue", "P-value adj cut-off",
                                             min = 0, max = 1, value = 0.05, step = 0.001),
-                               sliderInput("dmrcores", "Cores",step=1,
-                                           min = 1, max = parallel::detectCores(), value = 1),
+
                                selectizeInput('dmrgroupCol',
                                               "Group column",
                                               choices = NULL,  multiple = FALSE),
@@ -417,7 +418,7 @@ body <-  dashboardBody(
                                               margin-right: auto;
                                               width: 100%",
                                             icon = icon("flask"))),
-                           box(title = "Volcano plot analysis",width = NULL,
+                           box(title = "Volcano plot",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                colourInput("colHypomethylated", "Hypomethylated colour", value = "darkgreen"),
@@ -542,6 +543,7 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('profileplotfile', 'Select rda file', 'Please select a rda file with a data frame',
                                                 multiple = FALSE, buttonType='warning'),
+                               useShinyjs(),
                                selectizeInput('profileplotgroup',
                                               'Column with the group information',
                                               choices=NULL,
@@ -551,15 +553,7 @@ body <-  dashboardBody(
                                               choices=NULL,
                                               multiple = FALSE),
                                checkboxInput("profileplotrmnagroup", " Remove the NA groups?", value = FALSE, width = NULL),
-                               checkboxInput("profileplotrmnasub", " Remove the NA subtypes?", value = FALSE, width = NULL),
-                               actionButton("profileplotBt",
-                                            "Plot profile plot",
-                                            style = "background-color: #F39C12;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 100%",
-                                            icon = icon("eye"))
+                               checkboxInput("profileplotrmnasub", " Remove the NA subtypes?", value = FALSE, width = NULL)
                            ),
                            box(title = "Plot controls",width = NULL,
                                status = "warning",
@@ -573,7 +567,15 @@ body <-  dashboardBody(
                                numericInput("margin4", "Move left line of vertical bar",
                                             min = -10, max = 10, value = 0.0, step = 0.1),
                                sliderInput("profilewidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("profileheight", "Plot Height (px)", min = 0, max = 800, value = 800))
+                               sliderInput("profileheight", "Plot Height (px)", min = 0, max = 800, value = 800)),
+                           actionButton("profileplotBt",
+                                        "Plot profile plot",
+                                        style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                        icon = icon("eye"))
                     )
                 )
         ),
@@ -592,21 +594,22 @@ body <-  dashboardBody(
                                selectizeInput('survivalplotgroup',
                                               'Column with the group information',
                                               choices=NULL,
-                                              multiple = FALSE),
-                               actionButton("survivalplotBt",
-                                            "Plot survival plot",
-                                            style = "background-color: #F39C12;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 100%",
-                                            icon = icon("eye"))
+                                              multiple = FALSE)
+
                            ),
                            box(title = "Plot controls",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("survivalwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("survivalheight", "Plot Height (px)", min = 0, max = 800, value = 800))
+                               sliderInput("survivalheight", "Plot Height (px)", min = 0, max = 800, value = 800)),
+                           actionButton("survivalplotBt",
+                                        "Plot survival plot",
+                                        style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                        icon = icon("eye"))
                     )
                 )
         ),
