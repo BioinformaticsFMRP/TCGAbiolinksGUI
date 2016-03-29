@@ -295,9 +295,32 @@ biOMICsServer <- function(input, output, session) {
 
         withProgress(message = 'Download in progress',
                      detail = 'This may take a while...', value = 0, {
-                         df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
-                         x <- TCGAquery()
-                         x <- x[x$name %in% df$name,]
+                         # Decision, if no rows selected download all
+                         if(!is.null(input$allRows)) {
+                             df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
+                             x <- TCGAquery()
+                             x <- x[x$name %in% df$name,]
+
+                         } else {
+
+                             tumor <- isolate({input$tcgaTumorFilter})
+                             platform <- isolate({input$tcgaExpFilter})
+                             level <- isolate({input$tcgaLevelFilter})
+
+                             x <- data.frame()
+                             if(length(level) > 0){
+                                 for(i in level){
+                                     x <- rbind(x,
+                                                TCGAquery(tumor = tumor,
+                                                          platform = platform,
+                                                          level = i))
+                                 }
+                             } else {
+                                 x <- TCGAquery(tumor = tumor,
+                                                platform = platform,
+                                                level = level)
+                             }
+                         }
 
                          for (i in 1:nrow(x)) {
                              incProgress(1/nrow(x))
@@ -717,7 +740,7 @@ biOMICsServer <- function(input, output, session) {
             jitter <- isolate({input$meanmetplotjitter})
             sort <- isolate({input$meanmetsort})
             angle <- isolate({input$meanmetAxisAngle})
-        
+
             if(isolate({input$meanmetgroupCol}) =="") {
                 group <- NULL
             } else {
