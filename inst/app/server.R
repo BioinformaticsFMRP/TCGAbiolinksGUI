@@ -521,8 +521,13 @@ biOMICsServer <- function(input, output, session) {
 
         withProgress(message = 'Download in progress',
                      detail = 'This may take a while...', value = 0, {
+                         if(is.null(input$allRows)){
+                             closeAlert(session, "oncoAlert")
+                             createAlert(session, "oncomessage", "oncoAlert", title = "Error", style = "alert",
+                                         content =  paste0("Please select the files to download"), append = TRUE)
+                             req(input$allRows)
+                         }
                          df <- data.frame(name = input$allRows[seq(5, length(input$allRows), 7)])
-                         print(df)
                          df <-   maf.files[maf.files$Archive.Name %in% df$name,]
 
                          for (i in 1:nrow(df)) {
@@ -702,11 +707,12 @@ biOMICsServer <- function(input, output, session) {
                 group2 <- isolate({input$dmrgroup2})
             }
 
+
             data <- isolate({dmrdata()})
             diffcol <- paste("diffmean",group1,group2,sep = ".")
             pcol <- paste("p.value.adj",group1,group2,sep = ".")
-
-
+            names <- NULL
+            if(isolate({input$dmrNamesVolcano})) names <- values(data)$probeID
             label <- c("Not Significant",
                        "Hypermethylated",
                        "Hypomethylated")
@@ -726,7 +732,8 @@ biOMICsServer <- function(input, output, session) {
                                                    title =  paste("Volcano plot", "(", group2, "vs", group1,")"),
                                                    legend=  "Legend",
                                                    label = label,
-                                                   names = NULL,
+                                                   names = names,
+                                                   names.fill = isolate({input$dmrNamesVolcanoFill}),
                                                    x.cut = isolate({as.numeric(input$dmrthrsld)}),
                                                    y.cut = isolate({as.numeric(input$dmrpvalue)}),
                                                    filename = NULL)
@@ -1287,7 +1294,8 @@ biOMICsServer <- function(input, output, session) {
         met.p.cut <- isolate({input$starburstmetFDR})
         exp <- result.dea.data()
         met <-result.dmr.data()
-
+        names <- isolate({input$starburstNames})
+        names.fill <- isolate({input$starburstNamesFill})
         colors <- c(isolate({input$sbcolInsignigicant}),
                     isolate({input$sbcolUpHypo}),
                     isolate({input$sbcolDownHypo}),
@@ -1302,6 +1310,8 @@ biOMICsServer <- function(input, output, session) {
                                           group1 = g1,
                                           group2 = g2,
                                           color = colors,
+                                          names = names,
+                                          names.fill = names.fill,
                                           exp.p.cut = exp.p.cut,
                                           met.p.cut = met.p.cut,
                                           diffmean.cut = diffmean.cut,

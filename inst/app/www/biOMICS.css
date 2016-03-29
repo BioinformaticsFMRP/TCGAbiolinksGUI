@@ -11,6 +11,12 @@ body {
   background-color: #fff;
 }
 
+.main-header .logo {
+  font-family: 'Lobster', cursive;
+  font-weight: bold;
+  font-size: 24px;
+}
+
 body > .header .logo {
   font-family: 'Lobster', cursive;
   font-weight: bold;

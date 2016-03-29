@@ -40,7 +40,8 @@ sidebar <-  dashboardSidebar(
         menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask")),
         menuItem("DEA analysis" , tabName = "dea", icon = icon("flask")),
         menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
-        menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
+        menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask")),
+        menuItem("ELMER analysis" , tabName = "elmer", icon = icon("flask"))
     )
 )
 
@@ -412,6 +413,8 @@ body <-  dashboardBody(
                                colourInput("colHypomethylated", "Hypomethylated colour", value = "darkgreen"),
                                colourInput("colHypermethylated", "Hypermethylate colour", value = "red"),
                                colourInput("colinsignificant", "Insignificant colour", value = "black"),
+                               checkboxInput("dmrNamesVolcano", "Add probe names?", value = FALSE, width = NULL),
+                               checkboxInput("dmrNamesVolcanoFill", "Fill names?", value = TRUE, width = NULL),
                                actionButton("volcanoPlot",
                                             "Volcano plot",
                                             style = "background-color: #F39C12;
@@ -735,6 +738,8 @@ body <-  dashboardBody(
                                selectizeInput('starburstgroup2',
                                               "Group 2",
                                               choices = NULL,  multiple = FALSE),
+                               checkboxInput("starburstNames", "Add genes names?", value = FALSE, width = NULL),
+                               checkboxInput("starburstNamesFill", "Fill names?", value = TRUE, width = NULL),
                                actionButton("starburstPlot",
                                             "starburst plot",
                                             style = "background-color: #F39C12;
@@ -762,6 +767,33 @@ body <-  dashboardBody(
                                sliderInput("starburstheight", "Plot Height (px)", min = 0, max = 800, value = 400))
                     )
 
+                )
+        ),
+        tabItem(tabName = "elmer",
+                fluidRow(
+                    column(10,  bsAlert("elmermessage"),
+                           bsCollapse(id = "collapsestelmer", open = "starburst plots",
+                                      bsCollapsePanel("ELMER result", dataTableOutput('elmerResult'), style = "default"),
+                                      bsCollapsePanel("Elmer plots", uiOutput("elmerPlot"), style = "default"))),
+                    column(2,
+                           box(title = "Create mee object", width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               shinyFilesButton('elmermetfile', 'Select DNA methylation object', 'Please select DNA methylation object',
+                                                multiple = FALSE, buttonType='warning'),
+                               shinyFilesButton('elmerexpfile', 'Select expression object', 'Please select gene expression object',
+                                                multiple = FALSE, buttonType='warning'),
+                           numericInput("elmermetnacut", "cut-off NA samples (%)",
+                                        min = 0, max = 1, value = 0.2, step = 0.1),
+                           actionButton("elmerpreparemee",
+                                        "Create mee object",
+                                        style = "background-color: #F39C12;
+                                        color: #FFFFFF;
+                                        margin-left: auto;
+                                        margin-right: auto;
+                                        width: 100%",
+                                        icon = icon("floppy-o")))
+                           )
                 )
         )
     )
