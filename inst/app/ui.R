@@ -92,7 +92,7 @@ body <-  dashboardBody(
                            )),
                     column(2,
                            box(title = "Advanced search",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                selectizeInput('ontExpFilter',
                                               'Experiments filter',
@@ -104,14 +104,14 @@ body <-  dashboardBody(
                                               multiple = FALSE,options = list(create = TRUE),selected = NULL),
                                actionButton("ontSearchBt",
                                             "search",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("search"))),
                            box(title = "Download",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                selectizeInput('ontftypeFilter',
                                               'Encode/Roadmap file filter',
@@ -119,11 +119,11 @@ body <-  dashboardBody(
                                               multiple = TRUE),
 
                                shinyDirButton('folder', 'Download folder', 'Please select a folder',
-                                              class='shinyDirectories btn-default', buttonType='warning'),
+                                              class='shinyDirectories btn-default'),
 
                                actionButton("ontSearchDownloadBt",
                                             "Download",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
@@ -133,13 +133,13 @@ body <-  dashboardBody(
                                          "left"),
                                textOutput('ontSearchLink')
                            ),  box(title = "Report",width = NULL,
-                                   status = "warning",
+                                   status = "danger",
                                    solidHeader = FALSE, collapsible = FALSE,
                                    shinyDirButton('reportfolder', 'Report folder', 'Please select a folder where the report will be created',
-                                                  class='shinyDirectories btn-default', buttonType='warning'),
+                                                  class='shinyDirectories btn-default'),
                                    actionButton("ontReport",
                                                 "Create report",
-                                                style = "background-color: #F39C12;
+                                                style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
@@ -158,7 +158,7 @@ body <-  dashboardBody(
                            )),
                     column(2,
                            box(title = "Advanced search",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE,
                                selectizeInput('tcgaTumorFilter',
                                               'Tumor filter',
@@ -174,76 +174,69 @@ body <-  dashboardBody(
                                               multiple = TRUE, selected = NULL),
                                actionButton("tcgaSearchBt",
                                             "TCGA Search",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("search"))),
                            box(title = "Download",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput('tcgasamplestypeFilter',
                                               'Sample type filter',
                                               table.code,
                                               multiple = TRUE),
-                               conditionalPanel(
-                                   condition = "input.tcgaExpFilter.indexOf('IlluminaHiSeq_RNASeqV2') > -1",
-                                   selectizeInput('tcgaFrnaseqv2typeFilter',
-                                                  'RNASeqV2 File type filter',
-                                                  c("junction_quantification",
-                                                    "rsem.genes.results",
-                                                    "rsem.isoforms.results",
-                                                    "rsem.genes.normalized_results",
-                                                    "rsem.isoforms.normalized_results",
-                                                    "bt.exon_quantification"),
-                                                  multiple = TRUE)
-                               ),  conditionalPanel(
-                                   condition = "input.tcgaExpFilter.indexOf('IlluminaHiSeq_RNASeq') > -1",
-                                   selectizeInput('tcgaFrnaseqtypeFilter',
-                                                  'RNASeq File type filter',
-                                                  c("exon.quantification",
-                                                    "spljxn.quantification",
-                                                    "gene.quantification"),
-                                                  multiple = TRUE)
-                               ),
-                               conditionalPanel(
-                                   condition = "input.tcgaExpFilter.indexOf('Genome_Wide_SNP_6') > -1 && !input.tcgaExpFilter ",
-                                   selectizeInput('tcgaFgwstypeFilter',
-                                                  'genome_wide_snp_6 File type filter',
-                                                  c("hg18.seg","hg19.seg","nocnv_hg18.seg","nocnv_hg19.seg"),
-                                                  multiple = TRUE)
-                               ),
+                               useShinyjs(),
+                               selectizeInput('tcgaFrnaseqv2typeFilter',
+                                              'RNASeqV2 File type filter',
+                                              c("junction_quantification",
+                                                "rsem.genes.results",
+                                                "rsem.isoforms.results",
+                                                "rsem.genes.normalized_results",
+                                                "rsem.isoforms.normalized_results",
+                                                "bt.exon_quantification"),
+                                              multiple = TRUE),
+                               useShinyjs(),
+                               selectizeInput('tcgaFrnaseqtypeFilter',
+                                              'RNASeq File type filter',
+                                              c("exon.quantification",
+                                                "spljxn.quantification",
+                                                "gene.quantification"),
+                                              multiple = TRUE),
+                               useShinyjs(),
+                               selectizeInput('tcgaFgwstypeFilter',
+                                              'genome_wide_snp_6 File type filter',
+                                              c("hg18.seg","hg19.seg","nocnv_hg18.seg","nocnv_hg19.seg"),
+                                              multiple = TRUE),
                                actionButton("tcgaDownloadBt",
                                             "Download",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
-                                            width: 50%",
+                                            width: 100%",
                                             icon = icon("download"))
                            ),
 
                            box(title = "Prepare",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                radioButtons("prepareRb", "Data type:",
                                             c("SummarizedExperiment" = TRUE,
                                               "Dataframe" = FALSE)),
                                checkboxInput("addSubTypeTCGA", "Add information about subtypes", value = FALSE, width = NULL),
                                textInput("tcgafilename", "File name", value = "data.rda", width = NULL, placeholder = NULL),
-                               shinyDirButton('tcgapreparefolder', 'Folder to save', 'Please select a folder',
-                                              class='shinyDirectories btn-default', buttonType='warning'),
                                actionButton("tcgaPrepareBt",
                                             "Prepare data",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
-                                            width: 50%",
+                                            width: 100%",
                                             icon = icon("cogs"))),
                            box(title = "Subtype search",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput('tcgasubtypeFilter',
                                               'Tumor filter',
@@ -267,14 +260,14 @@ body <-  dashboardBody(
                                checkboxInput("saveSubtype", "Save as rda?", value = FALSE, width = NULL),
                                actionButton("tcgaSubtypeBt",
                                             "TCGA Subtype Search",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("search"))),
                            box(title = "Clinical data search",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                radioButtons("clinicalSearchType", "Search by:",
                                             c("Tumor" = TRUE,
@@ -315,14 +308,14 @@ body <-  dashboardBody(
                                checkboxInput("saveClinical", "Save result as rda?", value = FALSE, width = NULL),
                                actionButton("tcgaClinicalBt",
                                             "TCGA Subtype Search",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("search"))),
                            box(title = "MAF data search",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput('tcgaMafTumorFilter',
                                               'Tumor filter',
@@ -330,7 +323,7 @@ body <-  dashboardBody(
                                               multiple = FALSE),
                                actionButton("tcgaMafSearchBt",
                                             "Search",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
@@ -338,7 +331,7 @@ body <-  dashboardBody(
                                             icon = icon("search")),
                                actionButton("mafDownloadBt",
                                             "Download",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
@@ -346,12 +339,12 @@ body <-  dashboardBody(
                                             icon = icon("download"))
                            ),
                            box(title = "Directory to save files",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                bsTooltip("tcgafolder", "Select a folder where data will be saved/downloaded",
                                          "left"),
                                shinyDirButton('tcgafolder', 'Folder to save', 'Please select a folder where files will be saved',
-                                              class='shinyDirectories btn-default', buttonType='warning')
+                                              class='shinyDirectories btn-default')
                            ),
                            bsAlert("tcgaddirmessage")
                     ))
@@ -364,19 +357,19 @@ body <-  dashboardBody(
                            )),
                     column(2,
                            box(title = "Oncoprint data",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                shinyFilesButton('maffile', 'Select maf file', 'Please select a maf file',
-                                                multiple = FALSE, buttonType='warning'),
+                                                multiple = FALSE),
                                selectizeInput('oncoGenes',
                                               "genes",
                                               choices = NULL,  multiple = TRUE)
                            ),
                            box(title = "Oncoprint metadata",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                shinyFilesButton('mafAnnotation', 'Select annotation file', 'Please select a file with the annotation data frame ',
-                                                multiple = FALSE, buttonType='warning'),
+                                                multiple = FALSE),
                                useShinyjs(),
                                selectizeInput('mafAnnotationcols',
                                               "Annotation columns",
@@ -385,20 +378,20 @@ body <-  dashboardBody(
                                               "Annotation position",
                                               choices = c("top","bottom"),selected = "top",  multiple = FALSE)
                            ),
-                           box(title = "Colors control",width = NULL,  status = "warning",
+                           box(title = "Colors control",width = NULL,  status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                colourInput("colDEL", "DEL color", value = "red"),
                                colourInput("colINS", "INS color", value = "blue"),
                                colourInput("colSNP", "SNP color", value = "green"),
                                colourInput("colDNP", "DNP color", value = "purple")),
-                           box(title = "Size control",width = NULL,  status = "warning",
+                           box(title = "Size control",width = NULL,  status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 800, value = 400)
                            ),
                            actionButton("oncoprintPlot",
                                         "Plot oncoprint",
-                                        style = "background-color: #F39C12;
+                                        style = "background-color: #000080;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
@@ -417,14 +410,14 @@ body <-  dashboardBody(
                                       bsCollapsePanel("DMR plots", uiOutput("dmrPlot"), style = "default"))),
                     column(2,
                            box(title = "DNA methylation object",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('dmrfile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
-                                                multiple = FALSE, buttonType='warning')),
+                                                multiple = FALSE)),
                            #fileInput('dmrfile', 'Select SummarizedExperiment object',
                            #         accept=c(".rda"))),
                            box(title = "DMR analysis",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("dmrcores", "Cores",step=1,
                                            min = 1, max = parallel::detectCores(), value = 1),
@@ -444,14 +437,14 @@ body <-  dashboardBody(
                                               choices = NULL,  multiple = FALSE),
                                actionButton("dmrAnalysis",
                                             "DMR analysis",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
                                             icon = icon("flask"))),
                            box(title = "Volcano plot",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                colourInput("colHypomethylated", "Hypomethylated color", value = "darkgreen"),
                                colourInput("colHypermethylated", "Hypermethylate color", value = "red"),
@@ -460,7 +453,7 @@ body <-  dashboardBody(
                                checkboxInput("dmrNamesVolcanoFill", "Fill names?", value = TRUE, width = NULL),
                                actionButton("volcanoPlot",
                                             "Volcano plot",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
@@ -468,7 +461,7 @@ body <-  dashboardBody(
                                             icon = icon("eye"))
                            ),
                            box(title = "Mean DNA methylation",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput('meanmetgroupCol',
                                               "Group column",
@@ -491,7 +484,7 @@ body <-  dashboardBody(
                                sliderInput("meanmetAxisAngle", "Decimal:",   min = 0, max = 360, value = 90, step= 45),
                                actionButton("meanmetPlot",
                                             "DNA mean methylation plot",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
@@ -500,7 +493,7 @@ body <-  dashboardBody(
 
                            ),
                            box(title = "Heatmap",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput('colmetadataheatmap',
                                               "Annotations to the columns",
@@ -514,7 +507,7 @@ body <-  dashboardBody(
                                checkboxInput("heatmap.show.col.names", "Show col names?", value = FALSE, width = NULL),
                                actionButton("heatmapPlot",
                                             "Heatmap plot",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
@@ -522,7 +515,7 @@ body <-  dashboardBody(
                                             icon = icon("eye"))
                            ),
                            box(title = "Plot controls",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("meanmetwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("meanmetheight", "Plot Height (px)", min = 0, max = 800, value = 400))
@@ -537,7 +530,7 @@ body <-  dashboardBody(
                                       bsCollapsePanel("EA plots", uiOutput("eaPlot"), style = "default"))),
                     column(2,
                            box(title = "EA analysis",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                selectizeInput('eagenes',
                                               "Genes",
@@ -553,7 +546,7 @@ body <-  dashboardBody(
                                sliderInput("eaheight", "Plot Height (px)", min = 0, max = 1000, value = 1000),
                                actionButton("eaplot",
                                             "EA barplot",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
@@ -571,10 +564,10 @@ body <-  dashboardBody(
                            )),
                     column(2,
                            box(title = "Profile plot",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('profileplotfile', 'Select rda file', 'Please select a rda file with a data frame',
-                                                multiple = FALSE, buttonType='warning'),
+                                                multiple = FALSE),
                                useShinyjs(),
                                selectizeInput('profileplotgroup',
                                               'Column with the group information',
@@ -588,7 +581,7 @@ body <-  dashboardBody(
                                checkboxInput("profileplotrmnasub", " Remove the NA subtypes?", value = FALSE, width = NULL)
                            ),
                            box(title = "Plot controls",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                numericInput("margin1", "Move upper line of vertical bar",
                                             min = -10, max = 10, value = 0.0, step = 0.1),
@@ -602,7 +595,7 @@ body <-  dashboardBody(
                                sliderInput("profileheight", "Plot Height (px)", min = 0, max = 800, value = 800)),
                            actionButton("profileplotBt",
                                         "Plot profile plot",
-                                        style = "background-color: #F39C12;
+                                        style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
@@ -619,10 +612,10 @@ body <-  dashboardBody(
                            )),
                     column(2,
                            box(title = "survival plot",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('survivalplotfile', 'Select rda file', 'Please select a rda file with a data frame',
-                                                multiple = FALSE, buttonType='warning'),
+                                                multiple = FALSE),
                                selectizeInput('survivalplotgroup',
                                               'Column with the group information',
                                               choices=NULL,
@@ -630,13 +623,13 @@ body <-  dashboardBody(
 
                            ),
                            box(title = "Plot controls",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("survivalwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("survivalheight", "Plot Height (px)", min = 0, max = 800, value = 800)),
                            actionButton("survivalplotBt",
                                         "Plot survival plot",
-                                        style = "background-color: #F39C12;
+                                        style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
@@ -654,12 +647,12 @@ body <-  dashboardBody(
                                       bsCollapsePanel("DEA plots", uiOutput("deaPlot"), style = "default"))),
                     column(2,
                            box(title = "Gene expression object",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('deafile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
-                                                multiple = FALSE, buttonType='warning')),
+                                                multiple = FALSE)),
                            box(title = "Normalization of genes",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                checkboxInput("deanormalization", "Normalization of genes?", value = FALSE, width = NULL),
                                useShinyjs(),
@@ -669,7 +662,7 @@ body <-  dashboardBody(
                                               multiple = FALSE)
                            ),
                            box(title = "Quantile filter of genes",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                checkboxInput("deafilter", "Quantile filter of genes?", value = FALSE, width = NULL),
 
@@ -681,7 +674,7 @@ body <-  dashboardBody(
                                             min = 0, max = 1, value = 0.25, step = 0.1)
                            ),
                            box(title = "dea analysis",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                numericInput("deathrsld", "Log FC threshold",
                                             min = 0, max = 1, value = 0, step = 0.05),
@@ -702,21 +695,21 @@ body <-  dashboardBody(
                                               multiple = FALSE),
                                actionButton("deaAnalysis",
                                             "dea analysis",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("flask"))),
                            box(title = "Volcano plot",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                colourInput("colUpregulated", "Upregulated genes color", value = "red"),
                                colourInput("colDownregulated", "Down regulated color", value = "darkgreen"),
                                colourInput("coldeainsignificant", "Insignificant color", value = "black"),
                                actionButton("volcanodeaPlot",
                                             "Volcano plot",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
@@ -724,7 +717,7 @@ body <-  dashboardBody(
                                             icon = icon("eye"))
                            ),
                            box(title = "Pathway graphs",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput('pathway.id',
                                               "pathway ID",
@@ -733,7 +726,7 @@ body <-  dashboardBody(
                                checkboxInput("kegg.native.checkbt", "Native KEGG?", value = TRUE, width = NULL),
                                actionButton("pathwaygraphBt",
                                             "Create pathway file",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
@@ -741,7 +734,7 @@ body <-  dashboardBody(
                                             icon = icon("file-pdf-o"))
                            ),
                            box(title = "Plot controls",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("deawidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("deaheight", "Plot Height (px)", min = 0, max = 800, value = 400))
@@ -757,14 +750,14 @@ body <-  dashboardBody(
                                       bsCollapsePanel("starburst plots", uiOutput("starburstPlot"), style = "default"))),
                     column(2,
                            box(title = "Gene expression object",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('starburstmetfile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
-                                                multiple = FALSE, buttonType='warning'),
+                                                multiple = FALSE),
                                shinyFilesButton('starburstexpfile', 'Select expression result', 'Please select expression result object',
-                                                multiple = FALSE, buttonType='warning')),
+                                                multiple = FALSE)),
                            box(title = "starburst analysis",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                numericInput("starburstexpFC", "Log FC threshold",
                                             min = 0, max = 10, value = 0, step = 0.05),
@@ -784,7 +777,7 @@ body <-  dashboardBody(
                                checkboxInput("starburstNamesFill", "Fill names?", value = TRUE, width = NULL)
                            ),
                            box(title = "Colors control",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                colourInput("sbcolInsignigicant", "Insignificant", value = "black"),
                                colourInput("sbcolUpHypo", "Upregulated & Hypomethylated", value =  "#E69F00"),
@@ -796,13 +789,13 @@ body <-  dashboardBody(
                                colourInput("sbcolUpHyper", "Upregulated & Hypermethylated", value = "#CC79A7"),
                                colourInput("sbcolDownHyper", "Downregulated & Hypermethylated", value = "purple")),
                            box(title = "Plot controls",width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("starburstwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("starburstheight", "Plot Height (px)", min = 0, max = 800, value = 400)),
                            actionButton("starburstPlot",
                                         "starburst plot",
-                                        style = "background-color: #F39C12;
+                                        style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
@@ -819,17 +812,17 @@ body <-  dashboardBody(
                                       bsCollapsePanel("Elmer plots", uiOutput("elmerPlot"), style = "default"))),
                     column(2,
                            box(title = "Create mee object", width = NULL,
-                               status = "warning",
+                               status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('elmermetfile', 'Select DNA methylation object', 'Please select DNA methylation object',
-                                                multiple = FALSE, buttonType='warning'),
+                                                multiple = FALSE),
                                shinyFilesButton('elmerexpfile', 'Select expression object', 'Please select gene expression object',
-                                                multiple = FALSE, buttonType='warning'),
+                                                multiple = FALSE),
                                numericInput("elmermetnacut", "cut-off NA samples (%)",
                                             min = 0, max = 1, value = 0.2, step = 0.1),
                                actionButton("elmerpreparemee",
                                             "Create mee object",
-                                            style = "background-color: #F39C12;
+                                            style = "background-color: #000080;
                                         color: #FFFFFF;
                                         margin-left: auto;
                                         margin-right: auto;

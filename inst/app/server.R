@@ -121,7 +121,7 @@ biOMICsServer <- function(input, output, session) {
         if (length(getPath) == 0) getPath <- "."
         samplesType <- input$tcgasamplestypeFilter
 
-        save.dir <- parseDirPath(volumes, input$tcgapreparefolder)
+        save.dir <- parseDirPath(volumes, input$tcgafolder)
         if(length(save.dir) == 0) {
             filename <- isolate({input$tcgafilename})
         } else {
@@ -202,13 +202,37 @@ biOMICsServer <- function(input, output, session) {
         ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
         )})
 
-    #------------- TCGA ------------------
-    #--------------------- START controlling show/hide states -----------------
+    #-------------------------------------------------------------------------
+    #                            TCGA Search
+    #-------------------------------------------------------------------------
+    #--------------------- START controlling show/hide states ----------------
     shinyjs::hide("tcgatumorClinicalFilter")
-    #shinyjs::hide("deanormalizationmet")
+    shinyjs::hide("tcgaFrnaseqtypeFilter")
+    shinyjs::hide("tcgaFrnaseqv2typeFilter")
+    shinyjs::hide("tcgaFgwstypeFilter")
+
     observeEvent(input$clinicalSearchType, {
         shinyjs::toggle("clinicalBarcode")
         shinyjs::toggle("tcgatumorClinicalFilter")
+    })
+    observeEvent(input$tcgaExpFilter, {
+        exp <- isolate({input$tcgaExpFilter})
+
+        if("IlluminaHiSeq_RNASeqV2" %in% exp) {
+            shinyjs::show("tcgaFrnaseqv2typeFilter")
+        } else {
+            shinyjs::hide("tcgaFrnaseqv2typeFilter")
+        }
+        if("IlluminaHiSeq_RNASeq" %in% exp) {
+            shinyjs::show("tcgaFrnaseqtypeFilter")
+        } else {
+            shinyjs::hide("tcgaFrnaseqtypeFilter")
+        }
+        if("Genome_Wide_SNP_6" %in% exp) {
+            shinyjs::show("tcgaFgwstypeFilter")
+        } else {
+            shinyjs::hide("tcgaFgwstypeFilter")
+        }
     })
     #observeEvent(input$deafilter, {
     #    shinyjs::toggle("tcgatumorClinicalFilter")
@@ -275,21 +299,12 @@ biOMICsServer <- function(input, output, session) {
     # Download
     shinyDirChoose(input, 'tcgafolder', roots=volumes, session=session,
                    restrictions=system.file(package='base'))
-    shinyDirChoose(input, 'tcgapreparefolder', roots=volumes, session=session,
-                   restrictions=system.file(package='base'))
 
     observeEvent(input$tcgafolder , {
         closeAlert(session, "tcgadownloaddirAlert")
         createAlert(session, "tcgaddirmessage", "tcgadownloaddirAlert", title = "Download folder", style =  "success",
                     content =  parseDirPath(volumes, input$tcgafolder), append = TRUE)
     })
-
-    observeEvent(input$tcgapreparefolder , {
-        closeAlert(session, "tcgapreparedirAlert")
-        createAlert(session, "tcgaddirmessage", "tcgapreparedirAlert", title = "Prepare folder", style =  "success",
-                    content =  parseDirPath(volumes, input$tcgapreparefolder), append = TRUE)
-    })
-
 
     observeEvent(input$tcgaDownloadBt,{
 

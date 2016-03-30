@@ -1,41 +1,82 @@
 @import url("//fonts.googleapis.com/css?family=Lobster|Cabin:400,700");
-
 h1 {
-  font-family: 'Lobster', cursive;
-  font-weight: 500;
-  line-height: 1.1;
-  color: #ad1d28;
+    font-family: 'Lobster', cursive;
+    font-weight: 500;
+    line-height: 1.1;
+    color: #ad1d28;
 }
-
 body {
-  background-color: #fff;
+    background-color: #fff;
 }
-
 .main-header .logo {
-  /* font-family: 'Lobster', cursive;*/
-  font-weight: bold;
-  font-size: 24px;
+    /* font-family: 'Lobster', cursive;*/
+
+    font-weight: bold;
+    font-size: 24px;
+}
+.skin-blue .main-header .navbar {
+    background-color: #000080
+}
+.skin-blue .main-header .logo {
+    background-color: #000080;
+}
+.skin-blue .main-header .logo:hover {
+    background-color: #000080;
+    .opacity 0.8
 }
 
+.skin-blue .main-header .navbar .sidebar-toggle:hover {
+    background-color: #000080
+}
+.skin-blue .sidebar-menu>li.active>a,
+.skin-blue .sidebar-menu>li:hover>a {
+    color: #fff;
+    background: #1e282c;
+    border-left-color: red
+}
+.shinyDirectories {
+    width: 100%;
+    color: #fff;
+    background-color: navy;
+    border-color: #000000;
+    .opacity 0.8
+}
+.shinyFiles {
+    width: 100%;
+    color: #fff;
+    background-color: navy;
+    border-color: #000000;
+    .opacity 0.8
+}
+
+/*.shinyFiles:hover {
+    background-color: navy;
+    border-color: red;
+    .opacity 0.8
+}*/
+/*.shinyFiles:focus{
+    background-color: navy;
+    border-color: red;
+    .opacity 0.8
+}*/
 body > .header .logo {
-  font-family: 'Lobster', cursive;
-  font-weight: bold;
-  font-size: 24px;
+    font-family: 'Lobster', cursive;
+    font-weight: bold;
+    font-size: 24px;
 }
-
 pre {
-  background-color: #B0B0B0 ;
-  color: #ffffff;
+    background-color: #B0B0B0;
+    color: #ffffff;
 }
-
 .shiny-progress .bar {
-  background-color: #FF0000;
-  .opacity = 0.8;
+    background-color: #FF0000;
+    .opacity 0.8;
 }
 .shiny-progress .progress {
-  height:7px;
+    height: 7px;
+}
+.btn.btn-warning {
+    color: #fff;
+    border-color: #000000;
 }
 
-.btn.btn-warning {
-   color: #fff;
-}
