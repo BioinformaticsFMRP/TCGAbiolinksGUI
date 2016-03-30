@@ -229,6 +229,7 @@ body <-  dashboardBody(
                                radioButtons("prepareRb", "Data type:",
                                             c("SummarizedExperiment" = TRUE,
                                               "Dataframe" = FALSE)),
+                               useShinyjs(),
                                checkboxInput("addSubTypeTCGA", "Add information about subtypes", value = FALSE, width = NULL),
                                textInput("tcgafilename", "File name", value = "data.rda", width = NULL, placeholder = NULL),
                                actionButton("tcgaPrepareBt",

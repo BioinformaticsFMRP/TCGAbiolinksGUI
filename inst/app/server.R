@@ -210,7 +210,15 @@ biOMICsServer <- function(input, output, session) {
     shinyjs::hide("tcgaFrnaseqtypeFilter")
     shinyjs::hide("tcgaFrnaseqv2typeFilter")
     shinyjs::hide("tcgaFgwstypeFilter")
+    shinyjs::show("addSubTypeTCGA")
 
+    observeEvent(input$prepareRb, {
+        if(input$prepareRb) {
+            shinyjs::show("addSubTypeTCGA")
+        } else {
+            shinyjs::hide("addSubTypeTCGA")
+        }
+    })
     observeEvent(input$clinicalSearchType, {
         shinyjs::toggle("clinicalBarcode")
         shinyjs::toggle("tcgatumorClinicalFilter")
