@@ -217,6 +217,7 @@ biOMICsServer <- function(input, output, session) {
     #----------------------- END controlling show/hide states -----------------
     # Table render
     observeEvent(input$tcgaSearchBt, {
+        updateCollapse(session, "collapseTCGA", open = "TCGA search results")
         output$tcgaSearchtbl <- renderDataTable({
             tumor = input$tcgaTumorFilter
             platform = input$tcgaExpFilter
@@ -361,6 +362,7 @@ biOMICsServer <- function(input, output, session) {
     # Subtype
 
     observeEvent(input$tcgaSubtypeBt, {
+        updateCollapse(session, "collapseTCGA", open = "TCGA search results")
         output$tcgaSearchtbl <- renderDataTable({
             tumor <- isolate({input$tcgasubtypeFilter})
             tbl <- data.frame()
@@ -406,9 +408,20 @@ biOMICsServer <- function(input, output, session) {
                          "thca"="doi:10.1016/j.cell.2014.09.050",
                          "ucec"="doi:10.1038/nature12113",
                          "ucs"="")
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Source of the data", style =  "warning",
-                            content = paste0(doi[tumor]), append = FALSE)
-                if (isolate({input$saveSubtype})) save(tbl, file = paste0(tumor,"_subtype.rda"))
+                if (isolate({input$saveSubtype})) {
+                    getPath <- parseDirPath(volumes, input$tcgafolder)
+                    if (length(getPath) == 0) getPath <- "."
+                    filename <- file.path(getPath,paste0(tumor,"_subtype.rda"))
+                    save(tbl, file = filename)
+                    createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = paste0("File created: ", filename), style =  "success",
+                                content = paste0("Source of the data:", doi[tumor]), append = TRUE)
+
+                } else {
+                    createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Source of the data", style =  "success",
+                                content = paste0(doi[tumor]), append = TRUE)
+                }
+
+
                 return(tbl)
             }
 
@@ -435,16 +448,11 @@ biOMICsServer <- function(input, output, session) {
         )})
 
     observeEvent(input$tcgaClinicalBt, {
+        updateCollapse(session, "collapseTCGA", open = "TCGA search results")
         output$tcgaSearchtbl <- renderDataTable({
             tumor <- isolate({input$tcgatumorClinicalFilter})
             type <- isolate({input$tcgaClinicalFilter})
             text.samples <- isolate({input$clinicalBarcode})
-            if(grepl(";",text.samples)) sep <- ";"
-            if(grepl(",",text.samples)) sep <- ","
-            if(grepl("\n",text.samples)) sep <- "\n"
-            print(text.samples)
-            samples <- unlist(stringr::str_split(text.samples,sep))
-            print(samples)
             tbl <- data.frame()
             withProgress( message = 'Search in progress',
                           detail = 'This may take a while...', value = 0, {
@@ -452,7 +460,11 @@ biOMICsServer <- function(input, output, session) {
                                   if(isolate({input$clinicalSearchType})){
                                       tbl <- rbind(tbl, TCGAquery_clinic(tumor = tumor, clinical_data_type = type))
                                   } else {
-                                      print("By samples")
+                                      # By samples
+                                      if(grepl(";",text.samples)) sep <- ";"
+                                      if(grepl(",",text.samples)) sep <- ","
+                                      if(grepl("\n",text.samples)) sep <- "\n"
+                                      samples <- unlist(stringr::str_split(text.samples,sep))
                                       tbl <- rbind(tbl, TCGAquery_clinic(samples = samples, clinical_data_type = type))
                                   }
 
@@ -477,6 +489,9 @@ biOMICsServer <- function(input, output, session) {
                     } else {
                         filename <- paste0("samples_clinic_",type,gsub(" ","_",Sys.time()),".rda")
                     }
+                    getPath <- parseDirPath(volumes, input$tcgafolder)
+                    if (length(getPath) == 0) getPath <- "."
+                    filename <- file.path(getPath,filename)
                     save(tbl, file = filename)
                     createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Rda created", style =  "info",
                                 content = paste0("File created: ", filename), append = TRUE)
@@ -506,6 +521,75 @@ biOMICsServer <- function(input, output, session) {
                        )
         ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
         )})
+    # Maf Search
+    observeEvent(input$tcgaMafSearchBt, {
+
+        output$tcgaSearchtbl <- renderDataTable({
+            tumor <- isolate({input$tcgaMafTumorFilter})
+
+            maf.files <- get.obj("maf.files")
+            maf.files[,c(10,1,2,4,5,7)]
+            tbl <- subset(maf.files,maf.files$Tumor == tumor)
+            if(is.null(tbl)){
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                            content = "Sorry there are no results for your query.", append = FALSE)
+                return()
+            } else if(nrow(tbl) ==0) {
+                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                            content = "Sorry there are no results for your query.", append = FALSE)
+                return()
+            } else {
+                closeAlert(session, "tcgasearchAlert")
+            }
+            return(tbl)
+        },
+        options = list(pageLength = 10,
+                       scrollX = TRUE,
+                       jQueryUI = TRUE,
+                       pagingType = "full",
+                       lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                       language.emptyTable = "No results found",
+                       "dom" = 'T<"clear">lfrtip',
+                       "oTableTools" = list(
+                           "sSelectedClass" = "selected",
+                           "sRowSelect" = "os",
+                           "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                           "aButtons" = list(
+                               list("sExtends" = "collection",
+                                    "sButtonText" = "Save",
+                                    "aButtons" = c("csv","xls")
+                               )
+                           )
+                       )
+        ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+        )})
+
+    observeEvent(input$mafDownloadBt , {
+        maf.files <- get.obj("maf.files")
+        # Dir to save the files
+        getPath <- parseDirPath(volumes, input$tcgafolder)
+        if (length(getPath) == 0) getPath <- "."
+
+        withProgress(message = 'Download in progress',
+                     detail = 'This may take a while...', value = 0, {
+                         if(is.null(input$allRows)){
+                             closeAlert(session, "tcgasearchAlert")
+                             createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Error", style = "alert",
+                                         content =  paste0("Please select the files to download"), append = TRUE)
+                             req(input$allRows)
+                         }
+                         df <- data.frame(name = input$allRows[seq(5, length(input$allRows), 7)])
+                         df <- maf.files[maf.files$Archive.Name %in% df$name,]
+
+                         for (i in 1:nrow(df)) {
+                             incProgress(1/nrow(df))
+                             fout <- file.path(getPath,basename(df[1,]$Deploy.Location))
+                             if (!file.exists(fout))  downloader::download(df[1,]$Deploy.Location,fout)
+                         }})
+        closeAlert(session, "tcgasearchAlert")
+        createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Download completed", style = "success",
+                    content =  paste0("Saved file: ",fout), append = FALSE)
+    })
 
     #----------------------------------------------------------------------
     #                                         MAF
@@ -529,68 +613,6 @@ biOMICsServer <- function(input, output, session) {
 
     #-------------------------END controlling show/hide states -----------------
 
-    # Table render
-    output$maftbl <- renderDataTable({
-        maf.files <- get.obj("maf.files")
-        maf.files[,c(10,1,2,4,5,7)]
-    },
-    options = list(pageLength = 10,
-                   scrollX = TRUE,
-                   jQueryUI = TRUE,
-                   pagingType = "full",
-                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                   language.emptyTable = "No results found",
-                   "dom" = 'T<"clear">lfrtip',
-                   "oTableTools" = list(
-                       "sSelectedClass" = "selected",
-                       "sRowSelect" = "os",
-                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                       "aButtons" = list(
-                           list("sExtends" = "collection",
-                                "sButtonText" = "Save",
-                                "aButtons" = c("csv","xls")
-                           )
-                       )
-                   )
-    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )
-
-    # Download
-    shinyDirChoose(input, 'maffolder', roots=volumes, session=session,
-                   restrictions=system.file(package='base'))
-
-    observeEvent(input$maffolder , {
-        closeAlert(session, "oncoddirAlert")
-        createAlert(session, "oncoddirmessage", "oncoddirAlert", title = "Download folder", style = "success",
-                    content =  parseDirPath(volumes, input$maffolder), append = TRUE)
-    })
-
-    observeEvent(input$mafDownloadBt , {
-        maf.files <- get.obj("maf.files")
-        # Dir to save the files
-        getPath <- parseDirPath(volumes, input$maffolder)
-        if (length(getPath) == 0) getPath <- "."
-
-        withProgress(message = 'Download in progress',
-                     detail = 'This may take a while...', value = 0, {
-                         if(is.null(input$allRows)){
-                             closeAlert(session, "oncoAlert")
-                             createAlert(session, "oncomessage", "oncoAlert", title = "Error", style = "alert",
-                                         content =  paste0("Please select the files to download"), append = TRUE)
-                             req(input$allRows)
-                         }
-                         df <- data.frame(name = input$allRows[seq(5, length(input$allRows), 7)])
-                         df <-   maf.files[maf.files$Archive.Name %in% df$name,]
-
-                         for (i in 1:nrow(df)) {
-                             incProgress(1/nrow(df))
-                             fout <- file.path(getPath,basename(df[1,]$Deploy.Location))
-                             if (!file.exists(fout))  downloader::download(df[1,]$Deploy.Location,fout)
-                         }})
-        closeAlert(session, "oncoAlert")
-        createAlert(session, "oncomessage", "oncoAlert", title = "Download completed", style = "success",
-                    content =  paste0("Saved file: ",fout), append = TRUE)
-    })
     shinyFileChoose(input, 'maffile', roots=volumes, session=session, restrictions=system.file(package='base'))
     shinyFileChoose(input, 'mafAnnotation', roots=volumes, session=session, restrictions=system.file(package='base'))
     annotation.maf <- function(){

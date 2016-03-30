@@ -12,7 +12,7 @@ body {
 }
 
 .main-header .logo {
-  font-family: 'Lobster', cursive;
+  /* font-family: 'Lobster', cursive;*/
   font-weight: bold;
   font-size: 24px;
 }

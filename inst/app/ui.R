@@ -152,11 +152,14 @@ body <-  dashboardBody(
         ),
         tabItem(tabName = "tcgaSearch",
                 fluidRow(
-                    column(10, bsAlert("tcgasearchmessage"), dataTableOutput('tcgaSearchtbl')),
+                    column(10, bsAlert("tcgasearchmessage"),
+                           bsCollapse(id = "collapseTCGA", open = "TCGA search results",
+                                      bsCollapsePanel("TCGA search results", dataTableOutput('tcgaSearchtbl'), style = "default")
+                           )),
                     column(2,
                            box(title = "Advanced search",width = NULL,
                                status = "warning",
-                               solidHeader = FALSE, collapsible = FALSE,
+                               solidHeader = FALSE, collapsible = TRUE,
                                selectizeInput('tcgaTumorFilter',
                                               'Tumor filter',
                                               unique(TCGAquery()$Disease),
@@ -211,9 +214,6 @@ body <-  dashboardBody(
                                                   c("hg18.seg","hg19.seg","nocnv_hg18.seg","nocnv_hg19.seg"),
                                                   multiple = TRUE)
                                ),
-
-                               shinyDirButton('tcgafolder', 'Folder select', 'Please select a folder',
-                                              class='shinyDirectories btn-default', buttonType='warning'),
                                actionButton("tcgaDownloadBt",
                                             "Download",
                                             style = "background-color: #F39C12;
@@ -242,10 +242,9 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 50%",
                                             icon = icon("cogs"))),
-                           bsAlert("tcgaddirmessage"),
                            box(title = "Subtype search",width = NULL,
                                status = "warning",
-                               solidHeader = FALSE, collapsible = TRUE,
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput('tcgasubtypeFilter',
                                               'Tumor filter',
                                               c("brca"="brca",
@@ -274,9 +273,9 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("search"))),
-                           box(title = "Clinica data search",width = NULL,
+                           box(title = "Clinical data search",width = NULL,
                                status = "warning",
-                               solidHeader = FALSE, collapsible = TRUE,
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                radioButtons("clinicalSearchType", "Search by:",
                                             c("Tumor" = TRUE,
                                               "Samples" = FALSE)),
@@ -321,33 +320,49 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                            icon = icon("search")))
-                    )
-                )
-        ),
-        tabItem(tabName = "tcgaOncoPrint",
-                fluidRow(
-                    column(10,  bsAlert("oncomessage"),
-                           bsCollapse(id = "collapseOnco", open = "MAF files to download",
-                                      bsCollapsePanel("MAF files to download", dataTableOutput('maftbl'), style = "default"),
-                                      bsCollapsePanel("Oncoprint", uiOutput("oncoPlot"), style = "default")
-                           )),
-                    column(2,
-                           box(title = "Download",width = NULL,
+                                            icon = icon("search"))),
+                           box(title = "MAF data search",width = NULL,
                                status = "warning",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
-                               shinyDirButton('maffolder', 'Folder select', 'Please select a folder',
-                                              class='shinyDirectories btn-default', buttonType='warning'),
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               selectizeInput('tcgaMafTumorFilter',
+                                              'Tumor filter',
+                                              unique(TCGAquery()$Disease),
+                                              multiple = FALSE),
+                               actionButton("tcgaMafSearchBt",
+                                            "Search",
+                                            style = "background-color: #F39C12;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 49%",
+                                            icon = icon("search")),
                                actionButton("mafDownloadBt",
                                             "Download",
                                             style = "background-color: #F39C12;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
-                                            width: 50%",
+                                            width: 49%",
                                             icon = icon("download"))
                            ),
-                           bsAlert("oncoddirmessage"),
+                           box(title = "Directory to save files",width = NULL,
+                               status = "warning",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
+                               bsTooltip("tcgafolder", "Select a folder where data will be saved/downloaded",
+                                         "left"),
+                               shinyDirButton('tcgafolder', 'Folder to save', 'Please select a folder where files will be saved',
+                                              class='shinyDirectories btn-default', buttonType='warning')
+                           ),
+                           bsAlert("tcgaddirmessage")
+                    ))
+        ),
+        tabItem(tabName = "tcgaOncoPrint",
+                fluidRow(
+                    column(10,  bsAlert("oncomessage"),
+                           bsCollapse(id = "collapseOnco", open = "Oncoprint",
+                                      bsCollapsePanel("Oncoprint", uiOutput("oncoPlot"), style = "default")
+                           )),
+                    column(2,
                            box(title = "Oncoprint data",width = NULL,
                                status = "warning",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
