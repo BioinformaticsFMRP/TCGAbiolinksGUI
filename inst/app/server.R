@@ -438,12 +438,23 @@ biOMICsServer <- function(input, output, session) {
         output$tcgaSearchtbl <- renderDataTable({
             tumor <- isolate({input$tcgatumorClinicalFilter})
             type <- isolate({input$tcgaClinicalFilter})
-
+            text.samples <- isolate({input$clinicalBarcode})
+            if(grepl(";",text.samples)) sep <- ";"
+            if(grepl(",",text.samples)) sep <- ","
+            if(grepl("\n",text.samples)) sep <- "\n"
+            print(text.samples)
+            samples <- unlist(stringr::str_split(text.samples,sep))
+            print(samples)
             tbl <- data.frame()
-            withProgress( message = 'Prepare in progress',
+            withProgress( message = 'Search in progress',
                           detail = 'This may take a while...', value = 0, {
                               result = tryCatch({
-                                  tbl <- rbind(tbl, TCGAquery_clinic(tumor = tumor,clinical_data_type = type))
+                                  if(isolate({input$clinicalSearchType})){
+                                      tbl <- rbind(tbl, TCGAquery_clinic(tumor = tumor, clinical_data_type = type))
+                                  } else {
+                                      print("By samples")
+                                      tbl <- rbind(tbl, TCGAquery_clinic(samples = samples, clinical_data_type = type))
+                                  }
 
                               }, error = function(e) {
                                   createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
@@ -460,7 +471,17 @@ biOMICsServer <- function(input, output, session) {
                 return()
             } else {
                 closeAlert(session, "tcgasearchAlert")
-                if (isolate({input$saveClinical})) save(tbl, file = paste0(tumor,"_clinic_",type,".rda"))
+                if (isolate({input$saveClinical})){
+                    if(isolate({input$clinicalSearchType})){
+                        filename <- paste0(tumor,"_clinic_",type,".rda")
+                    } else {
+                        filename <- paste0("samples_clinic_",type,gsub(" ","_",Sys.time()),".rda")
+                    }
+                    save(tbl, file = filename)
+                    createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Rda created", style =  "info",
+                                content = paste0("File created: ", filename), append = TRUE)
+
+                }
                 return(tbl)
             }
 

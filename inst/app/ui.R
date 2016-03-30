@@ -285,7 +285,7 @@ body <-  dashboardBody(
                                               'Tumor filter',
                                               unique(TCGAquery()$Disease),
                                               multiple = FALSE),
-                               bsTooltip("clinicalBarcode", "Barcodes separeted by ;",
+                               bsTooltip("clinicalBarcode", "Barcodes separeted by (;), (,) or (new line)",
                                          "left"),
                                useShinyjs(),
                                inputTextarea('clinicalBarcode', '', 2, 35),
@@ -313,7 +313,7 @@ body <-  dashboardBody(
                                                 "clinical_patient",
                                                 "clinical_radiation"),
                                               multiple = FALSE),
-                               checkboxInput("saveClinical", "Save as rda?", value = FALSE, width = NULL),
+                               checkboxInput("saveClinical", "Save result as rda?", value = FALSE, width = NULL),
                                actionButton("tcgaClinicalBt",
                                             "TCGA Subtype Search",
                                             style = "background-color: #F39C12;
