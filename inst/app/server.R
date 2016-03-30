@@ -349,25 +349,50 @@ biOMICsServer <- function(input, output, session) {
                              }
                          }
 
+                         # handling samples input
+                         # there are two inputs: type, list of barcodes
+                         # if types is selected ignore barcodes,
+                         # if barcodes is not null ignore selected
+                         text.samples <- isolate({input$tcgaDownloadBarcode})
+                         if (length(samplesType) == 0) {
+                             if(!is.null(text.samples)){
+                                 # By samples
+                                 sep <- NULL
+                                 if(grepl(";",text.samples)) sep <- ";"
+                                 if(grepl(",",text.samples)) sep <- ","
+                                 if(grepl("\n",text.samples)) sep <- "\n"
+                                 if(is.null(sep)) {
+                                     samples <- text.samples
+                                 } else {
+                                     samples <- unlist(stringr::str_split(text.samples,sep))
+                                 }
+                             } else {
+                                 samples <- NULL
+                             }
+                         } else {
+                             samples <- unlist(lapply(samplesType,function(type){
+                                 s <- unlist(str_split(aux$barcode,","))
+                                 s[grep(type,substr(s,14,15))]
+                             }))
+                         }
+                         if(!is.null(samples)){
+                             # filter query
+                             idx <- unlist(lapply(samples,function(y) {grep(y,x$barcode)}))
+                             x <- x[idx,]
+                         }
+
+
                          for (i in 1:nrow(x)) {
                              incProgress(1/nrow(x))
                              aux <- x[i,]
                              if (aux$Platform == "IlluminaHiSeq_RNASeqV2") ftype <- rnaseqv2Ftype
                              if (aux$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
                              if (aux$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
-                             if (length(samplesType) == 0) {
-                                 samples <- NULL
-                             } else {
-                                 samples <- unlist(lapply(samplesType,function(type){
-                                     s <- unlist(str_split(aux$barcode,","))
-                                     s[grep(type,substr(s,14,15))]
-                                 }))
-                                 print(samples)
-                             }
+
                              if(is.null(samples)){
-                                 TCGAdownload(x, path = getPath,type = ftype)
+                                 TCGAdownload(aux, path = getPath,type = ftype)
                              } else if (length(samples) > 0){
-                                 TCGAdownload(x, path = getPath,type = ftype,samples = samples)
+                                 TCGAdownload(aux, path = getPath,type = ftype,samples = samples)
                              }
                          }})
         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Download completed", style =  "success",
