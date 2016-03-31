@@ -1,4 +1,6 @@
 @import url("//fonts.googleapis.com/css?family=Lobster|Cabin:400,700");
+@import url("//fonts.googleapis.com/css?family=Nunito|Cabin:400,700");
+
 h1 {
     font-family: 'Lobster', cursive;
     font-weight: 500;
@@ -10,15 +12,20 @@ body {
 }
 .main-header .logo {
     /* font-family: 'Lobster', cursive;*/
-
+    font-family: 'Raleway',sans-serif;
     font-weight: bold;
     font-size: 24px;
+    /*color: red*/
 }
 .skin-blue .main-header .navbar {
     background-color: #000080
 }
 .skin-blue .main-header .logo {
     background-color: #000080;
+     font-family: 'Nunito',sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+    /*color: red*/
 }
 .skin-blue .main-header .logo:hover {
     background-color: #000080;

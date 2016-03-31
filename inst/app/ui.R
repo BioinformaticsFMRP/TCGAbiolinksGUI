@@ -38,12 +38,12 @@ inputTextarea <- function(inputId, value="", nrows, ncols) {
 
 
 header <- dashboardHeader(
-    title = "biOMICs"
+    title = "TCGAbiolinks"
 )
 
 sidebar <-  dashboardSidebar(
     sidebarMenu(
-        menuItem("biOMICs search" , tabName = "ontology", icon = icon("search")),
+        #menuItem("biOMICs search" , tabName = "ontology", icon = icon("search")),
         #menuItem("Report" , tabName = "report", icon = icon("book")),
         menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
         menuItem("OncoPrint" , tabName = "tcgaOncoPrint", icon = icon("picture-o")),
@@ -52,8 +52,8 @@ sidebar <-  dashboardSidebar(
         menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask")),
         menuItem("DEA analysis" , tabName = "dea", icon = icon("flask")),
         menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
-        menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask")),
-        menuItem("ELMER analysis" , tabName = "elmer", icon = icon("flask"))
+        menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
+        #menuItem("ELMER analysis" , tabName = "elmer", icon = icon("flask"))
     )
 )
 
@@ -532,36 +532,48 @@ body <-  dashboardBody(
                 )
         ),
         tabItem(tabName = "ea",
-
                 fluidRow(
                     column(10,
+                           bsAlert("eamessage"),
                            bsCollapse(id = "collapseEA", open = "EA plots",
                                       bsCollapsePanel("EA plots", uiOutput("eaPlot"), style = "default"))),
                     column(2,
                            box(title = "EA analysis",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
+                               radioButtons("tcgaEaInputRb", "Genes by:",
+                                            c("Selection"="Selection",
+                                              "Text"="text")),
+                               bsTooltip("eaGenesTextArea", "Genes separeted by (;), (,) or (new line)",
+                                         "left"),
+                               useShinyjs(),
+                               inputTextarea('eaGenesTextArea', '', 2, 35),
                                selectizeInput('eagenes',
                                               "Genes",
                                               choices = unique(rownames(TCGAbiolinks:::EAGenes)),
-                                              multiple = TRUE),
-                               sliderInput("nBar", "Number of bar histogram to show",
-                                           step=1, min = 1, max = 20, value = 10),
+                                              multiple = TRUE)),
+                           box(title = "Colors control",width = NULL,  status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                colourInput("colBP", "Biological Process", value = "orange"),
                                colourInput("colCC", "Cellular Component color", value = "cyan"),
                                colourInput("colMF", "Molecular function color", value = "green"),
-                               colourInput("colPat", "Pathways color", value = "yellow"),
+                               colourInput("colPat", "Pathways color", value = "yellow")),
+                           box(title = "Plot control",width = NULL,  status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               sliderInput("nBar", "Number of bar histogram to show",
+                                           step=1, min = 1, max = 20, value = 10),
                                sliderInput("eawidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("eaheight", "Plot Height (px)", min = 0, max = 1000, value = 1000),
-                               actionButton("eaplot",
-                                            "EA barplot",
-                                            style = "background-color: #000080;
+                               sliderInput("eaheight", "Plot Height (px)", min = 0, max = 1000, value = 1000)
+
+                           ),
+                           actionButton("eaplot",
+                                        "EA barplot",
+                                        style = "background-color: #000080;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("eye"))
-                           )
+                                        icon = icon("eye"))
                     )
                 )
         ),
