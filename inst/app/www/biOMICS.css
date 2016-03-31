@@ -67,17 +67,17 @@ body {
     .opacity 0.8
 }*/
 
-/*.shiny-progress .progress-text {
+.shiny-progress .progress-text {
   position: absolute;
   right: 10px;
   height: 24px;
-  width: 240px;
-  background-color: red;
-  color: white;
+  width: 440px;
+  /*background-color: red;
+  color: white;*/
   margin: 0px;
   padding: 2px 3px;
   opacity: 0.85;
-}*/
+}
 
 body > .header .logo {
     font-family: 'Lobster', cursive;
