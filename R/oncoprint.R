@@ -38,7 +38,7 @@ create.oncoprint <- function (mut,
     if(missing(mut))   stop("Missing mut argument")
     mut$value <- 1
     if(!rm.empty.columns){
-    mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value",fill = 0,drop = FALSE)
+        mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value",fill = 0,drop = FALSE)
     } else {
         mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value",fill = 0,drop = TRUE)
     }
@@ -114,13 +114,27 @@ create.oncoprint <- function (mut,
         n.col <- sum(sapply(colnames(annotation), function(x) {
             length(unique(annotation[,x]))
         }))
+
+        # add automatic colors: not working
+
+        get.color <- function(df,col){
+            idx <- which(colnames(df) == col)
+            start <- 1
+            if(idx != 1) start <- length(unique(unlist(c(df[,1:(idx-1)])))) + 1
+            end <- start + length(unique(df[,col])) -1
+            diff.colors <- c("dimgray","thistle","deeppink3","magenta4","lightsteelblue1","black","chartreuse","lightgreen","maroon4","darkslategray","lightyellow3","darkslateblue","firebrick1","aquamarine","dodgerblue4","bisque4","moccasin","indianred1","yellow","gray93","cyan","darkseagreen4","lightgoldenrodyellow","lightpink","sienna1","darkred","palevioletred","tomato4","blue","mediumorchid4","royalblue1","magenta2","darkgoldenrod1")
+            return(diff.colors[start:end])
+        }
         col.annot <- lapply(colnames(annotation), function(x) {
             #idx <- which(colnames(annotation) == x) - 1
+            #print(idx/n.col)
+            ret <- get.color(annotation,x)
             #ret <- rainbow(length(unique(annotation[,x])),start = idx/n.col,alpha=0.5)
-            ret <- rainbow(length(unique(annotation[,x])),alpha=0.5)
             names(ret) <- as.character(unique(annotation[,x]))
             return(ret)
         })
+        names(col.annot) <-  colnames(annotation)
+
         annotHeatmap <- HeatmapAnnotation(df=annotation,
                                           col=col.annot,
                                           annotation_legend_param=list(title_gp=gpar(fontsize=font.size,
