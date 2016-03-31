@@ -4,6 +4,7 @@
 #' @param filename name of the pdf
 #' @param color named vector for the plot
 #' @param height pdf height
+#' @param rm.empty.columns If there is no alteration in that sample, whether remove it on the oncoprint
 #' @importFrom ComplexHeatmap oncoPrint draw HeatmapAnnotation
 #' @importFrom grid gpar grid.rect
 #' @importFrom reshape2 dcast acast
@@ -28,23 +29,25 @@ create.oncoprint <- function (mut,
                               annotation.position = "bottom",
                               annotation,
                               height,
+                              rm.empty.columns = FALSE,
+                              show.column.names = FALSE,
                               label.title = "Mutation",
                               font.size = 16){
 
 
     if(missing(mut))   stop("Missing mut argument")
-
-    if(!missing(genes) & !is.null(genes)) mut <- subset(mut, mut$Hugo_Symbol %in% genes)
     mut$value <- 1
-    mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value",fill = 0)
-
-    columns <- colnames(mat)[-c(1:2)]
-    if(missing(color)){
-        color <- c(rainbow(length(columns)))
-        names(color) <- columns
-    } else{
-        color <- color[columns]
+    if(!rm.empty.columns){
+    mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value",fill = 0,drop = FALSE)
+    } else {
+        mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value",fill = 0,drop = TRUE)
     }
+    if(!missing(genes) & !is.null(genes)) mat <- subset(mat, mat$Hugo_Symbol %in% genes)
+
+    # mutation in the file
+    columns <- colnames(mat)[-c(1:2)]
+
+    # value will be a collum with all the mutations
     mat$value <- ""
     for ( i in columns){
         mat[,i] <-  replace(mat[,i],mat[,i]>0,paste0(i,";"))
@@ -52,8 +55,11 @@ create.oncoprint <- function (mut,
         mat$value <- paste0(mat$value,mat[,i])
     }
 
+    # now we have a matrix with pairs samples/genes mutations
+    # we want a matrix with samples vs genes mutations with the content being the value
     mat <- acast(mat, Tumor_Sample_Barcode~Hugo_Symbol, value.var="value",fill="")
     rownames(mat) <-  substr(rownames(mat),1,12)
+
     alter_fun = list(
         background = function(x, y, w, h) {
             grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = "#CCCCCC", col = NA))
@@ -71,15 +77,35 @@ create.oncoprint <- function (mut,
             grid.rect(x, y, w-unit(0.5, "mm"), h*0.33, gp = gpar(fill = color["DNP"], col = NA))
         }
     )
-    alt = intersect(names(alter_fun), c("background",as.character(columns)))
+
+    # After the gene selection, some of the mutation might not exist
+    # we will remove them to make the oncoprint work
+    mutation.type <- c()
+    for (i in columns){
+        if(length(grep(i,mat)) > 0) mutation.type <- c(mutation.type,i)
+    }
+    # get only the colors to the mutations
+    # otherwise it gives errors
+
+    if(missing(color)){
+        color <- c(rainbow(length(mutation.type)))
+        names(color) <- mutation.type
+    } else{
+        color <- color[mutation.type]
+    }
+    alt = intersect(names(alter_fun), c("background",as.character(mutation.type)))
     alter_fun <- alter_fun[alt]
+
+    # header are samples, rows genes
     mat <- t(mat)
+
     if(!missing(height)) height <- length(genes)/2
     if(!missing(filename)) pdf(filename,width = 20,height = height)
 
     if(missing(annotation)) annotation <- NULL
     if(!is.null(annotation)){
         idx <- match(substr(colnames(mat),1,12),annotation$bcr_patient_barcode)
+
         stopifnot(all(annotation$bcr_patient_barcode[idx] ==substr(colnames(mat),1,12) ))
         annotation <- annotation[idx,]
 
@@ -88,7 +114,7 @@ create.oncoprint <- function (mut,
         n.col <- sum(sapply(colnames(annotation), function(x) {
             length(unique(annotation[,x]))
         }))
-        col.annot <- sapply(colnames(annotation), function(x) {
+        col.annot <- lapply(colnames(annotation), function(x) {
             #idx <- which(colnames(annotation) == x) - 1
             #ret <- rainbow(length(unique(annotation[,x])),start = idx/n.col,alpha=0.5)
             ret <- rainbow(length(unique(annotation[,x])),alpha=0.5)
@@ -106,6 +132,7 @@ create.oncoprint <- function (mut,
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,
                        remove_empty_columns = FALSE,
+                       show_column_names = show.column.names ,
                        column_order = NULL, # Do not sort the columns
                        alter_fun = alter_fun, col = color,
                        row_names_gp = gpar(fontsize = font.size),  # set size for row names
@@ -126,6 +153,7 @@ create.oncoprint <- function (mut,
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,
                        remove_empty_columns = FALSE,
+                       show_column_names = show.column.names ,
                        column_order = NULL, # Do not sort the columns
                        alter_fun = alter_fun, col = color,
                        row_names_gp = gpar(fontsize = font.size),  # set size for row names
@@ -147,6 +175,7 @@ create.oncoprint <- function (mut,
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,
                        remove_empty_columns = FALSE,
+                       show_column_names = show.column.names,
                        column_order = NULL, # Do not sort the columns
                        alter_fun = alter_fun, col = color,
                        row_names_gp = gpar(fontsize = font.size),  # set size for row names

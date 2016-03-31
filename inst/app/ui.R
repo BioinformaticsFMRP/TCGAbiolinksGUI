@@ -370,6 +370,13 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                shinyFilesButton('maffile', 'Select maf file', 'Please select a maf file',
                                                 multiple = FALSE),
+                               radioButtons("oncoInputRb", "Genes by:",
+                                            c("Selection"="Selection",
+                                              "Text"="text")),
+                               bsTooltip("oncoGenesTextArea", "Genes separeted by (;), (,) or (new line)",
+                                         "left"),
+                               useShinyjs(),
+                               inputTextarea('oncoGenesTextArea', '', 2, 35),
                                selectizeInput('oncoGenes',
                                               "genes",
                                               choices = NULL,  multiple = TRUE)
@@ -398,14 +405,22 @@ body <-  dashboardBody(
                                sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 800, value = 400)
                            ),
-                           actionButton("oncoprintPlot",
-                                        "Plot oncoprint",
-                                        style = "background-color: #000080;
+                           box(title = "Oncoprint plot",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
+                               bsTooltip("oncoRmCols", "If there is no alteration in that sample, whether remove it on the oncoprint",
+                                         "left"),
+                               checkboxInput("oncoRmCols", "Remove empty columns?", value = FALSE, width = NULL),
+                               checkboxInput("oncoShowColsNames", "Show column names?", value = FALSE, width = NULL),
+                               actionButton("oncoprintPlot",
+                                            "Plot oncoprint",
+                                            style = "background-color: #000080;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                        icon = icon("picture-o")
+                                            icon = icon("picture-o")
+                               )
                            )
                     )
                 )
