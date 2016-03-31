@@ -212,6 +212,19 @@ biOMICsServer <- function(input, output, session) {
     shinyjs::hide("tcgaFgwstypeFilter")
     shinyjs::show("addSubTypeTCGA")
 
+    observeEvent(input$tcgaDownloadTypeRb, {
+        if(input$tcgaDownloadTypeRb == "none") {
+            shinyjs::hide("tcgasamplestypeFilter")
+            shinyjs::hide("tcgaDownloadBarcode")
+        } else if(input$tcgaDownloadTypeRb == "barcode") {
+            shinyjs::hide("tcgasamplestypeFilter")
+            shinyjs::show("tcgaDownloadBarcode")
+        } else{
+            shinyjs::show("tcgasamplestypeFilter")
+            shinyjs::hide("tcgaDownloadBarcode")
+        }
+    })
+
     observeEvent(input$prepareRb, {
         if(input$prepareRb) {
             shinyjs::show("addSubTypeTCGA")
