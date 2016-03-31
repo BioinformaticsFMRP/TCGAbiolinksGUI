@@ -5,6 +5,7 @@
 #' @param color named vector for the plot
 #' @param height pdf height
 #' @param rm.empty.columns If there is no alteration in that sample, whether remove it on the oncoprint
+#' @param show.row.barplot  Show barplot annotation on rows?
 #' @importFrom ComplexHeatmap oncoPrint draw HeatmapAnnotation
 #' @importFrom grid gpar grid.rect
 #' @importFrom reshape2 dcast acast
@@ -31,6 +32,7 @@ create.oncoprint <- function (mut,
                               height,
                               rm.empty.columns = FALSE,
                               show.column.names = FALSE,
+                              show.row.barplot = TRUE,
                               label.title = "Mutation",
                               font.size = 16){
 
@@ -146,7 +148,8 @@ create.oncoprint <- function (mut,
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,
                        remove_empty_columns = FALSE,
-                       show_column_names = show.column.names ,
+                       show_column_names = show.column.names,
+                       show_row_barplot = show.row.barplot,
                        column_order = NULL, # Do not sort the columns
                        alter_fun = alter_fun, col = color,
                        row_names_gp = gpar(fontsize = font.size),  # set size for row names
@@ -167,7 +170,8 @@ create.oncoprint <- function (mut,
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,
                        remove_empty_columns = FALSE,
-                       show_column_names = show.column.names ,
+                       show_row_barplot = show.row.barplot,
+                       show_column_names = show.column.names,
                        column_order = NULL, # Do not sort the columns
                        alter_fun = alter_fun, col = color,
                        row_names_gp = gpar(fontsize = font.size),  # set size for row names
@@ -190,6 +194,7 @@ create.oncoprint <- function (mut,
                        row_order = NULL,
                        remove_empty_columns = FALSE,
                        show_column_names = show.column.names,
+                       show_row_barplot = show.row.barplot,
                        column_order = NULL, # Do not sort the columns
                        alter_fun = alter_fun, col = color,
                        row_names_gp = gpar(fontsize = font.size),  # set size for row names

@@ -66,6 +66,19 @@ body {
     border-color: red;
     .opacity 0.8
 }*/
+
+/*.shiny-progress .progress-text {
+  position: absolute;
+  right: 10px;
+  height: 24px;
+  width: 240px;
+  background-color: red;
+  color: white;
+  margin: 0px;
+  padding: 2px 3px;
+  opacity: 0.85;
+}*/
+
 body > .header .logo {
     font-family: 'Lobster', cursive;
     font-weight: bold;
@@ -76,6 +89,18 @@ pre {
     color: #ffffff;
 }
 .shiny-progress .bar {
+    background-color: #FF0000;
+    .opacity 0.8;
+}
+.shiny-progress .progress {
+    background-color: #FF0000;
+    .opacity 0.8;
+}
+.shiny-progress-container. {
+    background-color: #FF0000;
+    .opacity 0.8;
+}
+.shiny-progress {
     background-color: #FF0000;
     .opacity 0.8;
 }

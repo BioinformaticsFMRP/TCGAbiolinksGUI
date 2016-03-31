@@ -725,6 +725,7 @@ biOMICsServer <- function(input, output, session) {
             rm.empty.cols <- isolate({input$oncoRmCols})
             show.col.names <- isolate({input$oncoShowColsNames})
             textarea <- isolate({input$oncoGenesTextArea})
+            show.row.barplot <- isolate({input$oncoShowRowBarplot})
 
             if(isolate({input$oncoInputRb}) == "text" & !is.null(textarea)){
                 genes <- toupper(parse.textarea.input(textarea))
@@ -772,6 +773,7 @@ biOMICsServer <- function(input, output, session) {
                                               annotation.position=isolate(input$mafAnnotationpos),
                                               rm.empty.columns = rm.empty.cols,
                                               show.column.names = show.col.names,
+                                              show.row.barplot = show.row.barplot,
                                               color = c("SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
                                                         "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))
 

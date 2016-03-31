@@ -5,8 +5,8 @@
 \title{Creating a oncoprint}
 \usage{
 create.oncoprint(mut, genes, filename, color, annotation.position = "bottom",
-  annotation, height, rm.empty.columns = FALSE, label.title = "Mutation",
-  font.size = 16)
+  annotation, height, rm.empty.columns = FALSE, show.column.names = FALSE,
+  show.row.barplot = TRUE, label.title = "Mutation", font.size = 16)
 }
 \arguments{
 \item{mut}{Mutation file (see TCGAquery_maf from TCGAbiolinks)}
@@ -20,6 +20,8 @@ create.oncoprint(mut, genes, filename, color, annotation.position = "bottom",
 \item{height}{pdf height}
 
 \item{rm.empty.columns}{If there is no alteration in that sample, whether remove it on the oncoprint}
+
+\item{show.row.barplot}{Show barplot annotation on rows?}
 }
 \description{
 Creating a oncoprint

@@ -412,6 +412,7 @@ body <-  dashboardBody(
                                          "left"),
                                checkboxInput("oncoRmCols", "Remove empty columns?", value = FALSE, width = NULL),
                                checkboxInput("oncoShowColsNames", "Show column names?", value = FALSE, width = NULL),
+                               checkboxInput("oncoShowRowBarplot", "Show barplot annotation on rows?", value = TRUE, width = NULL),
                                actionButton("oncoprintPlot",
                                             "Plot oncoprint",
                                             style = "background-color: #000080;
