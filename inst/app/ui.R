@@ -454,11 +454,8 @@ body <-  dashboardBody(
                                selectizeInput('dmrgroupCol',
                                               "Group column",
                                               choices = NULL,  multiple = FALSE),
-                               selectizeInput('dmrgroup1',
-                                              "Group 1",
-                                              choices = NULL,  multiple = FALSE),
-                               selectizeInput('dmrgroup2',
-                                              "Group 2",
+                               selectizeInput('dmrgroups',
+                                              "Groups",
                                               choices = NULL,  multiple = FALSE),
                                actionButton("dmrAnalysis",
                                             "DMR analysis",
@@ -483,7 +480,7 @@ body <-  dashboardBody(
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("eye"))
+                                            icon = icon("picture-o"))
                            ),
                            box(title = "Mean DNA methylation",width = NULL,
                                status = "danger",
@@ -514,7 +511,7 @@ body <-  dashboardBody(
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("eye"))
+                                            icon = icon("picture-o"))
 
                            ),
                            box(title = "Heatmap",width = NULL,
@@ -537,7 +534,7 @@ body <-  dashboardBody(
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("eye"))
+                                            icon = icon("picture-o"))
                            ),
                            box(title = "Plot controls",width = NULL,
                                status = "danger",
@@ -589,7 +586,7 @@ body <-  dashboardBody(
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                        icon = icon("eye"))
+                                        icon = icon("picture-o"))
                     )
                 )
         ),
@@ -637,7 +634,7 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                        icon = icon("eye"))
+                                        icon = icon("picture-o"))
                     )
                 )
         ),
@@ -648,7 +645,7 @@ body <-  dashboardBody(
                                       bsCollapsePanel("survival plot", uiOutput("survivalplot"), style = "default")
                            )),
                     column(2,
-                           box(title = "survival plot",width = NULL,
+                           box(title = "Survival plot",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('survivalplotfile', 'Select rda file', 'Please select a rda file with a data frame',
@@ -656,7 +653,14 @@ body <-  dashboardBody(
                                selectizeInput('survivalplotgroup',
                                               'Column with the group information',
                                               choices=NULL,
-                                              multiple = FALSE)
+                                              multiple = FALSE),
+                               textInput("survivalplotLegend", label = "Legend text", value = "Legend"),
+                               textInput("survivalplotMain", label = "Title", value = "Kaplan-Meier Overall Survival Curves"),
+                               bsTooltip("survivalplotLimit", "Set the limit of the x-axis, if 0 the automatic value will be considered",
+                                         "left"),
+                               useShinyjs(),
+                               sliderInput("survivalplotLimit", "x-axis limit", min = 0, max = 10000, value = 0),
+                               checkboxInput("survivalplotPvalue", "Add p-value?", value = TRUE, width = NULL)
 
                            ),
                            box(title = "Plot controls",width = NULL,
@@ -671,7 +675,7 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                        icon = icon("eye"))
+                                        icon = icon("picture-o"))
                     )
                 )
         ),
@@ -751,7 +755,7 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                            icon = icon("eye"))
+                                            icon = icon("picture-o"))
                            ),
                            box(title = "Pathway graphs",width = NULL,
                                status = "danger",
@@ -837,7 +841,7 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                        icon = icon("eye"))
+                                        icon = icon("picture-o"))
                     )
                 )
         ),

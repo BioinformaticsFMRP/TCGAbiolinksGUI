@@ -808,23 +808,40 @@ biOMICsServer <- function(input, output, session) {
         updateSelectizeInput(session, 'ontftypeFilter', choices = as.character(unique(get.obj("encode.db.files")$file_format)), server = TRUE)
     })
 
-    ##----------------------------------- DMR analysis
+    ##----------------------------------------------------------------------
+    #                             DMR analysis
+    ##----------------------------------------------------------------------
+
     observeEvent(input$dmrAnalysis , {
 
+        groups <- t(combn(isolate({input$dmrgroups}),2))
+        print(groups)
         # read the data from the downloaded path
         # prepare it
         se <- isolate({dmrdata()})
         se <- subset(se,subset = (rowSums(is.na(assay(se))) == 0))
         withProgress(message = 'DMR analysis in progress',
                      detail = 'This may take a while...', value = 0, {
-                         met <- TCGAanalyze_DMR(data = se,
-                                                groupCol = isolate({input$dmrgroupCol}),
-                                                group1 = isolate({input$dmrgroup1}),
-                                                group2 = isolate({input$dmrgroup2}),
-                                                p.cut = isolate({input$dmrpvalue}),
-                                                diffmean.cut = isolate({input$dmrthrsld}),
-                                                cores = isolate({input$dmrcores}))
+
+                         for(i in 1:nrow(groups)) {
+                             group1 <- groups[i,1]
+                             group2 <- groups[i,2]
+                             se <- TCGAanalyze_DMR(data = se,
+                                                   groupCol = isolate({input$dmrgroupCol}),
+                                                   group1 = group1,
+                                                   group2 = group2,
+                                                   p.cut = isolate({input$dmrpvalue}),
+                                                   diffmean.cut = isolate({input$dmrthrsld}),
+                                                   cores = isolate({input$dmrcores}))
+                             incProgress(1/(nrow(groups)+ 1 ), detail = paste("Doing part", groups[i,1]," vs ", groups[i,2]))
+                         }
+                         file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
+                         results <- as.data.frame(rowRanges(rse))
+                         save(se,file = gsub(".rda","_results.rda",file))
+                         incProgress(1/(nrow(groups) + 1 ), detail = paste("Saving results"))
                      })
+        createAlert(session, "dmrmessage", "dmrAlert", title = "DMR completed", style =  "danger",
+                    content = paste0("Please load the object with the results. Summarized Experiment object with results saved in: ", gsub(".rda","_results.rda",file)), append = FALSE)
     })
     shinyFileChoose(input, 'dmrfile', roots=volumes, session=session, restrictions=system.file(package='base'))
 
@@ -845,17 +862,9 @@ biOMICsServer <- function(input, output, session) {
     }
 
     observeEvent(input$dmrgroupCol , {
-        updateSelectizeInput(session, 'dmrgroup1', choices = {
+        updateSelectizeInput(session, 'dmrgroups', choices = {
             if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
                 if (!is.null(dmrdata()) & input$dmrgroupCol != "" )
-                    as.character(colData(dmrdata())[,input$dmrgroupCol])
-            }}, server = TRUE)
-    })
-    observeEvent(input$dmrgroupCol , {
-        updateSelectizeInput(session, 'dmrgroup2', choices = {
-            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
-
-                if (!is.null(dmrdata()) & input$dmrgroupCol != "")
                     as.character(colData(dmrdata())[,input$dmrgroupCol])
             }}, server = TRUE)
     })
@@ -1243,9 +1252,17 @@ biOMICsServer <- function(input, output, session) {
     # -----------------------------------------------
     #--------------------- START controlling show/hide states -----------------
     shinyjs::hide("survivalplotgroup")
+    shinyjs::hide("survivalplotMain")
+    shinyjs::hide("survivalplotLegend")
+    shinyjs::hide("survivalplotLimit")
+    shinyjs::hide("survivalplotPvalue")
     observeEvent(input$survivalplotfile, {
         if(!is.null(survivalplotdata())){
             shinyjs::show("survivalplotgroup")
+            shinyjs::show("survivalplotMain")
+            shinyjs::show("survivalplotLegend")
+            shinyjs::show("survivalplotLimit")
+            shinyjs::show("survivalplotPvalue")
         }
     })
     #----------------------- END controlling show/hide states -----------------
@@ -1282,7 +1299,11 @@ biOMICsServer <- function(input, output, session) {
     observeEvent(input$survivalplotBt , {
         output$survival.plotting <- renderPlot({
             data <- isolate({survivalplotdata()})
+            legend <- isolate({input$survivalplotLegend})
+            main <- isolate({input$survivalplotMain})
             clusterCol <-  isolate({input$survivalplotgroup})
+            cut.off <- isolate({input$survivalplotLimit})
+            print.pvalue <- isolate({input$survivalplotPvalue})
             closeAlert(session, "survivalAlert")
             if(length(unique(data[,clusterCol])) == 1){
                 createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
@@ -1294,7 +1315,11 @@ biOMICsServer <- function(input, output, session) {
 
                              TCGAanalyze_survival(data = data,
                                                   clusterCol = clusterCol,
-                                                  filename = NULL)
+                                                  filename = NULL,
+                                                  legend = legend,
+                                                  main = main,
+                                                  cutoff = cut.off,
+                                                  print.value = print.pvalue)
 
                          })
         })})
