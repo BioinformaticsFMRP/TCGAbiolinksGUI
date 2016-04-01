@@ -847,9 +847,9 @@ biOMICsServer <- function(input, output, session) {
         se <- subset(se,subset = (rowSums(is.na(assay(se))) == 0))
         withProgress(message = 'DMR analysis in progress',
                      detail = 'This may take a while...', value = 0, {
-
+                         message <- "<br>Saving the results also in a csv file:<ul>"
                          for(i in 1:nrow(groups)) {
-                             incProgress(1/(nrow(groups)+ 1 ), detail = paste("Doing part", groups[i,1]," vs ", groups[i,2]))
+                             incProgress(1/(nrow(groups)+ 1 ), detail = paste(groups[i,1]," vs ", groups[i,2]))
                              group1 <- groups[i,1]
                              group2 <- groups[i,2]
                              se <- TCGAanalyze_DMR(data = se,
@@ -859,6 +859,7 @@ biOMICsServer <- function(input, output, session) {
                                                    p.cut = isolate({input$dmrpvalue}),
                                                    diffmean.cut = isolate({input$dmrthrsld}),
                                                    cores = isolate({input$dmrcores}))
+                             message <- paste0(message,"<li>DMR_results.", isolate({input$dmrgroupCol}), ".", group1, ".", group2, ".csv</li>")
                          }
                          file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
                          if(!grepl("results",file)) file <- gsub(".rda","_results.rda",file)
@@ -866,9 +867,33 @@ biOMICsServer <- function(input, output, session) {
                          incProgress(1/(nrow(groups) + 1 ), detail = paste("Saving results"))
                      })
         createAlert(session, "dmrmessage", "dmrAlert", title = "DMR completed", style =  "danger",
-                    content = paste0("Summarized Experiment object with results saved in: ", file), append = FALSE)
+                    content = paste0("Summarized Experiment object with results saved in: ", file, message,"<ul>"),
+                    append = FALSE)
     })
     shinyFileChoose(input, 'dmrfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'volcanofile', roots=volumes, session=session, restrictions=system.file(package='base'))
+
+    volcanodata <-  reactive({
+        inFile <- input$volcanofile
+        if (is.null(inFile)) return(NULL)
+        print("READING CSV DATA")
+        file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
+        # verify if the file is a csv
+        ext <- tools::file_ext(file)
+        if(ext != "csv"){
+            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a csv file, but I got a: ",
+                                         ext), append = FALSE)
+            return(NULL)
+        }
+
+        withProgress(message = 'Loading data',
+                     detail = 'This may take a while...', value = 0, {
+                         df <- read.csv2(file,header = T)
+                     })
+        print("END READING DATA")
+        return(df)
+    })
 
     dmrdata <-  reactive({
         inFile <- input$dmrfile
@@ -926,26 +951,6 @@ biOMICsServer <- function(input, output, session) {
             if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
         }, server = TRUE)
     })
-    observeEvent(input$volcanogroupCol , {
-        updateSelectizeInput(session, 'volcanogroup1', choices = {
-            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
-                if (!is.null(dmrdata()) & input$volcanogroupCol != "" )
-                    as.character(colData(dmrdata())[,input$volcanogroupCol])
-            }}, server = TRUE)
-    })
-    observeEvent(input$volcanogroupCol , {
-        updateSelectizeInput(session, 'volcanogroup2', choices = {
-            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
-                if (!is.null(dmrdata()) & input$volcanogroupCol != "" )
-                    as.character(colData(dmrdata())[,input$volcanogroupCol])
-            }}, server = TRUE)
-    })
-
-    observe({
-        updateSelectizeInput(session, 'volcanogroupCol', choices = {
-            if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
-        }, server = TRUE)
-    })
 
     observeEvent(input$dmrgroupCol , {
         updateSelectizeInput(session, 'dmrgroups', choices = {
@@ -973,32 +978,26 @@ biOMICsServer <- function(input, output, session) {
 
     observeEvent(input$volcanoPlot , {
         output$volcano.plot <- renderPlot({
-            if(isolate({input$volcanogroup1}) == "") {
-                group1 <- NULL
-            } else {
-                group1 <- isolate({input$volcanogroup1})
-            }
 
-            if(isolate({input$volcanogroup2}) == "") {
-                group2 <- NULL
-            } else {
-                group2 <- isolate({input$volcanogroup2})
-            }
+            file  <- basename(as.character(parseFilePaths(volumes, input$volcanofile)$datapath))
+            file <- unlist(str_split(file,"\\."))
+            group1 <- file[3]
+            group2 <- file[4]
 
+            data <- isolate({volcanodata()})
 
-            data <- isolate({dmrdata()})
-            diffcol <- paste("diffmean",group1,group2,sep = ".")
-            pcol <- paste("p.value.adj",group1,group2,sep = ".")
+            diffcol <- paste("diffmean", group1, group2,sep = ".")
+            pcol <- paste("p.value.adj", group1, group2,sep = ".")
             names <- NULL
-            if(isolate({input$dmrNamesVolcano})) names <- values(data)$probeID
+            if(isolate({input$dmrNamesVolcano})) names <- data$probeID
             label <- c("Not Significant",
                        "Hypermethylated",
                        "Hypomethylated")
             label[2:3] <-  paste(label[2:3], "in", group2)
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
-                             TCGAVisualize_volcano(x = values(data)[,diffcol],
-                                                   y = values(data)[,pcol],
+                             TCGAVisualize_volcano(x = data[,diffcol],
+                                                   y = data[,pcol],
                                                    ylab =   expression(paste(-Log[10],
                                                                              " (FDR corrected -P values)")),
                                                    xlab =  expression(paste(
@@ -1150,15 +1149,15 @@ biOMICsServer <- function(input, output, session) {
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
                              if(!isolate({input$heatmap.sortCb})) {
-                             p <-  TCGAvisualize_Heatmap(data=assay(data),
-                                                         col.metadata=col.metadata,
-                                                         row.metadata=row.metadata,
-                                                         title = "Heatmap",
-                                                         cluster_rows = cluster_rows,
-                                                         show_column_names = show_column_names,
-                                                         cluster_columns = cluster_columns,
-                                                         show_row_names = show_row_names,
-                                                         type = "methylation")
+                                 p <-  TCGAvisualize_Heatmap(data=assay(data),
+                                                             col.metadata=col.metadata,
+                                                             row.metadata=row.metadata,
+                                                             title = "Heatmap",
+                                                             cluster_rows = cluster_rows,
+                                                             show_column_names = show_column_names,
+                                                             cluster_columns = cluster_columns,
+                                                             show_row_names = show_row_names,
+                                                             type = "methylation")
                              } else {
                                  p <-  TCGAvisualize_Heatmap(data=assay(data),
                                                              col.metadata=col.metadata,
