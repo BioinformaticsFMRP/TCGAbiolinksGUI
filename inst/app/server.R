@@ -4,7 +4,7 @@ library(SummarizedExperiment)
 library(TCGAbiolinks)
 library(shinyBS)
 library(stringr)
-options(shiny.maxRequestSize=300*1024^2)
+options(shiny.maxRequestSize=10000*1024^2)
 
 # This will be used to parse the text areas input
 # possibilities of separation , ; \n
@@ -812,6 +812,31 @@ biOMICsServer <- function(input, output, session) {
     #                             DMR analysis
     ##----------------------------------------------------------------------
 
+    #-------------------------START controlling show/hide states -----------------
+    shinyjs::hide("dmrNamesVolcanoFill")
+    observeEvent(input$dmrNamesVolcano, {
+        if(input$dmrNamesVolcano){
+            shinyjs::show("dmrNamesVolcanoFill")
+        } else {
+            shinyjs::hide("dmrNamesVolcanoFill")
+        }
+    })
+    observeEvent(input$heatmapInputRb, {
+        if(input$heatmapInputRb == "text") {
+            shinyjs::show("heatmapProbesTextArea")
+            shinyjs::hide("heatmap.hypoprobesCb")
+            shinyjs::hide("heatmap.hyperprobesCb")
+        } else if(input$heatmapInputRb == "Status") {
+            shinyjs::hide("heatmapProbesTextArea")
+            shinyjs::show("heatmap.hypoprobesCb")
+            shinyjs::show("heatmap.hyperprobesCb")
+        }
+    })
+    observeEvent(input$heatmap.sortCb, {
+        shinyjs::toggle("heatmapSortCol")
+    })
+
+    #-------------------------END controlling show/hide states -----------------
     observeEvent(input$dmrAnalysis , {
 
         groups <- t(combn(isolate({input$dmrgroups}),2))
@@ -824,6 +849,7 @@ biOMICsServer <- function(input, output, session) {
                      detail = 'This may take a while...', value = 0, {
 
                          for(i in 1:nrow(groups)) {
+                             incProgress(1/(nrow(groups)+ 1 ), detail = paste("Doing part", groups[i,1]," vs ", groups[i,2]))
                              group1 <- groups[i,1]
                              group2 <- groups[i,2]
                              se <- TCGAanalyze_DMR(data = se,
@@ -833,33 +859,93 @@ biOMICsServer <- function(input, output, session) {
                                                    p.cut = isolate({input$dmrpvalue}),
                                                    diffmean.cut = isolate({input$dmrthrsld}),
                                                    cores = isolate({input$dmrcores}))
-                             incProgress(1/(nrow(groups)+ 1 ), detail = paste("Doing part", groups[i,1]," vs ", groups[i,2]))
                          }
                          file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
-                         results <- as.data.frame(rowRanges(rse))
-                         save(se,file = gsub(".rda","_results.rda",file))
+                         if(!grepl("results",file)) file <- gsub(".rda","_results.rda",file)
+                         save(se,file = file)
                          incProgress(1/(nrow(groups) + 1 ), detail = paste("Saving results"))
                      })
         createAlert(session, "dmrmessage", "dmrAlert", title = "DMR completed", style =  "danger",
-                    content = paste0("Please load the object with the results. Summarized Experiment object with results saved in: ", gsub(".rda","_results.rda",file)), append = FALSE)
+                    content = paste0("Summarized Experiment object with results saved in: ", file), append = FALSE)
     })
     shinyFileChoose(input, 'dmrfile', roots=volumes, session=session, restrictions=system.file(package='base'))
 
-    dmrdata <- function(){
+    dmrdata <-  reactive({
         inFile <- input$dmrfile
         if (is.null(inFile)) return(NULL)
+        print("READING DATA")
         file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
-        se <- get(load(file))
 
+        withProgress(message = 'Loading data',
+                     detail = 'This may take a while...', value = 0, {
+                         result.file <- gsub(".rda","_results.rda",file)
+                         if(file.exists(result.file)) {
+                             se <- get(load(result.file))
+                         } else {
+                             se <- get(load(file))
+                         }
+                     })
         if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
             createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
                         content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
                                          class(se)), append = FALSE)
             return(NULL)
         }
+        print("END READING DATA")
         return(se)
 
-    }
+    })
+
+
+
+
+    observeEvent(input$heatmapgroupCol , {
+        updateSelectizeInput(session, 'heatmapgroup1', choices = {
+            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+                if (!is.null(dmrdata()) & input$heatmapgroupCol != "" )
+                    as.character(colData(dmrdata())[,input$heatmapgroupCol])
+            }}, server = TRUE)
+    })
+    observeEvent(input$heatmapgroupCol , {
+        updateSelectizeInput(session, 'heatmapgroup2', choices = {
+            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+                if (!is.null(dmrdata()) & input$heatmapgroupCol != "" )
+                    as.character(colData(dmrdata())[,input$heatmapgroupCol])
+            }}, server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'heatmapSortCol', choices = {
+            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+                if (!is.null(dmrdata()) & !is.null(input$colmetadataheatmap))
+                    as.character(input$colmetadataheatmap)
+            }}, server = TRUE)
+    })
+
+    observe({
+        updateSelectizeInput(session, 'heatmapgroupCol', choices = {
+            if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
+        }, server = TRUE)
+    })
+    observeEvent(input$volcanogroupCol , {
+        updateSelectizeInput(session, 'volcanogroup1', choices = {
+            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+                if (!is.null(dmrdata()) & input$volcanogroupCol != "" )
+                    as.character(colData(dmrdata())[,input$volcanogroupCol])
+            }}, server = TRUE)
+    })
+    observeEvent(input$volcanogroupCol , {
+        updateSelectizeInput(session, 'volcanogroup2', choices = {
+            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+                if (!is.null(dmrdata()) & input$volcanogroupCol != "" )
+                    as.character(colData(dmrdata())[,input$volcanogroupCol])
+            }}, server = TRUE)
+    })
+
+    observe({
+        updateSelectizeInput(session, 'volcanogroupCol', choices = {
+            if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
+        }, server = TRUE)
+    })
 
     observeEvent(input$dmrgroupCol , {
         updateSelectizeInput(session, 'dmrgroups', choices = {
@@ -887,16 +973,16 @@ biOMICsServer <- function(input, output, session) {
 
     observeEvent(input$volcanoPlot , {
         output$volcano.plot <- renderPlot({
-            if(isolate({input$dmrgroup1}) == "") {
+            if(isolate({input$volcanogroup1}) == "") {
                 group1 <- NULL
             } else {
-                group1 <- isolate({input$dmrgroup1})
+                group1 <- isolate({input$volcanogroup1})
             }
 
-            if(isolate({input$dmrgroup2}) == "") {
+            if(isolate({input$volcanogroup2}) == "") {
                 group2 <- NULL
             } else {
-                group2 <- isolate({input$dmrgroup2})
+                group2 <- isolate({input$volcanogroup2})
             }
 
 
@@ -985,7 +1071,11 @@ biOMICsServer <- function(input, output, session) {
 
     output$probesSE <- renderDataTable({
         data <- dmrdata()
-        if(!is.null(data)) as.data.frame(values(data))
+
+        if(!is.null(data)) {
+            df <- as.data.frame(values(data))
+
+        }
     },
     options = list(pageLength = 10,
                    scrollX = TRUE,
@@ -1018,9 +1108,30 @@ biOMICsServer <- function(input, output, session) {
             show_column_names <- isolate({input$heatmap.show.col.names})
             show_row_names <- isolate({input$heatmap.show.row.names})
             cluster_columns  <- isolate({input$heatmap.clustercol})
+            sortCol  <- isolate({input$heatmapSortCol})
+            if(isolate({input$heatmapgroup1}) == "") {
+                group1 <- NULL
+            } else {
+                group1 <- isolate({input$heatmapgroup1})
+            }
+
+            if(isolate({input$heatmapgroup2}) == "") {
+                group2 <- NULL
+            } else {
+                group2 <- isolate({input$heatmapgroup2})
+            }
+
             # Get hypo methylated and hypermethylated probes
-            idx <- grep("status",colnames(values(data)))
-            probes <- which(values(data)[,idx[1]] %in% c("Hypermethylated","Hypomethylated"))
+            idx <- grep(paste("status",group1,group2, sep="."), colnames(values(data)))
+
+            if(isolate({input$heatmapInputRb}) == "Status"){
+                if(isolate({input$heatmap.hypoprobesCb})) sig.probes <- c("Hypomethylated")
+                if(isolate({input$heatmap.hyperprobesCb})) sig.probes <- c("Hypermethylated",sig.probes)
+                probes <- which(values(data)[,idx[1]] %in% sig.probes)
+            } else {
+                sig.probes <- parse.textarea.input(isolate({input$heatmapProbesTextArea}))
+                probes <- which(values(data)$probeID %in% sig.probes)
+            }
             data <- data[probes,]
 
             # col.metadata
@@ -1035,9 +1146,10 @@ biOMICsServer <- function(input, output, session) {
             if(!is.null(rowmdata)) {
                 if(length(colmdata) > 0) row.metadata <- subset(values(data), select=c(rowmdata))
             }
-
+            print(sortCol)
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
+                             if(!isolate({input$heatmap.sortCb})) {
                              p <-  TCGAvisualize_Heatmap(data=assay(data),
                                                          col.metadata=col.metadata,
                                                          row.metadata=row.metadata,
@@ -1047,6 +1159,18 @@ biOMICsServer <- function(input, output, session) {
                                                          cluster_columns = cluster_columns,
                                                          show_row_names = show_row_names,
                                                          type = "methylation")
+                             } else {
+                                 p <-  TCGAvisualize_Heatmap(data=assay(data),
+                                                             col.metadata=col.metadata,
+                                                             row.metadata=row.metadata,
+                                                             title = "Heatmap",
+                                                             cluster_rows = cluster_rows,
+                                                             show_column_names = show_column_names,
+                                                             cluster_columns = cluster_columns,
+                                                             show_row_names = show_row_names,
+                                                             sortCol = sortCol,
+                                                             type = "methylation")
+                             }
                              incProgress(1/2)
                              ComplexHeatmap::draw(p)
                          })
