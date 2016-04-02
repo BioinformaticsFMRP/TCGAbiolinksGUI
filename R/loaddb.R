@@ -252,6 +252,5 @@ load.maf <- function(env){
     all.df[,"Deploy.Location"] <- gsub("/dccfiles_prod/tcgafiles/",
                                        "https://tcga-data.nci.nih.gov/tcgafiles/ftp_auth/",
                                        all.df[,"Deploy.Location"] )
-    return(all.df)
     assign("maf.files",all.df, envir = env)
 }
