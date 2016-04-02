@@ -72,8 +72,11 @@ body {
   right: 10px;
   height: 24px;
   width: 440px;
-  /*background-color: red;
-  color: white;*/
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid red;
+  color: black;
+  border-color: red;
   margin: 0px;
   padding: 2px 3px;
   opacity: 0.85;
@@ -99,6 +102,7 @@ pre {
 .shiny-progress-container. {
     background-color: #FF0000;
     .opacity 0.8;
+    border-color: red;
 }
 .shiny-progress {
     background-color: #FF0000;
