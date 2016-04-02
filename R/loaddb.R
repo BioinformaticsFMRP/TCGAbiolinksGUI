@@ -224,7 +224,7 @@ load.maf <- function(env){
     for(tumor in unique(TCGAquery()$Disease)) {
 
         idx <- which(mapply(function(x) {
-            any(grepl(tumor,(x[,1]), ignore.case = FALSE))
+            any(grepl(tumor,(x[,1]), ignore.case = TRUE))
         },tables) == TRUE)
         df <- lapply(idx,function(x) tables[x])
 
@@ -233,7 +233,6 @@ load.maf <- function(env){
         if(length(idx) > 1) {
             df <- Reduce(function(...) merge(..., all=TRUE), df)
         }  else if(length(idx) == 1) {
-            print(idx)
             df <- Reduce(function(...) merge(..., all=TRUE), df)
             df <- df[[1]]
             colnames(df) <- gsub(" ",".", colnames(df))
@@ -253,7 +252,6 @@ load.maf <- function(env){
     all.df[,"Deploy.Location"] <- gsub("/dccfiles_prod/tcgafiles/",
                                        "https://tcga-data.nci.nih.gov/tcgafiles/ftp_auth/",
                                        all.df[,"Deploy.Location"] )
-    print(class(df))
     return(all.df)
-    #assign("maf.files",all.df, envir = env)
+    assign("maf.files",all.df, envir = env)
 }
