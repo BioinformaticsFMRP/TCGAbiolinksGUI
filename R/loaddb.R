@@ -224,25 +224,26 @@ load.maf <- function(env){
     for(tumor in unique(TCGAquery()$Disease)) {
 
         idx <- which(mapply(function(x) {
-            any(grepl(tumor,(x[,1]), ignore.case = TRUE))
-     },tables) == TRUE)
-     df <- lapply(idx,function(x) tables[x])
+            any(grepl(tumor,(x[,1]), ignore.case = FALSE))
+        },tables) == TRUE)
+        df <- lapply(idx,function(x) tables[x])
 
-    # merge the data frame in the lists
-    if(length(idx) > 1) {
-        df <- Reduce(function(...) merge(..., all=TRUE), df)
-    } else {
-        df <- Reduce(function(...) merge(..., all=TRUE), df)
-        df <- df[[1]]
-    }
-        print(tumor)
-        print(colnames(df))
-        print(class(df))
-        #print(df)
-        if(is.null(df)) next
+        if(length(df) == 0) next
+        # merge the data frame in the lists
+        if(length(idx) > 1) {
+            df <- Reduce(function(...) merge(..., all=TRUE), df)
+        }  else if(length(idx) == 1) {
+            print(idx)
+            df <- Reduce(function(...) merge(..., all=TRUE), df)
+            df <- df[[1]]
+            colnames(df) <- gsub(" ",".", colnames(df))
+            colnames(df) <- gsub(":",".", colnames(df))
+        }
+
         # Remove obsolete/protected
         df <- subset(df, df$Deploy.Status == "Available")
         df <- subset(df, df$Protection.Status == "Public")
+
         if(nrow(df) == 0) next
 
         df$Tumor <- tumor
@@ -250,8 +251,9 @@ load.maf <- function(env){
     }
 
     all.df[,"Deploy.Location"] <- gsub("/dccfiles_prod/tcgafiles/",
-                                   "https://tcga-data.nci.nih.gov/tcgafiles/ftp_auth/",
-                                   all.df[,"Deploy.Location"] )
-
-    assign("maf.files",all.df, envir = env)
+                                       "https://tcga-data.nci.nih.gov/tcgafiles/ftp_auth/",
+                                       all.df[,"Deploy.Location"] )
+    print(class(df))
+    return(all.df)
+    #assign("maf.files",all.df, envir = env)
 }
