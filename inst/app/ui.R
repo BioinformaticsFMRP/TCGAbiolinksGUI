@@ -49,6 +49,7 @@ sidebar <-  dashboardSidebar(
         menuItem("OncoPrint" , tabName = "tcgaOncoPrint", icon = icon("picture-o")),
         menuItem("Profile plot" , tabName = "tcgaProfilePlot", icon = icon("picture-o")),
         menuItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o")),
+        menuItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
         menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask")),
         menuItem("DEA analysis" , tabName = "dea", icon = icon("flask")),
         menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
@@ -426,6 +427,61 @@ body <-  dashboardBody(
                     )
                 )
         ),
+        tabItem(tabName = "volcano",
+
+                fluidRow(
+                    column(10,  bsAlert("volcanomessage"),
+                           bsCollapse(id = "collapseVolcano", open = "Volcano plot",
+                                      #bsCollapsePanel("Probes info", dataTableOutput('probesSE'), style = "default"),
+                                      bsCollapsePanel("Volcano plot", uiOutput("volcanoPlot"), style = "default"))),
+                    column(2,
+                           box(title = "Data",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               shinyFilesButton('volcanofile', 'Select results (.csv)', 'Please select the csv file with the results',
+                                                multiple = FALSE)),
+                           box(title = "Volcano options",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               radioButtons("volcanoInputRb", "Select input type:",
+                                            c("DNA methylation"="met",
+                                              "Expression"="exp")),
+                               numericInput("volcanoxcutMet", "DNA methylation threshold",
+                                            min = 0, max = 1, value = 0, step = 0.05),
+                               numericInput("volcanoxcutExp", "Log FC threshold",
+                                            min = 0, max = 1, value = 0, step = 0.05),
+                               numericInput("volcanoycut", "P-value adj cut-off",
+                                            min = 0, max = 1, value = 0.05, step = 0.001),
+                               checkboxInput("volcanoNames", "Add names?", value = FALSE, width = NULL),
+                               checkboxInput("volcanoNamesFill", "Fill names?", value = TRUE, width = NULL)
+                           ),
+                           box(title = "Color control",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               colourInput("colinsignificant", "Insignificant color", value = "black"),
+                               colourInput("colHypomethylated", "Hypomethylated color", value = "darkgreen"),
+                               colourInput("colHypermethylated", "Hypermethylate color", value = "red"),
+                               colourInput("colDownregulated", "Downregulated color", value = "darkgreen"),
+                               colourInput("colUpregulated", "Upregulated genes color", value = "red")
+                           ),
+                           box(title = "Plot controls",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               sliderInput("volcanowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("volcanoheight", "Plot Height (px)", min = 0, max = 800, value = 400)),
+                           actionButton("volcanoPlot",
+                                        "Volcano plot",
+                                        style = "background-color: #000080;
+                                 color: #FFFFFF;
+                                 margin-left: auto;
+                                 margin-right: auto;
+                                 width: 100%",
+                                        icon = icon("picture-o")
+                           )
+                    )
+                )
+        ),
+
         tabItem(tabName = "dmr",
 
                 fluidRow(
@@ -465,25 +521,6 @@ body <-  dashboardBody(
                                               margin-right: auto;
                                               width: 100%",
                                             icon = icon("flask"))),
-                           box(title = "Volcano plot",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               shinyFilesButton('volcanofile', 'Select results (.csv)', 'Please select the csv file with the results',
-                                                multiple = FALSE),
-                               colourInput("colHypomethylated", "Hypomethylated color", value = "darkgreen"),
-                               colourInput("colHypermethylated", "Hypermethylate color", value = "red"),
-                               colourInput("colinsignificant", "Insignificant color", value = "black"),
-                               checkboxInput("dmrNamesVolcano", "Add probe names?", value = FALSE, width = NULL),
-                               checkboxInput("dmrNamesVolcanoFill", "Fill names?", value = TRUE, width = NULL),
-                               actionButton("volcanoPlot",
-                                            "Volcano plot",
-                                            style = "background-color: #000080;
-                                              color: #FFFFFF;
-                                              margin-left: auto;
-                                              margin-right: auto;
-                                              width: 100%",
-                                            icon = icon("picture-o"))
-                           ),
                            box(title = "Mean DNA methylation",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
@@ -704,12 +741,10 @@ body <-  dashboardBody(
                 )
         ),
         tabItem(tabName = "dea",
-
                 fluidRow(
                     column(10,  bsAlert("deamessage"),
                            bsCollapse(id = "collapsedea", open = "DEA plots",
-                                      bsCollapsePanel("Genes info", dataTableOutput('deaSE'), style = "default"),
-                                      bsCollapsePanel("DEA plots", uiOutput("deaPlot"), style = "default"))),
+                                      bsCollapsePanel("Genes info", dataTableOutput('deaSE'), style = "default"))),
                     column(2,
                            box(title = "Gene expression object",width = NULL,
                                status = "danger",
@@ -766,21 +801,6 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("flask"))),
-                           box(title = "Volcano plot",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               colourInput("colUpregulated", "Upregulated genes color", value = "red"),
-                               colourInput("colDownregulated", "Down regulated color", value = "darkgreen"),
-                               colourInput("coldeainsignificant", "Insignificant color", value = "black"),
-                               actionButton("volcanodeaPlot",
-                                            "Volcano plot",
-                                            style = "background-color: #000080;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 100%",
-                                            icon = icon("picture-o"))
-                           ),
                            box(title = "Pathway graphs",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
@@ -797,12 +817,7 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("file-pdf-o"))
-                           ),
-                           box(title = "Plot controls",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               sliderInput("deawidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("deaheight", "Plot Height (px)", min = 0, max = 800, value = 400))
+                           )
                     )
                 )
         ),
