@@ -738,7 +738,7 @@ body <-  dashboardBody(
                                numericInput("deafilteringcut", "Threshold selected as mean for filtering",
                                             min = 0, max = 1, value = 0.25, step = 0.1)
                            ),
-                           box(title = "dea analysis",width = NULL,
+                           box(title = "DEA analysis",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                numericInput("deathrsld", "Log FC threshold",
