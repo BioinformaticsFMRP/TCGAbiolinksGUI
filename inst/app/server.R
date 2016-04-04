@@ -959,7 +959,7 @@ biOMICsServer <- function(input, output, session) {
                            "Upregulated",
                            "Downregulated")
                 label[2:3] <-  paste(label[2:3], "in", group2)
-                if(isolate({input$volcanoNames})) names <- data$mRNA
+                if(isolate({input$volcanoNames})) names <- as.character(data$mRNA)
 
                 withProgress(message = 'Creating plot',
                              detail = 'This may take a while...', value = 0, {
@@ -974,7 +974,7 @@ biOMICsServer <- function(input, output, session) {
                                                        title =  paste("Volcano plot", "(", group2, "vs", group1,")"),
                                                        legend=  "Legend",
                                                        label = label,
-                                                       names = NULL,
+                                                       names = names,
                                                        x.cut = x.cut,
                                                        y.cut = y.cut,
                                                        filename = NULL)
