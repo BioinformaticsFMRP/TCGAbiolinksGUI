@@ -9,6 +9,8 @@ data(paths.hsa)
 pathways.id <- names(paths.hsa)
 names(pathways.id) <- unname(paths.hsa)
 
+menu.icon <- "arrow-circle-right"
+
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
 names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
@@ -47,16 +49,28 @@ sidebar <-  dashboardSidebar(
         #menuItem("biOMICs search" , tabName = "ontology", icon = icon("search")),
         #menuItem("Report" , tabName = "report", icon = icon("book")),
         menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
-        menuItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o")),
-        menuItem("Profile plot" , tabName = "tcgaProfilePlot", icon = icon("picture-o")),
-        menuItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o")),
-        menuItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
-        menuItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
-        menuItem("Mean DNA methylation plot" , tabName = "meanmet", icon = icon("picture-o")),
-        menuItem("Differential methylation analysis" , tabName = "dmr", icon = icon("flask")),
-        menuItem("Differential expression analysis" , tabName = "dea", icon = icon("flask")),
-        menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
-        menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
+        menuItem("Genomic analysis", icon = icon(menu.icon),
+                 menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o"))
+        ),
+        menuItem("Epigenetic analysis", icon = icon(menu.icon),
+                 menuSubItem("Differential methylation analysis" , tabName = "dmr", icon = icon("flask")),
+                 menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
+                 menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
+                 menuItem("Mean DNA methylation plot" , tabName = "meanmet", icon = icon("picture-o"))
+        ),
+        menuItem("Transcriptomic analysis", icon = icon(menu.icon),
+                 menuSubItem("Differential expression analysis" , tabName = "dea", icon = icon("flask")),
+                 menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
+                 menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
+                 menuSubItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
+        ),
+        menuItem("Integrative analysis", icon = icon(menu.icon),
+                 menuSubItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o"))
+        ),
+        menuItem("Other analysis", icon = icon(menu.icon),
+                 menuSubItem("Profile plot" , tabName = "tcgaProfilePlot", icon = icon("picture-o")),
+                 menuSubItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o"))
+        )
         #menuItem("ELMER analysis" , tabName = "elmer", icon = icon("flask"))
     )
 )
