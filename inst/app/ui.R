@@ -365,12 +365,12 @@ body <-  dashboardBody(
                                             width: 49%",
                                             icon = icon("download"))
                            ),
-                           box(title = "Directory to save files",width = NULL,
+                           box(title = "Directory to save & prepare files",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
-                               bsTooltip("tcgafolder", "Select a folder where data will be saved/downloaded",
+                               bsTooltip("tcgafolder", "Select a folder where data will be read/saved/downloaded",
                                          "left"),
-                               shinyDirButton('tcgafolder', 'Folder to save', 'Please select a folder where files will be saved',
+                               shinyDirButton('tcgafolder', 'Select directory', 'Please select a folder where files will be saved',
                                               class='shinyDirectories btn-default')
                            ),
                            bsAlert("tcgaddirmessage")
@@ -470,7 +470,7 @@ body <-  dashboardBody(
                                numericInput("volcanoxcutMet", "DNA methylation threshold",
                                             min = 0, max = 1, value = 0, step = 0.05),
                                numericInput("volcanoxcutExp", "Log FC threshold",
-                                            min = 0, max = 1, value = 0, step = 0.05),
+                                            min = 0, max = 100, value = 0, step = 0.5),
                                numericInput("volcanoycut", "P-value adj cut-off",
                                             min = 0, max = 1, value = 0.05, step = 0.001),
                                checkboxInput("volcanoNames", "Add names?", value = FALSE, width = NULL),
@@ -490,7 +490,7 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("volcanowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("volcanoheight", "Plot Height (px)", min = 0, max = 800, value = 400)),
-                           actionButton("volcanoPlot",
+                           actionButton("volcanoPlotBt",
                                         "Volcano plot",
                                         style = "background-color: #000080;
                                  color: #FFFFFF;
