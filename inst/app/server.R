@@ -1728,10 +1728,33 @@ biOMICsServer <- function(input, output, session) {
         toggle("starburstNamesFill")
     })
 
+    observeEvent(input$starburstmetfile, {
+        file  <- basename(as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath))
+        if(length(file) > 0){
+            file <- unlist(str_split(file,"_"))
+            group1 <- file[4]
+            group2 <- file[5]
+            pcut <- file[7]
+            meancut <- gsub(".csv","",file[9])
+            updateNumericInput(session, "starburstmetdiff", value = meancut)
+            updateNumericInput(session, "starburstmetFDR", value = pcut)
+        }
+    })
 
+    observeEvent(input$starburstexpfile, {
+        file  <- basename(as.character(parseFilePaths(volumes, input$starburstexpfile)$datapath))
+        if(length(file) > 0){
+            file <- unlist(str_split(file,"_"))
+            group1 <- file[4]
+            group2 <- file[5]
+            pcut <- file[7]
+            meancut <- gsub(".csv","",file[9])
+            updateNumericInput(session, "starburstmetdiff", value = meancut)
+            updateNumericInput(session, "starburstmetFDR", value = pcut)
+        }
+    })
     starburst <- function(){
-        g1 <- isolate({input$starburstgroup1})
-        g2 <- isolate({input$starburstgroup2})
+
         logFC.cut <- isolate({input$starburstexpFC})
         exp.p.cut <- isolate({input$starburstexFDR})
         diffmean.cut <- isolate({input$starburstmetdiff})
@@ -1749,18 +1772,43 @@ biOMICsServer <- function(input, output, session) {
                     isolate({input$sbcolDown}),
                     isolate({input$sbcolUpHyper}),
                     isolate({input$sbcolDownHyper}))
-        result <- TCGAvisualize_starburst(met = met,
-                                          exp = exp,
-                                          group1 = g1,
-                                          group2 = g2,
-                                          color = colors,
-                                          names = names,
-                                          names.fill = names.fill,
-                                          exp.p.cut = exp.p.cut,
-                                          met.p.cut = met.p.cut,
-                                          diffmean.cut = diffmean.cut,
-                                          logFC.cut = logFC.cut,
-                                          return.plot = TRUE)
+
+
+        file  <- basename(as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath))
+        if(length(file) > 0){
+            file <- unlist(str_split(file,"_"))
+            group1 <- file[4]
+            group2 <- file[5]
+        }
+        file  <- basename(as.character(parseFilePaths(volumes, input$starburstexpfile)$datapath))
+        if(length(file) > 0){
+            file <- unlist(str_split(file,"_"))
+            exp.group1 <- file[4]
+            exp.group2 <- file[5]
+        }
+
+        print(head(met))
+        print(head(exp))
+        print(group1)
+        print(exp.group1)
+        print(group2)
+        print(exp.group2)
+
+        if(group1 == exp.group1 & group2 == exp.group2){
+
+            result <- TCGAvisualize_starburst(met = met,
+                                              exp = exp,
+                                              group1 = group1,
+                                              group2 = group2,
+                                              color = colors,
+                                              names = names,
+                                              names.fill = names.fill,
+                                              exp.p.cut = exp.p.cut,
+                                              met.p.cut = met.p.cut,
+                                              diffmean.cut = diffmean.cut,
+                                              logFC.cut = logFC.cut,
+                                              return.plot = TRUE)
+        }
     }
     # -------------- Starburst plot
     observeEvent(input$starburstPlot , {
@@ -1776,28 +1824,18 @@ biOMICsServer <- function(input, output, session) {
         output$starburstPlot <- renderUI({
             plotOutput("starburst.plot", width = paste0(isolate({input$starburstwidth}), "%"), height = isolate({input$starburstheight}))
         })})
-    observe({
-        updateSelectizeInput(session, 'starburstgroup1', choices = {
-            if(!is.null(result.dea.data())) {
-                x <- as.character(colnames(result.dea.data()))
-                x[-which(x %in% c("mRNA", "logFC","FDR", "Delta","status"))]
-            }
-        }, server = TRUE)
-    })
-    observe({
-        updateSelectizeInput(session, 'starburstgroup2', choices = {
-            if(!is.null(result.dea.data())) {
-                x <- as.character(colnames(result.dea.data()))
-                x[-which(x %in% c("mRNA", "logFC","FDR", "Delta","status"))]
-            }
-        }, server = TRUE)
-    })
+
     result.dea.data <- function(){
         inFile <- input$starburstexpfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$starburstexpfile)$datapath)
-        se <- get(load(file))
-
+        if(file_ext(file)=="csv"){
+            se <- read.csv2(file,header = T)
+            rownames(se) <- se[,1]
+            se[,1] <- NULL
+        } else if(file_ext(file)=="rda"){
+            se <- get(load(file))
+        }
         if(class(se)!= class(data.frame())){
             createAlert(session, "deamessage", "deaAlert", title = "Data input error", style =  "danger",
                         content = paste0("Sorry, but I'm expecting a Data frame object, but I got a: ",
@@ -1810,14 +1848,18 @@ biOMICsServer <- function(input, output, session) {
         inFile <- input$starburstmetfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath)
-        se <- get(load(file))
-
-        if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
-            createAlert(session, "deamessage", "deaAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
-                                         class(se)), append = FALSE)
-            return(NULL)
+        if(file_ext(file)=="csv"){
+            se <- read.csv2(file,header = T)
+        } else if(file_ext(file)=="rda"){
+            se <- get(load(file))
         }
+
+        #if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+        #    createAlert(session, "deamessage", "deaAlert", title = "Data input error", style =  "danger",
+        #                content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
+        #                                 class(se)), append = FALSE)
+        #    return(NULL)
+        #}
         return(se)
     }
     shinyFileChoose(input, 'starburstmetfile', roots=volumes, session=session, restrictions=system.file(package='base'))
