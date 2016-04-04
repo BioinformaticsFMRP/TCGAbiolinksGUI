@@ -960,7 +960,7 @@ biOMICsServer <- function(input, output, session) {
                            "Downregulated")
                 label[2:3] <-  paste(label[2:3], "in", group2)
                 if(isolate({input$volcanoNames})) names <- data$mRNA
-                print(names)
+
                 withProgress(message = 'Creating plot',
                              detail = 'This may take a while...', value = 0, {
                                  TCGAVisualize_volcano(x = data$logFC,
