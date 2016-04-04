@@ -28,6 +28,7 @@ parse.textarea.input <- function(text){
 #' @importFrom downloader download
 #' @keywords internal
 biOMICsServer <- function(input, output, session) {
+    addClass(selector = "body", class = "sidebar-collapse")
     setwd(Sys.getenv("HOME"))
     volumes <- c('Working directory'=getwd())
     shinyDirChoose(input, 'folder', roots=volumes, session=session, restrictions=system.file(package='base'))
@@ -637,7 +638,7 @@ biOMICsServer <- function(input, output, session) {
                          if(is.null(input$allRows)){
                              closeAlert(session, "tcgasearchAlert")
                              createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Error", style = "alert",
-                                         content =  paste0("Please select the files to download"), append = TRUE)
+                                         content =  paste0("Please select which files will be downloaded"), append = TRUE)
                              req(input$allRows)
                          }
                          df <- data.frame(name = input$allRows[seq(5, length(input$allRows), 7)])

@@ -42,16 +42,19 @@ header <- dashboardHeader(
 )
 
 sidebar <-  dashboardSidebar(
+    width = 250,
     sidebarMenu(
         #menuItem("biOMICs search" , tabName = "ontology", icon = icon("search")),
         #menuItem("Report" , tabName = "report", icon = icon("book")),
         menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
-        menuItem("OncoPrint" , tabName = "tcgaOncoPrint", icon = icon("picture-o")),
+        menuItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o")),
         menuItem("Profile plot" , tabName = "tcgaProfilePlot", icon = icon("picture-o")),
         menuItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o")),
         menuItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
-        menuItem("DMR analysis" , tabName = "dmr", icon = icon("flask")),
-        menuItem("DEA analysis" , tabName = "dea", icon = icon("flask")),
+        menuItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
+        menuItem("Mean DNA methylation plot" , tabName = "meanmet", icon = icon("picture-o")),
+        menuItem("Differential methylation analysis" , tabName = "dmr", icon = icon("flask")),
+        menuItem("Differential expression analysis" , tabName = "dea", icon = icon("flask")),
         menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
         menuItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
         #menuItem("ELMER analysis" , tabName = "elmer", icon = icon("flask"))
@@ -195,7 +198,7 @@ body <-  dashboardBody(
                                bsTooltip("tcgaDownloadBarcode", "Barcodes separeted by (;), (,) or (new line)",
                                          "left"),
                                useShinyjs(),
-                               inputTextarea('tcgaDownloadBarcode', '', 2, 35),
+                               inputTextarea('tcgaDownloadBarcode', '', 2, 30),
                                useShinyjs(),
                                selectizeInput('tcgaFrnaseqv2typeFilter',
                                               'RNASeqV2 File type filter',
@@ -290,7 +293,7 @@ body <-  dashboardBody(
                                bsTooltip("clinicalBarcode", "Barcodes separeted by (;), (,) or (new line)",
                                          "left"),
                                useShinyjs(),
-                               inputTextarea('clinicalBarcode', '', 2, 35),
+                               inputTextarea('clinicalBarcode', '', 2, 30),
                                selectizeInput('tcgaClinicalFilter',
                                               'Clinical file type filter',
                                               c("biospecimen_aliquot",
@@ -370,18 +373,7 @@ body <-  dashboardBody(
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                shinyFilesButton('maffile', 'Select maf file', 'Please select a maf file',
-                                                multiple = FALSE),
-                               radioButtons("oncoInputRb", "Genes by:",
-                                            c("Selection"="Selection",
-                                              "Text"="text")),
-                               bsTooltip("oncoGenesTextArea", "Genes separeted by (;), (,) or (new line)",
-                                         "left"),
-                               useShinyjs(),
-                               inputTextarea('oncoGenesTextArea', '', 2, 35),
-                               selectizeInput('oncoGenes',
-                                              "genes",
-                                              choices = NULL,  multiple = TRUE)
-                           ),
+                                                multiple = FALSE)),
                            box(title = "Oncoprint metadata",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
@@ -395,6 +387,21 @@ body <-  dashboardBody(
                                               "Annotation position",
                                               choices = c("top","bottom"),selected = "top",  multiple = FALSE)
                            ),
+                           box(title = "Gene selection",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
+                               radioButtons("oncoInputRb", "Genes by:",
+                                            c("Selection"="Selection",
+                                              "Text"="text")),
+                               bsTooltip("oncoGenesTextArea", "Genes separeted by (;), (,) or (new line)",
+                                         "left"),
+                               useShinyjs(),
+                               inputTextarea('oncoGenesTextArea', '', 2, 30),
+                               selectizeInput('oncoGenes',
+                                              "genes",
+                                              choices = NULL,  multiple = TRUE)
+                           ),
+
                            box(title = "Colors control",width = NULL,  status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                colourInput("colDEL", "DEL color", value = "red"),
@@ -406,23 +413,23 @@ body <-  dashboardBody(
                                sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 800, value = 400)
                            ),
-                           box(title = "Oncoprint plot",width = NULL,
+                           box(title = "Oncoprint options",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                bsTooltip("oncoRmCols", "If there is no alteration in that sample, whether remove it on the oncoprint",
                                          "left"),
                                checkboxInput("oncoRmCols", "Remove empty columns?", value = FALSE, width = NULL),
                                checkboxInput("oncoShowColsNames", "Show column names?", value = FALSE, width = NULL),
-                               checkboxInput("oncoShowRowBarplot", "Show barplot annotation on rows?", value = TRUE, width = NULL),
-                               actionButton("oncoprintPlot",
-                                            "Plot oncoprint",
-                                            style = "background-color: #000080;
+                               checkboxInput("oncoShowRowBarplot", "Show barplot annotation on rows?", value = TRUE, width = NULL)
+                           ),
+                           actionButton("oncoprintPlot",
+                                        "Plot oncoprint",
+                                        style = "background-color: #000080;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("picture-o")
-                               )
+                                        icon = icon("picture-o")
                            )
                     )
                 )
@@ -437,7 +444,7 @@ body <-  dashboardBody(
                     column(2,
                            box(title = "Data",width = NULL,
                                status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               solidHeader = FALSE, collapsible = FALSE, collapsed = TRUE,
                                shinyFilesButton('volcanofile', 'Select results (.csv)', 'Please select the csv file with the results',
                                                 multiple = FALSE)),
                            box(title = "Volcano options",width = NULL,
@@ -481,7 +488,115 @@ body <-  dashboardBody(
                     )
                 )
         ),
+        tabItem(tabName = "meanmet",
 
+                fluidRow(
+                    column(10,  bsAlert("meanmetmessage"),
+                           bsCollapse(id = "collapsemeanmet", open = "Mean DNA methylation plot",
+                                      bsCollapsePanel("Mean DNA methylation plot", uiOutput("meanMetplot"), style = "default"))),
+                    column(2,
+                           box(title = "DNA methylation object",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               shinyFilesButton('meanmetfile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
+                                                multiple = FALSE)),
+                           box(title = "Mean DNA methylation",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               selectizeInput('meanmetgroupCol',
+                                              "Group column",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('meanmetsubgroupCol',
+                                              "Sub group column",
+                                              choices = NULL,  multiple = FALSE),
+                               checkboxInput("meanmetplotjitter", "Plot jitters?", value = TRUE, width = NULL),
+                               conditionalPanel(
+                                   condition = "input.meanmetplotjitter == TRUE",
+                                   selectizeInput('meanmetsort',
+                                                  "Sort method",
+                                                  choices = c("None"=NULL,
+                                                              "Ascending by mean"="mean.asc",
+                                                              "Descending by mean"="mean.desc",
+                                                              "Ascending by median"="median.asc",
+                                                              "Descending by median"="median.desc"),
+                                                  multiple = FALSE)
+                               ),
+                               sliderInput("meanmetAxisAngle", "x-axis label angle:",   min = 0, max = 360, value = 90, step= 45)),
+                           box(title = "Plot controls",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               sliderInput("meanmetwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("meanmetheight", "Plot Height (px)", min = 0, max = 800, value = 400)),
+                           actionButton("meanmetPlot",
+                                        "DNA mean methylation plot",
+                                        style = "background-color: #000080;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                        icon = icon("picture-o"))
+
+                    )
+                )
+        ),
+        tabItem(tabName = "heatmap",
+
+                fluidRow(
+                    column(10,  bsAlert("heatmapmessage"),
+                           bsCollapse(id = "collapseHeatmap", open = "Heatmap",
+                                      bsCollapsePanel("Heatmap", uiOutput("heatmapPlot"), style = "default"))),
+                    column(2,
+                           box(title = "Data",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               shinyFilesButton('heatmapfile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
+                                                multiple = FALSE)),
+                           box(title = "Heatmap",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               selectizeInput('heatmapgroupCol',
+                                              "Group column",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('heatmapgroup1',
+                                              "Group 1",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('heatmapgroup2',
+                                              "Group 2",
+                                              choices = NULL,  multiple = FALSE),
+                               tags$hr(),
+                               radioButtons("heatmapInputRb", "Select probes by:",
+                                            c("Status"="Status",
+                                              "Text"="text")),
+                               inputTextarea('heatmapProbesTextArea', '', 2, 30),
+                               checkboxInput("heatmap.hypoprobesCb", "Hypermethylatd probes", value = TRUE, width = NULL),
+                               checkboxInput("heatmap.hyperprobesCb", "Hypomethylated probes", value = TRUE, width = NULL),
+                               tags$hr(),
+                               selectizeInput('colmetadataheatmap',
+                                              "Columns annotations",
+                                              choices = NULL,  multiple = TRUE),
+                               checkboxInput("heatmap.sortCb", "Sort by column?", value = FALSE, width = NULL),
+                               selectizeInput('heatmapSortCol',
+                                              "Sort by columns",
+                                              choices = NULL,  multiple = FALSE),
+                               selectizeInput('rowmetadataheatmap',
+                                              "Rows annotations",
+                                              choices = NULL,  multiple = TRUE),
+                               tags$hr(),
+                               checkboxInput("heatmap.clusterrows", "Cluster rows?", value = FALSE, width = NULL),
+                               checkboxInput("heatmap.clustercol", "Cluster columns?", value = FALSE, width = NULL),
+                               checkboxInput("heatmap.show.row.names", "Show row names?", value = FALSE, width = NULL),
+                               checkboxInput("heatmap.show.col.names", "Show col names?", value = FALSE, width = NULL)),
+                           actionButton("heatmapPlot",
+                                        "Heatmap plot",
+                                        style = "background-color: #000080;
+                                                 color: #FFFFFF;
+                                                 margin-left: auto;
+                                                 margin-right: auto;
+                                                 width: 100%",
+                                        icon = icon("picture-o"))
+                    )
+                )
+        ),
         tabItem(tabName = "dmr",
 
                 fluidRow(
@@ -512,96 +627,15 @@ body <-  dashboardBody(
                                               choices = NULL,  multiple = FALSE),
                                selectizeInput('dmrgroups',
                                               "Groups",
-                                              choices = NULL,  multiple = TRUE),
-                               actionButton("dmrAnalysis",
-                                            "DMR analysis",
-                                            style = "background-color: #000080;
+                                              choices = NULL,  multiple = TRUE)),
+                           actionButton("dmrAnalysis",
+                                        "DMR analysis",
+                                        style = "background-color: #000080;
                                               color: #FFFFFF;
                                               margin-left: auto;
                                               margin-right: auto;
                                               width: 100%",
-                                            icon = icon("flask"))),
-                           box(title = "Mean DNA methylation",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               selectizeInput('meanmetgroupCol',
-                                              "Group column",
-                                              choices = NULL,  multiple = FALSE),
-                               selectizeInput('meanmetsubgroupCol',
-                                              "Sub group column",
-                                              choices = NULL,  multiple = FALSE),
-                               checkboxInput("meanmetplotjitter", "Plot jitters?", value = TRUE, width = NULL),
-                               conditionalPanel(
-                                   condition = "input.meanmetplotjitter == TRUE",
-                                   selectizeInput('meanmetsort',
-                                                  "Sort method",
-                                                  choices = c("None"=NULL,
-                                                              "Ascending by mean"="mean.asc",
-                                                              "Descending by mean"="mean.desc",
-                                                              "Ascending by median"="median.asc",
-                                                              "Descending by median"="median.desc"),
-                                                  multiple = FALSE)
-                               ),
-                               sliderInput("meanmetAxisAngle", "x-axis label angle:",   min = 0, max = 360, value = 90, step= 45),
-                               actionButton("meanmetPlot",
-                                            "DNA mean methylation plot",
-                                            style = "background-color: #000080;
-                                              color: #FFFFFF;
-                                              margin-left: auto;
-                                              margin-right: auto;
-                                              width: 100%",
-                                            icon = icon("picture-o"))
-
-                           ),
-                           box(title = "Heatmap",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               selectizeInput('heatmapgroupCol',
-                                              "Group column",
-                                              choices = NULL,  multiple = FALSE),
-                               selectizeInput('heatmapgroup1',
-                                              "Group 1",
-                                              choices = NULL,  multiple = FALSE),
-                               selectizeInput('heatmapgroup2',
-                                              "Group 2",
-                                              choices = NULL,  multiple = FALSE),
-                               tags$hr(),
-                               radioButtons("heatmapInputRb", "Select probes by:",
-                                            c("Status"="Status",
-                                              "Text"="text")),
-                               inputTextarea('heatmapProbesTextArea', '', 2, 35),
-                               checkboxInput("heatmap.hypoprobesCb", "Hypermethylatd probes", value = TRUE, width = NULL),
-                               checkboxInput("heatmap.hyperprobesCb", "Hypomethylated probes", value = TRUE, width = NULL),
-                               tags$hr(),
-                               selectizeInput('colmetadataheatmap',
-                                              "Columns annotations",
-                                              choices = NULL,  multiple = TRUE),
-                               checkboxInput("heatmap.sortCb", "Sort by column?", value = FALSE, width = NULL),
-                               selectizeInput('heatmapSortCol',
-                                              "Sort by columns",
-                                              choices = NULL,  multiple = FALSE),
-                               selectizeInput('rowmetadataheatmap',
-                                              "Rows annotations",
-                                              choices = NULL,  multiple = TRUE),
-                               tags$hr(),
-                               checkboxInput("heatmap.clusterrows", "Cluster rows?", value = FALSE, width = NULL),
-                               checkboxInput("heatmap.clustercol", "Cluster columns?", value = FALSE, width = NULL),
-                               checkboxInput("heatmap.show.row.names", "Show row names?", value = FALSE, width = NULL),
-                               checkboxInput("heatmap.show.col.names", "Show col names?", value = FALSE, width = NULL),
-                               actionButton("heatmapPlot",
-                                            "Heatmap plot",
-                                            style = "background-color: #000080;
-                                              color: #FFFFFF;
-                                              margin-left: auto;
-                                              margin-right: auto;
-                                              width: 100%",
-                                            icon = icon("picture-o"))
-                           ),
-                           box(title = "Plot controls",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               sliderInput("meanmetwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("meanmetheight", "Plot Height (px)", min = 0, max = 800, value = 400))
+                                        icon = icon("flask"))
                     )
                 )
         ),
@@ -621,7 +655,7 @@ body <-  dashboardBody(
                                bsTooltip("eaGenesTextArea", "Genes separeted by (;), (,) or (new line)",
                                          "left"),
                                useShinyjs(),
-                               inputTextarea('eaGenesTextArea', '', 2, 35),
+                               inputTextarea('eaGenesTextArea', '', 2, 30),
                                selectizeInput('eagenes',
                                               "Genes",
                                               choices = unique(rownames(TCGAbiolinks:::EAGenes)),
@@ -658,11 +692,14 @@ body <-  dashboardBody(
                                       bsCollapsePanel("Profile plot", uiOutput("profileplot"), style = "default")
                            )),
                     column(2,
-                           box(title = "Profile plot",width = NULL,
+                           box(title = "Data ",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('profileplotfile', 'Select rda file', 'Please select a rda file with a data frame',
-                                                multiple = FALSE),
+                                                multiple = FALSE)),
+                           box(title = "Plot parameters ",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                useShinyjs(),
                                selectizeInput('profileplotgroup',
                                               'Column with the group information',
@@ -706,11 +743,14 @@ body <-  dashboardBody(
                                       bsCollapsePanel("survival plot", uiOutput("survivalplot"), style = "default")
                            )),
                     column(2,
-                           box(title = "Survival plot",width = NULL,
+                           box(title = "Data ",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
                                shinyFilesButton('survivalplotfile', 'Select rda file', 'Please select a rda file with a data frame',
-                                                multiple = FALSE),
+                                                multiple = FALSE)),
+                           box(title = "Plot parameters",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput('survivalplotgroup',
                                               'Column with the group information',
                                               choices=NULL,
@@ -832,8 +872,10 @@ body <-  dashboardBody(
                            box(title = "Gene expression object",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
-                               shinyFilesButton('starburstmetfile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
+                               shinyFilesButton('starburstmetfile', 'Select SummarizedExperiment',
+                                                'Please select SummarizedExperiment object',
                                                 multiple = FALSE),
+                               tags$hr(),
                                shinyFilesButton('starburstexpfile', 'Select expression result', 'Please select expression result object',
                                                 multiple = FALSE)),
                            box(title = "starburst analysis",width = NULL,
