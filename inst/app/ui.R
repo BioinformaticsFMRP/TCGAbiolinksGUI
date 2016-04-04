@@ -917,7 +917,8 @@ body <-  dashboardBody(
                                numericInput("starburstmetFDR", "Methylation FDR cut-off",
                                             min = 0, max = 1, value = 0.05, step = 0.001),
                                checkboxInput("starburstNames", "Add genes names?", value = FALSE, width = NULL),
-                               checkboxInput("starburstNamesFill", "Fill names?", value = TRUE, width = NULL)
+                               checkboxInput("starburstNamesFill", "Fill names?", value = TRUE, width = NULL),
+                               checkboxInput("starburstCircle", "Circle genes?", value = TRUE, width = NULL)
                            ),
                            box(title = "Colors control",width = NULL,
                                status = "danger",

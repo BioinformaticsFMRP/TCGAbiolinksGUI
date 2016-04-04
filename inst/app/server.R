@@ -1806,6 +1806,7 @@ biOMICsServer <- function(input, output, session) {
                                               exp.p.cut = exp.p.cut,
                                               met.p.cut = met.p.cut,
                                               diffmean.cut = diffmean.cut,
+                                              circle = isolate({input$starburstCircle})
                                               logFC.cut = logFC.cut,
                                               return.plot = TRUE)
         }
