@@ -953,12 +953,12 @@ biOMICsServer <- function(input, output, session) {
 
         #-------------------------START controlling show/hide states -----------------
 
-        observeEvent(input$heatmapInputRb, {
-            if(input$heatmapInputRb == "text") {
+        observeEvent(input$heatmapProbesInputRb, {
+            if(input$heatmapProbesInputRb == "text") {
                 shinyjs::show("heatmapProbesTextArea")
                 shinyjs::hide("heatmap.hypoprobesCb")
                 shinyjs::hide("heatmap.hyperprobesCb")
-            } else if(input$heatmapInputRb == "Status") {
+            } else if(input$heatmapProbesInputRb == "Status") {
                 shinyjs::hide("heatmapProbesTextArea")
                 shinyjs::show("heatmap.hypoprobesCb")
                 shinyjs::show("heatmap.hyperprobesCb")
@@ -1031,33 +1031,12 @@ biOMICsServer <- function(input, output, session) {
 
         })
 
-
-        observeEvent(input$heatmapgroupCol , {
-            updateSelectizeInput(session, 'heatmapgroup1', choices = {
-                if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
-                    if (!is.null(dmrdata()) & input$heatmapgroupCol != "" )
-                        as.character(colData(dmrdata())[,input$heatmapgroupCol])
-                }}, server = TRUE)
-        })
-        observeEvent(input$heatmapgroupCol , {
-            updateSelectizeInput(session, 'heatmapgroup2', choices = {
-                if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
-                    if (!is.null(dmrdata()) & input$heatmapgroupCol != "" )
-                        as.character(colData(dmrdata())[,input$heatmapgroupCol])
-                }}, server = TRUE)
-        })
         observe({
             updateSelectizeInput(session, 'heatmapSortCol', choices = {
                 if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
                     if (!is.null(dmrdata()) & !is.null(input$colmetadataheatmap))
                         as.character(input$colmetadataheatmap)
                 }}, server = TRUE)
-        })
-
-        observe({
-            updateSelectizeInput(session, 'heatmapgroupCol', choices = {
-                if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
-            }, server = TRUE)
         })
 
         observeEvent(input$dmrgroupCol , {
