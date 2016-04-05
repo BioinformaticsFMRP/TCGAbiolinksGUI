@@ -991,21 +991,6 @@ biOMICsServer <- function(input, output, session) {
 
     #-------------------------START controlling show/hide states -----------------
 
-    observeEvent(input$heatmapProbesInputRb, {
-        if(input$heatmapProbesInputRb == "text") {
-            shinyjs::show("heatmapProbesTextArea")
-            shinyjs::hide("heatmap.hypoprobesCb")
-            shinyjs::hide("heatmap.hyperprobesCb")
-        } else if(input$heatmapProbesInputRb == "Status") {
-            shinyjs::hide("heatmapProbesTextArea")
-            shinyjs::show("heatmap.hypoprobesCb")
-            shinyjs::show("heatmap.hyperprobesCb")
-        }
-    })
-    observeEvent(input$heatmap.sortCb, {
-        shinyjs::toggle("heatmapSortCol")
-    })
-
     #-------------------------END controlling show/hide states -----------------
     observeEvent(input$dmrAnalysis , {
 
@@ -1217,6 +1202,51 @@ biOMICsServer <- function(input, output, session) {
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
 
+    ##----------------------------------------------------------------------
+    #                             Heatmap
+    ##----------------------------------------------------------------------
+
+    #-------------------------START controlling show/hide states -----------------
+
+    observeEvent(input$heatmapTypeInputRb, {
+        if(input$heatmapTypeInputRb == "met") {
+            shinyjs::show("heatmapProbesInputRb")
+            shinyjs::hide("heatmapGenesInputRb")
+            shinyjs::hide("heatmapGenesTextArea")
+            shinyjs::hide("heatmap.upGenesCb")
+            shinyjs::hide("heatmap.downGenewsCb")
+            if(input$heatmapProbesInputRb == "text"){
+                shinyjs::show("heatmapProbesTextArea")
+                shinyjs::hide("heatmap.hypoprobesCb")
+                shinyjs::hide("heatmap.hyperprobesCb")
+            } else {
+                shinyjs::hide("heatmapProbesTextArea")
+                shinyjs::show("heatmap.hypoprobesCb")
+                shinyjs::show("heatmap.hyperprobesCb")
+            }
+        } else if(input$heatmapTypeInputRb == "exp") {
+            shinyjs::show("heatmapGenesInputRb")
+            shinyjs::hide("heatmapProbesTextArea")
+            shinyjs::hide("heatmap.hypoprobesCb")
+            shinyjs::hide("heatmap.hyperprobesCb")
+            shinyjs::hide("heatmapProbesInputRb")
+            if(input$heatmapProbesInputRb == "text"){
+                shinyjs::show("heatmapGenesTextArea")
+                shinyjs::hide("heatmap.upGenesCb")
+                shinyjs::hide("heatmap.downGenewsCb")
+            } else {
+                shinyjs::hide("heatmapGenesTextArea")
+                shinyjs::show("heatmap.upGenesCb")
+                shinyjs::show("heatmap.downGenewsCb")
+            }
+
+        }
+    })
+    observeEvent(input$heatmap.sortCb, {
+        shinyjs::toggle("heatmapSortCol")
+    })
+
+    #-------------------------END controlling show/hide states -----------------
 
     heatmapresultdata <-  reactive({
         inFile <- input$heatmapresultsfile
@@ -1277,11 +1307,15 @@ biOMICsServer <- function(input, output, session) {
 
             colmdata <- isolate({input$colmetadataheatmap})
             rowmdata <- isolate({input$rowmetadataheatmap})
-            cluster_rows  <- isolate({input$heatmap.clusterrows})
+            cluster_rows <- isolate({input$heatmap.clusterrows})
             show_column_names <- isolate({input$heatmap.show.col.names})
             show_row_names <- isolate({input$heatmap.show.row.names})
-            cluster_columns  <- isolate({input$heatmap.clustercol})
-            sortCol  <- isolate({input$heatmapSortCol})
+            cluster_columns <- isolate({input$heatmap.clustercol})
+            sortCol <- isolate({input$heatmapSortCol})
+            scale <- isolate({input$heatmapScale})
+
+            if( isolate({input$heatmapTypeInputRb}) == "met") type <-  "methylation"
+            if( isolate({input$heatmapTypeInputRb}) == "exp") type <-  "expression"
 
             if(nchar(sortCol) ==0 &  isolate({input$heatmap.sortCb})){
                 createAlert(session, "heatmapmessage", "heatmapAlert", title = "Columns metadata", style =  "danger",
@@ -1289,21 +1323,40 @@ biOMICsServer <- function(input, output, session) {
                 return(NULL)
             }
 
-            # ---------------- probes selection
-            if(isolate({input$heatmapProbesInputRb}) == "Status"){
-                if(isolate({input$heatmap.hypoprobesCb})) sig.probes <- c("Hypomethylated")
-                if(isolate({input$heatmap.hyperprobesCb})) sig.probes <- c("Hypermethylated",sig.probes)
-                sig.probes <- paste(sig.probes,"in",group2)
-                # Get hypo methylated and hypermethylated probes
-                idx <- paste("status",group1,group2, sep=".")
-                print(table(results.data[,idx]))
-                probes <- results.data[,idx] %in% sig.probes
+            if( isolate({input$heatmapTypeInputRb})=="met"){
+                # ---------------- probes selection
+                if(isolate({input$heatmapProbesInputRb}) == "Status"){
+                    if(isolate({input$heatmap.hypoprobesCb})) sig.probes <- c("Hypomethylated")
+                    if(isolate({input$heatmap.hyperprobesCb})) sig.probes <- c("Hypermethylated",sig.probes)
+                    sig.probes <- paste(sig.probes,"in",group2)
+                    # Get hypo methylated and hypermethylated probes
+                    idx <- paste("status",group1,group2, sep=".")
+                    print(table(results.data[,idx]))
+                    probes <- results.data[,idx] %in% sig.probes
+                } else {
+                    sig.probes <- parse.textarea.input(isolate({input$heatmapProbesTextArea}))
+                    probes <- which(results.data$probeID %in% sig.probes)
+                }
+                data <- data[probes,]
+                results.data <- results.data[probes,]
             } else {
-                sig.probes <- parse.textarea.input(isolate({input$heatmapProbesTextArea}))
-                probes <- which(results.data$probeID %in% sig.probes)
+                if(isolate({input$heatmapGenesInputRb}) == "Status"){
+                    if(isolate({input$heatmap.upGenesCb})) sig.genes <- c("Upregulated")
+                    if(isolate({input$heatmap.downGenewsCb})) sig.genes <- c("Downregulated",sig.genes)
+                    sig.genes <- paste(sig.genes,"in",group2)
+                    # Get hypo methylated and hypermethylated probes
+                    genes <- results.data[,"status"] %in% sig.genes
+                } else {
+                    sig.genes <- parse.textarea.input(isolate({input$heatmapGenesTextArea}))
+                    aux <- strsplit(results.data$mRNA,"\\|")
+                    results.data$gene <- unlist(lapply(aux,function(x) x[2]))
+                    genes <- which(results.data$gene %in% sig.genes)
+                }
+
+                data <- data[genes,]
+                results.data <- results.data[genes,]
+
             }
-            data <- data[probes,]
-            results.data <- results.data[probes,]
             # ---------------- col.metadata
             if(!("barcode" %in% colnames(colData(data)))){
                 createAlert(session, "heatmapmessage", "heatmapAlert", title = "Columns metadata", style =  "danger",
@@ -1332,7 +1385,8 @@ biOMICsServer <- function(input, output, session) {
                                                              show_column_names = show_column_names,
                                                              cluster_columns = cluster_columns,
                                                              show_row_names = show_row_names,
-                                                             type = "methylation")
+                                                             type = type,
+                                                             scale = scale)
                              } else {
                                  p <-  TCGAvisualize_Heatmap(data=assay(data),
                                                              col.metadata=col.metadata,
@@ -1343,7 +1397,8 @@ biOMICsServer <- function(input, output, session) {
                                                              cluster_columns = cluster_columns,
                                                              show_row_names = show_row_names,
                                                              sortCol = sortCol,
-                                                             type = "methylation")
+                                                             type = type,
+                                                             scale = scale)
                              }
                              incProgress(1/2)
                              ComplexHeatmap::draw(p)
