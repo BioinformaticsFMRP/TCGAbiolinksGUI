@@ -1096,8 +1096,8 @@ biOMICsServer <- function(input, output, session) {
 
     observe({
         updateSelectizeInput(session, 'heatmapSortCol', choices = {
-            if (class(dmrdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
-                if (!is.null(dmrdata()) & !is.null(input$colmetadataheatmap))
+            if (class(heatmapdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+                if (!is.null(heatmapdata()) & !is.null(input$colmetadataheatmap))
                     as.character(input$colmetadataheatmap)
             }}, server = TRUE)
     })
@@ -1253,7 +1253,7 @@ biOMICsServer <- function(input, output, session) {
                          }
                      })
         if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
-            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
+            createAlert(session, "heatmapmessage", "heatmapAlert", title = "Data input error", style =  "danger",
                         content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
                                          class(se)), append = FALSE)
             return(NULL)
@@ -1261,11 +1261,11 @@ biOMICsServer <- function(input, output, session) {
         return(se)
 
     })
-    observeEvent(input$heatmapPlot , {
+    observeEvent(input$heatmapPlotBt , {
         output$heatmap.plotting <- renderPlot({
 
             # get information from file
-            file  <- basename(as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath))
+            file  <- basename(as.character(parseFilePaths(volumes, input$heatmapresultsfile)$datapath))
             if(length(file) > 0){
                 file <- unlist(str_split(file,"_"))
                 group1 <- file[4]
@@ -1283,29 +1283,43 @@ biOMICsServer <- function(input, output, session) {
             cluster_columns  <- isolate({input$heatmap.clustercol})
             sortCol  <- isolate({input$heatmapSortCol})
 
-            # Get hypo methylated and hypermethylated probes
-            idx <- grep(paste("status",group1,group2, sep="."), results.data)
+            if(nchar(sortCol) ==0 &  isolate({input$heatmap.sortCb})){
+                createAlert(session, "heatmapmessage", "heatmapAlert", title = "Columns metadata", style =  "danger",
+                            content = paste0("Please select the heatmapSortCol",append = FALSE))
+                return(NULL)
+            }
 
-            if(isolate({input$heatmapInputRb}) == "Status"){
+            # ---------------- probes selection
+            if(isolate({input$heatmapProbesInputRb}) == "Status"){
                 if(isolate({input$heatmap.hypoprobesCb})) sig.probes <- c("Hypomethylated")
                 if(isolate({input$heatmap.hyperprobesCb})) sig.probes <- c("Hypermethylated",sig.probes)
                 sig.probes <- paste(sig.probes,"in",group2)
-                probes <- which(values(data)[,idx[1]] %in% sig.probes)
+                # Get hypo methylated and hypermethylated probes
+                idx <- paste("status",group1,group2, sep=".")
+                print(table(results.data[,idx]))
+                probes <- results.data[,idx] %in% sig.probes
             } else {
                 sig.probes <- parse.textarea.input(isolate({input$heatmapProbesTextArea}))
-                probes <- which(values(data)$probeID %in% sig.probes)
+                probes <- which(results.data$probeID %in% sig.probes)
             }
             data <- data[probes,]
+            results.data <- results.data[probes,]
+            # ---------------- col.metadata
+            if(!("barcode" %in% colnames(colData(data)))){
+                createAlert(session, "heatmapmessage", "heatmapAlert", title = "Columns metadata", style =  "danger",
+                            content = paste0("Sorry, but I need a barcode column to map the Summarized Experiment object",append = FALSE))
+                return(NULL)
+            }
 
-            # col.metadata
             col.metadata <- NULL
             if(!is.null(colmdata)) {
-                if(length(colmdata) > 0) col.metadata <- subset(colData(data), select=c("patient",colmdata))
+                if(length(colmdata) > 0) col.metadata <- subset(colData(data), select=c("barcode",colmdata))
             }
-            # row.metadata
+
+            # ---------------- row.metadata
             row.metadata <- NULL
             if(!is.null(rowmdata)) {
-                if(length(colmdata) > 0) row.metadata <- subset(values(data), select=c(rowmdata))
+                if(length(rowmdata) > 0) row.metadata <- subset(results.data, select=c(rowmdata))
             }
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
@@ -1336,20 +1350,20 @@ biOMICsServer <- function(input, output, session) {
                          })
         })})
 
-    observeEvent(input$heatmapPlot , {
-        updateCollapse(session, "collapseDmr", open = "DMR plots")
-        output$dmrPlot <- renderUI({
-            plotOutput("heatmap.plotting", width = paste0(isolate({input$meanmetwidth}), "%"), height = isolate({input$meanmetheight}))
+    observeEvent(input$heatmapPlotBt , {
+        updateCollapse(session, "collapseHeatmap", open = "Heatmap")
+        output$heatmapPlot <- renderUI({
+            plotOutput("heatmap.plotting", width = paste0(isolate({input$heatmapwidth}), "%"), height = isolate({input$heatmapheight}))
         })})
 
     observe({
-        data <- dmrdata()
+        data <- heatmapdata()
         updateSelectizeInput(session, 'colmetadataheatmap', choices = {
             if(!is.null(data)) as.character(colnames(colData(data)))
         }, server = TRUE)
     })
     observe({
-        data <- dmrdata()
+        data <- heatmapdata()
         updateSelectizeInput(session, 'rowmetadataheatmap', choices = {
             if(!is.null(data)) as.character(colnames(values(data)))
         }, server = TRUE)

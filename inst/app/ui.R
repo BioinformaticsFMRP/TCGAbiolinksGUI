@@ -652,7 +652,7 @@ body <-  dashboardBody(
                                sliderInput("heatmapwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("heatmapheight", "Plot Height (px)", min = 0, max = 1000, value = 1000)
                            ),
-                           actionButton("heatmapPlot",
+                           actionButton("heatmapPlotBt",
                                         "Heatmap plot",
                                         style = "background-color: #000080;
                                                  color: #FFFFFF;
