@@ -98,7 +98,6 @@ biOMICsServer <- function(input, output, session) {
     observeEvent(input$ontReport, {
         result <- dataInput()$result
 
-        print(result)
         if(is.null(result)) {
             createAlert(session, "alert", "exampleAlert", title = "No system", style =  "danger",
                         content = "No system was found. I can't create a report.", append = FALSE)
@@ -865,7 +864,6 @@ biOMICsServer <- function(input, output, session) {
     volcanodata <-  reactive({
         inFile <- input$volcanofile
         if (is.null(inFile)) return(NULL)
-        print("READING CSV DATA")
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
         # verify if the file is a csv
         ext <- tools::file_ext(file)
@@ -880,7 +878,6 @@ biOMICsServer <- function(input, output, session) {
                      detail = 'This may take a while...', value = 0, {
                          df <- read.csv2(file,header = T)
                      })
-        print("END READING DATA")
         return(df)
     })
 
@@ -1050,7 +1047,29 @@ biOMICsServer <- function(input, output, session) {
     shinyFileChoose(input, 'heatmapfile', roots=volumes, session=session, restrictions=system.file(package='base'))
     shinyFileChoose(input, 'heatmapresultsfile', roots=volumes, session=session, restrictions=system.file(package='base'))
 
+    meandata <-  reactive({
+        inFile <- input$meanmetfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, input$meanmetfile)$datapath)
 
+        withProgress(message = 'Loading data',
+                     detail = 'This may take a while...', value = 0, {
+                         result.file <- gsub(".rda","_results.rda",file)
+                         if(file.exists(result.file)) {
+                             se <- get(load(result.file))
+                         } else {
+                             se <- get(load(file))
+                         }
+                     })
+        if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
+                                         class(se)), append = FALSE)
+            return(NULL)
+        }
+        return(se)
+
+    })
     dmrdata <-  reactive({
         inFile <- input$dmrfile
         if (is.null(inFile)) return(NULL)
@@ -1099,12 +1118,12 @@ biOMICsServer <- function(input, output, session) {
     })
     observe({
         updateSelectizeInput(session, 'meanmetsubgroupCol', choices = {
-            if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
+            if(!is.null(meandata())) as.character(colnames(colData(meandata())))
         }, server = TRUE)
     })
     observe({
         updateSelectizeInput(session, 'meanmetgroupCol', choices = {
-            if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
+            if(!is.null(meandata())) as.character(colnames(colData(meandata())))
         }, server = TRUE)
     })
 
@@ -1112,34 +1131,49 @@ biOMICsServer <- function(input, output, session) {
 
 
     observeEvent(input$meanmetPlot , {
-        output$mean.plotting <- renderPlot({
 
+        output$mean.plotting <- renderPlot({
+            closeAlert(session, "meanmetAlert")
             jitter <- isolate({input$meanmetplotjitter})
             sort <- isolate({input$meanmetsort})
             angle <- isolate({input$meanmetAxisAngle})
+            data <- meandata()
 
-            if(isolate({input$meanmetgroupCol}) =="") {
+            if(is.null(data)){
+                createAlert(session, "meanmetmessage", "meanmetAlert", title = "Missing data", style =  "danger",
+                            content = paste0("Please select the data"), append = FALSE)
+                return(NULL)
+            }
+
+            if(isolate({input$meanmetgroupCol}) == "") {
                 group <- NULL
             } else {
                 group <- isolate({input$meanmetgroupCol})
             }
 
-            if(isolate({input$meanmetsubgroupCol}) =="") {
+            if(is.null(group)){
+                createAlert(session, "meanmetmessage", "meanmetAlert", title = "Missing group column", style =  "danger",
+                            content = paste0("Please select group column"), append = FALSE)
+                return(NULL)
+            }
+
+            if(isolate({input$meanmetsubgroupCol}) == "") {
                 subgroup <- NULL
             } else {
                 subgroup <- isolate({input$meanmetsubgroupCol})
             }
+
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
                              if(is.null(sort)){
-                                 TCGAvisualize_meanMethylation(data=dmrdata(),
+                                 TCGAvisualize_meanMethylation(data=data,
                                                                groupCol=group,
                                                                subgroupCol=subgroup,
                                                                filename = NULL,
                                                                plot.jitter = jitter,
                                                                axis.text.x.angle = angle )
                              } else {
-                                 TCGAvisualize_meanMethylation(data=dmrdata(),
+                                 TCGAvisualize_meanMethylation(data=data,
                                                                groupCol=group,
                                                                subgroupCol=subgroup,
                                                                filename = NULL,
@@ -1151,8 +1185,8 @@ biOMICsServer <- function(input, output, session) {
         })})
 
     observeEvent(input$meanmetPlot , {
-        updateCollapse(session, "collapseDmr", open = "DMR plots")
-        output$dmrPlot <- renderUI({
+        updateCollapse(session, "collapsemeanmet", open = "Mean DNA methylation plot")
+        output$meanMetplot <- renderUI({
             plotOutput("mean.plotting", width = paste0(isolate({input$meanmetwidth}), "%"), height = isolate({input$meanmetheight}))
         })})
 
@@ -1223,17 +1257,14 @@ biOMICsServer <- function(input, output, session) {
 
             # col.metadata
             col.metadata <- NULL
-            print(colmdata)
             if(!is.null(colmdata)) {
                 if(length(colmdata) > 0) col.metadata <- subset(colData(data), select=c("patient",colmdata))
             }
             # row.metadata
             row.metadata <- NULL
-            print(rowmdata)
             if(!is.null(rowmdata)) {
                 if(length(colmdata) > 0) row.metadata <- subset(values(data), select=c(rowmdata))
             }
-            print(sortCol)
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
                              if(!isolate({input$heatmap.sortCb})) {
@@ -1385,11 +1416,22 @@ biOMICsServer <- function(input, output, session) {
         inFile <- input$profileplotfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
-        df <- get(load(file))
+        if(file_ext(file)=="csv"){
+            df <- read.csv2(file,header = T)
+            rownames(df) <- df[,1]
+            df[,1] <- NULL
+        } else if(file_ext(file)=="rda"){
+            df <- get(load(file))
+        } else {
+            createAlert(session, "profileplotmessage", "profileplotAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a csv or rda file, but I got a: ",
+                                         file_ext(file)), append = FALSE)
+            return(NULL)
+        }
 
-        if (class(df) != class(data.frame())){
-            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, but I'm expecting a data frameobject, but I got a: ",
+        if(class(df)!= class(data.frame())){
+            createAlert(session, "profileplotmessage", "profileplotAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a Data frame object, but I got a: ",
                                          class(df)), append = FALSE)
             return(NULL)
         }
@@ -1438,6 +1480,28 @@ biOMICsServer <- function(input, output, session) {
             m3  <-  isolate({input$margin3})
             m4  <-  isolate({input$margin4})
 
+            if(is.null(data)){
+                closeAlert(session, "profileplotAlert")
+                createAlert(session, "profileplotmessage", "profileplotAlert", title = "Missing data", style =  "danger",
+                            content = paste0("Please select the data"), append = FALSE)
+                return(NULL)
+            }
+
+            if(is.null(groupCol) || nchar(groupCol) == 0){
+                closeAlert(session, "profileplotAlert")
+                createAlert(session, "profileplotmessage", "profileplotAlert", title = "Missing group selection", style =  "danger",
+                            content = paste0("Please select the group column"), append = FALSE)
+                return(NULL)
+            }
+
+            if(is.null(subtypeCol) || nchar(subtypeCol) == 0){
+                closeAlert(session, "profileplotAlert")
+                createAlert(session, "profileplotmessage", "profileplotAlert", title = "Missing subgroup selection", style =  "danger",
+                            content = paste0("Please select the subgroup column"), append = FALSE)
+                return(NULL)
+            }
+
+
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
 
@@ -1462,20 +1526,20 @@ biOMICsServer <- function(input, output, session) {
     # Survival plot
     # -----------------------------------------------
     #--------------------- START controlling show/hide states -----------------
-    shinyjs::hide("survivalplotgroup")
-    shinyjs::hide("survivalplotMain")
-    shinyjs::hide("survivalplotLegend")
-    shinyjs::hide("survivalplotLimit")
-    shinyjs::hide("survivalplotPvalue")
-    observeEvent(input$survivalplotfile, {
-        if(!is.null(survivalplotdata())){
-            shinyjs::show("survivalplotgroup")
-            shinyjs::show("survivalplotMain")
-            shinyjs::show("survivalplotLegend")
-            shinyjs::show("survivalplotLimit")
-            shinyjs::show("survivalplotPvalue")
-        }
-    })
+    #shinyjs::hide("survivalplotgroup")
+    #shinyjs::hide("survivalplotMain")
+    #shinyjs::hide("survivalplotLegend")
+    #shinyjs::hide("survivalplotLimit")
+    #shinyjs::hide("survivalplotPvalue")
+    #observeEvent(input$survivalplotfile, {
+    #    if(!is.null(survivalplotdata())){
+    #        shinyjs::show("survivalplotgroup")
+    #        shinyjs::show("survivalplotMain")
+    #        shinyjs::show("survivalplotLegend")
+    #        shinyjs::show("survivalplotLimit")
+    #        shinyjs::show("survivalplotPvalue")
+    #    }
+    #})
     #----------------------- END controlling show/hide states -----------------
     observe({
         data <- survivalplotdata()
@@ -1495,12 +1559,23 @@ biOMICsServer <- function(input, output, session) {
         inFile <- input$survivalplotfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
-        df <- get(load(file))
-
-        if (class(df) != class(data.frame())){
+        if(file_ext(file)=="csv"){
+            df <- read.csv2(file,header = T)
+            rownames(df) <- df[,1]
+            df[,1] <- NULL
+        } else if(file_ext(file)=="rda"){
+            df <- get(load(file))
+        } else {
             closeAlert(session, "survivalAlert")
             createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, but I'm expecting a data frame object, but I got a: ",
+                        content = paste0("Sorry, but I'm expecting a csv or rda file, but I got a: ",
+                                         file_ext(file)), append = FALSE)
+            return(NULL)
+        }
+        if(class(df)!= class(data.frame())){
+            closeAlert(session, "survivalAlert")
+            createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a Data frame object, but I got a: ",
                                          class(df)), append = FALSE)
             return(NULL)
         }
@@ -1515,12 +1590,32 @@ biOMICsServer <- function(input, output, session) {
             clusterCol <-  isolate({input$survivalplotgroup})
             cut.off <- isolate({input$survivalplotLimit})
             print.pvalue <- isolate({input$survivalplotPvalue})
-            closeAlert(session, "survivalAlert")
+
+            #---------------------------
+            # Input verification
+            #---------------------------
+            if(is.null(data)){
+                closeAlert(session, "survivalAlert")
+                createAlert(session, "survivalmessage", "survivalAlert", title = "Missing data", style =  "danger",
+                            content = paste0("Please select the data"), append = FALSE)
+                return(NULL)
+            }
+
+            if(is.null(clusterCol) || nchar(clusterCol) == 0){
+                closeAlert(session, "survivalAlert")
+                createAlert(session, "survivalmessage", "survivalAlert", title = "Missing group", style =  "danger",
+                            content = paste0("Please select group column"), append = FALSE)
+                return(NULL)
+            }
+
             if(length(unique(data[,clusterCol])) == 1){
+                closeAlert(session, "survivalAlert")
                 createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
                             content = paste0("Sorry, but I'm expecting at least two groups"), append = FALSE)
                 return(NULL)
             }
+            #-=-=-=-=-=-=-=-=--==-=-=-=-=-=-=-=-=
+
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
 
@@ -1787,13 +1882,6 @@ biOMICsServer <- function(input, output, session) {
             exp.group2 <- file[5]
         }
 
-        print(head(met))
-        print(head(exp))
-        print(group1)
-        print(exp.group1)
-        print(group2)
-        print(exp.group2)
-
         if(group1 == exp.group1 & group2 == exp.group2){
 
             result <- TCGAvisualize_starburst(met = met,
@@ -1806,7 +1894,7 @@ biOMICsServer <- function(input, output, session) {
                                               exp.p.cut = exp.p.cut,
                                               met.p.cut = met.p.cut,
                                               diffmean.cut = diffmean.cut,
-                                              circle = isolate({input$starburstCircle})
+                                              circle = isolate({input$starburstCircle}),
                                               logFC.cut = logFC.cut,
                                               return.plot = TRUE)
         }

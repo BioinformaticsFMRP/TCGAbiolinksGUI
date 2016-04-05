@@ -48,7 +48,11 @@ sidebar <-  dashboardSidebar(
     sidebarMenu(
         #menuItem("biOMICs search" , tabName = "ontology", icon = icon("search")),
         #menuItem("Report" , tabName = "report", icon = icon("book")),
-        menuItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
+        menuItem("TCGA Data ", icon = icon(menu.icon),
+                 menuSubItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
+                 menuSubItem("Data summmary" , tabName = "tcgaSummary", icon = icon("info"))
+        ),
+
         menuItem("Genomic analysis", icon = icon(menu.icon),
                  menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o"))
         ),
@@ -168,6 +172,7 @@ body <-  dashboardBody(
 
                 )
         ),
+
         tabItem(tabName = "tcgaSearch",
                 fluidRow(
                     column(10, bsAlert("tcgasearchmessage"),
@@ -376,6 +381,39 @@ body <-  dashboardBody(
                            bsAlert("tcgaddirmessage")
                     ))
         ),
+        tabItem(tabName = "tcgaSummary",
+                fluidRow(
+                    column(10, bsAlert("tcgasummarymessage"),
+                           bsCollapse(id = "collapseTCGAsummary", open = "Summary",
+                                      bsCollapsePanel("Summary", uiOutput("tcgaSummary"), style = "default")
+                           )),
+                    column(2,
+                           box(title = "Parameters",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE,
+                               selectizeInput('tcgaSummaryTumorFilter',
+                                              'Tumor filter',
+                                              unique(TCGAquery()$Disease),
+                                              multiple = TRUE),
+                               selectizeInput('tcgaSummaryExpFilter',
+                                              'Platforms filter',
+                                              unique(TCGAquery()$Platform),
+                                              multiple = TRUE, selected = NULL),
+                               selectizeInput('tcgaSummaryLevelFilter',
+                                              'Level filter',
+                                              c(1:3),
+                                              multiple = FALSE, selected = 1)),
+                           actionButton("tcgaSummaryBt",
+                                        "TCGA Search",
+                                        style = "background-color: #000080;
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
+                                        icon = icon("search"))
+                    )
+                )
+        ),
         tabItem(tabName = "tcgaOncoPrint",
                 fluidRow(
                     column(10,  bsAlert("oncomessage"),
@@ -425,7 +463,7 @@ body <-  dashboardBody(
                            box(title = "Size control",width = NULL,  status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 800, value = 400)
+                               sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 1200, value = 400)
                            ),
                            box(title = "Oncoprint options",width = NULL,
                                status = "danger",
@@ -489,7 +527,7 @@ body <-  dashboardBody(
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("volcanowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("volcanoheight", "Plot Height (px)", min = 0, max = 800, value = 400)),
+                               sliderInput("volcanoheight", "Plot Height (px)", min = 0, max = 1200, value = 400)),
                            actionButton("volcanoPlotBt",
                                         "Volcano plot",
                                         style = "background-color: #000080;
@@ -540,7 +578,7 @@ body <-  dashboardBody(
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("meanmetwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("meanmetheight", "Plot Height (px)", min = 0, max = 800, value = 400)),
+                               sliderInput("meanmetheight", "Plot Height (px)", min = 0, max = 1200, value = 400)),
                            actionButton("meanmetPlot",
                                         "DNA mean methylation plot",
                                         style = "background-color: #000080;
@@ -575,7 +613,7 @@ body <-  dashboardBody(
                                radioButtons("heatmapTypeInputRb", "",
                                             c("DNA methylation"="met",
                                               "Gene expression"="exp"),selected = "met")
-                               ),
+                           ),
                            box(title = "Lines selection",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
@@ -733,7 +771,7 @@ body <-  dashboardBody(
                                               choices=NULL,
                                               multiple = FALSE),
                                selectizeInput('profileplotsubtype',
-                                              'Column with the subtype information',
+                                              'Column with the subgroup information',
                                               choices=NULL,
                                               multiple = FALSE),
                                checkboxInput("profileplotrmnagroup", " Remove the NA groups?", value = FALSE, width = NULL),
@@ -751,7 +789,7 @@ body <-  dashboardBody(
                                numericInput("margin4", "Move left line of vertical bar",
                                             min = -10, max = 10, value = 0.0, step = 0.1),
                                sliderInput("profilewidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("profileheight", "Plot Height (px)", min = 0, max = 800, value = 800)),
+                               sliderInput("profileheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
                            actionButton("profileplotBt",
                                         "Plot profile plot",
                                         style = "background-color: #000080;
@@ -773,7 +811,8 @@ body <-  dashboardBody(
                            box(title = "Data ",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
-                               shinyFilesButton('survivalplotfile', 'Select rda file', 'Please select a rda file with a data frame',
+                               bsTooltip("survivalplotfile", "A csv or rda file","left"),
+                               shinyFilesButton('survivalplotfile', 'Select file', 'Please select a csv/rda file with a data frame',
                                                 multiple = FALSE)),
                            box(title = "Plot parameters",width = NULL,
                                status = "danger",
@@ -795,7 +834,7 @@ body <-  dashboardBody(
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("survivalwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("survivalheight", "Plot Height (px)", min = 0, max = 800, value = 800)),
+                               sliderInput("survivalheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
                            actionButton("survivalplotBt",
                                         "Plot survival plot",
                                         style = "background-color: #000080;
@@ -936,7 +975,7 @@ body <-  dashboardBody(
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("starburstwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("starburstheight", "Plot Height (px)", min = 0, max = 800, value = 400)),
+                               sliderInput("starburstheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
                            actionButton("starburstPlot",
                                         "starburst plot",
                                         style = "background-color: #000080;
