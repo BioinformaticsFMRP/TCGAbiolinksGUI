@@ -1073,7 +1073,6 @@ biOMICsServer <- function(input, output, session) {
     dmrdata <-  reactive({
         inFile <- input$dmrfile
         if (is.null(inFile)) return(NULL)
-        print("READING DATA")
         file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
 
         withProgress(message = 'Loading data',
@@ -1091,7 +1090,6 @@ biOMICsServer <- function(input, output, session) {
                                          class(se)), append = FALSE)
             return(NULL)
         }
-        print("END READING DATA")
         return(se)
 
     })
@@ -1220,9 +1218,63 @@ biOMICsServer <- function(input, output, session) {
     )
 
 
+    heatmapresultdata <-  reactive({
+        inFile <- input$heatmapresultsfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
+        # verify if the file is a csv
+        ext <- tools::file_ext(file)
+        if(ext != "csv"){
+            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a csv file, but I got a: ",
+                                         ext), append = FALSE)
+            return(NULL)
+        }
+
+        withProgress(message = 'Loading data',
+                     detail = 'This may take a while...', value = 0, {
+                         df <- read.csv2(file,header = T)
+                     })
+        return(df)
+    })
+
+    heatmapdata <-  reactive({
+        inFile <- input$heatmapfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, input$heatmapfile)$datapath)
+
+        withProgress(message = 'Loading data',
+                     detail = 'This may take a while...', value = 0, {
+                         result.file <- gsub(".rda","_results.rda",file)
+                         if(file.exists(result.file)) {
+                             se <- get(load(result.file))
+                         } else {
+                             se <- get(load(file))
+                         }
+                     })
+        if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+            createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
+                                         class(se)), append = FALSE)
+            return(NULL)
+        }
+        return(se)
+
+    })
     observeEvent(input$heatmapPlot , {
         output$heatmap.plotting <- renderPlot({
-            data <- isolate({dmrdata()})
+
+            # get information from file
+            file  <- basename(as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath))
+            if(length(file) > 0){
+                file <- unlist(str_split(file,"_"))
+                group1 <- file[4]
+                group2 <- file[5]
+            }
+
+            data <- isolate({heatmapdata()})
+            results.data <- isolate({heatmapresultdata()})
+
             colmdata <- isolate({input$colmetadataheatmap})
             rowmdata <- isolate({input$rowmetadataheatmap})
             cluster_rows  <- isolate({input$heatmap.clusterrows})
@@ -1230,24 +1282,14 @@ biOMICsServer <- function(input, output, session) {
             show_row_names <- isolate({input$heatmap.show.row.names})
             cluster_columns  <- isolate({input$heatmap.clustercol})
             sortCol  <- isolate({input$heatmapSortCol})
-            if(isolate({input$heatmapgroup1}) == "") {
-                group1 <- NULL
-            } else {
-                group1 <- isolate({input$heatmapgroup1})
-            }
-
-            if(isolate({input$heatmapgroup2}) == "") {
-                group2 <- NULL
-            } else {
-                group2 <- isolate({input$heatmapgroup2})
-            }
 
             # Get hypo methylated and hypermethylated probes
-            idx <- grep(paste("status",group1,group2, sep="."), colnames(values(data)))
+            idx <- grep(paste("status",group1,group2, sep="."), results.data)
 
             if(isolate({input$heatmapInputRb}) == "Status"){
                 if(isolate({input$heatmap.hypoprobesCb})) sig.probes <- c("Hypomethylated")
                 if(isolate({input$heatmap.hyperprobesCb})) sig.probes <- c("Hypermethylated",sig.probes)
+                sig.probes <- paste(sig.probes,"in",group2)
                 probes <- which(values(data)[,idx[1]] %in% sig.probes)
             } else {
                 sig.probes <- parse.textarea.input(isolate({input$heatmapProbesTextArea}))
@@ -1697,8 +1739,8 @@ biOMICsServer <- function(input, output, session) {
                                                      TableCond1 = assay(se[,samples.g1]),
                                                      TableCond2 = assay(se[,samples.g2]))
                          exp$status <- "Insignificant"
-                         exp[exp$logFC >= logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Upregulated in ", g1)
-                         exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g1)
+                         exp[exp$logFC >= logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Upregulated in ", g2)
+                         exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g2)
                      })
 
         out.filename <- paste0(paste("DEA_results",groupCol, g1, g2,"pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
