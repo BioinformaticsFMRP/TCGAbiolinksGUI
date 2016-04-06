@@ -289,7 +289,8 @@ body <-  dashboardBody(
                                                 "stad"="stad",
                                                 "thca"="thca", "ucec"="ucec"),
                                               multiple = FALSE),
-                               checkboxInput("saveSubtype", "Save as rda?", value = FALSE, width = NULL),
+                               checkboxInput("saveSubtypeRda", "Save as rda?", value = FALSE, width = NULL),
+                               checkboxInput("saveSubtypeCsv", "Save as csv?", value = FALSE, width = NULL),
                                actionButton("tcgaSubtypeBt",
                                             "TCGA Subtype Search",
                                             style = "background-color: #000080;
@@ -337,7 +338,8 @@ body <-  dashboardBody(
                                                 "clinical_patient",
                                                 "clinical_radiation"),
                                               multiple = FALSE),
-                               checkboxInput("saveClinical", "Save result as rda?", value = FALSE, width = NULL),
+                               checkboxInput("saveClinicalRda", "Save result as rda?", value = FALSE, width = NULL),
+                               checkboxInput("saveClinicalCsv", "Save result as csv?", value = FALSE, width = NULL),
                                actionButton("tcgaClinicalBt",
                                             "TCGA Subtype Search",
                                             style = "background-color: #000080;
