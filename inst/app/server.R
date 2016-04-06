@@ -2,9 +2,45 @@ library(shiny)
 library(shinyFiles)
 library(SummarizedExperiment)
 library(TCGAbiolinks)
+library(UpSetR)
+library(ggplot2)
 library(shinyBS)
 library(stringr)
+library(ggrepel)
 options(shiny.maxRequestSize=10000*1024^2)
+
+
+table.code <- c('01','02','03','04','05','06','07','08','09','10',
+                '11','12','13','14','20','40','50','60','61')
+names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
+                       "Primary Blood Derived Cancer - Peripheral Blood",
+                       "Recurrent Blood Derived Cancer - Bone Marrow",
+                       "Additional - New Primary",
+                       "Metastatic","Additional Metastatic",
+                       "Human Tumor Original Cells",
+                       "Primary Blood Derived Cancer - Bone Marrow",
+                       "Blood Derived Normal","Solid Tissue Normal",
+                       "Buccal Cell Normal","EBV Immortalized Normal",
+                       "Bone Marrow Normal","Control Analyte",
+                       "Recurrent Blood Derived Cancer - Peripheral Blood",
+                       "Cell Lines","Primary Xenograft Tissue",
+                       "Cell Line Derived Xenograft Tissue")
+
+tcga.code <- c("Primary solid Tumor","Recurrent Solid Tumor",
+               "Primary Blood Derived Cancer - Peripheral Blood",
+               "Recurrent Blood Derived Cancer - Bone Marrow",
+               "Additional - New Primary",
+               "Metastatic","Additional Metastatic",
+               "Human Tumor Original Cells",
+               "Primary Blood Derived Cancer - Bone Marrow",
+               "Blood Derived Normal","Solid Tissue Normal",
+               "Buccal Cell Normal","EBV Immortalized Normal",
+               "Bone Marrow Normal","Control Analyte",
+               "Recurrent Blood Derived Cancer - Peripheral Blood",
+               "Cell Lines","Primary Xenograft Tissue",
+               "Cell Line Derived Xenograft Tissue")
+names(tcga.code) <- c('01','02','03','04','05','06','07','08','09','10',
+                      '11','12','13','14','20','40','50','60','61')
 
 # This will be used to parse the text areas input
 # possibilities of separation , ; \n
@@ -674,6 +710,152 @@ biOMICsServer <- function(input, output, session) {
         createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Download completed", style = "success",
                     content =  paste0("Saved file: ",fout), append = FALSE)
     })
+    #----------------------------------------------------------------------
+    #                                         MAF
+    #----------------------------------------------------------------------
+    #-------------------------START controlling show/hide states -----------------
+
+    observeEvent(input$summaryInputRb, {
+        if(isolate({input$summaryInputRb}) == "platsample"){
+            shinyjs::hide("tcgaSummaryExpFilter")
+            shinyjs::show("tcgaSummarySamplestypeFilter")
+            shinyjs::hide("summaryAddBarCount")
+
+        } else {
+            shinyjs::show("tcgaSummaryExpFilter")
+            shinyjs::hide("tcgaSummarySamplestypeFilter")
+            shinyjs::show("summaryAddBarCount")
+        }
+    })
+
+    #-------------------------END controlling show/hide states -----------------
+    observeEvent(input$tcgaSummaryBt , {
+        output$summary.plot <- renderPlot({
+
+            closeAlert(session, "tcgaSummaryAlert")
+
+            tumor <- isolate({input$tcgaSummaryTumorFilter})
+            platform <- isolate({input$tcgaSummaryExpFilter})
+            level <- isolate({input$tcgaSummaryLevelFilter})
+            if(isolate({input$summaryInputRb}) == "platsample"){
+
+
+                result = tryCatch({
+                    x <- TCGAquery(tumor = tumor,level=level)
+                }, warning = function(w) {
+                    next
+                }, error = function(e) {
+                    next
+                })
+                x <- TCGAquery(tumor = tumor,level=level)
+                if(nrow(x)==0) next
+                patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,15))
+
+                samplesType <- isolate({input$tcgaSummarySamplestypeFilter})
+                if (length(samplesType) > 0) {
+                    patient <- unlist(lapply(samplesType,function(type){
+                        patient[grep(type,substr(patient,14,15))]
+                    }))
+                }
+
+                platform <- unique(x$Platform)
+                df <- as.data.frame(matrix(0,nrow=length(patient),ncol=length(platform)+1))
+                colnames(df) <- c("patient", platform)
+                df$patient <- patient
+                for (i in patient){
+                    idx <- grep(i,x$barcode)
+                    plat <- x[idx,"Platform"]
+                    for (j in plat){
+                        df[df$patient == i,j] <- 1
+                    }
+                }
+                if(nrow(df) == 0) {
+                    createAlert(session, "tcgasummarymessage", "tcgaSummaryAlert", title = "Results not found", style = "danger",
+                                content =  paste0("No results found"), append = FALSE)
+                    return(NULL)
+                }
+                df$Type <- tcga.code[substr(df$patient,14,15)]
+                withProgress(message = 'Creating plot',
+                             detail = 'This may take a while...', value = 0, {
+                                 upset(df, nsets = length(platform),
+                                       number.angles = 0,
+                                       nintersects = 100,
+                                       point.size = 3, name.size = 12,
+                                       line.size = 1,
+                                       mainbar.y.label = "Platform Intersections",
+                                       sets.x.label = "Samples Per Platform",
+                                       order.by = "freq",
+                                       decreasing = T,
+                                       #group.by = "sets",
+                                       sets.bar.color = isolate({input$summarySetsBarColor}))
+                             })
+            } else {
+                not.found <- c()
+                tbl <- data.frame()
+                for(i in platform){
+                    for(j in tumor){
+                        x <- TCGAquery(tumor = j,platform = i,level=level)
+                        if(!is.null(x)){
+                            patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,15))
+                            if(nchar(patient[1]) < 15) next
+                            type <- tcga.code[substr(patient,14,15)]
+                            tab <- table(substr(patient,14,15))
+                            names(tab) <- tcga.code[names(tab)]
+                            tab <- tab[!is.na(names(tab))]
+                            tab <- (as.data.frame(tab))
+                            tab$type <- rownames(tab)
+                            tab$Platform <- i
+                            tab$Tumor <- j
+                            colnames(tab) <- c("Freq","type","Platform","Tumor")
+
+                            if(nrow(tbl) == 0){
+                                tbl <- tab
+                            } else {
+                                tbl <- rbind(tbl,tab)
+                            }
+                        } else {
+                            not.found <- c(not.found, paste0("<li>Tumor: ",j,"  | Platform: ",i,"  | Level: ", level,"</li>"))
+                        }
+                    }
+                }
+                if(length(not.found) > 0) {
+                    createAlert(session, "tcgasummarymessage", "tcgaSummaryAlert", title = "Results not found", style = "danger",
+                                content =  paste0("These results were not found","<br><ul>", paste(not.found, collapse = ""),"</ul>"), append = FALSE)
+                }
+                if(nrow(tbl) == 0) {
+                    return(NULL)
+                }
+                p <- ggplot(tbl, aes(x=type,y = Freq,fill=type)) + geom_bar(stat="identity") +
+                    theme_bw() +theme(
+                        panel.grid.major = element_blank(),
+                        panel.grid.minor = element_blank(),
+                        axis.line.x = element_line(colour = "black"),
+                        axis.line.y = element_line(colour = "black"),
+                        legend.key = element_rect(colour = 'white'),
+                        legend.justification=c(1,1),
+                        legend.position=c(1,1),
+                        text = element_text(size=16),
+                        axis.text.x = element_text(angle = 45, hjust = 1)) + xlab("Type of sample") +
+                    scale_fill_brewer(palette="Set1") + guides(fill=FALSE)
+                #facet_wrap(~Platform + Tumor, ncol = isolate({input$summaryncol}))
+                if(isolate({input$summaryAddBarCount})){
+                    p <- p + geom_text(aes(vjust = 0, nudge_y = 0.7,label = Freq), size = 4)
+                }
+                p <- p + facet_grid(Platform ~ Tumor) +
+                    theme(strip.background = element_rect(colour="navy", fill="navy",
+                                                          size=1.5, linetype="solid"), strip.text=element_text(face= "bold",colour = "white"))
+                plot(p)
+            }
+        })
+
+    })
+    observeEvent(input$tcgaSummaryBt , {
+        updateCollapse(session, "collapseTCGAsummary", open = "Summary")
+        output$tcgaSummary <- renderUI({
+            plotOutput("summary.plot", width = paste0(isolate({input$summarywidth}), "%"), height = isolate({input$summaryheight}))
+        })})
+
+
 
     #----------------------------------------------------------------------
     #                                         MAF

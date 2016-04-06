@@ -391,6 +391,12 @@ body <-  dashboardBody(
                            box(title = "Parameters",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE,
+                               radioButtons("summaryInputRb", "Summary :",
+                                            c("Type of samples"="type",
+                                              "Platforms vs samples"="platsample"))),
+                           box(title = "Parameters",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE,
                                selectizeInput('tcgaSummaryTumorFilter',
                                               'Tumor filter',
                                               unique(TCGAquery()$Disease),
@@ -399,18 +405,32 @@ body <-  dashboardBody(
                                               'Platforms filter',
                                               unique(TCGAquery()$Platform),
                                               multiple = TRUE, selected = NULL),
+                               selectizeInput('tcgaSummarySamplestypeFilter',
+                                              'Sample type filter',
+                                              table.code,
+                                              multiple = TRUE),
                                selectizeInput('tcgaSummaryLevelFilter',
                                               'Level filter',
                                               c(1:3),
                                               multiple = FALSE, selected = 1)),
+                           box(title = "Colors control",width = NULL,  status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               colourInput("summarySetsBarColor", "Sets Bar color", value = "#56B4E9")),
+                           box(title = "Plot controls",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               checkboxInput("summaryAddBarCount", "Add counts label to barchart?", value = TRUE, width = NULL),
+                               #sliderInput("summaryncol", "Number columns", min = 1, max = 4, value = 3),
+                               sliderInput("summarywidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("summaryheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
                            actionButton("tcgaSummaryBt",
-                                        "TCGA Search",
+                                        "Plot summary",
                                         style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                        icon = icon("search"))
+                                        icon = icon("picture-o"))
                     )
                 )
         ),
