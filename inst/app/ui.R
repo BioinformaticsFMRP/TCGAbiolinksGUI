@@ -1021,7 +1021,7 @@ body <-  dashboardBody(
                     column(10,  bsAlert("elmermessage"),
                            bsCollapse(id = "collapelmer", open = "Elmer plots",
                                       bsCollapsePanel("ELMER result", dataTableOutput('elmerResult'), style = "default"),
-                                      bsCollapsePanel("Elmer plots", uiOutput("elmerPlot"), style = "default"))),
+                                      bsCollapsePanel("ELMER plots", uiOutput("elmerPlot"), style = "default"))),
                     column(2,
                            box(title = "Create mee object", width = NULL,
                                status = "danger",
@@ -1099,7 +1099,26 @@ body <-  dashboardBody(
                                         margin-left: auto;
                                         margin-right: auto;
                                         width: 100%",
-                                        icon = icon("flask"))
+                                        icon = icon("flask")),
+                           box(title = "Plots", width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE,
+                               radioButtons("elmerPlotRb", "Type of plot:",
+                                            c("Scatter plots"="scatter.plot",
+                                              "Schematic Plot"="schematic.plot",
+                                              "Motif enrichment plot"="motif.enrichment.plot",
+                                              "TF ranking plot"=" ranking.plot")),
+                                   sliderInput("elmerwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                                   sliderInput("elmerheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
+                               actionButton("elmerPlotBt",
+                                            "Plot",
+                                            style = "background-color: #000080;
+                                                     color: #FFFFFF;
+                                                     margin-left: auto;
+                                                     margin-right: auto;
+                                                     width: 100%",
+                                            icon = icon("picture-o"))
+                           )
                     )
                 )
         )

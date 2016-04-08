@@ -2394,4 +2394,17 @@ biOMICsServer <- function(input, output, session) {
                          })
         }
     })
+
+    observeEvent(input$elmerPlotBt , {
+        output$elmer.plot <- renderPlot({
+
+        })
+    })
+    observeEvent(input$elmerPlotBt , {
+        updateCollapse(session, "collapelmer", open = "ELMER plots")
+        output$elmerPlot <- renderUI({
+            plotOutput("elmer.plot", width = paste0(isolate({input$elmerwidth}), "%"), height = isolate({input$elmerheight}))
+        })})
+
+
 }
