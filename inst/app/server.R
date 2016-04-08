@@ -2301,7 +2301,7 @@ biOMICsServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                             mee <- get(load(file))
+                         mee <- get(load(file))
                      })
         return(mee)
 
@@ -2357,7 +2357,7 @@ biOMICsServer <- function(input, output, session) {
                                                              geneInfo = getGeneInfo(mee))
 
                              Sig.probes.paired <- read.csv(paste0(dir.out,"/getPair.",j,".pairs.significant.csv"),
-                                                          stringsAsFactors=FALSE)[,1]
+                                                           stringsAsFactors=FALSE)[,1]
 
                              #-------------------------------------------------------------
                              # Step 3.3: Motif enrichment analysis on the selected probes |
@@ -2397,7 +2397,47 @@ biOMICsServer <- function(input, output, session) {
 
     observeEvent(input$elmerPlotBt , {
         output$elmer.plot <- renderPlot({
+            plot.type <- isolate({input$elmerPlotType})
 
+            # Three types:
+            # 1 - TF expression vs average DNA methylation
+            # 2 - Generate a scatter plot for one probe-gene pair
+            # 3 - Generate scatter plots for one probes’ nearby 20 gene expression
+            #     vs DNA methylation at this probe
+            if(plot.type == "scatter.plot"){
+                # case 1
+                scatter.plot(mee,byTF=list(TF=c("TP53","TP63","TP73"),
+                                           probe=enriched.motif[["TP53"]]), category="TN",
+                             save=FALSE,lm_line=TRUE)
+
+                # case 2
+                scatter.plot(mee,byPair=list(probe=c("cg19403323"),gene=c("ID255928")),
+                             category="TN", save=FALSE,lm_line=TRUE)
+
+                # case 3
+                scatter.plot(mee,byProbe=list(probe=c("cg19403323"),geneNum=20),
+                             category="TN", dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
+
+            } else if (plot.type == "schematic.plot") {
+                # Two cases
+                # 1 - By probe
+                if(isolate({input$schematic.plot.type}) == "probes"){
+                    schematic.plot(pair=pair, byProbe=isolate({input$schematic.plot.probes}),save=FALSE)
+                } else if(isolate({input$schematic.plot.type}) == "genes"){
+                # 2 - By genes
+                    schematic.plot(pair=pair, byGene=isolate({input$schematic.plot.genes}),save=FALSE)
+                }
+            } else if(plot.type == "motif.enrichment.plot") {
+                motif.enrichment.plot(motif.enrichment="./ELMER.example/Result/LUSC/getMotif.hypo.motif.enrichment.csv",
+                                      significant=list(OR=1.3,lowerOR=1.3),
+                                      dir.out ="ELMER.example/Result/LUSC",
+                                      label="hypo", save=FALSE)
+            } else if(plot.type == "ranking.plot"){
+                TF.rank.plot(motif.pvalue=TF.meth.cor,
+                             motif="TP53",
+                             TF.label=list(TP53=c("TP53","TP63","TP73")),
+                             save=FALSE)
+            }
         })
     })
     observeEvent(input$elmerPlotBt , {

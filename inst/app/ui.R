@@ -1103,22 +1103,31 @@ body <-  dashboardBody(
                            box(title = "Plots", width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE,
-                               radioButtons("elmerPlotRb", "Type of plot:",
-                                            c("Scatter plots"="scatter.plot",
-                                              "Schematic Plot"="schematic.plot",
-                                              "Motif enrichment plot"="motif.enrichment.plot",
-                                              "TF ranking plot"=" ranking.plot")),
-                                   sliderInput("elmerwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                                   sliderInput("elmerheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
-                               actionButton("elmerPlotBt",
-                                            "Plot",
-                                            style = "background-color: #000080;
+                               selectizeInput("elmerPlotType", "Type of plot:",
+                                              c("Scatter plots"="scatter.plot",
+                                                "Schematic Plot"="schematic.plot",
+                                                "Motif enrichment plot"="motif.enrichment.plot",
+                                                "TF ranking plot"=" ranking.plot"),
+                                              multiple = FALSE),
+                               radioButtons("schematic.plot.type", "By:",
+                                            c("Genes"="genes",
+                                              "Probes"="probes")),
+                               selectizeInput("schematic.plot.genes", "Genes:",
+                                              NULL,
+                                              multiple = TRUE),
+                               selectizeInput("schematic.plot.probes", "Probes:",
+                                              NULL,
+                                              multiple = TRUE),
+                               sliderInput("elmerwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
+                               sliderInput("elmerheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
+                           actionButton("elmerPlotBt",
+                                        "Plot",
+                                        style = "background-color: #000080;
                                                      color: #FFFFFF;
                                                      margin-left: auto;
                                                      margin-right: auto;
                                                      width: 100%",
-                                            icon = icon("picture-o"))
-                           )
+                                        icon = icon("picture-o"))
                     )
                 )
         )
