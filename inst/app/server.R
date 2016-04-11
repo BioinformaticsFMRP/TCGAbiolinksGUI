@@ -2290,9 +2290,76 @@ biOMICsServer <- function(input, output, session) {
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
 
+    #------------------------------------------------
     # ELMER
+    # -----------------------------------------------
+    #--------------------- START controlling show/hide states -----------------
+    #shinyjs::hide("survivalplotgroup")
+    #shinyjs::hide("survivalplotMain")
+    #shinyjs::hide("survivalplotLegend")
+    #shinyjs::hide("survivalplotLimit")
+    #shinyjs::hide("survivalplotPvalue")
+    observeEvent(input$scatter.plot.type, {
+        scatter.type <- isolate({input$scatter.plot.type})
+        type <- isolate({input$elmerPlotType})
+        print(scatter.type)
+        if(type =="scatter.plot"){
+            if(scatter.type == "tf"){
+                shinyjs::show("scatter.plot.tf")
+                shinyjs::show("scatter.plot.motif")
+                shinyjs::hide("scatter.plot.genes")
+                shinyjs::hide("scatter.plot.probes")
+            } else if(scatter.type == "pair"){
+                shinyjs::hide("scatter.plot.tf")
+                shinyjs::hide("scatter.plot.motif")
+                shinyjs::show("scatter.plot.genes")
+                shinyjs::show("scatter.plot.probes")
+            } else {
+                shinyjs::hide("scatter.plot.tf")
+                shinyjs::hide("scatter.plot.motif")
+                shinyjs::hide("scatter.plot.genes")
+                shinyjs::show("scatter.plot.probes")
+            }
+        } else {
+            shinyjs::hide("scatter.plot.tf")
+            shinyjs::hide("scatter.plot.motif")
+            shinyjs::hide("scatter.plot.genes")
+            shinyjs::hide("scatter.plot.probes")
+        }
+    })
+    observeEvent(input$elmerPlotType, {
+        type <- isolate({input$elmerPlotType})
+        print(type)
+        if(type =="scatter.plot"){
+            shinyjs::show("scatter.plot.type")
+            shinyjs::hide("schematic.plot.type")
+            shinyjs::hide("schematic.plot.genes")
+            shinyjs::hide("schematic.plot.probes")
+
+        } else if(type =="schematic.plot"){
+            shinyjs::hide("scatter.plot.type")
+            shinyjs::show("schematic.plot.type")
+            shinyjs::show("schematic.plot.genes")
+            shinyjs::show("schematic.plot.probes")
+        }
+    })
+    #----------------------- END controlling show/hide states -----------------
     shinyDirChoose(input, 'elmerFolder', roots=volumes, session=session, restrictions=system.file(package='base'))
     shinyFileChoose(input, 'elmermeefile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'elmerresultsfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+
+
+    # Input data
+    elmer.results.data <-  reactive({
+        inFile <- input$elmerresultsfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
+
+        withProgress(message = 'Loading data',
+                     detail = 'This may take a while...', value = 0, {
+                         load(file)
+                     })
+    })
 
     meedata <-  reactive({
         inFile <- input$elmermeefile
@@ -2304,8 +2371,25 @@ biOMICsServer <- function(input, output, session) {
                          mee <- get(load(file))
                      })
         return(mee)
-
     })
+
+    # Updates based on uploaded data
+    observe({
+        updateSelectizeInput(session, 'scatter.plot.probes', choices = {
+            if(!is.null(elmer.results.data())) as.character(Sig.probes$probe)
+        }, server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'scatter.plot.tf', choices = {
+            if(!is.null(elmer.results.data())) as.character(rownames(TF.meth.cor))
+        }, server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'scatter.plot.motif', choices = {
+            if(!is.null(elmer.results.data())) as.character(names(enriched.motif))
+        }, server = TRUE)
+    })
+
 
     observeEvent(input$elmerAnalysisBt, {
         getPath <- parseDirPath(volumes, isolate({input$elmerFolder}))
@@ -2406,25 +2490,27 @@ biOMICsServer <- function(input, output, session) {
             #     vs DNA methylation at this probe
             if(plot.type == "scatter.plot"){
                 # case 1
-                scatter.plot(mee,byTF=list(TF=c("TP53","TP63","TP73"),
-                                           probe=enriched.motif[["TP53"]]), category="TN",
-                             save=FALSE,lm_line=TRUE)
-
-                # case 2
-                scatter.plot(mee,byPair=list(probe=c("cg19403323"),gene=c("ID255928")),
-                             category="TN", save=FALSE,lm_line=TRUE)
-
-                # case 3
-                scatter.plot(mee,byProbe=list(probe=c("cg19403323"),geneNum=20),
-                             category="TN", dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
-
+                plot.by <- isolate({input$scatter.plot.type})
+                if(plot.by == "tf"){
+                    scatter.plot(mee,byTF=list(TF=isolate({input$scatter.plot.tf}),
+                                               probe=enriched.motif[[isolate({input$scatter.plot.motif})]]), category="TN",
+                                 save=FALSE,lm_line=TRUE)
+                } else if(plot.by == "pair") {
+                    # case 2
+                    scatter.plot(mee,byPair=list(probe=isolate({input$scatter.plot.probes}),gene=c("ID255928")),
+                                 category="TN", save=FALSE,lm_line=TRUE)
+                } else {
+                    # case 3
+                    scatter.plot(mee,byProbe=list(probe=isolate({input$scatter.plot.probes}),geneNum=20),
+                                 category="TN", dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
+                }
             } else if (plot.type == "schematic.plot") {
                 # Two cases
                 # 1 - By probe
                 if(isolate({input$schematic.plot.type}) == "probes"){
                     schematic.plot(pair=pair, byProbe=isolate({input$schematic.plot.probes}),save=FALSE)
                 } else if(isolate({input$schematic.plot.type}) == "genes"){
-                # 2 - By genes
+                    # 2 - By genes
                     schematic.plot(pair=pair, byGene=isolate({input$schematic.plot.genes}),save=FALSE)
                 }
             } else if(plot.type == "motif.enrichment.plot") {
