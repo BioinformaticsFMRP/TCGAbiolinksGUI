@@ -2334,6 +2334,7 @@ biOMICsServer <- function(input, output, session) {
             shinyjs::hide("schematic.plot.genes")
             shinyjs::hide("schematic.plot.probes")
             shinyjs::hide("ranking.plot.motif")
+            shinyjs::hide("ranking.plot.tf")
         } else if(type =="schematic.plot"){
             shinyjs::hide("scatter.plot.type")
             shinyjs::hide("scatter.plot.tf")
@@ -2345,6 +2346,7 @@ biOMICsServer <- function(input, output, session) {
             shinyjs::show("schematic.plot.genes")
             shinyjs::show("schematic.plot.probes")
             shinyjs::hide("ranking.plot.motif")
+            shinyjs::hide("ranking.plot.tf")
         } else if(type =="ranking.plot"){
             shinyjs::hide("scatter.plot.type")
             shinyjs::hide("scatter.plot.tf")
@@ -2356,6 +2358,7 @@ biOMICsServer <- function(input, output, session) {
             shinyjs::hide("schematic.plot.genes")
             shinyjs::hide("schematic.plot.probes")
             shinyjs::show("ranking.plot.motif")
+            shinyjs::show("ranking.plot.tf")
         }
     })
 
@@ -2424,11 +2427,11 @@ biOMICsServer <- function(input, output, session) {
         }, server = TRUE)
     })
 
-    # observe({
-    #     updateSelectizeInput(session, 'ranking.plot.tf', choices = {
-    #         if(!is.null(elmer.results.data())) as.character(rownames(TF.meth.cor))
-    #     }, server = TRUE)
-    # })
+    observe({
+        updateSelectizeInput(session, 'ranking.plot.tf', choices = {
+            if(!is.null(elmer.results.data())) as.character(rownames(TF.meth.cor))
+        }, server = TRUE)
+    })
 
     observe({
         updateSelectizeInput(session, 'ranking.plot.motif', choices = {
@@ -2584,10 +2587,12 @@ biOMICsServer <- function(input, output, session) {
                                       #significant=list(OR=1.3,lowerOR=1.3),
                                       save=FALSE)
             } else if(plot.type == "ranking.plot"){
-            gg <- TF.rank.plot(motif.pvalue=TF.meth.cor,
-                             motif=isolate({input$ranking.plot.motif}),
-                             #TF.label=list(TP53=c("TP53","TP63","TP73")),
-                             save=FALSE)
+                label <- list(isolate({input$ranking.plot.tf}))
+                names(label) <- isolate({input$ranking.plot.motif})
+                    gg <- TF.rank.plot(motif.pvalue=TF.meth.cor,
+                                       motif=isolate({input$ranking.plot.motif}),
+                                       TF.label=label,
+                                       save=FALSE)
                 # names were not fitting in the plot. Reducing the size
                 pushViewport(viewport(height=0.8,width=0.8))
                 grid.draw(gg[[1]])
