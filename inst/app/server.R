@@ -2309,22 +2309,20 @@ biOMICsServer <- function(input, output, session) {
                 shinyjs::show("scatter.plot.motif")
                 shinyjs::hide("scatter.plot.genes")
                 shinyjs::hide("scatter.plot.probes")
+                shinyjs::hide("scatter.plot.nb.genes")
             } else if(scatter.type == "pair"){
                 shinyjs::hide("scatter.plot.tf")
                 shinyjs::hide("scatter.plot.motif")
                 shinyjs::show("scatter.plot.genes")
                 shinyjs::show("scatter.plot.probes")
+                shinyjs::hide("scatter.plot.nb.genes")
             } else {
                 shinyjs::hide("scatter.plot.tf")
                 shinyjs::hide("scatter.plot.motif")
                 shinyjs::hide("scatter.plot.genes")
                 shinyjs::show("scatter.plot.probes")
+                shinyjs::show("scatter.plot.nb.genes")
             }
-        } else {
-            shinyjs::hide("scatter.plot.tf")
-            shinyjs::hide("scatter.plot.motif")
-            shinyjs::hide("scatter.plot.genes")
-            shinyjs::hide("scatter.plot.probes")
         }
     })
     observeEvent(input$elmerPlotType, {
@@ -2335,12 +2333,42 @@ biOMICsServer <- function(input, output, session) {
             shinyjs::hide("schematic.plot.type")
             shinyjs::hide("schematic.plot.genes")
             shinyjs::hide("schematic.plot.probes")
-
+            shinyjs::hide("ranking.plot.motif")
         } else if(type =="schematic.plot"){
             shinyjs::hide("scatter.plot.type")
+            shinyjs::hide("scatter.plot.tf")
+            shinyjs::hide("scatter.plot.motif")
+            shinyjs::hide("scatter.plot.genes")
+            shinyjs::hide("scatter.plot.probes")
+            shinyjs::hide("scatter.plot.nb.genes")
             shinyjs::show("schematic.plot.type")
             shinyjs::show("schematic.plot.genes")
             shinyjs::show("schematic.plot.probes")
+            shinyjs::hide("ranking.plot.motif")
+        } else if(type =="ranking.plot"){
+            shinyjs::hide("scatter.plot.type")
+            shinyjs::hide("scatter.plot.tf")
+            shinyjs::hide("scatter.plot.motif")
+            shinyjs::hide("scatter.plot.genes")
+            shinyjs::hide("scatter.plot.probes")
+            shinyjs::hide("scatter.plot.nb.genes")
+            shinyjs::hide("schematic.plot.type")
+            shinyjs::hide("schematic.plot.genes")
+            shinyjs::hide("schematic.plot.probes")
+            shinyjs::show("ranking.plot.motif")
+        }
+    })
+
+    observeEvent(input$schematic.plot.type, {
+        type <- isolate({input$schematic.plot.type})
+        if(type =="schematic.plot"){
+            if(type =="genes"){
+                shinyjs::hide("schematic.plot.probes")
+                shinyjs::show("schematic.plot.genes")
+            } else {
+                shinyjs::show("schematic.plot.probes")
+                shinyjs::hide("schematic.plot.genes")
+            }
         }
     })
     #----------------------- END controlling show/hide states -----------------
@@ -2390,7 +2418,40 @@ biOMICsServer <- function(input, output, session) {
         }, server = TRUE)
     })
 
+    observeEvent(input$scatter.plot.probes, {
+        updateSelectizeInput(session, 'scatter.plot.genes', choices = {
+            if(!is.null(elmer.results.data())) as.character(nearGenes[[input$scatter.plot.probes]]$GeneID)
+        }, server = TRUE)
+    })
 
+    # observe({
+    #     updateSelectizeInput(session, 'ranking.plot.tf', choices = {
+    #         if(!is.null(elmer.results.data())) as.character(rownames(TF.meth.cor))
+    #     }, server = TRUE)
+    # })
+
+    observe({
+        updateSelectizeInput(session, 'ranking.plot.motif', choices = {
+            if(!is.null(elmer.results.data())) as.character(colnames(TF.meth.cor))
+        }, server = TRUE)
+    })
+
+    observe({
+        pair.obj <- fetch.pair(pair=pair,
+                               probeInfo = getProbeInfo(mee),
+                               geneInfo = getGeneInfo(mee))
+        updateSelectizeInput(session, 'schematic.plot.probes', choices = {
+            if(!is.null(elmer.results.data())) as.character(pair.obj@pairInfo$Probe)
+        }, server = TRUE)
+    })
+    observe({
+        pair.obj <- fetch.pair(pair=pair,
+                               probeInfo = getProbeInfo(mee),
+                               geneInfo = getGeneInfo(mee))
+        updateSelectizeInput(session, 'schematic.plot.genes', choices = {
+            if(!is.null(elmer.results.data())) as.character(pair.obj@pairInfo$GeneID)
+        }, server = TRUE)
+    })
     observeEvent(input$elmerAnalysisBt, {
         getPath <- parseDirPath(volumes, isolate({input$elmerFolder}))
         mee <- meedata()
@@ -2436,7 +2497,7 @@ biOMICsServer <- function(input, output, session) {
                                                    portion = isolate({input$elmergetpairportion}),
                                                    diffExp = isolate({input$elmergetpairdiffExp}))
 
-                             Sig.probes.paired <- fetch.pair(pair=Hypo.pair,
+                             Sig.probes.paired <- fetch.pair(pair=pair,
                                                              probeInfo = getProbeInfo(mee),
                                                              geneInfo = getGeneInfo(mee))
 
@@ -2456,6 +2517,8 @@ biOMICsServer <- function(input, output, session) {
                                                                       background.probes = probe$name,
                                                                       lower.OR =  isolate({input$elmergetenrichedmotifLoweOR}),
                                                                       min.incidence = isolate({input$elmergetenrichedmotifMinIncidence}))
+                                 motif.enrichment <- read.csv(paste0(dir.out,"/getMotif.",j,".motif.enrichment.csv"),
+                                                              stringsAsFactors=FALSE)
                                  if(length(enriched.motif) > 0){
                                      #-------------------------------------------------------------
                                      # Step 3.4: Identifying regulatory TFs                        |
@@ -2468,9 +2531,9 @@ biOMICsServer <- function(input, output, session) {
                                                    cores = isolate({input$elmercores}),
                                                    label = j,
                                                    percentage = isolate({input$elmergetTFpercentage}))
-
+                                     TF.meth.cor <- get(load(paste0(dir.out,"/getTF.",j,".TFs.with.motif.pvalue.rda")))
                                      save(TF, enriched.motif, Sig.probes.paired,
-                                          Hypo.pair, nearGenes, Sig.probes,
+                                          pair, nearGenes, Sig.probes, motif.enrichment, TF.meth.cor,
                                           file=paste0(dir.out,"/ELMER_results_",j,".rda"))
                                  }
                              }
@@ -2497,32 +2560,37 @@ biOMICsServer <- function(input, output, session) {
                                  save=FALSE,lm_line=TRUE)
                 } else if(plot.by == "pair") {
                     # case 2
-                    scatter.plot(mee,byPair=list(probe=isolate({input$scatter.plot.probes}),gene=c("ID255928")),
+                    scatter.plot(mee,byPair=list(probe=isolate({input$scatter.plot.probes}),gene=c(isolate({input$scatter.plot.genes}))),
                                  category="TN", save=FALSE,lm_line=TRUE)
                 } else {
                     # case 3
-                    scatter.plot(mee,byProbe=list(probe=isolate({input$scatter.plot.probes}),geneNum=20),
+                    scatter.plot(mee,byProbe=list(probe=isolate({input$scatter.plot.probes}),geneNum=isolate({input$scatter.plot.nb.genes})),
                                  category="TN", dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
                 }
             } else if (plot.type == "schematic.plot") {
                 # Two cases
                 # 1 - By probe
+                pair.obj <- fetch.pair(pair=pair,
+                                       probeInfo = getProbeInfo(mee),
+                                       geneInfo = getGeneInfo(mee))
                 if(isolate({input$schematic.plot.type}) == "probes"){
-                    schematic.plot(pair=pair, byProbe=isolate({input$schematic.plot.probes}),save=FALSE)
+                    schematic.plot(pair=pair.obj, byProbe=isolate({input$schematic.plot.probes}),save=FALSE)
                 } else if(isolate({input$schematic.plot.type}) == "genes"){
                     # 2 - By genes
-                    schematic.plot(pair=pair, byGene=isolate({input$schematic.plot.genes}),save=FALSE)
+                    schematic.plot(pair=pair.obj, byGene=isolate({input$schematic.plot.genes}),save=FALSE)
                 }
             } else if(plot.type == "motif.enrichment.plot") {
-                motif.enrichment.plot(motif.enrichment="./ELMER.example/Result/LUSC/getMotif.hypo.motif.enrichment.csv",
-                                      significant=list(OR=1.3,lowerOR=1.3),
-                                      dir.out ="ELMER.example/Result/LUSC",
-                                      label="hypo", save=FALSE)
+                motif.enrichment.plot(motif.enrichment=motif.enrichment,
+                                      #significant=list(OR=1.3,lowerOR=1.3),
+                                      save=FALSE)
             } else if(plot.type == "ranking.plot"){
-                TF.rank.plot(motif.pvalue=TF.meth.cor,
-                             motif="TP53",
-                             TF.label=list(TP53=c("TP53","TP63","TP73")),
+            gg <- TF.rank.plot(motif.pvalue=TF.meth.cor,
+                             motif=isolate({input$ranking.plot.motif}),
+                             #TF.label=list(TP53=c("TP53","TP63","TP73")),
                              save=FALSE)
+                # names were not fitting in the plot. Reducing the size
+                pushViewport(viewport(height=0.8,width=0.8))
+                grid.draw(gg[[1]])
             }
         })
     })
