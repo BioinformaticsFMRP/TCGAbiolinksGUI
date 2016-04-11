@@ -2300,10 +2300,9 @@ biOMICsServer <- function(input, output, session) {
     #shinyjs::hide("survivalplotLimit")
     #shinyjs::hide("survivalplotPvalue")
     observeEvent(input$scatter.plot.type, {
-        scatter.type <- isolate({input$scatter.plot.type})
         type <- isolate({input$elmerPlotType})
-        print(scatter.type)
         if(type =="scatter.plot"){
+            scatter.type <- isolate({input$scatter.plot.type})
             if(scatter.type == "tf"){
                 shinyjs::show("scatter.plot.tf")
                 shinyjs::show("scatter.plot.motif")
@@ -2327,7 +2326,6 @@ biOMICsServer <- function(input, output, session) {
     })
     observeEvent(input$elmerPlotType, {
         type <- isolate({input$elmerPlotType})
-        print(type)
         if(type =="scatter.plot"){
             shinyjs::show("scatter.plot.type")
             shinyjs::hide("schematic.plot.type")
@@ -2335,6 +2333,26 @@ biOMICsServer <- function(input, output, session) {
             shinyjs::hide("schematic.plot.probes")
             shinyjs::hide("ranking.plot.motif")
             shinyjs::hide("ranking.plot.tf")
+            scatter.type <- isolate({input$scatter.plot.type})
+            if(scatter.type == "tf"){
+                shinyjs::show("scatter.plot.tf")
+                shinyjs::show("scatter.plot.motif")
+                shinyjs::hide("scatter.plot.genes")
+                shinyjs::hide("scatter.plot.probes")
+                shinyjs::hide("scatter.plot.nb.genes")
+            } else if(scatter.type == "pair"){
+                shinyjs::hide("scatter.plot.tf")
+                shinyjs::hide("scatter.plot.motif")
+                shinyjs::show("scatter.plot.genes")
+                shinyjs::show("scatter.plot.probes")
+                shinyjs::hide("scatter.plot.nb.genes")
+            } else {
+                shinyjs::hide("scatter.plot.tf")
+                shinyjs::hide("scatter.plot.motif")
+                shinyjs::hide("scatter.plot.genes")
+                shinyjs::show("scatter.plot.probes")
+                shinyjs::show("scatter.plot.nb.genes")
+            }
         } else if(type =="schematic.plot"){
             shinyjs::hide("scatter.plot.type")
             shinyjs::hide("scatter.plot.tf")
@@ -2343,10 +2361,16 @@ biOMICsServer <- function(input, output, session) {
             shinyjs::hide("scatter.plot.probes")
             shinyjs::hide("scatter.plot.nb.genes")
             shinyjs::show("schematic.plot.type")
-            shinyjs::show("schematic.plot.genes")
-            shinyjs::show("schematic.plot.probes")
             shinyjs::hide("ranking.plot.motif")
             shinyjs::hide("ranking.plot.tf")
+            type <- isolate({input$schematic.plot.type})
+            if(type =="genes"){
+                shinyjs::hide("schematic.plot.probes")
+                shinyjs::show("schematic.plot.genes")
+            } else {
+                shinyjs::show("schematic.plot.probes")
+                shinyjs::hide("schematic.plot.genes")
+            }
         } else if(type =="ranking.plot"){
             shinyjs::hide("scatter.plot.type")
             shinyjs::hide("scatter.plot.tf")
@@ -2359,12 +2383,25 @@ biOMICsServer <- function(input, output, session) {
             shinyjs::hide("schematic.plot.probes")
             shinyjs::show("ranking.plot.motif")
             shinyjs::show("ranking.plot.tf")
+        } else if(type =="motif.enrichment.plot"){
+            shinyjs::hide("scatter.plot.type")
+            shinyjs::hide("scatter.plot.tf")
+            shinyjs::hide("scatter.plot.motif")
+            shinyjs::hide("scatter.plot.genes")
+            shinyjs::hide("scatter.plot.probes")
+            shinyjs::hide("scatter.plot.nb.genes")
+            shinyjs::hide("schematic.plot.type")
+            shinyjs::hide("schematic.plot.genes")
+            shinyjs::hide("schematic.plot.probes")
+            shinyjs::hide("ranking.plot.motif")
+            shinyjs::hide("ranking.plot.tf")
         }
     })
 
     observeEvent(input$schematic.plot.type, {
-        type <- isolate({input$schematic.plot.type})
+        type <- isolate({input$elmerPlotType})
         if(type =="schematic.plot"){
+            type <- isolate({input$schematic.plot.type})
             if(type =="genes"){
                 shinyjs::hide("schematic.plot.probes")
                 shinyjs::show("schematic.plot.genes")
@@ -2388,7 +2425,7 @@ biOMICsServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         load(file)
+                         load(file,envir = globalenv())
                      })
     })
 
@@ -2440,24 +2477,37 @@ biOMICsServer <- function(input, output, session) {
     })
 
     observe({
-        pair.obj <- fetch.pair(pair=pair,
-                               probeInfo = getProbeInfo(mee),
-                               geneInfo = getGeneInfo(mee))
         updateSelectizeInput(session, 'schematic.plot.probes', choices = {
-            if(!is.null(elmer.results.data())) as.character(pair.obj@pairInfo$Probe)
+            mee <- meedata()
+            if(!is.null(elmer.results.data()) & !is.null(mee)){
+                pair.obj <- fetch.pair(pair=pair,
+                                       probeInfo = getProbeInfo(mee),
+                                       geneInfo = getGeneInfo(mee))
+                as.character(pair.obj@pairInfo$Probe)
+            }
         }, server = TRUE)
     })
     observe({
-        pair.obj <- fetch.pair(pair=pair,
-                               probeInfo = getProbeInfo(mee),
-                               geneInfo = getGeneInfo(mee))
         updateSelectizeInput(session, 'schematic.plot.genes', choices = {
-            if(!is.null(elmer.results.data())) as.character(pair.obj@pairInfo$GeneID)
+            mee <- meedata()
+            if(!is.null(elmer.results.data()) & !is.null(mee)){
+                pair.obj <- fetch.pair(pair=pair,
+                                       probeInfo = getProbeInfo(mee),
+                                       geneInfo = getGeneInfo(mee))
+
+                as.character(pair.obj@pairInfo$GeneID)
+            }
         }, server = TRUE)
     })
     observeEvent(input$elmerAnalysisBt, {
         getPath <- parseDirPath(volumes, isolate({input$elmerFolder}))
         mee <- meedata()
+        if(is.null(mee)){
+            closeAlert(session, "elmerAlert")
+            createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "success",
+                        content =   "Please upload the mee object for this plot", append = TRUE)
+            return(NULL)
+        }
         library(parallel)
         direction <- c("hyper","hypo")
 
@@ -2548,6 +2598,8 @@ biOMICsServer <- function(input, output, session) {
     observeEvent(input$elmerPlotBt , {
         output$elmer.plot <- renderPlot({
             plot.type <- isolate({input$elmerPlotType})
+            mee <- meedata()
+            closeAlert(session, "elmerAlert")
 
             # Three types:
             # 1 - TF expression vs average DNA methylation
@@ -2555,30 +2607,89 @@ biOMICsServer <- function(input, output, session) {
             # 3 - Generate scatter plots for one probes’ nearby 20 gene expression
             #     vs DNA methylation at this probe
             if(plot.type == "scatter.plot"){
+                if(is.null(mee)){
+                    createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "success",
+                                content =   "Please upload the mee object for this plot", append = TRUE)
+                    return(NULL)
+                }
                 # case 1
                 plot.by <- isolate({input$scatter.plot.type})
                 if(plot.by == "tf"){
+                    if(is.null(isolate({input$scatter.plot.tf}))){
+                        closeAlert(session, "elmerAlert")
+                        createAlert(session, "elmermessage", "elmerAlert", title = "TFs missing", style =  "success",
+                                    content = "Please select two TF", append = TRUE)
+                        return(NULL)
+                    }
+
+                    if(nchar(isolate({input$scatter.plot.tf})) == 0 | length(isolate({input$scatter.plot.tf})) < 2){
+                        closeAlert(session, "elmerAlert")
+                        createAlert(session, "elmermessage", "elmerAlert", title = "TFs missing", style =  "success",
+                                    content =   "Please select two TF", append = TRUE)
+                        return(NULL)
+                    }
+                    if(nchar(isolate({input$scatter.plot.motif})) == 0){
+                        closeAlert(session, "elmerAlert")
+                        createAlert(session, "elmermessage", "elmerAlert", title = "Motif missing", style =  "success",
+                                    content =   "Please select a motif", append = TRUE)
+                        return(NULL)
+                    }
                     scatter.plot(mee,byTF=list(TF=isolate({input$scatter.plot.tf}),
                                                probe=enriched.motif[[isolate({input$scatter.plot.motif})]]), category="TN",
                                  save=FALSE,lm_line=TRUE)
                 } else if(plot.by == "pair") {
+                    if(nchar(isolate({input$scatter.plot.probes})) == 0){
+                        closeAlert(session, "elmerAlert")
+                        createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "success",
+                                    content =   "Please select a probe", append = TRUE)
+                        return(NULL)
+                    }
+                    if(nchar(isolate({input$scatter.plot.genes})) == 0){
+                        closeAlert(session, "elmerAlert")
+                        createAlert(session, "elmermessage", "elmerAlert", title = "Gene missing", style =  "success",
+                                    content =   "Please select a gene", append = TRUE)
+                        return(NULL)
+                    }
+
                     # case 2
                     scatter.plot(mee,byPair=list(probe=isolate({input$scatter.plot.probes}),gene=c(isolate({input$scatter.plot.genes}))),
                                  category="TN", save=FALSE,lm_line=TRUE)
                 } else {
                     # case 3
+                    if(nchar(isolate({input$scatter.plot.probes})) == 0){
+                        createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "success",
+                                    content =   "Please select a probe", append = TRUE)
+                        return(NULL)
+                    }
                     scatter.plot(mee,byProbe=list(probe=isolate({input$scatter.plot.probes}),geneNum=isolate({input$scatter.plot.nb.genes})),
                                  category="TN", dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
                 }
             } else if (plot.type == "schematic.plot") {
+                if(is.null(mee)){
+                    createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "success",
+                                content =   "Please upload the mee object for this plot", append = TRUE)
+                    return(NULL)
+                }
                 # Two cases
                 # 1 - By probe
                 pair.obj <- fetch.pair(pair=pair,
                                        probeInfo = getProbeInfo(mee),
                                        geneInfo = getGeneInfo(mee))
                 if(isolate({input$schematic.plot.type}) == "probes"){
+                    if(nchar(isolate({input$schematic.plot.probes})) == 0){
+                        createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "success",
+                                    content =   "Please select a probe", append = TRUE)
+                        return(NULL)
+                    }
+
                     schematic.plot(pair=pair.obj, byProbe=isolate({input$schematic.plot.probes}),save=FALSE)
                 } else if(isolate({input$schematic.plot.type}) == "genes"){
+                    if(nchar(isolate({input$schematic.plot.genes})) == 0){
+                        createAlert(session, "elmermessage", "elmerAlert", title = "Gene missing", style =  "success",
+                                    content =   "Please select a gene", append = TRUE)
+                        return(NULL)
+                    }
+
                     # 2 - By genes
                     schematic.plot(pair=pair.obj, byGene=isolate({input$schematic.plot.genes}),save=FALSE)
                 }
@@ -2587,12 +2698,17 @@ biOMICsServer <- function(input, output, session) {
                                       #significant=list(OR=1.3,lowerOR=1.3),
                                       save=FALSE)
             } else if(plot.type == "ranking.plot"){
+                if(nchar(isolate({input$ranking.plot.motif})) == 0){
+                    createAlert(session, "elmermessage", "elmerAlert", title = "Motif missing", style =  "success",
+                                content =   "Please select a motif", append = TRUE)
+                    return(NULL)
+                }
                 label <- list(isolate({input$ranking.plot.tf}))
                 names(label) <- isolate({input$ranking.plot.motif})
-                    gg <- TF.rank.plot(motif.pvalue=TF.meth.cor,
-                                       motif=isolate({input$ranking.plot.motif}),
-                                       TF.label=label,
-                                       save=FALSE)
+                gg <- TF.rank.plot(motif.pvalue=TF.meth.cor,
+                                   motif=isolate({input$ranking.plot.motif}),
+                                   TF.label=label,
+                                   save=FALSE)
                 # names were not fitting in the plot. Reducing the size
                 pushViewport(viewport(height=0.8,width=0.8))
                 grid.draw(gg[[1]])
@@ -2605,5 +2721,42 @@ biOMICsServer <- function(input, output, session) {
             plotOutput("elmer.plot", width = paste0(isolate({input$elmerwidth}), "%"), height = isolate({input$elmerheight}))
         })})
 
+    # Table
+    observeEvent(input$elmerTableType , {
+        updateCollapse(session, "collapelmer", open = "ELMER result")
+    output$elmerResult <- renderDataTable({
+        if(!is.null(elmer.results.data())){
+            if(input$elmerTableType == "tf"){
+                as.data.frame(TF)
+            } else if(input$elmerTableType =="sigprobes"){
+                as.data.frame(Sig.probes)
+            } else if(input$elmerTableType =="motif"){
+                as.data.frame(motif.enrichment)
+            } else if(input$elmerTableType =="pair"){
+                as.data.frame(pair)
+            }
+        }
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+    )
+    })
 
 }
