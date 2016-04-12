@@ -9,6 +9,7 @@ library(stringr)
 library(ggrepel)
 library(pathview)
 library(ELMER)
+library(grid)
 options(shiny.maxRequestSize=10000*1024^2)
 
 table.code <- c('01','02','03','04','05','06','07','08','09','10',

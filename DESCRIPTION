@@ -26,6 +26,7 @@ Imports:
     RCurl,
     R.utils,
     rjson,
+    grid,
     reutils,
     stringr (>= 1.0),
     SummarizedExperiment,

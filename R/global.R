@@ -6,7 +6,7 @@
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name biOmicsApp
 #' @import shiny shinyFiles shinydashboard SummarizedExperiment
-#' TCGAbiolinks UpSetR ggplot2 shinyBS stringr ggrepel pathview ELMER
+#' TCGAbiolinks UpSetR ggplot2 shinyBS stringr ggrepel pathview ELMER grid
 #' @export
 #' @return Open a connection to shiny
 biOmicsApp <- function() {
