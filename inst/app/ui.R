@@ -1019,9 +1019,9 @@ body <-  dashboardBody(
         tabItem(tabName = "elmer",
                 fluidRow(
                     column(10,  bsAlert("elmermessage"),
-                           bsCollapse(id = "collapelmer", open = "Elmer plots",
-                                      bsCollapsePanel("ELMER result", dataTableOutput('elmerResult'), style = "default"),
-                                      bsCollapsePanel("ELMER plots", uiOutput("elmerPlot"), style = "default"))),
+                           bsCollapse(id = "collapelmer", open = "Plots",
+                                      bsCollapsePanel("Results table", dataTableOutput('elmerResult'), style = "default"),
+                                      bsCollapsePanel("Plots", uiOutput("elmerPlot"), style = "default"))),
                     column(2,
                            # box(title = "Create mee object", width = NULL,
                            #     status = "danger",
@@ -1161,7 +1161,7 @@ body <-  dashboardBody(
                                                      margin-right: auto;
                                                      width: 100%",
                                             icon = icon("picture-o"))),
-                           box(title = "Table", width = NULL,
+                           box(title = "Results table", width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                selectizeInput("elmerTableType", "Table to show:",

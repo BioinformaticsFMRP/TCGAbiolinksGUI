@@ -2716,23 +2716,23 @@ biOMICsServer <- function(input, output, session) {
         })
     })
     observeEvent(input$elmerPlotBt , {
-        updateCollapse(session, "collapelmer", open = "ELMER plots")
+        updateCollapse(session, "collapelmer", open = "Plots")
         output$elmerPlot <- renderUI({
             plotOutput("elmer.plot", width = paste0(isolate({input$elmerwidth}), "%"), height = isolate({input$elmerheight}))
         })})
 
     # Table
     observeEvent(input$elmerTableType , {
-        updateCollapse(session, "collapelmer", open = "ELMER result")
+        updateCollapse(session, "collapelmer", open = "Results table")
     output$elmerResult <- renderDataTable({
         if(!is.null(elmer.results.data())){
             if(input$elmerTableType == "tf"){
                 as.data.frame(TF)
-            } else if(input$elmerTableType =="sigprobes"){
+            } else if(input$elmerTableType == "sigprobes"){
                 as.data.frame(Sig.probes)
-            } else if(input$elmerTableType =="motif"){
+            } else if(input$elmerTableType == "motif"){
                 as.data.frame(motif.enrichment)
-            } else if(input$elmerTableType =="pair"){
+            } else if(input$elmerTableType == "pair"){
                 as.data.frame(pair)
             }
         }
