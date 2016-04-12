@@ -2208,6 +2208,11 @@ biOMICsServer <- function(input, output, session) {
                                               circle = isolate({input$starburstCircle}),
                                               logFC.cut = logFC.cut,
                                               return.plot = TRUE)
+            out.filename <- paste0(paste("Starburst_results", group1, group2,
+                                         "exp.p.cut", exp.p.cut, "logFC.cut", logFC.cut,
+                                         "met.diffmean", diffmean.cut, "met.p.cut", met.p.cut,
+                                         sep = "_"),".csv")
+            write.csv2(result, file = out.filename)
         }
     }
     # -------------- Starburst plot
