@@ -2154,9 +2154,9 @@ biOMICsServer <- function(input, output, session) {
             group1 <- file[4]
             group2 <- file[5]
             pcut <- file[7]
-            meancut <- gsub(".csv","",file[9])
-            updateNumericInput(session, "starburstmetdiff", value = meancut)
-            updateNumericInput(session, "starburstmetFDR", value = pcut)
+            fccut <- gsub(".csv","",file[9])
+            updateNumericInput(session, "starburstexpFC", value = fccut)
+            updateNumericInput(session, "starburstexFDR", value = pcut)
         }
     })
     starburst <- function(){
