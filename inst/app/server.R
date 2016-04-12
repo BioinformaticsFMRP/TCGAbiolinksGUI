@@ -2129,11 +2129,15 @@ biOMICsServer <- function(input, output, session) {
                     content = paste0("Results saved in: ", pathway.id,extension), append = FALSE)
 
     })
-    #----------------------------------------------
+
+    #------------------------------------------------
+    # Starburst
+    # -----------------------------------------------
     observeEvent(input$starburstNames, {
         toggle("starburstNamesFill")
     })
 
+    # get DMR result name and update the mean cut and pcut
     observeEvent(input$starburstmetfile, {
         file  <- basename(as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath))
         if(length(file) > 0){
@@ -2147,6 +2151,7 @@ biOMICsServer <- function(input, output, session) {
         }
     })
 
+    # get DEA result name and update the mean cut and pcut
     observeEvent(input$starburstexpfile, {
         file  <- basename(as.character(parseFilePaths(volumes, input$starburstexpfile)$datapath))
         if(length(file) > 0){
@@ -2159,8 +2164,21 @@ biOMICsServer <- function(input, output, session) {
             updateNumericInput(session, "starburstexFDR", value = pcut)
         }
     })
+
+    # Main function
     starburst <- function(){
 
+        closeAlert("starburstAlert")
+        if(is.null(result.dea.data())){
+            createAlert(session, "starburstmessage", "starburstAlert", title = "Missing data", style =  "active",
+                        content = paste0("Please select the differential expression results"), append = FALSE)
+            return(NULL)
+        }
+        if(is.null(result.dmr.data())){
+            createAlert(session, "starburstmessage", "starburstAlert", title = "Missing data", style =  "active",
+                        content = paste0("Please select the differential DNA methylation results"), append = FALSE)
+            return(NULL)
+        }
         logFC.cut <- isolate({input$starburstexpFC})
         exp.p.cut <- isolate({input$starburstexFDR})
         diffmean.cut <- isolate({input$starburstmetdiff})
@@ -2213,14 +2231,22 @@ biOMICsServer <- function(input, output, session) {
                                          "met.diffmean", diffmean.cut, "met.p.cut", met.p.cut,
                                          sep = "_"),".csv")
             write.csv2(result$starburst, file = out.filename)
+            createAlert(session, "starburstmessage", "starburstAlert", title = "Results saved", style =  "active",
+                        content = paste0("Results saved in: ", out.filename), append = FALSE)
         }
     }
     # -------------- Starburst plot
     observeEvent(input$starburstPlot , {
+        # validate input
         output$starburst.plot <- renderPlot({
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
-                             starburst()$plot
+                             aux <- starburst()
+                             if(!is.null(aux)) {
+                                 aux$plot
+                             } else {
+                                 aux
+                             }
                          })
         })})
 
@@ -2230,6 +2256,7 @@ biOMICsServer <- function(input, output, session) {
             plotOutput("starburst.plot", width = paste0(isolate({input$starburstwidth}), "%"), height = isolate({input$starburstheight}))
         })})
 
+    # Starburst plot input data
     result.dea.data <- function(){
         inFile <- input$starburstexpfile
         if (is.null(inFile)) return(NULL)
@@ -2272,8 +2299,9 @@ biOMICsServer <- function(input, output, session) {
 
 
     output$starburstResult <- renderDataTable({
-        data <- starburst()$starburst
-        if(!is.null(data)) as.data.frame(data)
+
+        data <- starburst()
+        if(!is.null(data)) as.data.frame(data$starburst)
     },
     options = list(pageLength = 10,
                    scrollX = TRUE,
