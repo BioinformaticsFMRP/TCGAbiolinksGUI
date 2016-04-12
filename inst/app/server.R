@@ -2212,7 +2212,7 @@ biOMICsServer <- function(input, output, session) {
                                          "exp.p.cut", exp.p.cut, "logFC.cut", logFC.cut,
                                          "met.diffmean", diffmean.cut, "met.p.cut", met.p.cut,
                                          sep = "_"),".csv")
-            write.csv2(result, file = out.filename)
+            write.csv2(result$starburst, file = out.filename)
         }
     }
     # -------------- Starburst plot
