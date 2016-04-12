@@ -730,7 +730,7 @@ biOMICsServer <- function(input, output, session) {
                     content =  paste0("Saved file: ",fout), append = FALSE)
     })
     #----------------------------------------------------------------------
-    #                                         MAF
+    #                                         Summary plot
     #----------------------------------------------------------------------
     #-------------------------START controlling show/hide states -----------------
 
@@ -756,6 +756,13 @@ biOMICsServer <- function(input, output, session) {
             tumor <- isolate({input$tcgaSummaryTumorFilter})
             platform <- isolate({input$tcgaSummaryExpFilter})
             level <- isolate({input$tcgaSummaryLevelFilter})
+
+            if(is.null(tumor)){
+                createAlert(session, "tcgaSummaryMessage", "tcgaSummaryAlert", title = "Data input error", style =  "danger",
+                            content = "Please select a tumor type", append = FALSE)
+                return(NULL)
+            }
+
             if(isolate({input$summaryInputRb}) == "platsample"){
 
 
@@ -789,7 +796,7 @@ biOMICsServer <- function(input, output, session) {
                     }
                 }
                 if(nrow(df) == 0) {
-                    createAlert(session, "tcgasummarymessage", "tcgaSummaryAlert", title = "Results not found", style = "danger",
+                    createAlert(session, "tcgaSummaryMessage", "tcgaSummaryAlert", title = "Results not found", style = "danger",
                                 content =  paste0("No results found"), append = FALSE)
                     return(NULL)
                 }
@@ -809,6 +816,11 @@ biOMICsServer <- function(input, output, session) {
                                        sets.bar.color = isolate({input$summarySetsBarColor}))
                              })
             } else {
+                if(is.null(platform)){
+                    createAlert(session, "tcgaSummaryMessage", "tcgaSummaryAlert", title = "Data input error", style =  "danger",
+                                content = "Please select at least one platform", append = FALSE)
+                    return(NULL)
+                }
                 not.found <- c()
                 tbl <- data.frame()
                 for(i in platform){
@@ -838,7 +850,7 @@ biOMICsServer <- function(input, output, session) {
                     }
                 }
                 if(length(not.found) > 0) {
-                    createAlert(session, "tcgasummarymessage", "tcgaSummaryAlert", title = "Results not found", style = "danger",
+                    createAlert(session, "tcgaSummaryMessage", "tcgaSummaryAlert", title = "Results not found", style = "danger",
                                 content =  paste0("These results were not found","<br><ul>", paste(not.found, collapse = ""),"</ul>"), append = FALSE)
                 }
                 if(nrow(tbl) == 0) {
