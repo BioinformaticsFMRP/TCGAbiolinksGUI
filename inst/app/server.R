@@ -7,6 +7,7 @@ library(ggplot2)
 library(shinyBS)
 library(stringr)
 library(ggrepel)
+library(pathview)
 options(shiny.maxRequestSize=10000*1024^2)
 
 
@@ -2109,7 +2110,6 @@ biOMICsServer <- function(input, output, session) {
         names(genelistDEGs) <- data$ENTREZID
         withProgress(message = 'Creating pathway graph',
                      detail = 'This may take a while...', value = 0, {
-                         require("pathview")
                          # pathway.id: hsa05214 is the glioma pathway
                          # limit: sets the limit for gene expression legend and color
                          hsa05214 <- pathview(gene.data  = genelistDEGs,

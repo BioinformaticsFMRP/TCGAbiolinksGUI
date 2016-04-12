@@ -1,0 +1,46 @@
+---
+title: "TCGAbiolinks GUI"
+author: " Tiago Chedraoui Silva"
+date: "`r Sys.Date()`"
+output:
+  BiocStyle::html_document:
+    toc: true
+    number_sections: false
+    toc_depth: 2
+    highlight: haddock
+
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi = 300)
+knitr::opts_chunk$set(cache=FALSE)
+```
+
+```{r, echo = FALSE,hide=TRUE, message=FALSE,warning=FALSE}
+devtools::load_all(".")
+```
+
+# Introduction
+## Installation
+
+To install use the code below.
+
+```{r, eval = FALSE}
+source("https://bioconductor.org/biocLite.R")
+biocLite("TCGAbiolinks")
+```
+# Tab: TCGA Data
+# Tab: Clinical analysis
+# Tab: Epigenetic analysis
+# Tab: Transcriptomic analysis
+# Tab: Genomic analysis
+# Tab: Integrative analysis
+
+### Session info
+```{r, eval = TRUE}
+sessionInfo()
+```

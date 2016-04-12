@@ -5,7 +5,8 @@
 #' @seealso \url{https://www.encodeproject.org/search/}
 #' @seealso \url{https://www.encodeproject.org/help/rest-api/}
 #' @name biOmicsApp
-#' @import shiny shinydashboard tcltk
+#' @import shiny shinyFiles shinydashboard SummarizedExperiment
+#' TCGAbiolinks UpSetR ggplot2 shinyBS stringr ggrepel pathview
 #' @export
 #' @return Open a connection to shiny
 biOmicsApp <- function() {
