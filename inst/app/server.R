@@ -1728,16 +1728,16 @@ biOMICsServer <- function(input, output, session) {
         inFile <- input$profileplotfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
-        if(file_ext(file)=="csv"){
+        if(tools::file_ext(file)=="csv"){
             df <- read.csv2(file,header = T)
             rownames(df) <- df[,1]
             df[,1] <- NULL
-        } else if(file_ext(file)=="rda"){
+        } else if(tools::file_ext(file)=="rda"){
             df <- get(load(file))
         } else {
             createAlert(session, "profileplotmessage", "profileplotAlert", title = "Data input error", style =  "danger",
                         content = paste0("Sorry, but I'm expecting a csv or rda file, but I got a: ",
-                                         file_ext(file)), append = FALSE)
+                                         tools::file_ext(file)), append = FALSE)
             return(NULL)
         }
 
@@ -1871,17 +1871,17 @@ biOMICsServer <- function(input, output, session) {
         inFile <- input$survivalplotfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
-        if(file_ext(file)=="csv"){
+        if(tools::file_ext(file)=="csv"){
             df <- read.csv2(file,header = T)
             rownames(df) <- df[,1]
             df[,1] <- NULL
-        } else if(file_ext(file)=="rda"){
+        } else if(tools::file_ext(file)=="rda"){
             df <- get(load(file))
         } else {
             closeAlert(session, "survivalAlert")
             createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
                         content = paste0("Sorry, but I'm expecting a csv or rda file, but I got a: ",
-                                         file_ext(file)), append = FALSE)
+                                         tools::file_ext(file)), append = FALSE)
             return(NULL)
         }
         if(class(df)!= class(data.frame())){
@@ -2229,11 +2229,11 @@ biOMICsServer <- function(input, output, session) {
         inFile <- input$starburstexpfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$starburstexpfile)$datapath)
-        if(file_ext(file)=="csv"){
+        if(tools::file_ext(file)=="csv"){
             se <- read.csv2(file,header = T)
             rownames(se) <- se[,1]
             se[,1] <- NULL
-        } else if(file_ext(file)=="rda"){
+        } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
         if(class(se)!= class(data.frame())){
@@ -2248,9 +2248,9 @@ biOMICsServer <- function(input, output, session) {
         inFile <- input$starburstmetfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath)
-        if(file_ext(file)=="csv"){
+        if(tools::file_ext(file)=="csv"){
             se <- read.csv2(file,header = T)
-        } else if(file_ext(file)=="rda"){
+        } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
 
