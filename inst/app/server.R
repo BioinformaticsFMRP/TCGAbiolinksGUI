@@ -2170,12 +2170,12 @@ biOMICsServer <- function(input, output, session) {
 
         closeAlert(session,"starburstAlert")
         if(is.null(result.dea.data())){
-            createAlert(session, "starburstmessage", "starburstAlert", title = "Missing data", style =  "active",
+            createAlert(session, "starburstmessage", "starburstAlert", title = "Missing data", style =  "danger",
                         content = paste0("Please select the differential expression results"), append = FALSE)
             return(NULL)
         }
         if(is.null(result.dmr.data())){
-            createAlert(session, "starburstmessage", "starburstAlert", title = "Missing data", style =  "active",
+            createAlert(session, "starburstmessage", "starburstAlert", title = "Missing data", style =  "danger",
                         content = paste0("Please select the differential DNA methylation results"), append = FALSE)
             return(NULL)
         }
@@ -2243,9 +2243,7 @@ biOMICsServer <- function(input, output, session) {
                          detail = 'This may take a while...', value = 0, {
                              aux <- starburst()
                              if(!is.null(aux)) {
-                                 aux$plot
-                             } else {
-                                 aux
+                                 return(aux$plot)
                              }
                          })
         })})
@@ -2301,7 +2299,7 @@ biOMICsServer <- function(input, output, session) {
     output$starburstResult <- renderDataTable({
 
         data <- starburst()
-        if(!is.null(data)) as.data.frame(data$starburst)
+        if(!is.null(data)) return(as.data.frame(data$starburst))
     },
     options = list(pageLength = 10,
                    scrollX = TRUE,
