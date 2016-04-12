@@ -2168,7 +2168,7 @@ biOMICsServer <- function(input, output, session) {
     # Main function
     starburst <- function(){
 
-        closeAlert("starburstAlert")
+        closeAlert(session,"starburstAlert")
         if(is.null(result.dea.data())){
             createAlert(session, "starburstmessage", "starburstAlert", title = "Missing data", style =  "active",
                         content = paste0("Please select the differential expression results"), append = FALSE)
