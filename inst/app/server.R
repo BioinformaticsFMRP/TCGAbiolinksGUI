@@ -914,11 +914,16 @@ biOMICsServer <- function(input, output, session) {
     observeEvent(input$oncoInputRb, {
         if(input$oncoInputRb == "Selection"){
             shinyjs::hide("oncoGenesTextArea")
+            shinyjs::hide("oncoGenesFiles")
             shinyjs::show("oncoGenes")
-        } else {
+        } else  if(input$oncoInputRb == "Selection"){
             shinyjs::show("oncoGenesTextArea")
             shinyjs::hide("oncoGenes")
-
+            shinyjs::hide("oncoGenesFiles")
+        } else {
+            shinyjs::hide("oncoGenesTextArea")
+            shinyjs::hide("oncoGenes")
+            shinyjs::show("oncoGenesFiles")
         }
     })
 
@@ -926,7 +931,9 @@ biOMICsServer <- function(input, output, session) {
 
     shinyFileChoose(input, 'maffile', roots=volumes, session=session, restrictions=system.file(package='base'))
     shinyFileChoose(input, 'mafAnnotation', roots=volumes, session=session, restrictions=system.file(package='base'))
-    annotation.maf <- function(){
+    shinyFileChoose(input, 'oncoGenesFiles', roots=volumes, session=session, restrictions=system.file(package='base'))
+
+        annotation.maf <- function(){
         inFile <- input$mafAnnotation
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$mafAnnotation)$datapath)
@@ -951,8 +958,46 @@ biOMICsServer <- function(input, output, session) {
         return(ret)
 
     }
-    observeEvent(input$oncoprintPlot , {
 
+    genesByFile <- function(){
+        inFile <- input$oncoGenesFiles
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
+        if(tools::file_ext(file)=="csv"){
+            df <- read.csv2(file,header = T,stringsAsFactors = FALSE)
+            rownames(df) <- df[,1]
+            df[,1] <- NULL
+        } else if(tools::file_ext(file)=="rda"){
+            df <- get(load(file))
+        } else if(tools::file_ext(file)=="txt"){
+            df <- read.table(file,header = T)
+        } else {
+            createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a csv, rda or txt file, but I got a: ",
+                                         tools::file_ext(file)), append = FALSE)
+            return(NULL)
+        }
+        genes <- NULL
+        # if a data frame return the column with gene symbols
+        if(class(df)==class(data.frame())){
+            if("mRNA" %in% colnames(df)){
+                print(head(df))
+                df <- subset(df,df$status != "Insignificant")
+                aux <- strsplit(df$mRNA,"\\|")
+                genes <- unlist(lapply(aux,function(x) x[1]))
+            } else if("Gene_symbol" %in% colnames(df)){
+                genes <- df$Gene_symbol
+            } else {
+                createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
+                            content = paste0("Sorry, but I'm expecting a column called Gene_symbol "), append = FALSE)
+                return(NULL)
+            }
+        }
+        return(genes)
+    }
+
+    observeEvent(input$oncoprintPlot , {
+        closeAlert(session,"oncoAlert")
         output$oncoploting <- renderPlot({
             mut <- isolate({mut()})
             annotation <- isolate({annotation.maf()})
@@ -966,15 +1011,22 @@ biOMICsServer <- function(input, output, session) {
                 genes <- toupper(parse.textarea.input(textarea))
                 not.found <- genes[!(genes %in% mut$Hugo_Symbol)]
                 if(length(not.found) > 0){
-                    closeAlert("eaAlert")
                     createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
                                 content = paste0("Sorry, I cant't find these genes: ", not.found), append = FALSE)
                     genes <-  genes[genes %in% mut$Hugo_Symbol]
                 }
-            } else {
+            } else if(isolate({input$oncoInputRb}) == "Selection") {
                 genes <- isolate({input$oncoGenes})
+            } else if(isolate({input$oncoInputRb}) == "file") {
+                genes <- genesByFile()
+                not.found <- genes[!(genes %in% mut$Hugo_Symbol)]
+                if(length(not.found) > 0){
+                    createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
+                                content = paste0("Sorry, I cant't find these genes: ", not.found), append = FALSE)
+                    genes <-  genes[genes %in% mut$Hugo_Symbol]
+                }
             }
-
+print(genes)
             if(is.null(genes)){
                 createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
                             content = "Please select the genes (max 50)", append = TRUE)
@@ -1421,7 +1473,7 @@ biOMICsServer <- function(input, output, session) {
 
     #-------------------------START controlling show/hide states -----------------
 
-    observeEvent(input$heatmapTypeInputRb, {
+    observe({
         if(input$heatmapTypeInputRb == "met") {
             shinyjs::show("heatmapProbesInputRb")
             shinyjs::hide("heatmapGenesInputRb")
@@ -1443,7 +1495,7 @@ biOMICsServer <- function(input, output, session) {
             shinyjs::hide("heatmap.hypoprobesCb")
             shinyjs::hide("heatmap.hyperprobesCb")
             shinyjs::hide("heatmapProbesInputRb")
-            if(input$heatmapProbesInputRb == "text"){
+            if(input$heatmapGenesInputRb == "text"){
                 shinyjs::show("heatmapGenesTextArea")
                 shinyjs::hide("heatmap.upGenesCb")
                 shinyjs::hide("heatmap.downGenewsCb")
@@ -1452,7 +1504,6 @@ biOMICsServer <- function(input, output, session) {
                 shinyjs::show("heatmap.upGenesCb")
                 shinyjs::show("heatmap.downGenewsCb")
             }
-
         }
     })
     observeEvent(input$heatmap.sortCb, {
