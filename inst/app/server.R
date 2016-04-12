@@ -981,7 +981,6 @@ biOMICsServer <- function(input, output, session) {
         # if a data frame return the column with gene symbols
         if(class(df)==class(data.frame())){
             if("mRNA" %in% colnames(df)){
-                print(head(df))
                 df <- subset(df,df$status != "Insignificant")
                 aux <- strsplit(df$mRNA,"\\|")
                 genes <- unlist(lapply(aux,function(x) x[1]))
@@ -1026,7 +1025,6 @@ biOMICsServer <- function(input, output, session) {
                     genes <-  genes[genes %in% mut$Hugo_Symbol]
                 }
             }
-print(genes)
             if(is.null(genes)){
                 createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
                             content = "Please select the genes (max 50)", append = TRUE)
@@ -1148,7 +1146,6 @@ print(genes)
 
     observeEvent(input$volcanofile, {
         file  <- basename(as.character(parseFilePaths(volumes, input$volcanofile)$datapath))
-        print(file)
         if(length(file) > 0){
             file <- unlist(str_split(file,"_"))
             group1 <- file[4]
