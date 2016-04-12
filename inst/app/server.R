@@ -2198,13 +2198,13 @@ biOMICsServer <- function(input, output, session) {
                     isolate({input$sbcolDownHyper}))
 
 
-        file  <- basename(as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath))
+        file  <- basename(as.character(parseFilePaths(volumes, isolate({input$starburstmetfile}))$datapath))
         if(length(file) > 0){
             file <- unlist(str_split(file,"_"))
             group1 <- file[4]
             group2 <- file[5]
         }
-        file  <- basename(as.character(parseFilePaths(volumes, input$starburstexpfile)$datapath))
+        file  <- basename(as.character(parseFilePaths(volumes, isolate({input$starburstexpfile}))$datapath))
         if(length(file) > 0){
             file <- unlist(str_split(file,"_"))
             exp.group1 <- file[4]
@@ -2231,8 +2231,9 @@ biOMICsServer <- function(input, output, session) {
                                          "met.diffmean", diffmean.cut, "met.p.cut", met.p.cut,
                                          sep = "_"),".csv")
             write.csv2(result$starburst, file = out.filename)
-            createAlert(session, "starburstmessage", "starburstAlert", title = "Results saved", style =  "active",
+            createAlert(session, "starburstmessage", "starburstAlert", title = "Results saved", style =  "info",
                         content = paste0("Results saved in: ", out.filename), append = FALSE)
+            return(result)
         }
     }
     # -------------- Starburst plot
