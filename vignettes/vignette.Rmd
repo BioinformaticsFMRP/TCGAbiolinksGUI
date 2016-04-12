@@ -25,14 +25,16 @@ devtools::load_all(".")
 ```
 
 # Introduction
+
 ## Installation
 
-To install use the code below.
+To install the package from biocondcutor repository, please, use the code below.
 
 ```{r, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
-biocLite("TCGAbiolinks")
+biocLite("TCGAbiolinksGUI")
 ```
+
 # Tab: TCGA Data
 # Tab: Clinical analysis
 # Tab: Epigenetic analysis
