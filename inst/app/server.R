@@ -933,7 +933,7 @@ biOMICsServer <- function(input, output, session) {
     shinyFileChoose(input, 'mafAnnotation', roots=volumes, session=session, restrictions=system.file(package='base'))
     shinyFileChoose(input, 'oncoGenesFiles', roots=volumes, session=session, restrictions=system.file(package='base'))
 
-        annotation.maf <- function(){
+    annotation.maf <- function(){
         inFile <- input$mafAnnotation
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$mafAnnotation)$datapath)
@@ -1693,12 +1693,54 @@ biOMICsServer <- function(input, output, session) {
         if(input$tcgaEaInputRb == "text") {
             shinyjs::show("eaGenesTextArea")
             shinyjs::hide("eagenes")
+            shinyjs::hide("eaGenesFiles")
         } else if(input$tcgaEaInputRb == "Selection") {
             shinyjs::hide("eaGenesTextArea")
             shinyjs::show("eagenes")
+            shinyjs::hide("eaGenesFiles")
+        } else {
+            shinyjs::hide("eaGenesTextArea")
+            shinyjs::hide("eagenes")
+            shinyjs::show("eaGenesFiles")
         }
     })
     #----------------------- END controlling show/hide states -----------------
+    shinyFileChoose(input, 'eaGenesFiles', roots=volumes, session=session, restrictions=system.file(package='base'))
+    eaGenesByFile <- function(){
+        inFile <- input$eaGenesFiles
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
+        if(tools::file_ext(file)=="csv"){
+            df <- read.csv2(file,header = T,stringsAsFactors = FALSE)
+            rownames(df) <- df[,1]
+            df[,1] <- NULL
+        } else if(tools::file_ext(file)=="rda"){
+            df <- get(load(file))
+        } else if(tools::file_ext(file)=="txt"){
+            df <- read.table(file,header = T)
+        } else {
+            createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a csv, rda or txt file, but I got a: ",
+                                         tools::file_ext(file)), append = FALSE)
+            return(NULL)
+        }
+        genes <- NULL
+        # if a data frame return the column with gene symbols
+        if(class(df)==class(data.frame())){
+            if("mRNA" %in% colnames(df)){
+                df <- subset(df,df$status != "Insignificant")
+                aux <- strsplit(df$mRNA,"\\|")
+                genes <- unlist(lapply(aux,function(x) x[1]))
+            } else if("Gene_symbol" %in% colnames(df)){
+                genes <- df$Gene_symbol
+            } else {
+                createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
+                            content = paste0("Sorry, but I'm expecting a column called Gene_symbol "), append = FALSE)
+                return(NULL)
+            }
+        }
+        return(genes)
+    }
     observeEvent(input$eaplot , {
         updateCollapse(session, "collapseEA", open = "EA plots")
         output$eaPlot <- renderUI({
@@ -1718,8 +1760,16 @@ biOMICsServer <- function(input, output, session) {
                                 content = paste0("Sorry, I cant't find these genes: ", not.found), append = FALSE)
                     genes <-  genes[genes %in% TCGAbiolinks:::EAGenes$Gene]
                 }
-            } else {
+            } else if(isolate({input$tcgaEaInputRb}) == "Selection"){
                 genes <- isolate({input$eagenes})
+            } else{
+                genes <- eaGenesByFile()
+                not.found <- genes[!(genes %in% TCGAbiolinks:::EAGenes$Gene)]
+                if(length(not.found) > 0){
+                    createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
+                                content = paste0("Sorry, I cant't find these genes: ", not.found), append = FALSE)
+                    genes <-  genes[genes %in% TCGAbiolinks:::EAGenes$Gene]
+                }
             }
 
             withProgress(message = 'Creating plot',
@@ -2817,39 +2867,39 @@ biOMICsServer <- function(input, output, session) {
     # Table
     observeEvent(input$elmerTableType , {
         updateCollapse(session, "collapelmer", open = "Results table")
-    output$elmerResult <- renderDataTable({
-        if(!is.null(elmer.results.data())){
-            if(input$elmerTableType == "tf"){
-                as.data.frame(TF)
-            } else if(input$elmerTableType == "sigprobes"){
-                as.data.frame(Sig.probes)
-            } else if(input$elmerTableType == "motif"){
-                as.data.frame(motif.enrichment)
-            } else if(input$elmerTableType == "pair"){
-                as.data.frame(pair)
+        output$elmerResult <- renderDataTable({
+            if(!is.null(elmer.results.data())){
+                if(input$elmerTableType == "tf"){
+                    as.data.frame(TF)
+                } else if(input$elmerTableType == "sigprobes"){
+                    as.data.frame(Sig.probes)
+                } else if(input$elmerTableType == "motif"){
+                    as.data.frame(motif.enrichment)
+                } else if(input$elmerTableType == "pair"){
+                    as.data.frame(pair)
+                }
             }
-        }
-    },
-    options = list(pageLength = 10,
-                   scrollX = TRUE,
-                   jQueryUI = TRUE,
-                   pagingType = "full",
-                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                   language.emptyTable = "No results found",
-                   "dom" = 'T<"clear">lfrtip',
-                   "oTableTools" = list(
-                       "sSelectedClass" = "selected",
-                       "sRowSelect" = "os",
-                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                       "aButtons" = list(
-                           list("sExtends" = "collection",
-                                "sButtonText" = "Save",
-                                "aButtons" = c("csv","xls")
+        },
+        options = list(pageLength = 10,
+                       scrollX = TRUE,
+                       jQueryUI = TRUE,
+                       pagingType = "full",
+                       lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                       language.emptyTable = "No results found",
+                       "dom" = 'T<"clear">lfrtip',
+                       "oTableTools" = list(
+                           "sSelectedClass" = "selected",
+                           "sRowSelect" = "os",
+                           "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                           "aButtons" = list(
+                               list("sExtends" = "collection",
+                                    "sButtonText" = "Save",
+                                    "aButtons" = c("csv","xls")
+                               )
                            )
                        )
-                   )
-    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )
+        ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+        )
     })
 
 }
