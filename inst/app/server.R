@@ -2680,7 +2680,7 @@ biOMICsServer <- function(input, output, session) {
                                                        geneAnnot=getGeneInfo(mee),
                                                        geneNum = isolate({input$elmergetpairNumGenes}))
 
-                             Hypo.pair <- get.pair(mee=mee,
+                             pair <- get.pair(mee=mee,
                                                    probes=Sig.probes$probe,
                                                    nearGenes=nearGenes,
                                                    permu.dir=paste0(dir.out,"/permu"),
@@ -2707,6 +2707,7 @@ biOMICsServer <- function(input, output, session) {
                                  #-------------------------------------------------------------
                                  # Step 3.3: Motif enrichment analysis on the selected probes |
                                  #-------------------------------------------------------------
+                                 probe <- get.feature.probe()
                                  enriched.motif <- get.enriched.motif(probes = Sig.probes.paired,
                                                                       dir.out = dir.out,
                                                                       label = j,
