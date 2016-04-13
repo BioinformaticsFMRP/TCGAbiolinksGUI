@@ -1176,6 +1176,7 @@ biOMICsServer <- function(input, output, session) {
             # DMR_results_groupCol_group1_group2_pcut_0.05_meancut_0.3.csv
             file  <- basename(as.character(parseFilePaths(volumes, input$volcanofile)$datapath))
             file <- unlist(str_split(file,"_"))
+            groupCol <- file[3]
             group1 <- file[4]
             group2 <- file[5]
             names <- NULL
@@ -1191,6 +1192,33 @@ biOMICsServer <- function(input, output, session) {
                            "Hypermethylated",
                            "Hypomethylated")
                 label[2:3] <-  paste(label[2:3], "in", group2)
+
+                # Update data into a file
+                if(isolate({input$volcanoSave})){
+                    statuscol <- paste("status",group1,group2,sep = ".")
+                    statuscol2 <- paste("status",group2,group1,sep = ".")
+                    data[,statuscol] <-  "Not Significant"
+                    data[,statuscol2] <-  "Not Significant"
+
+                    # get significant data
+                    sig <-  data[,pcol] < y.cut
+                    sig[is.na(sig)] <- FALSE
+                    # hypermethylated samples compared to old state
+                    hyper <- data[,diffcol]  > x.cut
+                    hyper[is.na(hyper)] <- FALSE
+
+                    # hypomethylated samples compared to old state
+                    hypo <- data[,diffcol] < (-x.cut)
+                    hypo[is.na(hypo)] <- FALSE
+
+                    if (any(hyper & sig)) data[hyper & sig,statuscol] <- paste("Hypermethylated","in", group2)
+                    if (any(hyper & sig)) data[hyper & sig,statuscol2] <- paste("Hypomethylated","in", group1)
+                    if (any(hypo & sig)) data[hypo & sig,statuscol] <- paste("Hypomethylated","in", group2)
+                    if (any(hypo & sig)) data[hypo & sig,statuscol2] <- paste("Hypermethylated","in", group1)
+                    csv <- paste0(paste("DMR_results",groupCol,group1,group2, "pcut",y.cut,"meancut",x.cut,  sep = "_"),".csv")
+                    write.csv2(data,file =  csv)
+                }
+
                 withProgress(message = 'Creating plot',
                              detail = 'This may take a while...', value = 0, {
                                  TCGAVisualize_volcano(x = data[,diffcol],
@@ -1219,6 +1247,16 @@ biOMICsServer <- function(input, output, session) {
                            "Downregulated")
                 label[2:3] <-  paste(label[2:3], "in", group2)
                 if(isolate({input$volcanoNames})) names <- as.character(data$mRNA)
+
+
+                # Update data into a file
+                if(isolate({input$volcanoSave})){
+                    exp$status <- "Insignificant"
+                    exp[exp$logFC >= x.cut & exp$FDR <= y.cut,"status"] <- paste0("Upregulated in ", group2)
+                    exp[exp$logFC <= -x.cut & exp$FDR <= y.cut,"status"] <- paste0("Downregulated in ", group2)
+                    out.filename <- paste0(paste("DEA_results",groupCol, group1, group2,"pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
+                    write.csv2(exp, file = out.filename)
+                }
 
                 withProgress(message = 'Creating plot',
                              detail = 'This may take a while...', value = 0, {
@@ -2682,17 +2720,17 @@ biOMICsServer <- function(input, output, session) {
                                                        geneNum = isolate({input$elmergetpairNumGenes}))
 
                              pair <- get.pair(mee=mee,
-                                                   probes=Sig.probes$probe,
-                                                   nearGenes=nearGenes,
-                                                   permu.dir=paste0(dir.out,"/permu"),
-                                                   dir.out=dir.out,
-                                                   cores=isolate({input$elmercores}),
-                                                   label= j,
-                                                   permu.size=isolate({input$elmergetpairpermu}),
-                                                   Pe = isolate({input$elmergetpairpvalue}),
-                                                   percentage =  isolate({input$elmergetpairpercentage}),
-                                                   portion = isolate({input$elmergetpairportion}),
-                                                   diffExp = isolate({input$elmergetpairdiffExp}))
+                                              probes=Sig.probes$probe,
+                                              nearGenes=nearGenes,
+                                              permu.dir=paste0(dir.out,"/permu"),
+                                              dir.out=dir.out,
+                                              cores=isolate({input$elmercores}),
+                                              label= j,
+                                              permu.size=isolate({input$elmergetpairpermu}),
+                                              Pe = isolate({input$elmergetpairpvalue}),
+                                              percentage =  isolate({input$elmergetpairpercentage}),
+                                              portion = isolate({input$elmergetpairportion}),
+                                              diffExp = isolate({input$elmergetpairdiffExp}))
 
                              Sig.probes.paired <- fetch.pair(pair=pair,
                                                              probeInfo = getProbeInfo(mee),

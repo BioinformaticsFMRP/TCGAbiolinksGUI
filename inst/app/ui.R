@@ -537,7 +537,8 @@ body <-  dashboardBody(
                                numericInput("volcanoycut", "P-value adj cut-off",
                                             min = 0, max = 1, value = 0.05, step = 0.001),
                                checkboxInput("volcanoNames", "Add names?", value = FALSE, width = NULL),
-                               checkboxInput("volcanoNamesFill", "Fill names?", value = TRUE, width = NULL)
+                               checkboxInput("volcanoNamesFill", "Fill names?", value = TRUE, width = NULL),
+                               checkboxInput("volcanoSave", "Save file with results?", value = FALSE, width = NULL)
                            ),
                            box(title = "Color control",width = NULL,
                                status = "danger",
