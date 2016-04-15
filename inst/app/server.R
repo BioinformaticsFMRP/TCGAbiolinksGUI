@@ -1813,7 +1813,7 @@ biOMICsServer <- function(input, output, session) {
 
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
-                             ansEA <- TCGAanalyze_EAcomplete(TFname="DEA genes Normal Vs Tumor", genes)
+                             ansEA <- TCGAanalyze_EAcomplete(TFname="DEA genes", genes)
 
                              ResMF <- NULL
                              ResBP <- NULL
@@ -2597,8 +2597,113 @@ biOMICsServer <- function(input, output, session) {
     shinyDirChoose(input, 'elmerFolder', roots=volumes, session=session, restrictions=system.file(package='base'))
     shinyFileChoose(input, 'elmermeefile', roots=volumes, session=session, restrictions=system.file(package='base'))
     shinyFileChoose(input, 'elmerresultsfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'elmermetfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'elmerexpfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+
+    # mee create
+    observe({
+        data.met <- mee.met()
+        updateSelectizeInput(session, 'elmermeetype', choices = {
+            if(!is.null(data.met)) as.character(colnames(colData(data.met)))
+        }, server = TRUE)
+    })
+    observeEvent(input$elmermeetype, {
+        data.met <- mee.met()
+        updateSelectizeInput(session, 'elmermeesubtype', choices = {
+            if(!is.null(data.met)) as.character(unique(colData(data.met)[,input$elmermeetype]))
+        }, server = TRUE)
+    })
+    observeEvent(input$elmermeetype, {
+        data.met <- mee.met()
+        updateSelectizeInput(session, 'elmermeesubtype2', choices = {
+            if(!is.null(data.met)) as.character(unique(colData(data.met)[,input$elmermeetype]))
+        }, server = TRUE)
+    })
+
+    mee.exp <-  reactive({
+        inFile <- input$elmerexpfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
+
+        withProgress(message = 'Loading data',
+                     detail = 'This may take a while...', value = 0, {
+                         exp <- get(load(file))
+                     })
+        return(exp)
+    })
+    mee.met <-  reactive({
+        inFile <- input$elmermetfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
+
+        withProgress(message = 'Loading data',
+                     detail = 'This may take a while...', value = 0, {
+                         met <- get(load(file))
+                     })
+        return(met)
+    })
 
 
+    observeEvent(input$elmerpreparemee, {
+        exp.elmer <- mee.exp()
+        met.elmer <- mee.met()
+        column <- isolate({input$elmermeetype})
+        subtype1 <-  isolate({input$elmermeesubtype})
+        subtype2 <-  isolate({input$elmermeesubtype2})
+
+        if(is.null(column)){
+            closeAlert(session, "elmerAlert")
+            createAlert(session, "elmermessage", "elmerAlert", title = "Type missing", style =  "danger",
+                        content =   "Please select the column with type", append = TRUE)
+            return(NULL)
+        }
+        if(is.null(subtype1) | is.null(subtype2)){
+            closeAlert(session, "elmerAlert")
+            createAlert(session, "elmermessage", "elmerAlert", title = "Subtype missing", style =  "danger",
+                        content =   "Please select the two subtypes", append = TRUE)
+            return(NULL)
+        }
+        if(is.null(exp.elmer) | is.null(met.elmer)){
+            closeAlert(session, "elmerAlert")
+            createAlert(session, "elmermessage", "elmerAlert", title = "Subtype missing", style =  "danger",
+                        content =   "Please upload the two summarized Experiment objects", append = TRUE)
+            return(NULL)
+        }
+
+
+        # Data: get only samples of subtype1 and subtype2
+        exp.elmer <- subset(exp.elmer, select=(colData(exp.elmer)[,column] %in% c(subtype1,subtype2)))
+        met.elmer <- subset(met.elmer, select=(colData(met.elmer)[,column] %in%  c(subtype1,subtype2)))
+
+        # Get barcodes for subtype1
+        sample.info <-  colData(exp.elmer)
+        samples <- sample.info[sample.info[,column] == isolate({input$elmermeesubtype1}),]$barcode
+        withProgress(message = 'Creating mee data',
+                     detail = 'This may take a while...', value = 0, {
+
+                         exp.elmer <- TCGAprepare_elmer(exp.elmer, platform = "IlluminaHiSeq_RNASeqV2",save = FALSE)
+                         incProgress(1/5, detail = paste0('Expression preparation is done'))
+
+                         met.elmer <- TCGAprepare_elmer(met.elmer, platform = "HumanMethylation450",met.na.cut = isolate({input$elmermetnacut}), save = FALSE)
+                         incProgress(1/5, detail = paste0('Methylation preparation is done'))
+
+                         geneAnnot <- txs()
+                         geneAnnot$GENEID <- paste0("ID",geneAnnot$GENEID)
+                         geneInfo <- promoters(geneAnnot,upstream = 0, downstream = 0)
+                         probe <- get.feature.probe()
+
+                         # create mee object, use @ to access the matrices inside the object
+                         mee <- fetch.mee(meth = met.elmer, exp = exp.elmer, TCGA = TRUE, probeInfo = probe, geneInfo = geneInfo)
+                         incProgress(1/5, detail = paste0('Mee is done'))
+
+                         # Relabel samples in the mee object: subtype1 is control
+                         mee@sample$TN[mee@sample$ID %in% substr(samples,1,15)] <- "Control"
+                         save(mee,file = paste0("mee_",column,"_",subtype1,"_",subtype2,".rda"))
+                         incProgress(2/5, detail = paste0('Saving is done'))
+                         createAlert(session, "elmermessage", "elmerAlert", title = "Subtype missing", style =  "danger",
+                                     content =   paste0("Mee file created: mee_",column,"_",subtype1,"_",subtype2,".rda"), append = TRUE)
+                     })
+    })
     # Input data
     elmer.results.data <-  reactive({
         inFile <- input$elmerresultsfile
