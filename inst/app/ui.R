@@ -538,7 +538,17 @@ body <-  dashboardBody(
                                             min = 0, max = 1, value = 0.05, step = 0.001),
                                checkboxInput("volcanoNames", "Add names?", value = FALSE, width = NULL),
                                checkboxInput("volcanoNamesFill", "Fill names?", value = TRUE, width = NULL),
-                               checkboxInput("volcanoSave", "Save file with results?", value = FALSE, width = NULL)
+                               checkboxInput("volcanoSave", "Save file with results?", value = FALSE, width = NULL),
+                               box(title = "Highligthing options",width = NULL,
+                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                                   colourInput("volcanoColHighlight", "Highlight color", value = "orange"),
+                                   selectizeInput('volcanoHighlight',
+                                                  "Highlight",
+                                                  choices = NULL,  multiple = TRUE),
+                                   selectizeInput('volcanoShowHighlitgh',
+                                                  "Points to highlight",
+                                                  choices = c("significant","both","highlighted"),  multiple = FALSE)
+                               )
                            ),
                            box(title = "Color control",width = NULL,
                                status = "danger",

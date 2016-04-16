@@ -1157,6 +1157,29 @@ biOMICsServer <- function(input, output, session) {
             updateNumericInput(session, "volcanoycut", value = pcut)
         }
     })
+
+    observe({
+        if(!is.null(input$volcanofile)){
+            file  <- basename(as.character(parseFilePaths(volumes, input$volcanofile)$datapath))
+            selected <- "met"
+            if(grepl("DEA",file))  selected <- "exp"
+            updateRadioButtons(session, "volcanoInputRb", selected = selected)
+        }
+    })
+
+    observe({
+        data <- volcanodata()
+        if(!is.null(data)) {
+            file  <- basename(as.character(parseFilePaths(volumes, input$volcanofile)$datapath))
+
+            if(grepl("DEA",file)){
+                updateSelectizeInput(session, 'volcanoHighlight', choices = as.character(na.omit(unique(data$Gene_Symbol))), server = TRUE)
+            } else {
+                updateSelectizeInput(session, 'volcanoHighlight', choices = as.character(na.omit(unique(data$probeID))), server = TRUE)
+            }
+        }
+    })
+
     observeEvent(input$volcanoPlotBt , {
         output$volcano.plot <- renderPlot({
 
@@ -1238,6 +1261,9 @@ biOMICsServer <- function(input, output, session) {
                                                        names.fill = names.fill,
                                                        x.cut = x.cut,
                                                        y.cut = y.cut,
+                                                       show.names = isolate({input$volcanoShowHighlitgh}),
+                                                       highlight=isolate({input$volcanoHighlight}),
+                                                       highlight.color = isolate({input$volcanoColHighlight}),
                                                        filename = NULL)
                              })
             } else {
@@ -1274,6 +1300,9 @@ biOMICsServer <- function(input, output, session) {
                                                        names = names,
                                                        x.cut = x.cut,
                                                        y.cut = y.cut,
+                                                       show.names = isolate({input$volcanoShowHighlitgh}),
+                                                       highlight=isolate({input$volcanoHighlight}),
+                                                       highlight.color = isolate({input$volcanoColHighlight}),
                                                        filename = NULL)
                              })
             }
