@@ -1158,6 +1158,7 @@ biOMICsServer <- function(input, output, session) {
         }
     })
 
+    # automatically change the type based in the input
     observe({
         if(!is.null(input$volcanofile)){
             file  <- basename(as.character(parseFilePaths(volumes, input$volcanofile)$datapath))
@@ -1166,7 +1167,15 @@ biOMICsServer <- function(input, output, session) {
             updateRadioButtons(session, "volcanoInputRb", selected = selected)
         }
     })
-
+    observe({
+        if(!is.null(input$volcanoHighlight)){
+            updateCheckboxInput(session, "volcanoNames",  value = TRUE)
+            updateCheckboxInput(session, "volcanoNamesFill",  value = TRUE)
+            updateSelectizeInput(session, 'volcanoShowHighlitgh', selected = "highlighted")
+        } else {
+            updateSelectizeInput(session, 'volcanoShowHighlitgh', selected = "significant")
+        }
+    })
     observe({
         data <- volcanodata()
         if(!is.null(data)) {

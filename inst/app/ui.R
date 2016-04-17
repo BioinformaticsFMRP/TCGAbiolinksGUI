@@ -521,7 +521,7 @@ body <-  dashboardBody(
                     column(2,
                            box(title = "Data",width = NULL,
                                status = "danger",
-                               solidHeader = FALSE, collapsible = FALSE, collapsed = TRUE,
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                shinyFilesButton('volcanofile', 'Select results (.csv)', 'Please select the csv file with the results',
                                                 multiple = FALSE)),
                            box(title = "Volcano options",width = NULL,
@@ -547,7 +547,7 @@ body <-  dashboardBody(
                                                   choices = NULL,  multiple = TRUE),
                                    selectizeInput('volcanoShowHighlitgh',
                                                   "Points to highlight",
-                                                  choices = c("significant","both","highlighted"),  multiple = FALSE)
+                                                  choices = c("highlighted","significant","both"),  multiple = FALSE)
                                )
                            ),
                            box(title = "Color control",width = NULL,
