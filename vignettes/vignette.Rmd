@@ -24,6 +24,18 @@ references:
   issued:
     year: 2015 
 
+- id: ref3
+  title: Orchestrating high-throughput genomic analysis with Bioconductor
+  author: 
+  - family: Huber, Wolfgang and Carey, Vincent J and Gentleman, Robert and Anders, Simon and Carlson, Marc and Carvalho, Benilton S and Bravo, Hector Corrada and Davis, Sean and Gatto, Laurent and Girke, Thomas and others
+    given:
+  journal: Nature methods
+  volume: 12
+  number: 2
+  pages: 115-121
+  issued:
+    year: 2015
+
 - id: ref2
   title: "TCGAbiolinks: An R/Bioconductor package for integrative analysis of TCGA data."
   author: 
@@ -45,6 +57,174 @@ references:
   issued:
     year: 2016
 
+- id: ref8
+  title: Molecular Profiling Reveals Biologically Discrete Subsets and Pathways of Progression in Diffuse Glioma
+  author: 
+  - family: Ceccarelli, Michele and Barthel, Floris P and Malta, Tathiane M and Sabedot, Thais S and Salama, Sofie R and Murray, Bradley A and Morozova, Olena and Newton, Yulia and Radenbaugh, Amie and Pagnotta, Stefano M and others
+    given:
+  journal: Cell
+  volume: 164
+  number: 3
+  pages: 550-563
+  issued:
+    year: 2016
+
+
+- id: ref9
+  title: Comprehensive molecular profiling of lung adenocarcinoma
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Nature
+  volume: 511
+  number: 7511
+  pages: 543-550
+  issued:
+    year: 2014
+
+
+- id: ref10
+  title: Comprehensive molecular characterization of gastric adenocarcinoma
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Nature
+  issued:
+    year: 2014
+
+- id: ref11
+  title: Comprehensive molecular portraits of human breast tumours
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Nature
+  volume: 490
+  number: 7418
+  pages: 61-70
+  issued:
+    year: 2012
+  
+- id: ref12
+  title: Comprehensive molecular characterization of human colon and rectal cancer
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Nature
+  volume: 487
+  number: 7407
+  pages: 330-337
+  issued:
+    year: 2012    
+
+- id: ref13
+  title: Genomic classification of cutaneous melanoma
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Cell
+  volume: 161
+  number: 7
+  pages: 1681-1696
+  issued:
+    year: 2015    
+
+- id: ref14
+  title: Comprehensive genomic characterization of head and neck squamous cell carcinomas
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Nature
+  volume: 517
+  number: 7536
+  pages: 576-582
+  issued:
+    year: 2015    
+
+- id: ref15
+  title: The somatic genomic landscape of chromophobe renal cell carcinoma
+  author: 
+  - family: Davis, Caleb F and Ricketts, Christopher J and Wang, Min and Yang, Lixing and Cherniack, Andrew D and Shen, Hui and Buhay, Christian and Kang, Hyojin and Kim, Sang Cheol and Fahey, Catherine C and others
+    given:
+  journal: Cancer Cell
+  volume: 26
+  number: 3
+  pages: 319-330
+  issued:
+    year: 2014    
+
+
+- id: ref16
+  title: Comprehensive genomic characterization of squamous cell lung cancers
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Nature
+  volume: 489
+  number: 7417
+  pages: 519-525
+  issued:
+    year: 2012   
+
+- id: ref17
+  title: Integrated genomic characterization of endometrial carcinoma
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Nature
+  volume: 497
+  number: 7447
+  pages: 67-73
+  issued:
+    year: 2013   
+
+- id: ref18
+  title: Integrated genomic characterization of papillary thyroid carcinoma
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Cell
+  volume: 159
+  number: 3
+  pages: 676-690
+  issued:
+    year: 2014   
+
+- id: ref19
+  title: The molecular taxonomy of primary prostate cancer
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Cell
+  volume: 163
+  number: 4
+  pages: 1011-1025
+  issued:
+    year: 2015   
+    
+
+- id: ref20
+  title: Comprehensive Molecular Characterization of Papillary Renal-Cell Carcinoma
+  author: 
+  - family: Linehan, W Marston and Spellman, Paul T and Ricketts, Christopher J and Creighton, Chad J and Fei, Suzanne S and Davis, Caleb and Wheeler, David A and Murray, Bradley A and Schmidt, Laura and Vocke, Cathy D and others
+    given:
+  journal: NEW ENGLAND JOURNAL OF MEDICINE
+  volume: 374
+  number: 2
+  pages: 135-145
+  issued:
+    year: 2016    
+    
+- id: ref21
+  title: Comprehensive molecular characterization of clear cell renal cell carcinoma
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Nature
+  volume: 499
+  number: 7456
+  pages: 43-49
+  issued:
+    year: 2013        
     
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -68,14 +248,29 @@ TCGA data. This package offers an graphical user interface to the R/biocondcutor
 Also, some other useful packages from bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/)  package [@ref1] has been used for data visualization.
 
 In order to present the package we divided this vignette based in the GUI menus that
-were created based on different group of analysis. The menus are:
+were created based on different group of analysis. The menus and sub-menus are:
 
 * TCGA Data
+    + TCGA search
+    + Data summary
 * Clinical analysis
+    + Profile plot
+    + Survival plot
 * Epigenetic analysis
+    + Differential methylation analysis
+    + Volcano plot
+    + Heatmap plot
+    + Mean DNA methylation plot
 * Transcriptomic analysis
+    + Differential expression analysis
+    + Volcano plot
+    + Heatmap plot
+    + Enrichement analysis
 * Genomic analysis
+    + Oncoprint Plot
 * Integrative analysis
+    + Starburst plot
+    + ELMER
 
 Ater theses menus we present a section in which we show how to execute exactly the same cases of studies showed in [TCGAbiolinks paper](http://doi.org/10.1093/nar/gkv1507) and [vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html) but using only the TCGAbiolinksGUI.
 
@@ -89,7 +284,185 @@ biocLite("TCGAbiolinksGUI")
 ```
 
 # Menu: TCGA Data
+
+## Sub-menu: TCGA Data
+
+In this sub-menu the user can search, download and prepare TCGA data.
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("tcgasearch.png")
+grid.raster(img)
+```
+
+### Advanced seach box
+
+Based on the following filters, it will show a table with results:
+
+* Tumor filer
+* PLatform filer
+* Level filer
+
+### Download box
+
+After the search, the user can download the data. The user can select the lines that will be downloaded, if no lines are 
+select, all lines will be downloaded.
+
+To filter the data that will be downloaded the following options are given:
+
+* No filter
+* Samples type filter: Select the types to download. By defaults download all types (Primart solid tumor, recurrent solid tumor, etc)
+* Samples barcode: Filters the samples based on a list of barcodes given by the user.
+
+For some platforms, there are filter for file types:
+
+* RNASeqV2: 
+    + junction_quantification
+    + rsem.genes.results
+    + rsem.isoforms.results
+    + rsem.genes.normalized_results
+    + rsem.isoforms.normalized_results
+    + bt.exon_quantification
+* RNASeq: 
+    + exon.quantification
+    + spljxn.quantification
+    + gene.quantification
+* genome_wide_snp_6: 
+    + hg18.seg
+    + hg19.seg
+    + nocnv_hg18.seg
+    + nocnv_hg19.seg
+* IlluminaHiSeq_miRNASeq: 
+    + hg19.mirbase20.mirna.quantification
+    + hg19.mirbase20.isoform.quantification
+    + mirna.quantification
+    + isoform.quantification
+
+### Prepare box
+
+This step used the information from Advanced search box and download box to prepare the data.
+
+The data can be prepared into:
+
+* [Summarized Experiment](http://www.nature.com/nmeth/journal/v12/n2/abs/nmeth.3252.html) 
+[@ref3]
+* Data Frame
+
+For the Summarized Experiment object information subytpe can be added if the checkbox is selected (see next subsection).
+
+### Subtype search box
+
+The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-wide 
+studies of various diseases. We have added some of the subtypes defined by these
+reports in our package. The BRCA [@ref11], COAD [@ref12], GBM [@ref8], HNSC [@ref14], KICH [@ref15], KIRC[@ref21], KIRP [@ref20], LGG [@ref8], LUAD [@ref9], 
+LUSC[@ref16], PRAD[@ref19], READ [@ref12],  SKCM [@ref13], STAD [@ref10], THCA [@ref18], UCEC [@ref17] tumors have data added. 
+
+The user can visualize the table with the information and save it as csv or rda file.
+
+### MAF search box
+In order to download the Mutation Annotation Format (MAF), it will get the tables from [TCGA MAF]
+(https://wiki.nci.nih.gov/display/TCGA/TCGA+MAF+Files), remove the obsolete/protected
+files. The user can select from the table which MAF file to download. The output will be a rda file.
+
+### Directory to save and prepare files
+
+Use this to select where the data should be downloaded and prepared in the computer.
+
+
+## Sub-menu: Data summary
+
+In this sub-menu the user can view a summary of the TCGA data.
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("dataSummary.png")
+grid.raster(img)
+```
+
+### Type of plot
+
+* Type of samples: Creates a barplot for each tumor vs platform showing the type of samples in each. This is useful, for example, to know if we have normal or recurrent samples.
+* Platform vs samples: Creates a  UpSet Plot for a tumor type. This will show how many samples do we have for each platform,
+and how many samples have data for different platforms. For example, in the figure before it shows that
+102 patients have samples only for Genome_Wide_SNP_6 platform (first vertical bar) while 45 patients have samples for all the five platforms (second vertical bar).
+
+### Parameters
+
+* Tumor: Tumor selection. For the plot "Type of samples" more than one can be selected, while for "Platform vs samples"
+only one can be selected.
+* Platforms: Platform selection. For the plot "Type of samples" more than one can be selected.
+* Level fiter: Level of data selection.Only one can be selected.
+* Sample type: Filter samples by types. Only used in "Platform vs samples" plot.
+
+### Colors control
+Change the color of the plot
+
+### Plot control
+Change the size of the plot
+
 # Menu: Clinical analysis
+
+## Sub-menu: Profile plot
+Sometimes we would like to see the distribution of some features in each cluster. 
+We could do a barplot for each cluster in which the bars would have the counts of the subtypes.
+
+But here, we propose another way to display the association between cancer subtypes and any kind of clustering is using the TCGAvisualize_profilePlot function.
+
+The profilePlot will have tree important regions, the distribuition in percentage of a feature inside the cluster (central bars), the distribution of the samples over the clusters (left bar), and the subytype distribution taking in cosideration all samples (bottom bar).
+
+For example in the plot below our groups are the DNA methylation cluster (Codel, Classic-like, G-CIMP-high, G-CIMP-low, mesenchymal-like,PA-like), the subgroup is the IDH status (Mutant or WT - wild Type). From the bottom bar
+we can easily see that the majority of samples are Mutant. From the left bar we can easily see that codel and 
+G-cimp-high are the bigger groups. And from the central plot we can see that mesenchymal-like, PA-like and classic-like 
+are all WT. As the distribution of this subgroup in not equal in the groups, this means that the division of the group
+has some relation with the subgroup informatio. So IDH status might be defining the group distribution.
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("profileplot.png")
+grid.raster(img)
+```
+
+### Data box
+A cvs or rda file with the subtype information.
+
+### Plot parameters
+
+* Group column: select the column that defines the groups
+* Subgroup column: select the column that defines the subpgroups
+* Remove NA groups: if any of the groups is NA it will be removed
+* Remove NA subgroups: if any of the subgroups is NA it will be removed
+
+### Plot control
+
+Change the size of the plot and the margins that will control the position of the left bar if not very well aligned.
+
+## Sub-menu: Survival plot
+From the clinical data download in the TCGA data menu, the user can use it to verify the survival of groups.
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("survival.png")
+grid.raster(img)
+```
+
+### Data box
+A cvs or rda file with the clinical information.
+
+### Parameters box
+
+* Group column: Select the column that identifies the group of each sample.
+* Legend text: Text of the legend.
+* Title: Title text.
+* x-axis limit: Limits the x-axis, if 0 no cut-off is considered.
+* Add p-value: Add p-value to the plot.
+
+### Plot control
+Change the size of the plot
+
 # Menu: Epigenetic analysis
 ## Sub-menu: Volcano plot
 

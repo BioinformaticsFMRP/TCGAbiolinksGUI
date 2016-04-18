@@ -738,16 +738,19 @@ biOMICsServer <- function(input, output, session) {
         if(isolate({input$summaryInputRb}) == "platsample"){
             shinyjs::hide("tcgaSummaryExpFilter")
             shinyjs::show("tcgaSummarySamplestypeFilter")
+            shinyjs::show("summarySetsBarColor")
             shinyjs::hide("summaryAddBarCount")
 
         } else {
             shinyjs::show("tcgaSummaryExpFilter")
             shinyjs::hide("tcgaSummarySamplestypeFilter")
             shinyjs::show("summaryAddBarCount")
+            shinyjs::hide("summarySetsBarColor")
         }
     })
 
     #-------------------------END controlling show/hide states -----------------
+
     observeEvent(input$tcgaSummaryBt , {
         output$summary.plot <- renderPlot({
 
