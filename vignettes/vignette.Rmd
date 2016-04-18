@@ -203,10 +203,15 @@ grid.raster(img)
 ELMER works with a mee object, that has matched DNA methylation and gene expression data and
 divides the samples into two groups experiment and control.
 
-* Group column: Select the columns with the groups
+* Select DNA methylation object: select a summarized Experiment object with the DNA methylation data
+* Select expression object: select a summarized Experiment object with the gene expression data
+* Group column: Select the columns with the groups. This column will be selected from the Summarized Experiment object.
 * Experiment group: Select the columns with the subgroup 1 (experiment)
 * Control group: Select the columns with the subgroup 2 (control)
 
+* DNA methylation: Cut-off NA samples (%): By default, for the DNA methylation data 
+will remove probes with NA values in more than 20% samples and remove the 
+anottation data.
 
 ### Data box
 
