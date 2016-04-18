@@ -1,6 +1,6 @@
 ---
 title: "TCGAbiolinks GUI"
-author: " Tiago Chedraoui Silva"
+author: " Tiago Chedraoui Silva, Houtan Noushmehr"
 date: "`r Sys.Date()`"
 output:
   BiocStyle::html_document:
@@ -16,12 +16,36 @@ references:
   - family: Yao, L., Shen, H., Laird, P. W., Farnham, P. J., & Berman, B. P. 
     given:
   journal: Genome biology
+  DOI: "10.1186/s13059-015-0668-3"
+  URL: "http://doi.org/10.1186/s13059-015-0668-3"
   volume: 16
   number: 1
   pages: 105
   issued:
     year: 2015 
 
+- id: ref2
+  title: "TCGAbiolinks: An R/Bioconductor package for integrative analysis of TCGA data."
+  author: 
+  - family: Colaprico A, Silva TC, Olsen C, Garofano L, Cava C, Garolini D, Sabedot T, Malta TM, Pagnotta SM, Castiglioni I, Ceccarelli M, Bontempi G and Noushmehr H.
+    given:
+  journal: Nucleic Acids Research
+  URL: "http://doi.org/10.1093/nar/gkv1507"
+  DOI: "10.1093/nar/gkv1507"
+  issued:
+    year: 2015 
+    
+- id: ref1
+  title: "ComplexHeatmap: Making Complex Heatmaps"
+  author: 
+  - family: Zuguang Gu
+    given:
+  note: "R package version 1.9.3"
+  url: "https://github.com/jokergoo/ComplexHeatmap"
+  issued:
+    year: 2016
+
+    
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -38,6 +62,22 @@ devtools::load_all(".")
 ```
 
 # Introduction
+
+TCGAbiolinksGUI was created to help users without knowledge of programming to search, download and analyse 
+TCGA data. This package offers an graphical user interface to the R/biocondcutor packages [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/) [@ref2] and [ELMER]( 	http://bioconductor.org/packages/ELMER/) packages [@ref4].
+Also, some other useful packages from bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/)  package [@ref1] has been used for data visualization.
+
+In order to present the package we divided this vignette based in the GUI menus that
+were created based on different group of analysis. The menus are:
+
+* TCGA Data
+* Clinical analysis
+* Epigenetic analysis
+* Transcriptomic analysis
+* Genomic analysis
+* Integrative analysis
+
+Ater theses menus we present a section in which we show how to execute exactly the same cases of studies showed in [TCGAbiolinks paper](http://doi.org/10.1093/nar/gkv1507) and [vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html) but using only the TCGAbiolinksGUI.
 
 ## Installation
 
@@ -230,7 +270,8 @@ are selected. Please, see ELMER vignette.
 Select which ELMER results in a table.  It needs that the results to be selected.
 
 
-### Session info
+# Session info
 ```{r, eval = TRUE}
 sessionInfo()
 ```
+# References
