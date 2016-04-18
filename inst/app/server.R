@@ -1607,7 +1607,7 @@ biOMICsServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         df <- read.csv2(file,header = T)
+                         df <- read.csv2(file,header = TRUE, stringsAsFactors = FALSE)
                      })
         return(df)
     })
@@ -1642,10 +1642,9 @@ biOMICsServer <- function(input, output, session) {
             file  <- basename(as.character(parseFilePaths(volumes, input$heatmapresultsfile)$datapath))
             if(length(file) > 0){
                 file <- unlist(str_split(file,"_"))
-                group1 <- file[4]
-                group2 <- file[5]
+                group1 <- file[5]
+                group2 <- file[6]
             }
-
             data <- isolate({heatmapdata()})
             results.data <- isolate({heatmapresultdata()})
 
@@ -2278,14 +2277,27 @@ biOMICsServer <- function(input, output, session) {
 
     #----------------------------------------------
     #                 DEA Pathview
+    pathway.data <- function(){
+        inFile <- input$pathewayexpfile
+        if (is.null(inFile)) return(NULL)
+        file  <- as.character(parseFilePaths(volumes, input$pathewayexpfile)$datapath)
+        if(tools::file_ext(file)=="csv"){
+            se <- read.csv2(file,header = TRUE, stringsAsFactors = FALSE)
+        } else if(tools::file_ext(file)=="rda"){
+            se <- get(load(file))
+        }
+
+        return(se)
+    }
+    shinyFileChoose(input, 'pathewayexpfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+
     observeEvent(input$pathwaygraphBt , {
 
+        data <- pathway.data()
         pathway.id <- isolate({input$pathway.id})
         kegg.native <- isolate({input$kegg.native.checkbt})
-        g1 <- isolate({input$deagroup1})
-        g2 <- isolate({input$deagroup2})
-        data <- get(load( paste0("result_dea_", g1, "_", g2,".rda")))
 
+        print(head(data))
         gene <- strsplit(data$mRNA,"\\|")
         data$SYMBOL <- unlist(lapply(gene,function(x) x[1]))
 
@@ -2318,7 +2330,7 @@ biOMICsServer <- function(input, output, session) {
             extension <- ".pathview.pdf"
         }
 
-        createAlert(session, "deamessage", "deaAlert", title = "Pathway graph created", style =  "active",
+        createAlert(session, "deamessage", "deaAlert", title = "Pathway graph created", style =  "success",
                     content = paste0("Results saved in: ", pathway.id,extension), append = FALSE)
 
     })
