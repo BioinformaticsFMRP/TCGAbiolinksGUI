@@ -1041,9 +1041,12 @@ biOMICsServer <- function(input, output, session) {
                 annotation <- NULL
             } else if("bcr_patient_barcode" %in% colnames(annotation)) {
                 annotation <- annotation[,c("bcr_patient_barcode",cols)]
+            } else if("patient" %in% colnames(annotation)) {
+                annotation <- annotation[,c("patient",cols)]
+                colnames(annotation)[which(colnames(annotation) == "patient")] <- "bcr_patient_barcode"
             } else {
                 createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
-                            content = "I couldn't find the bcr_patient_barcode column in the annotation", append = TRUE)
+                            content = "I couldn't find the bcr_patient_barcode or patient column in the annotation", append = TRUE)
                 return(NULL)
             }
 

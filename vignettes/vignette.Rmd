@@ -563,6 +563,46 @@ Change the size of the plot and the number of bars to plot
 
 # Menu: Genomic analysis
 
+## Sub-menu: Oncoprint
+
+Using oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package,
+this sub-menu offer a way to visualize multiple genomic alteration.
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("oncoprint.png")
+grid.raster(img)
+```
+
+### Oncoprint data box
+
+* Select MAF file: Select a MAF file (.rda) with mutatation annotation information
+* Select annotation file: Select a rda rda with the metadata information. Columns "patient" or "bcr_patient_barcode"
+should exist.
+* Annotation columns: Which columns of the annotation file should be showed?
+* Annotation position: where the annotation should be added? Top or bottom.
+
+
+### Gene selection
+
+* Selection: The user can select by hand multiple genes from a list
+* Text: the user can write a list of genes separeted by ";" , "," or a new line
+* File: select a file (rda, csv, txt) with a column Gene_symbol or mRNA
+
+### Colors control
+Change the color of the plot
+
+### Plot control
+Change the size of the plot
+
+### Oncoprint options
+
+* Remove empty columns? If a samples has no mutation it will be removed from the plot 
+* Show column names? Show patient barcodes
+* Show barplot annotation on rows? Show right barplot?
+
+
 # Menu: Integrative analysis
 
 ## Sub-menu: Starburst plot
