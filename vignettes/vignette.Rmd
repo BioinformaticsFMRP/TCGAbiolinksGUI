@@ -9,6 +9,19 @@ output:
     toc_depth: 2
     highlight: haddock
 
+references:
+- id: ref4
+  title: Inferring regulatory element landscapes and transcription factor networks from cancer methylomes
+  author: 
+  - family: Yao, L., Shen, H., Laird, P. W., Farnham, P. J., & Berman, B. P. 
+    given:
+  journal: Genome biology
+  volume: 16
+  number: 1
+  pages: 105
+  issued:
+    year: 2015 
+
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -35,12 +48,182 @@ source("https://bioconductor.org/biocLite.R")
 biocLite("TCGAbiolinksGUI")
 ```
 
-# Tab: TCGA Data
-# Tab: Clinical analysis
-# Tab: Epigenetic analysis
-# Tab: Transcriptomic analysis
-# Tab: Genomic analysis
-# Tab: Integrative analysis
+# Menu: TCGA Data
+# Menu: Clinical analysis
+# Menu: Epigenetic analysis
+## Sub-menu: Volcano plot
+
+In this sub-menu the user will be able to plot the results from Differentially methylated regions (DMR) 
+analysis and differential expression analysis (DEA). 
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("volcano.png")
+grid.raster(img)
+```
+
+### Data box
+Expected input a csv file with the following pattern:
+
+* For expression: DEA_results_Group_subgruop1_subgroup2_pcut_0.01_logFC.cut_2.csv
+* For DNA methylation: DMR_results_Group_subgruop1_subgroup2_pcut_1e-30_meancut_0.55.csv
+
+### Volcano box
+This box will control the x-axis thresholds "Log FC threshold" for expression and "DNA methylation threshold" for DNA methylation and the y-axis thresholds "P-value adj cut-off".
+
+Checkbox option:
+
+* Show names: Show the names of up/down regulated genes or hypo/hyper methylated probes 
+* Boxed names: put names inside a box.
+* Save file with results: Create a file with the same pattern as the one in the input, but with the 
+new thersholds.
+
+There is a possibility to highlight some specific genes/probes using the "Highlightining option" suboptions.
+
+The option "points to highlight" has the possibilities:
+
+* highlighted - show the names for only the highlighted genes/probes list
+* sinigifcant - show the names for only the up/down regulated genes or hypo/hyper methylated probes 
+* both - show both gtoups
+
+### Color control
+Change the color of the plot
+
+### Plot control
+Change the size of the plot
+
+## Sub-menu: Mean DNA methylation plot
+
+In this sub-menu the user will be able to plot the mean DNA methylation by groups.
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("meanmet.png")
+grid.raster(img)
+```
+
+### DNA methylation object box
+Expected input a rda file with a summarized Experiment object.
+
+### Mean DNA methylation box
+
+* Groups column: Select the column that will split the data into groups. 
+This column is selected from the  sample matrix (accessed with colData)
+
+* Subgroups column: Select the column that will highlight the different subgroups data in the groups. 
+* Plot jitters: Show jitters
+* Sort method: Methods to sort the groups in the plot
+* x-axis label angle: Change angle of the text in the x-axis
+
+### Plot control
+Change the size of the plot
+
+
+# Menu: Transcriptomic analysis
+In this sub-menu the user will be able to perform an enrichemnt analysis and see
+the biological process, cellular component, molecular function and pathways in which the genes 
+select have a role.
+
+## Sub-menu: Enrichment analysis
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("ea.png")
+grid.raster(img)
+```
+
+### EA analysis
+Input a list of genes by:
+
+* Selection: The user can select by hand multiple genes from a list
+* Text: the user can write a list of genes separeted by ";" , "," or a new line
+* File: select a file (rda, csv, txt) with a column Gene_symbol or mRNA
+
+### Colors control
+Change the color of the plot
+
+### Plot control
+Change the size of the plot and the number of bars to plot
+
+# Menu: Genomic analysis
+
+# Menu: Integrative analysis
+
+## Sub-menu: Starburst plot
+
+### Data box
+Expected input a csv file with the following pattern:
+
+* DEA result: DEA_results_Group_subgruop1_subgroup2_pcut_0.01_logFC.cut_2.csv
+* DMR result: DMR_results_Group_subgruop1_subgroup2_pcut_1e-30_meancut_0.55.csv
+
+### Starburst analysis
+
+The possible thresholds controls are:
+
+* Log FC threshold: gene expression Log2FC threshold
+* Expression FDR cut-off: gene expression  FDR cut-off (y-axis)
+* Mean DNA methylation difference threshold: Mean DNA methylation difference threshold
+* Methylation FDR cut-off: DNA methylation FDR cut-off (x-axis)
+
+
+The options  Mean DNA methylation difference threshold and Log FC threshold
+are used to circle relevant genes (genes that respect these thresholds)
+
+The possible highlight controls are:
+
+* Show genes names: show names of significant genes
+* Boxed names: show names inside a box
+* Circle gnees: Circle candidate biologically significant genes
+
+Other option
+* Save result: save results in a csv file
+
+### Colors control
+Change the color of the plot
+
+### Plot control
+Change the size of the plot
+
+## Sub-menu: ELMER
+This sub-menu will help the user to perform the analysis from R/bioconductor ELMER package [@ref4].
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("elmer.png")
+grid.raster(img)
+```
+
+### Create mee box
+
+ELMER works with a mee object, that has matched DNA methylation and gene expression data and
+divides the samples into two groups experiment and control.
+
+* Group column: Select the columns with the groups
+* Experiment group: Select the columns with the subgroup 1 (experiment)
+* Control group: Select the columns with the subgroup 2 (control)
+
+
+### Data box
+
+* Select mee: select an rda file with a mee object
+* Select results: select an rda file with the results from ELMER analysis.
+
+### Analysis
+
+This box has all the option for elmer functions. Please, see ELMER vignette. 
+
+### Plot
+Select ELMER plot. To have access to all plot it needs that the results and mee object
+are selected. Please, see ELMER vignette. 
+
+### Results table
+Select which ELMER results in a table.  It needs that the results to be selected.
+
 
 ### Session info
 ```{r, eval = TRUE}
