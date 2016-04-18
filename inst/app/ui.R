@@ -710,8 +710,7 @@ body <-  dashboardBody(
                 fluidRow(
                     column(10,  bsAlert("dmrmessage"),
                            bsCollapse(id = "collapseDmr", open = "DMR plots",
-                                      bsCollapsePanel("Probes info", dataTableOutput('probesSE'), style = "default"),
-                                      bsCollapsePanel("DMR plots", uiOutput("dmrPlot"), style = "default"))),
+                                      bsCollapsePanel("Probes info", dataTableOutput('probesSE'), style = "default"))),
                     column(2,
                            box(title = "DNA methylation object",width = NULL,
                                status = "danger",

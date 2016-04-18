@@ -464,6 +464,36 @@ A cvs or rda file with the clinical information.
 Change the size of the plot
 
 # Menu: Epigenetic analysis
+
+## Sub-menu: Differential methylation analysis
+
+The user will be able to perform a Differential methylation Regions (DMR) analysis.
+The output will be a file with the folowing pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv
+Also, the summarized Experiment will be saved with all the results inside it, the new object will be saved with _result suffix.
+
+Obs: Depending on the number of samples and the number of probes, this analysis can go from minutes to days.
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("dmr.png")
+grid.raster(img)
+```
+
+### DNA methylation object box
+
+Select a summarized Experiment object (rda)
+
+### DNA analysis box
+
+* Cores: Selects the number of cores to be used in the analysis
+* DNA methylation threshold: minimun difference of DNA methylation levels to be considered as hyper/hypomethylated
+* P-value adj cut-off: minimun adjusted P-value to be considered as siginificant.
+* Group column: columns with the groups to be used in the analysis
+* Groups: Select at least two groups to the analyis. For example if it has three groups (g1,g2 and g3) the analysis will
+output g1 vs g2, g1 vs g3 and g2 vs g3.
+
+
 ## Sub-menu: Volcano plot
 
 In this sub-menu the user will be able to plot the results from Differentially methylated regions (DMR) 
