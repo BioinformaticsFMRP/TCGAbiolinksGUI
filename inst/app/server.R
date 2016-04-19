@@ -1359,7 +1359,9 @@ biOMICsServer <- function(input, output, session) {
                                                    p.cut = isolate({input$dmrpvalue}),
                                                    diffmean.cut = isolate({input$dmrthrsld}),
                                                    cores = isolate({input$dmrcores}))
-                             message <- paste0(message,"<li>DMR_results_", isolate({input$dmrgroupCol}), "_", group1, "_", group2, "_",
+                             message <- paste0(message,"<li>DMR_results_",
+                                               gsub("_",".",isolate({input$dmrgroupCol})),
+                                               "_", gsub("_",".",group1), "_", gsub("_",".",group2), "_",
                                                "pcut_",isolate({input$dmrpvalue}), "_",
                                                "meancut_",isolate({input$dmrthrsld}),".csv</li>")
                          }
@@ -2205,7 +2207,9 @@ biOMICsServer <- function(input, output, session) {
                          exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g2)
                      })
 
-        out.filename <- paste0(paste("DEA_results",groupCol, g1, g2,"pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
+        out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),
+                                     gsub("_",".",g1), gsub("_",".",g2),
+                                     "pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
         write.csv2(exp, file = out.filename)
         createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "danger",
                     content = out.filename, append = FALSE)
