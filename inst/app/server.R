@@ -1644,8 +1644,8 @@ biOMICsServer <- function(input, output, session) {
             file  <- basename(as.character(parseFilePaths(volumes, input$heatmapresultsfile)$datapath))
             if(length(file) > 0){
                 file <- unlist(str_split(file,"_"))
-                group1 <- file[5]
-                group2 <- file[6]
+                group1 <- file[4]
+                group2 <- file[5]
             }
             data <- isolate({heatmapdata()})
             results.data <- isolate({heatmapresultdata()})
@@ -1671,6 +1671,7 @@ biOMICsServer <- function(input, output, session) {
             if( isolate({input$heatmapTypeInputRb})=="met"){
                 # ---------------- probes selection
                 if(isolate({input$heatmapProbesInputRb}) == "Status"){
+                    sig.probes <- ""
                     if(isolate({input$heatmap.hypoprobesCb})) sig.probes <- c("Hypomethylated")
                     if(isolate({input$heatmap.hyperprobesCb})) sig.probes <- c("Hypermethylated",sig.probes)
                     sig.probes <- paste(sig.probes,"in",group2)
