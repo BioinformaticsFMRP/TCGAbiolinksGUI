@@ -1427,7 +1427,7 @@ biOMICsServer <- function(input, output, session) {
     })
 
     observe({
-        if((input$heatmapSortCol)){
+        if((input$heatmap.sortCb)){
             updateCheckboxInput(session, "heatmap.clustercol",  value = FALSE)
         }
     })
