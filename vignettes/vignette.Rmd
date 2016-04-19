@@ -1,8 +1,19 @@
 ---
 title: "TCGAbiolinks GUI"
-author: " Tiago Chedraoui Silva, Houtan Noushmehr"
-date: "`r Sys.Date()`"
+author: "Tiago Chedraoui Silva, Houtan Noushmehr"
+date: "`r doc_date()`"
+vignette: >
+  %\VignetteIndexEntry{TCGAbiolinksGUI User's Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+
 output:
+  BiocStyle::pdf_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: 2
+    highlight: haddock
+    latex_engine: lualatex
   BiocStyle::html_document:
     toc: true
     number_sections: false
@@ -241,21 +252,18 @@ references:
   issued:
     year: 2013        
     
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi = 300)
-knitr::opts_chunk$set(cache=FALSE)
+knitr::opts_chunk$set(dpi = 600)
+knitr::opts_chunk$set(cache=TRUE)
 ```
 
 ```{r, echo = FALSE,hide=TRUE, message=FALSE,warning=FALSE}
 devtools::load_all(".")
 ```
 
+\newpage
 # Introduction
 
 TCGAbiolinksGUI was created to help users without knowledge of programming to search, download and analyse 
@@ -298,6 +306,7 @@ source("https://bioconductor.org/biocLite.R")
 biocLite("TCGAbiolinksGUI")
 ```
 
+\newpage
 # Menu: TCGA Data
 
 ## Sub-menu: TCGA Data
@@ -416,6 +425,7 @@ Change the color of the plot
 ### Plot control
 Change the size of the plot
 
+\newpage
 # Menu: Clinical analysis
 
 ## Sub-menu: Profile plot
@@ -477,6 +487,7 @@ A cvs or rda file with the clinical information.
 ### Plot control
 Change the size of the plot
 
+\newpage
 # Menu: Epigenetic analysis
 
 ## Sub-menu: Differential methylation analysis
@@ -577,7 +588,7 @@ This column is selected from the  sample matrix (accessed with colData)
 ### Plot control
 Change the size of the plot
 
-
+\newpage
 # Menu: Transcriptomic analysis
 In this sub-menu the user will be able to perform an enrichemnt analysis and see
 the biological process, cellular component, molecular function and pathways in which the genes 
@@ -640,7 +651,7 @@ grid.raster(img)
 
 * Columns annotation: using the data in the summarized experiment the user can annotate the heatmap.
 * Sort by column: The order of the columns can be sorted by one of the selected columns
-* Row annotation: Add annotatio nto rows
+* Row annotation: Add annotation to rows
 
 
 ### Other options
@@ -680,6 +691,7 @@ Change the color of the plot
 ### Plot control
 Change the size of the plot and the number of bars to plot
 
+\newpage
 # Menu: Genomic analysis
 
 ## Sub-menu: Oncoprint
@@ -721,10 +733,17 @@ Change the size of the plot
 * Show column names? Show patient barcodes
 * Show barplot annotation on rows? Show right barplot?
 
-
+\newpage
 # Menu: Integrative analysis
 
 ## Sub-menu: Starburst plot
+
+```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
+library(png)
+library(grid)
+img <- readPNG("starburst.png")
+grid.raster(img)
+```
 
 ### Data box
 Expected input a csv file with the following pattern:
@@ -801,9 +820,11 @@ are selected. Please, see ELMER vignette.
 ### Results table
 Select which ELMER results in a table.  It needs that the results to be selected.
 
-
+\newpage
 # Session info
-```{r, eval = TRUE}
-sessionInfo()
+
+```{r sessionInfo, results='asis', echo=FALSE}
+toLatex(sessionInfo())
 ```
+\newpage
 # References
