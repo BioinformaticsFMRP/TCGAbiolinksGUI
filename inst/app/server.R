@@ -1427,6 +1427,12 @@ biOMICsServer <- function(input, output, session) {
     })
 
     observe({
+        if((input$heatmapSortCol)){
+            updateCheckboxInput(session, "heatmap.clustercol",  value = FALSE)
+        }
+    })
+
+    observe({
         updateSelectizeInput(session, 'heatmapSortCol', choices = {
             if (class(heatmapdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
                 if (!is.null(heatmapdata()) & !is.null(input$colmetadataheatmap))
@@ -1664,7 +1670,7 @@ biOMICsServer <- function(input, output, session) {
 
             if(nchar(sortCol) ==0 &  isolate({input$heatmap.sortCb})){
                 createAlert(session, "heatmapmessage", "heatmapAlert", title = "Columns metadata", style =  "danger",
-                            content = paste0("Please select the heatmapSortCol",append = FALSE))
+                            content = paste0("Please select the heatmapSortCol"),append = FALSE)
                 return(NULL)
             }
 
