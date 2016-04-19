@@ -13,7 +13,6 @@ output:
     number_sections: yes
     toc_depth: 2
     highlight: haddock
-    latex_engine: lualatex
   BiocStyle::html_document:
     toc: true
     number_sections: false
@@ -309,16 +308,11 @@ biocLite("TCGAbiolinksGUI")
 \newpage
 # Menu: TCGA Data
 
-## Sub-menu: TCGA Data
+## Sub-menu: TCGA search
 
 In this sub-menu the user can search, download and prepare TCGA data.
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("tcgasearch.png")
-grid.raster(img)
-```
+![TCGA search menu: Main window.](tcgasearch.png)
 
 ### Advanced seach box
 
@@ -397,12 +391,9 @@ Use this to select where the data should be downloaded and prepared in the compu
 
 In this sub-menu the user can view a summary of the TCGA data.
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("dataSummary.png")
-grid.raster(img)
-```
+
+![Data summary: Main window.](dataSummary.png)
+
 
 ### Type of plot
 
@@ -442,12 +433,7 @@ G-cimp-high are the bigger groups. And from the central plot we can see that mes
 are all WT. As the distribution of this subgroup in not equal in the groups, this means that the division of the group
 has some relation with the subgroup informatio. So IDH status might be defining the group distribution.
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("profileplot.png")
-grid.raster(img)
-```
+![Profile plot menu: Main window.](profileplot.png)
 
 ### Data box
 A cvs or rda file with the subtype information.
@@ -466,12 +452,7 @@ Change the size of the plot and the margins that will control the position of th
 ## Sub-menu: Survival plot
 From the clinical data download in the TCGA data menu, the user can use it to verify the survival of groups.
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("survival.png")
-grid.raster(img)
-```
+![Survival plot menu: Main window.](survival.png)
 
 ### Data box
 A cvs or rda file with the clinical information.
@@ -498,12 +479,7 @@ Also, the summarized Experiment will be saved with all the results inside it, th
 
 Obs: Depending on the number of samples and the number of probes, this analysis can go from minutes to days.
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("dmr.png")
-grid.raster(img)
-```
+![Differential methylation analysis menu: Main window.](dmr.png)
 
 ### DNA methylation object box
 
@@ -524,12 +500,7 @@ output g1 vs g2, g1 vs g3 and g2 vs g3.
 In this sub-menu the user will be able to plot the results from Differentially methylated regions (DMR) 
 analysis and differential expression analysis (DEA). 
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("volcano.png")
-grid.raster(img)
-```
+![Volcano plot menu: Main window.](volcano.png)
 
 ### Data box
 Expected input a csv file with the following pattern:
@@ -565,12 +536,7 @@ Change the size of the plot
 
 In this sub-menu the user will be able to plot the mean DNA methylation by groups.
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("meanmet.png")
-grid.raster(img)
-```
+![Mean DNA methylation plot menu: Main window.](meanmet.png)
 
 ### DNA methylation object box
 Expected input a rda file with a summarized Experiment object.
@@ -625,22 +591,12 @@ Select a summarized Experiment object (rda)
 * DEA result: Select csv file create by the analysis.
 * Pathway ID: plot results in a pathway graphs. See bioconductor [pathview](http://bioconductor.org/packages/pathview/) [@ref5] package.
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("pathview.png")
-grid.raster(img)
-```
+![Pathway graphs output.](pathview.png)
 
 
 ## Sub-menu: Heatmap plot
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("heatmap.png")
-grid.raster(img)
-```
+![Heatmap plot menu: Main window.](heatmap.png)
 
 ### Lines selection
 
@@ -671,12 +627,8 @@ Researchers, in order to better understand the underlying biological processes, 
 
 Given a set of genes that are up-regulated under certain conditions, an enrichment analysis will identify classes of genes or proteins that are over-represented using annotations for that gene set.
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("ea.png")
-grid.raster(img)
-```
+![Enrichment analysis  menu: Main window.](ea.png)
+
 
 ### EA analysis
 Input a list of genes by:
@@ -699,12 +651,8 @@ Change the size of the plot and the number of bars to plot
 Using oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package,
 this sub-menu offer a way to visualize multiple genomic alteration.
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("oncoprint.png")
-grid.raster(img)
-```
+![Oncorpint plot menu: Main window.](oncoprint.png)
+
 
 ### Oncoprint data box
 
@@ -738,12 +686,7 @@ Change the size of the plot
 
 ## Sub-menu: Starburst plot
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("starburst.png")
-grid.raster(img)
-```
+![Starburst plot menu: Main window.](starburst.png)
 
 ### Data box
 Expected input a csv file with the following pattern:
@@ -782,12 +725,7 @@ Change the size of the plot
 ## Sub-menu: ELMER
 This sub-menu will help the user to perform the analysis from R/bioconductor ELMER package [@ref4].
 
-```{r, fig.width=6, fig.height=4, echo = FALSE, fig.align="center",hide=TRUE, message=FALSE,warning=FALSE}
-library(png)
-library(grid)
-img <- readPNG("elmer.png")
-grid.raster(img)
-```
+![ELMER menu: Main window.](elmer.png)
 
 ### Create mee box
 
