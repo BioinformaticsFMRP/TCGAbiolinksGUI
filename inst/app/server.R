@@ -2735,7 +2735,7 @@ biOMICsServer <- function(input, output, session) {
 
         # Get barcodes for subtype1
         sample.info <-  colData(exp.elmer)
-        samples <- sample.info[sample.info[,column] == isolate({input$elmermeesubtype1}),]$barcode
+        samples <- sample.info[sample.info[,column] == isolate({input$elmermeesubtype2}),]$barcode
         withProgress(message = 'Creating mee data',
                      detail = 'This may take a while...', value = 0, {
 
@@ -2758,7 +2758,7 @@ biOMICsServer <- function(input, output, session) {
                          mee@sample$TN[mee@sample$ID %in% substr(samples,1,15)] <- "Control"
                          save(mee,file = paste0("mee_",column,"_",subtype1,"_",subtype2,".rda"))
                          incProgress(2/5, detail = paste0('Saving is done'))
-                         createAlert(session, "elmermessage", "elmerAlert", title = "Subtype missing", style =  "danger",
+                         createAlert(session, "elmermessage", "elmerAlert", title = "Mee created", style =  "success",
                                      content =   paste0("Mee file created: mee_",column,"_",subtype1,"_",subtype2,".rda"), append = TRUE)
                      })
     })
