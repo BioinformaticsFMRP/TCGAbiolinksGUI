@@ -40,8 +40,11 @@ inputTextarea <- function(inputId, value="", nrows, ncols) {
 
 
 header <- dashboardHeader(
-    title = "TCGAbiolinks"
+    title = "TCGAbiolinks",
+    titleWidth = 300
 )
+header$children[[2]]$children <-  tags$a(href='http://mycompanyishere.com',
+                                           tags$img(src='logo_red.png',height='30',width='250'))
 
 sidebar <-  dashboardSidebar(
     width = 250,

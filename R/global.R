@@ -13,6 +13,21 @@ biOmicsApp <- function() {
     shiny::runApp(system.file("app", package = "biOmics"),launch.browser=TRUE)
 }
 
+
+#' @title TCGAbiolinks GUI
+#' @description Calls UI interface
+#' @examples
+#'    TCGAbiolinksGUI()
+#' @name biOmicsApp
+#' @import shiny shinyFiles shinydashboard SummarizedExperiment
+#' TCGAbiolinks UpSetR ggplot2 shinyBS stringr ggrepel pathview ELMER grid
+#' @export
+#' @return Open a connection to shiny
+TCGAbiolinksGUI <- function() {
+    shiny::runApp(system.file("app", package = "biOmics"),launch.browser=TRUE)
+}
+
+
 is.windows <- function() {
     Sys.info()["sysname"] == "Windows"
 }
