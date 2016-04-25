@@ -296,7 +296,8 @@ were created based on different group of analysis. The menus and sub-menus are:
 
 Ater theses menus we present a section in which we show how to execute exactly the same cases of studies showed in [TCGAbiolinks paper](http://doi.org/10.1093/nar/gkv1507) and [vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html) but using only the TCGAbiolinksGUI.
 
-## Installation
+\newpage
+## Installation TCGAbiolinksGUI
 
 To install the package from biocondcutor repository, please, use the code below.
 
@@ -304,6 +305,40 @@ To install the package from biocondcutor repository, please, use the code below.
 source("https://bioconductor.org/biocLite.R")
 biocLite("TCGAbiolinksGUI")
 ```
+
+To install the package from a binary package, please, use the code below.
+
+```{r, eval = FALSE}
+# dependencies
+devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
+source("https://bioconductor.org/biocLite.R")
+biocLite("pathview")
+install.packages(c("UpSetR","shiny","ReporteRs"))
+devtools::install_github("thomasp85/shinyFiles")
+devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
+devtools::install_github("daattali/shinyjs")
+install.packages("~/TCGAbiolinksGUI_0.99.0_R_x86_64-pc-linux-gnu.tar.gz", repos = NULL, type = "source")
+```
+
+## Quick start
+
+The following commands should be used in order to start the graphical user interface.
+
+```{r, eval = FALSE}
+library(TCGAbiolinksGUI)
+TCGAbiolinksGUI()
+```
+
+## Citation
+
+Please cite both TCGAbiolinks package and TCGAbiolinksGUI: 
+
+* @ref2. "TCGAbiolinks: an R/Bioconductor package for integrative analysis of TCGA data." Nucleic acids research (2015): gkv1507.
+
+Also, if you have used ELMER analysis please cite:
+
+* @ref4. "Inferring regulatory element landscapes and transcription factor networks from cancer methylomes." Genome Biol 16 (2015): 105.
+* Yao, Lijing, Benjamin P. Berman, and Peggy J. Farnham. "Demystifying the secret mission of enhancers: linking distal regulatory elements to target genes." Critical reviews in biochemistry and molecular biology 50.6 (2015): 550-573.
 
 \newpage
 # Menu: TCGA Data
