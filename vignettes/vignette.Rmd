@@ -826,7 +826,7 @@ Select which ELMER results in a table.  It needs that the results to be selected
 # Cases of study 
 
 ## Case 3
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/k3FsVyJjaEc/0.jpg)](http://www.youtube.com/watch?v=k3FsVyJjaEc "Video Title")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/3W40ycOtDZY/0.jpg)](http://www.youtube.com/watch?v=3W40ycOtDZY "Case 3")
 
 \newpage
 # Session info
