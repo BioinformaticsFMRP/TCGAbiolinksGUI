@@ -65,7 +65,7 @@ references:
   - family: Zuguang Gu
     given:
   note: "R package version 1.9.3"
-  url: "https://github.com/jokergoo/ComplexHeatmap"
+  URL: "https://github.com/jokergoo/ComplexHeatmap"
   issued:
     year: 2016
 
@@ -295,7 +295,7 @@ devtools::load_all(".")
 \newpage
 # Introduction
 
-TCGAbiolinksGUI was created to help users without knowledge of programming to search, download and analyse 
+TCGAbiolinksGUI was created to help users without knowledge of programming to search, download and analyze 
 TCGA data. This package offers an graphical user interface to the R/biocondcutor packages [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/) [@ref2] and [ELMER](http://bioconductor.org/packages/ELMER/) packages [@ref4].
 Also, some other useful packages from bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/)  package [@ref1] has been used for data visualization.
 
@@ -342,7 +342,7 @@ To install the package from a binary package, please, use the code below.
 # dependencies
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
 source("https://bioconductor.org/biocLite.R")
-biocLite("pathview")
+biocLite(c("pathview","clusterProfiler"))
 install.packages(c("UpSetR","shiny","ReporteRs"))
 devtools::install_github("thomasp85/shinyFiles")
 devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
@@ -822,6 +822,11 @@ are selected. Please, see ELMER vignette.
 
 ### Results table
 Select which ELMER results in a table.  It needs that the results to be selected.
+
+# Cases of study 
+
+## Case 3
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/k3FsVyJjaEc/0.jpg)](http://www.youtube.com/watch?v=k3FsVyJjaEc "Video Title")
 
 \newpage
 # Session info
