@@ -41,7 +41,7 @@ references:
     given:
   journal: Nature methods
   DOI: "10.1038/nmeth.3252"
-   URL: "http://doi.org/10.1038/nmeth.3252""
+  URL: "http://doi.org/10.1038/nmeth.3252"
   volume: 12
   number: 2
   pages: 115-121
