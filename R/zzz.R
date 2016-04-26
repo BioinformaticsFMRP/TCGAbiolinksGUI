@@ -22,34 +22,8 @@
 #' @keywords internal
 #' @importFrom devtools use_data
 update <- function(){
-    env <- as.environment("package:biOmics")
-    load.biosamples(env)
-    load.systems(env)
-    load.platforms(env)
-    load.encode(env)
-    load.encode.files(env)
-    load.roadmap(env)
+    env <- as.environment("package:TCGAbiolinksGUI")
     load.maf(env)
     maf.files <- get("maf.files", envir = env)
-    encode.db <- get("encode.db", envir = env)
-    encode.db.files <- get("encode.db.files", envir = env)
-    roadmap.db <- get("roadmap.db", envir = env)
-    biosample.encode <- get("biosample.encode", envir = env)
-    biosample.roadmap <- get("biosample.roadmap", envir = env)
-    biosample.tcga <- get("biosample.tcga", envir = env)
-    systems <- get("systems", envir = env)
-    platforms <- get("platforms", envir = env)
-
-    use_data(biosample.encode,
-             biosample.roadmap,
-             biosample.tcga,
-             encode.db,
-             encode.db.files,
-             platforms,
-             roadmap.db,
-             systems,
-             maf.files,
-             internal = TRUE, overwrite = T
-    )
-
+    use_data(maf.files, internal = TRUE, overwrite = T)
 }

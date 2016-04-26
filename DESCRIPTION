@@ -1,13 +1,11 @@
-Package: biOmics
-Title: biOmics
+Package: TCGAbiolinksGUI
+Title: TCGAbiolinksGUI
 Version: 0.99.0
-Date: 2015-04-22
+Date: 2016-04-26
 Author: Tiago Chedraoui Silva <tiagochst@gmail.com>,
-    Tiago Mendes <tmendesilva@gmail.com>
+        Houtan Noushmehr <houtana@gmail.com>
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
-Description: A bioinformatics method to search,
-    analyse and interpret biological data from genomic sequencing
-    in public repositories (roadmap,encode,tcga).
+Description: TCGAbiolinksGUI: A Graphical User Interface for integrative analysis of TCGA data.
 License: GPL (>= 3)
 Depends:
     R (>= 3.2),
