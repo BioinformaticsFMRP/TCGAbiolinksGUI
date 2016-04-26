@@ -39,7 +39,7 @@ Creating a oncoprint
 }
 \examples{
 mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM",
-                                   archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
+       archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
 create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10])
 create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
                  filename = "onco.pdf",

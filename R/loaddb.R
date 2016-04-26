@@ -1,5 +1,5 @@
-# @importFrom rvest html_table
-# @importFrom xml2 read_html
+#' @importFrom rvest html_table
+#' @importFrom xml2 read_html
 # @importFrom TCGAbiolinks TCGAquery
 #' @keywords internal
 load.maf <- function(env){

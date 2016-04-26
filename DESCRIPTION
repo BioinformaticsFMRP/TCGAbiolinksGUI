@@ -14,7 +14,6 @@ Suggests:
     testthat,
     knitr,
     roxygen2,
-    devtools,
     BiocStyle
 Imports:
     shiny (>= 0.13.1.9002),
@@ -29,11 +28,12 @@ Imports:
     ggplot2  (>= 2.1.0),
     pbapply,
     pathview,
+    rvest,
+    devtools,
+    xml2,
     reshape2,
     ELMER (>= 1.2.1),
-    GenomicRanges,
     clusterProfiler,
-    IRanges,
     parallel,
     TCGAbiolinks (>= 1.1.26),
     shinyjs (>= 0.5.2),

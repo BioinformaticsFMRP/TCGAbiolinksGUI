@@ -14,10 +14,10 @@
 #' @param label.title Title of the label
 #' @importFrom ComplexHeatmap oncoPrint draw HeatmapAnnotation
 #' @importFrom grid gpar grid.rect
-#' @importFrom reshape2 dcast acast
+#' @importFrom data.table dcast setDT setDF
 #' @examples
 #' mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM",
-#'                                    archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
+#'        archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
 #' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10])
 #' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
 #'                  filename = "onco.pdf",
@@ -45,28 +45,47 @@ create.oncoprint <- function (mut,
 
 
     if(missing(mut))   stop("Missing mut argument")
+    mut <- setDT(mut)
     mut$value <- 1
+
+    mut$Hugo_Symbol <- as.character(mut$Hugo_Symbol)
+    if(!missing(genes) & !is.null(genes)) mut <- subset(mut, mut$Hugo_Symbol %in% genes)
+
     if(!rm.empty.columns){
         mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value",fill = 0,drop = FALSE)
     } else {
         mat <- dcast(mut, Tumor_Sample_Barcode + Hugo_Symbol ~ Variant_Type,value.var = "value",fill = 0,drop = TRUE)
     }
-    if(!missing(genes) & !is.null(genes)) mat <- subset(mat, mat$Hugo_Symbol %in% genes)
 
     # mutation in the file
     columns <- colnames(mat)[-c(1:2)]
 
     # value will be a collum with all the mutations
     mat$value <- ""
+    pb <- txtProgressBar(min = 0, max = 1, initial = 0, char = "=",
+                         width = NA, title, label, style = 1, file = "")
     for ( i in columns){
-        mat[,i] <-  replace(mat[,i],mat[,i]>0,paste0(i,";"))
-        mat[,i] <-  replace(mat[,i],mat[,i]==0,"")
-        mat$value <- paste0(mat$value,mat[,i])
+        mat[,i] <-  replace(mat[,i,with = FALSE],mat[,i,with = FALSE]>0,paste0(i,";"))
+        mat[,i] <-  replace(mat[,i,with = FALSE],mat[,i,with = FALSE]==0,"")
+        mat[,value:=paste0(value,get(i))]
+        setTxtProgressBar(pb, which(i == columns))
     }
+
+    # After the gene selection, some of the mutation might not exist
+    # we will remove them to make the oncoprint work
+    mutation.type <- c()
+    for (i in columns){
+        if(length(grep(i,mat$value)) > 0) mutation.type <- c(mutation.type,i)
+    }
+
+    close(pb)
 
     # now we have a matrix with pairs samples/genes mutations
     # we want a matrix with samples vs genes mutations with the content being the value
-    mat <- acast(mat, Tumor_Sample_Barcode~Hugo_Symbol, value.var="value",fill="")
+    mat <- setDF(dcast(mat, Tumor_Sample_Barcode~Hugo_Symbol, value.var="value",fill=""))
+    rownames(mat) <- mat[,1]
+    mat <- mat[,-1]
+
     rownames(mat) <-  substr(rownames(mat),1,12)
 
     alter_fun = list(
@@ -87,12 +106,7 @@ create.oncoprint <- function (mut,
         }
     )
 
-    # After the gene selection, some of the mutation might not exist
-    # we will remove them to make the oncoprint work
-    mutation.type <- c()
-    for (i in columns){
-        if(length(grep(i,mat)) > 0) mutation.type <- c(mutation.type,i)
-    }
+
     # get only the colors to the mutations
     # otherwise it gives errors
 
@@ -115,7 +129,6 @@ create.oncoprint <- function (mut,
     if(!is.null(annotation)){
         idx <- match(substr(colnames(mat),1,12),annotation$bcr_patient_barcode)
 
-        stopifnot(all(annotation$bcr_patient_barcode[idx] ==substr(colnames(mat),1,12) ))
         annotation <- annotation[idx,]
 
         annotation$bcr_patient_barcode <- NULL
@@ -151,6 +164,8 @@ create.oncoprint <- function (mut,
                                                                        labels_gp=gpar(fontsize=font.size),#sizelabels
                                                                        grid_height=unit(8,"mm")))
     }
+
+
     if(is.null(annotation)){
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,

@@ -68,7 +68,7 @@ parse.textarea.input <- function(text){
 #' @keywords internal
 TCGAbiolinksGUIServer <- function(input, output, session) {
     addClass(selector = "body", class = "sidebar-collapse")
-    #setwd(Sys.getenv("HOME"))
+    setwd(Sys.getenv("HOME"))
     volumes <- c('Working directory'=getwd())
 
     #-------------------------------------------------------------------------
@@ -796,7 +796,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             shinyjs::hide("oncoGenesTextArea")
             shinyjs::hide("oncoGenesFiles")
             shinyjs::show("oncoGenes")
-        } else  if(input$oncoInputRb == "Selection"){
+        } else  if(input$oncoInputRb == "text"){
             shinyjs::show("oncoGenesTextArea")
             shinyjs::hide("oncoGenes")
             shinyjs::hide("oncoGenesFiles")
@@ -958,22 +958,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     observe({
         updateSelectizeInput(session, 'oncoGenes', choices = as.character(mut()$Hugo_Symbol), server = TRUE)
-    })
-    observe({
-        updateSelectizeInput(session, 'ontExpFilter', choices = as.character(get.obj("platforms")$Standard), server = TRUE)
-    })
-    observe({
-        updateSelectizeInput(session, 'ontSamplesFilter', choices = as.character(c("",
-                                                                                   union(
-                                                                                       union(
-                                                                                           get.obj("roadmap.db")$Sample.Name,
-                                                                                           get.obj("encode.db")$biosample
-                                                                                       ),
-                                                                                       TCGAbiolinks::TCGAquery()$Disease
-                                                                                   ))), server = TRUE)
-    })
-    observe({
-        updateSelectizeInput(session, 'ontftypeFilter', choices = as.character(unique(get.obj("encode.db.files")$file_format)), server = TRUE)
     })
 
     ##----------------------------------------------------------------------

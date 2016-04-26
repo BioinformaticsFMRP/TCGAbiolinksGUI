@@ -23,6 +23,7 @@
 
 #' Update database
 #' This function will update the biomics database
+#' @importFrom devtools use_data
 #' @keywords internal
 update <- function(){
     env <- as.environment("package:TCGAbiolinksGUI")
