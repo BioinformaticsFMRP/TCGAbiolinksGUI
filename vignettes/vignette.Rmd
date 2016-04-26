@@ -779,6 +779,7 @@ The possible highlight controls are:
 * Circle gnees: Circle candidate biologically significant genes
 
 Other option
+
 * Save result: save results in a csv file
 
 ### Colors control
@@ -823,6 +824,7 @@ are selected. Please, see ELMER vignette.
 ### Results table
 Select which ELMER results in a table.  It needs that the results to be selected.
 
+\newpage
 # Cases of study 
 
 ## Case 3
