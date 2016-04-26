@@ -3,9 +3,11 @@
 #' @examples
 #'    TCGAbiolinksGUI()
 #' @name TCGAbiolinksGUI
-#' @import shiny shinyFiles shinydashboard SummarizedExperiment downloader
+#' @import shiny shinyFiles shinydashboard downloader
 #' TCGAbiolinks UpSetR ggplot2 shinyBS stringr ggrepel pathview ELMER grid
-#' clusterProfiler parallel shinyjs
+#' clusterProfiler parallel
+#' @importFrom SummarizedExperiment SummarizedExperiment values rowRanges rowRanges<- colData<- assay colData
+#' @importFrom shinyjs hide show toggle useShinyjs
 #' @export
 #' @return Open a connection to shiny
 TCGAbiolinksGUI <- function() {
