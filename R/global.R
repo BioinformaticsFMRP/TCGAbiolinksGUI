@@ -9,7 +9,7 @@
 #' @export
 #' @return Open a connection to shiny
 TCGAbiolinksGUI <- function() {
-    shiny::runApp(system.file("app", package = "biOmics"),launch.browser=TRUE)
+    shiny::runApp(system.file("app", package = "TCGAbiolinksGUI"),launch.browser=TRUE)
 }
 
 

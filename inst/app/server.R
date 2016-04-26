@@ -60,221 +60,16 @@ parse.textarea.input <- function(text){
 }
 
 #' @title  Server side
-#' @description Server side - Download data from roadmap project
+#' @description Server side
 #' @param input - input signal
 #' @param output - output signal
 #' @importFrom downloader download
+#' @import pathview ELMER TCGAbiolinks SummarizedExperiment shiny ggrepel UpSetR
 #' @keywords internal
-biOMICsServer <- function(input, output, session) {
+TCGAbiolinksGUIServer <- function(input, output, session) {
     addClass(selector = "body", class = "sidebar-collapse")
-    setwd(Sys.getenv("HOME"))
+    #setwd(Sys.getenv("HOME"))
     volumes <- c('Working directory'=getwd())
-    shinyDirChoose(input, 'folder', roots=volumes, session=session, restrictions=system.file(package='base'))
-    shinyDirChoose(input, 'reportfolder', roots=volumes, session=session, restrictions=system.file(package='base'))
-    output$reportdirectorypath <- renderText({parseDirPath(volumes, input$reportfolder)})
-
-    observeEvent(input$folder , {
-        closeAlert(session, "ontdownloaddirAlert")
-        createAlert(session, "ontdownloaddirmessage", "ontdownloaddirAlert", title = "Download folder", style =  "success",
-                    content =   parseDirPath(volumes, input$folder), append = TRUE)
-    })
-    observeEvent(input$reportfolder , {
-        closeAlert(session, "ontreportdirAlert")
-        createAlert(session, "ontdownloaddirmessage", "ontreportdirAlert", title = "Report folder", style =  "success",
-                    content =  parseDirPath(volumes, input$reportfolder), append = TRUE)
-    })
-
-    #----------------- Ontology
-    observeEvent(input$ontSearchDownloadBt , {
-        selected.rows <- isolate({input$allRows})
-        if( length(selected.rows) == 0) {
-            createAlert(session, "alert", "exampleAlert", title = "Invalid selection", style =  "danger",
-                        content = "Please select the samples to download.", append = FALSE)
-            return()
-        } else {
-            closeAlert(session, "exampleAlert")
-        }
-
-        getPath <- parseDirPath(volumes, isolate({input$folder}))
-        getFtype <- input$ontftypeFilter
-
-        link <- c()
-
-        df <- data.frame(database =selected.rows[seq(1, length(selected.rows) , 5)],
-                         ID =selected.rows[seq(2, length(selected.rows) , 5)],
-                         Sample = selected.rows[seq(3, length(selected.rows) , 5)],
-                         Experiment = selected.rows[seq(4, length(selected.rows) , 5)],
-                         organism = selected.rows[seq(5, length(selected.rows) , 5)])
-        withProgress(message = 'Downloading data',
-                     detail = 'This may take a while...', value = 0, {
-                         if(length(getPath) > 0) {
-                             biOmicsDownload(df, path = getPath, enc.file.type = getFtype, rmap.file.type = getFtype)
-                         } else {
-                             biOmicsDownload(df, enc.file.type = getFtype, rmap.file.type = getFtype)
-                         }
-
-                     })
-        createAlert(session, "alert", "exampleAlert", title = "Download completed", style =  "info",
-                    content = "Your download has been completed.", append = FALSE)
-    })
-
-    dataInput <- reactive({
-        withProgress(message = 'Searching in progress',
-                     detail = 'This may take a while...', value = 0, {
-                         indexes <- c()
-                         query <- data.frame()
-                         link <- c()
-                         term <- isolate({input$ontSamplesFilter})
-                         exp <-  isolate({input$ontExpFilter})
-                         query <- biOmicsSearch(term, experiment = exp)
-                         # improve using subset - subset(data,selection,projection)
-                         biosample.encode <- get.obj("biosample.encode")
-                         return(list(system = names(sort(table(biosample.encode[biosample.encode$biosample %in% query$Sample,]$system),decreasing = T)[1]),
-                                     result = query))
-                     })})
-
-    observeEvent(input$ontReport, {
-        result <- dataInput()$result
-
-        if(is.null(result)) {
-            createAlert(session, "alert", "exampleAlert", title = "No system", style =  "danger",
-                        content = "No system was found. I can't create a report.", append = FALSE)
-            return()
-
-        }
-        else if(is.null(input$reportfolder)) {
-            createAlert(session, "alert", "exampleAlert", title = "No folder", style =  "danger",
-                        content = "Please select a folder to create the report", append = FALSE)
-            return()
-        }  else {
-            closeAlert(session, "exampleAlert")
-        }
-
-        withProgress(message = 'Creating report...',
-                     detail = 'This may take a while...', value = 0, {
-                         #create.report(dataInput()$result, system = dataInput()$system)
-                         create.report(result, path = file.path(parseDirPath(volumes, input$reportfolder),"report"), system = dataInput()$system)
-                     })
-    })
-
-    observeEvent(input$tcgaPrepareBt, {
-
-        # read the data from the downloaded path
-        # prepare it
-
-        # Files types
-        ftype <- NULL
-        rnaseqFtype <- isolate({input$tcgaFrnaseqtypeFilter})
-        rnaseqv2Ftype <- isolate({input$tcgaFrnaseqv2typeFilter})
-        gwsFtype <- isolate({input$tcgaFgwstypeFilter})
-
-        # Dir to saved the files
-        getPath <- parseDirPath(volumes, input$tcgafolder)
-        if (length(getPath) == 0) getPath <- "."
-        samplesType <- input$tcgasamplestypeFilter
-
-        save.dir <- parseDirPath(volumes, input$tcgafolder)
-        if(length(save.dir) == 0) {
-            filename <- isolate({input$tcgafilename})
-        } else {
-            filename <- file.path(save.dir,isolate({input$tcgafilename}))
-        }
-
-        withProgress( message = 'Prepare in progress',
-                      detail = 'This may take a while...', value = 0, {
-                          if(!is.null(input$allRows)) {
-                              df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
-                              x <- TCGAquery()
-                              x <- x[x$name %in% df$name,]
-
-                          } else {
-
-                              tumor <- isolate({input$tcgaTumorFilter})
-                              platform <- isolate({input$tcgaExpFilter})
-                              level <- isolate({input$tcgaLevelFilter})
-
-                              x <- data.frame()
-                              if(length(level) > 0){
-                                  for(i in level){
-                                      x <- rbind(x,
-                                                 TCGAquery(tumor = tumor,
-                                                           platform = platform,
-                                                           level = i))
-                                  }
-                              } else {
-                                  x <- TCGAquery(tumor = tumor,
-                                                 platform = platform,
-                                                 level = level)
-                              }
-                          }
-                          if(length(unique(x$Platform)) > 1 & !all(grepl("humanmethylation",unique(x$Platform),ignore.case = TRUE))) {
-                              print("We can't prepare these data together")
-                              return(NULL)
-                          }
-                          ftype <- NULL
-                          if ("IlluminaHiSeq_RNASeqV2" %in% unique(x$Platform)) ftype <- rnaseqv2Ftype
-                          if ("IlluminaHiSeq_RNASeq"  %in% unique(x$Platform)) ftype <- rnaseqFtype
-                          if ("Genome_Wide_SNP_6" %in% unique(x$Platform)) ftype <- gwsFtype
-                          if (length(samplesType) == 0) {
-                              samples <- NULL
-                          } else {
-                              samples <- unlist(lapply(samplesType,function(type){
-                                  s <- unlist(str_split(x$barcode,","))
-                                  s[grep(type,substr(s,14,15))]
-                              }))
-                          }
-
-                          trash <- TCGAprepare(x,dir = getPath,
-                                               summarizedExperiment = isolate({as.logical(input$prepareRb)}),
-                                               save = TRUE,
-                                               type = ftype,
-                                               filename=filename,
-                                               samples = samples,
-                                               add.subtype = isolate({input$addSubTypeTCGA}))
-                      })
-        closeAlert(session, "tcgaAlert")
-        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
-                    content =  paste0("Saved in: ", getPath), append = FALSE)
-    })
-
-    observeEvent(input$ontSearchBt, {
-
-        if(nchar(input$ontSamplesFilter) < 3) {
-            closeAlert(session, "exampleAlert")
-            createAlert(session, "alert", "exampleAlert", title = "Invalid term", style =  "danger",
-                        content = "Input should be creater than 3 characters.", append = FALSE)
-            return()
-        } else {
-            closeAlert(session, "exampleAlert")
-        }
-        output$ontSearchtbl <- renderDataTable({
-            data <- isolate({dataInput()})
-            createAlert(session, "alert", "exampleAlert", title = "Term mapped to the system:", style =  "info",
-                        content = data$system , append = FALSE)
-            result <- data$result
-        },
-        options = list(pageLength = 10,
-                       scrollX = TRUE,
-                       jQueryUI = TRUE,
-                       pagingType = "full",
-                       lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                       language.emptyTable = "No results found",
-                       "dom" = 'T<"clear">lfrtip',
-                       "oTableTools" = list(
-                           "sSelectedClass" = "selected",
-                           "sRowSelect" = "os",
-                           "sSwfPath" = paste0("//cdnjs.cloudflare.com/ajax/",
-                                               "libs/datatables-tabletools/",
-                                               "2.2.3/swf/copy_csv_xls.swf"),
-                           "aButtons" = list(
-                               list("sExtends" = "collection",
-                                    "sButtonText" = "Save",
-                                    "aButtons" = c("csv","xls")
-                               )
-                           )
-                       )
-        ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-        )})
 
     #-------------------------------------------------------------------------
     #                            TCGA Search
@@ -485,6 +280,88 @@ biOMICsServer <- function(input, output, session) {
         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Download completed", style =  "success",
                     content =  paste0("Saved in: ", getPath), append = FALSE)
     })
+
+    # TCGAPrepare
+    observeEvent(input$tcgaPrepareBt, {
+
+        # read the data from the downloaded path
+        # prepare it
+
+        # Files types
+        ftype <- NULL
+        rnaseqFtype <- isolate({input$tcgaFrnaseqtypeFilter})
+        rnaseqv2Ftype <- isolate({input$tcgaFrnaseqv2typeFilter})
+        gwsFtype <- isolate({input$tcgaFgwstypeFilter})
+
+        # Dir to saved the files
+        getPath <- parseDirPath(volumes, input$tcgafolder)
+        if (length(getPath) == 0) getPath <- "."
+        samplesType <- input$tcgasamplestypeFilter
+
+        save.dir <- parseDirPath(volumes, input$tcgafolder)
+        if(length(save.dir) == 0) {
+            filename <- isolate({input$tcgafilename})
+        } else {
+            filename <- file.path(save.dir,isolate({input$tcgafilename}))
+        }
+
+        withProgress( message = 'Prepare in progress',
+                      detail = 'This may take a while...', value = 0, {
+                          if(!is.null(input$allRows)) {
+                              df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
+                              x <- TCGAquery()
+                              x <- x[x$name %in% df$name,]
+
+                          } else {
+
+                              tumor <- isolate({input$tcgaTumorFilter})
+                              platform <- isolate({input$tcgaExpFilter})
+                              level <- isolate({input$tcgaLevelFilter})
+
+                              x <- data.frame()
+                              if(length(level) > 0){
+                                  for(i in level){
+                                      x <- rbind(x,
+                                                 TCGAquery(tumor = tumor,
+                                                           platform = platform,
+                                                           level = i))
+                                  }
+                              } else {
+                                  x <- TCGAquery(tumor = tumor,
+                                                 platform = platform,
+                                                 level = level)
+                              }
+                          }
+                          if(length(unique(x$Platform)) > 1 & !all(grepl("humanmethylation",unique(x$Platform),ignore.case = TRUE))) {
+                              print("We can't prepare these data together")
+                              return(NULL)
+                          }
+                          ftype <- NULL
+                          if ("IlluminaHiSeq_RNASeqV2" %in% unique(x$Platform)) ftype <- rnaseqv2Ftype
+                          if ("IlluminaHiSeq_RNASeq"  %in% unique(x$Platform)) ftype <- rnaseqFtype
+                          if ("Genome_Wide_SNP_6" %in% unique(x$Platform)) ftype <- gwsFtype
+                          if (length(samplesType) == 0) {
+                              samples <- NULL
+                          } else {
+                              samples <- unlist(lapply(samplesType,function(type){
+                                  s <- unlist(str_split(x$barcode,","))
+                                  s[grep(type,substr(s,14,15))]
+                              }))
+                          }
+
+                          trash <- TCGAprepare(x,dir = getPath,
+                                               summarizedExperiment = isolate({as.logical(input$prepareRb)}),
+                                               save = TRUE,
+                                               type = ftype,
+                                               filename=filename,
+                                               samples = samples,
+                                               add.subtype = isolate({input$addSubTypeTCGA}))
+                      })
+        closeAlert(session, "tcgaAlert")
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
+                    content =  paste0("Saved in: ", getPath), append = FALSE)
+    })
+
 
     # Subtype
 

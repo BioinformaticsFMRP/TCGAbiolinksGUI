@@ -49,8 +49,6 @@ header$children[[2]]$children <-  tags$a(href='http://mycompanyishere.com',
 sidebar <-  dashboardSidebar(
     width = 250,
     sidebarMenu(
-        #menuItem("biOMICs search" , tabName = "ontology", icon = icon("search")),
-        #menuItem("Report" , tabName = "report", icon = icon("book")),
         menuItem("TCGA Data", icon = icon(menu.icon),
                  menuSubItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
                  menuSubItem("Data summmary" , tabName = "tcgaSummary", icon = icon("info"))
@@ -105,77 +103,6 @@ body <-  dashboardBody(
                                       href = "biOMICS.css")))
     ),
     tabItems(
-        #tabItem(tabName = "report",
-        #        fluidRow(includeHTML("main.html"))
-        #),
-        tabItem(tabName = "ontology",
-
-                fluidRow(
-                    column(10,  bsAlert("alert"),
-                           bsCollapse(id = "collapseonto", open = "Search results",
-                                      bsCollapsePanel("Search results", dataTableOutput('ontSearchtbl'), style = "default"),
-                                      bsCollapsePanel("biomicssummary", uiOutput("biomicssummary"), style = "default")
-                           )),
-                    column(2,
-                           box(title = "Advanced search",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = FALSE,
-                               selectizeInput('ontExpFilter',
-                                              'Experiments filter',
-                                              NULL,
-                                              multiple = TRUE),
-                               selectizeInput('ontSamplesFilter',
-                                              'Term',
-                                              choices=NULL,
-                                              multiple = FALSE,options = list(create = TRUE),selected = NULL),
-                               actionButton("ontSearchBt",
-                                            "search",
-                                            style = "background-color: #000080;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 100%",
-                                            icon = icon("search"))),
-                           box(title = "Download",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = FALSE,
-                               selectizeInput('ontftypeFilter',
-                                              'Encode/Roadmap file filter',
-                                              choices=NULL,
-                                              multiple = TRUE),
-
-                               shinyDirButton('folder', 'Download folder', 'Please select a folder',
-                                              class='shinyDirectories btn-default'),
-
-                               actionButton("ontSearchDownloadBt",
-                                            "Download",
-                                            style = "background-color: #000080;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 45%",
-                                            icon = icon("download")),
-                               bsTooltip("ontSearchDownloadBt", "Only downloads the files that were selected",
-                                         "left"),
-                               textOutput('ontSearchLink')
-                           ),  box(title = "Report",width = NULL,
-                                   status = "danger",
-                                   solidHeader = FALSE, collapsible = FALSE,
-                                   shinyDirButton('reportfolder', 'Report folder', 'Please select a folder where the report will be created',
-                                                  class='shinyDirectories btn-default'),
-                                   actionButton("ontReport",
-                                                "Create report",
-                                                style = "background-color: #000080;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 53%",
-                                                icon = icon("book"))),
-                           bsAlert("ontdownloaddirmessage")
-                    )
-
-                )
-        ),
 
         tabItem(tabName = "tcgaSearch",
                 fluidRow(
@@ -1230,7 +1157,7 @@ body <-  dashboardBody(
 # @title  Client side
 # @description Client side - Download data from roadmap project
 # @keywords internal
-biOMICsUI <- dashboardPage(
+TCGAbiolinksGUIUI <- dashboardPage(
     skin = "blue",
     header,
     sidebar,
