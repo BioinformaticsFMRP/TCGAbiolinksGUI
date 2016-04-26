@@ -616,7 +616,7 @@ body <-  dashboardBody(
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("meanmetwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("meanmetheight", "Plot Height (px)", min = 0, max = 1200, value = 400)),
+                               sliderInput("meanmetheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
                            actionButton("meanmetPlot",
                                         "DNA mean methylation plot",
                                         style = "background-color: #000080;
@@ -625,7 +625,6 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 100%",
                                         icon = icon("picture-o"))
-
                     )
                 )
         ),
@@ -695,7 +694,7 @@ body <-  dashboardBody(
                            box(title = "Plot control",width = NULL,  status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
                                sliderInput("heatmapwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                               sliderInput("heatmapheight", "Plot Height (px)", min = 0, max = 1000, value = 1000)
+                               sliderInput("heatmapheight", "Plot Height (px)", min = 0, max = 800, value = 1000)
                            ),
                            actionButton("heatmapPlotBt",
                                         "Heatmap plot",
