@@ -62,13 +62,10 @@ create.oncoprint <- function (mut,
 
     # value will be a collum with all the mutations
     mat$value <- ""
-    pb <- txtProgressBar(min = 0, max = 1, initial = 0, char = "=",
-                         width = NA, title, label, style = 1, file = "")
     for ( i in columns){
         mat[,i] <-  replace(mat[,i,with = FALSE],mat[,i,with = FALSE]>0,paste0(i,";"))
         mat[,i] <-  replace(mat[,i,with = FALSE],mat[,i,with = FALSE]==0,"")
         mat[,value:=paste0(value,get(i))]
-        setTxtProgressBar(pb, which(i == columns))
     }
 
     # After the gene selection, some of the mutation might not exist
@@ -78,7 +75,7 @@ create.oncoprint <- function (mut,
         if(length(grep(i,mat$value)) > 0) mutation.type <- c(mutation.type,i)
     }
 
-    close(pb)
+
 
     # now we have a matrix with pairs samples/genes mutations
     # we want a matrix with samples vs genes mutations with the content being the value
