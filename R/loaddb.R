@@ -1,16 +1,17 @@
-#' @importFrom rvest html_table
-#' @importFrom xml2 read_html
-#' @importFrom TCGAbiolinks TCGAquery
+# @importFrom rvest html_table
+# @importFrom xml2 read_html
+# @importFrom TCGAbiolinks TCGAquery
+#' @keywords internal
 load.maf <- function(env){
 
-    tables <- read_html("https://wiki.nci.nih.gov/display/TCGA/TCGA+MAF+Files")
-    tables <-  html_table(tables)
+    tables <- xml2::read_html("https://wiki.nci.nih.gov/display/TCGA/TCGA+MAF+Files")
+    tables <-  rvest::html_table(tables)
     # Table one is junk
     tables[[1]] <- NULL
 
     # get which tables are from the tumor
     all.df <- data.frame()
-    for(tumor in unique(TCGAquery()$Disease)) {
+    for(tumor in unique(TCGAbiolinks::TCGAquery()$Disease)) {
 
         idx <- which(mapply(function(x) {
             any(grepl(tumor,(x[,1]), ignore.case = TRUE))

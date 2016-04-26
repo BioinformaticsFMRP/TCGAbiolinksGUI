@@ -17,17 +17,29 @@ create.oncoprint(mut, genes, filename, color, annotation.position = "bottom",
 
 \item{color}{named vector for the plot}
 
+\item{annotation.position}{Position of the annotation "bottom" or "top"}
+
+\item{annotation}{Matrix or data frame with the annotation.
+Should have a column bcr_patient_barcode with the same ID of the mutation object}
+
 \item{height}{pdf height}
 
 \item{rm.empty.columns}{If there is no alteration in that sample, whether remove it on the oncoprint}
 
+\item{show.column.names}{Show column names? Default: FALSE}
+
 \item{show.row.barplot}{Show barplot annotation on rows?}
+
+\item{label.title}{Title of the label}
+
+\item{font.size}{Size of the fonts}
 }
 \description{
 Creating a oncoprint
 }
 \examples{
-mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM", archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
+mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM",
+                                   archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
 create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10])
 create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
                  filename = "onco.pdf",

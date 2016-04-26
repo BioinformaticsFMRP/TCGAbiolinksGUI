@@ -3,9 +3,9 @@
 #' @examples
 #'    TCGAbiolinksGUI()
 #' @name TCGAbiolinksGUI
-#' @import shiny shinyFiles shinydashboard SummarizedExperiment
+#' @import shiny shinyFiles shinydashboard SummarizedExperiment downloader
 #' TCGAbiolinks UpSetR ggplot2 shinyBS stringr ggrepel pathview ELMER grid
-#' clusterProfiler
+#' clusterProfiler parallel shinyjs
 #' @export
 #' @return Open a connection to shiny
 TCGAbiolinksGUI <- function() {
@@ -32,9 +32,4 @@ setOptionsProgressBar <- function(title, label) {
     # title = title, label = label) else
     opb <- pbapply::pboptions(type = "txt", char = "+", title = title,
         label = label)
-}
-
-#' @export
-get.obj <- function(obj){
-    return(get(obj))
 }

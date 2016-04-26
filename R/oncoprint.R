@@ -6,11 +6,18 @@
 #' @param height pdf height
 #' @param rm.empty.columns If there is no alteration in that sample, whether remove it on the oncoprint
 #' @param show.row.barplot  Show barplot annotation on rows?
+#' @param show.column.names Show column names? Default: FALSE
+#' @param font.size Size of the fonts
+#' @param annotation Matrix or data frame with the annotation.
+#' Should have a column bcr_patient_barcode with the same ID of the mutation object
+#' @param annotation.position Position of the annotation "bottom" or "top"
+#' @param label.title Title of the label
 #' @importFrom ComplexHeatmap oncoPrint draw HeatmapAnnotation
 #' @importFrom grid gpar grid.rect
 #' @importFrom reshape2 dcast acast
 #' @examples
-#' mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM", archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
+#' mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM",
+#'                                    archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
 #' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10])
 #' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
 #'                  filename = "onco.pdf",
