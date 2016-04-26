@@ -100,7 +100,7 @@ body <-  dashboardBody(
                                                      'aTables.tableTools.min.js'),
                                         type = 'text/javascript'))),
         singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css",
-                                      href = "biOMICS.css")))
+                                      href = "TCGAbiolinksGUI.css")))
     ),
     tabItems(
 

@@ -1,6 +1,26 @@
-biOmics 0.0.1
+TCGAbiolinksGUI 0.99.0
 ----------------------------------------------------------------
-  FIRST VERSION - FEATURES
+  FIRST VERSION - MENUS
 
-  * Searches/Download TCGA,roadmap,encode database
-  * Create some methylation analysis functions
+  * TCGAbiolinksGUI:
+    * TCGA Data
+      + TCGA search
+      + Data summary
+    * Clinical analysis
+      + Profile plot
+      + Survival plot
+    * Epigenetic analysis
+      + Differential methylation analysis
+      + Volcano plot
+      + Heatmap plot
+      + Mean DNA methylation plot
+    * Transcriptomic analysis
+      + Differential expression analysis
+      + Volcano plot
+      + Heatmap plot
+      + Enrichement analysis
+    * Genomic analysis
+      + Oncoprint Plot
+    * Integrative analysis
+      + Starburst plot
+      + ELMER
