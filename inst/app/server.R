@@ -1581,6 +1581,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 results.data <- results.data[probes,]
             } else {
                 if(isolate({input$heatmapGenesInputRb}) == "Status"){
+                    sig.genes <- ""
                     if(isolate({input$heatmap.upGenesCb})) sig.genes <- c("Upregulated")
                     if(isolate({input$heatmap.downGenewsCb})) sig.genes <- c("Downregulated",sig.genes)
                     sig.genes <- paste(sig.genes,"in",group2)

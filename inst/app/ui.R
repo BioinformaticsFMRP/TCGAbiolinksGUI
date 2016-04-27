@@ -409,7 +409,15 @@ body <-  dashboardBody(
                                                   choices = NULL,  multiple = TRUE),
                                    shinyFilesButton('oncoGenesFiles', 'Select file with genes', 'Please select a file with genes',  multiple = FALSE)
                                ),
+                               box(title = "Parameters control",width = NULL,
+                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
 
+                                   bsTooltip("oncoRmCols", "If there is no alteration in that sample, whether remove it on the oncoprint",
+                                             "left"),
+                                   checkboxInput("oncoRmCols", "Remove empty columns?", value = FALSE, width = NULL),
+                                   checkboxInput("oncoShowColsNames", "Show column names?", value = FALSE, width = NULL),
+                                   checkboxInput("oncoShowRowBarplot", "Show barplot annotation on rows?", value = TRUE, width = NULL)
+                               ),
                                box(title = "Colors control",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    colourInput("colDEL", "DEL color", value = "red"),
@@ -422,15 +430,7 @@ body <-  dashboardBody(
                                    sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                    sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 1200, value = 400)
                                ),
-                               box(title = "Oncoprint options",width = NULL,
-                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
 
-                                   bsTooltip("oncoRmCols", "If there is no alteration in that sample, whether remove it on the oncoprint",
-                                             "left"),
-                                   checkboxInput("oncoRmCols", "Remove empty columns?", value = FALSE, width = NULL),
-                                   checkboxInput("oncoShowColsNames", "Show column names?", value = FALSE, width = NULL),
-                                   checkboxInput("oncoShowRowBarplot", "Show barplot annotation on rows?", value = TRUE, width = NULL)
-                               ),
                                actionButton("oncoprintPlot",
                                             "Plot oncoprint",
                                             style = "background-color: #000080;
@@ -522,7 +522,7 @@ body <-  dashboardBody(
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    shinyFilesButton('meanmetfile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
                                                     multiple = FALSE)),
-                               box(title = "Arguments control",width = NULL,
+                               box(title = "Parameters control",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    selectizeInput('meanmetgroupCol',
                                                   "Group column",
@@ -652,9 +652,10 @@ body <-  dashboardBody(
                            box(title = "DMR analysis",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = FALSE,
-                               box(title = "DNA methylation object",width = NULL,
+                               box(title = "Data",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE,
-                                   shinyFilesButton('dmrfile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
+                                   bsTooltip("dmrfile", "A summarized Experiment", "left"),
+                                   shinyFilesButton('dmrfile', 'Select data (.rda)', 'Please select SummarizedExperiment object',
                                                     multiple = FALSE)),
                                #fileInput('dmrfile', 'Select SummarizedExperiment object',
                                #         accept=c(".rda"))),
@@ -709,7 +710,7 @@ body <-  dashboardBody(
                                                   choices = unique(rownames(TCGAbiolinks:::EAGenes)),
                                                   multiple = TRUE),
                                    shinyFilesButton('eaGenesFiles', 'Select file with genes', 'Please select a file with genes',  multiple = FALSE)),
-                               box(title = "Arguments control",width = NULL,
+                               box(title = "Parameters control",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    numericInput("eaSizeText", "Size of the text",
                                                 step=0.1, min = 0.1, max = 3, value = 1),
