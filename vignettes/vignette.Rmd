@@ -764,6 +764,9 @@ this sub-menu offer a way to visualize multiple genomic alteration.
 
 ![Oncorpint plot menu: Main window.](oncoprint.png)
 
+### Video
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/v2kBGkUCaZs/0.jpg)](http://www.youtube.com/watch?v=v2kBGkUCaZs "Onconprint example")
+
 
 ### Data
 
