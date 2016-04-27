@@ -36,6 +36,8 @@ setOptionsProgressBar <- function(title, label) {
         label = label)
 }
 
+#' Get object from inside the package
+#' @keywords internal
 #' @export
 get.obj <- function(obj){
     return(get(obj))

@@ -2341,7 +2341,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                          sep = "_"),".csv")
             if(isolate({input$starburstSave})) {
                 write.csv2(result$starburst, file = out.filename)
-                createAlert(session, "starburstmessage", "starburstAlert", title = "Results saved", style =  "info",
+                createAlert(session, "starburstmessage", "starburstAlert", title = "Results saved", style =  "success",
                             content = paste0("Results saved in: ", out.filename), append = FALSE)
             }
             return(result)
@@ -2660,10 +2660,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
                          # Relabel samples in the mee object: subtype1 is control
                          mee@sample$TN[mee@sample$ID %in% substr(samples,1,15)] <- "Control"
-                         save(mee,file = paste0("mee_",column,"_",subtype1,"_",subtype2,".rda"))
+                         save(mee,file = paste0("mee_",column,"_",gsub(" ","-",subtype1),"_",gsub(" ","-",subtype2),".rda"))
                          incProgress(2/5, detail = paste0('Saving is done'))
                          createAlert(session, "elmermessage", "elmerAlert", title = "Mee created", style =  "success",
-                                     content =   paste0("Mee file created: mee_",column,"_",subtype1,"_",subtype2,".rda"), append = TRUE)
+                                     content =   paste0("Mee file created: mee_",column,"_",gsub(" ","-",subtype1),"_",gsub(" ","-",subtype2),".rda"), append = TRUE)
                      })
     })
     # Input data
