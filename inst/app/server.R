@@ -664,10 +664,15 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     }))
                 }
 
+                withProgress(message = 'Creating plot',
+                             detail = 'This may take a while...', value = 0, {
+
                 platform <- unique(x$Platform)
                 df <- as.data.frame(matrix(0,nrow=length(patient),ncol=length(platform)+1))
                 colnames(df) <- c("patient", platform)
                 df$patient <- patient
+                setProgress(value = 0.5, message = "Step 1", detail = "Creating matrix", session = getDefaultReactiveDomain())
+
                 for (i in patient){
                     idx <- grep(i,x$barcode)
                     plat <- x[idx,"Platform"]
@@ -680,9 +685,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                 content =  paste0("No results found"), append = FALSE)
                     return(NULL)
                 }
+                setProgress(value = 0.5, message = "Step 2", detail = "Plotting", session = getDefaultReactiveDomain())
                 df$Type <- tcga.code[substr(df$patient,14,15)]
-                withProgress(message = 'Creating plot',
-                             detail = 'This may take a while...', value = 0, {
+
                                  upset(df, nsets = length(platform),
                                        number.angles = 0,
                                        nintersects = 100,

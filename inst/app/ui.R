@@ -321,15 +321,16 @@ body <-  dashboardBody(
                                       bsCollapsePanel("Summary", uiOutput("tcgaSummary"), style = "default")
                            )),
                     column(2,
-                           box(title = "Type of plot",width = NULL,
+                           box(title = "Summary plot",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE,
+                           box(title = "Type of plot",width = NULL,
+                               solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
                                radioButtons("summaryInputRb", "Plot type:",
                                             c("Type of samples"="type",
                                               "Platforms vs samples"="platsample"))),
                            box(title = "Parameters",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE,
+                               solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
                                selectizeInput('tcgaSummaryTumorFilter',
                                               'Tumor',
                                               unique(TCGAquery()$Disease),
@@ -345,14 +346,14 @@ body <-  dashboardBody(
                                selectizeInput('tcgaSummaryLevelFilter',
                                               'Level filter',
                                               c(1:3),
-                                              multiple = FALSE, selected = 1)),
-                           box(title = "Colors control",width = NULL,  status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                                              multiple = FALSE, selected = 1),
+                               checkboxInput("summaryAddBarCount", "Add counts label to barchart?", value = TRUE, width = NULL)
+                           ),
+                           box(title = "Colors control",width = NULL,
+                               solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
                                colourInput("summarySetsBarColor", "Sets Bar color", value = "#56B4E9")),
-                           box(title = "Plot controls",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               checkboxInput("summaryAddBarCount", "Add counts label to barchart?", value = TRUE, width = NULL),
+                           box(title = "Size controls",width = NULL,
+                               solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
                                #sliderInput("summaryncol", "Number columns", min = 1, max = 4, value = 3),
                                sliderInput("summarywidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("summaryheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
@@ -363,7 +364,7 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                        icon = icon("picture-o"))
+                                        icon = icon("picture-o")))
                     )
                 )
         ),
