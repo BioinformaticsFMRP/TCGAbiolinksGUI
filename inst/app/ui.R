@@ -323,7 +323,7 @@ body <-  dashboardBody(
                     column(2,
                            box(title = "Summary plot",width = NULL,
                                status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE,
+                               solidHeader = FALSE, collapsible = FALSE,
                            box(title = "Type of plot",width = NULL,
                                solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
                                radioButtons("summaryInputRb", "Plot type:",
