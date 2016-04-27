@@ -1882,6 +1882,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     observeEvent(input$profileplotBt , {
         output$profile.plotting <- renderPlot({
+            closeAlert(session, "profileplotAlert")
+
             data <- isolate({profileplotdata()})
             subtypeCol <- isolate({input$profileplotsubtype})
             groupCol <-  isolate({input$profileplotgroup})
@@ -1892,22 +1894,25 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             m3  <-  isolate({input$margin3})
             m4  <-  isolate({input$margin4})
 
+            axis.title.size <-  isolate({input$profileplot.axis.title.size})
+            axis.textsize <-  isolate({input$profileplot.axis.textsize})
+            legend.size <-  isolate({input$profileplot.legend.size})
+            legend.title.size <- isolate({input$profileplot.legend.title.size})
+            geom.label.size <- isolate({input$profileplot.geom.label.size})
+
             if(is.null(data)){
-                closeAlert(session, "profileplotAlert")
                 createAlert(session, "profileplotmessage", "profileplotAlert", title = "Missing data", style =  "danger",
                             content = paste0("Please select the data"), append = FALSE)
                 return(NULL)
             }
 
             if(is.null(groupCol) || nchar(groupCol) == 0){
-                closeAlert(session, "profileplotAlert")
                 createAlert(session, "profileplotmessage", "profileplotAlert", title = "Missing group selection", style =  "danger",
                             content = paste0("Please select the group column"), append = FALSE)
                 return(NULL)
             }
 
             if(is.null(subtypeCol) || nchar(subtypeCol) == 0){
-                closeAlert(session, "profileplotAlert")
                 createAlert(session, "profileplotmessage", "profileplotAlert", title = "Missing subgroup selection", style =  "danger",
                             content = paste0("Please select the subgroup column"), append = FALSE)
                 return(NULL)
@@ -1922,7 +1927,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                        subtypeCol=subtypeCol,
                                                        na.rm.groups = na.rm.groups,
                                                        na.rm.subtypes = na.rm.subtypes,
-                                                       plot.margin=c(m1,m2,m3,m4))
+                                                       plot.margin=c(m1,m2,m3,m4),
+                                                       axis.title.size=axis.title.size,
+                                                       axis.textsize=axis.textsize,
+                                                       legend.size=legend.size,
+                                                       legend.title.size=legend.title.size,
+                                                       geom.label.size = geom.label.size,
+                                                       geom.label.color = isolate({input$profileplotColorTextLeftBar}))
 
                          })
         })})
