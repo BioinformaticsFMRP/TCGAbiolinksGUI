@@ -409,7 +409,7 @@ body <-  dashboardBody(
                                                   choices = NULL,  multiple = TRUE),
                                    shinyFilesButton('oncoGenesFiles', 'Select file with genes', 'Please select a file with genes',  multiple = FALSE)
                                ),
-                               box(title = "Parameters control",width = NULL,
+                               box(title = "General parameters",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
 
                                    bsTooltip("oncoRmCols", "If there is no alteration in that sample, whether remove it on the oncoprint",
@@ -418,6 +418,10 @@ body <-  dashboardBody(
                                    checkboxInput("oncoShowColsNames", "Show column names?", value = FALSE, width = NULL),
                                    checkboxInput("oncoShowRowBarplot", "Show barplot annotation on rows?", value = TRUE, width = NULL)
                                ),
+                               box(title = "Text parameters",width = NULL,
+                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                                   numericInput("oncoTextSize", "Size text",
+                                                min = 0, max = 20, value = 10.0, step = 1)),
                                box(title = "Colors control",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    colourInput("colDEL", "DEL color", value = "red"),
