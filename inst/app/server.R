@@ -891,7 +891,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             show.col.names <- isolate({input$oncoShowColsNames})
             textarea <- isolate({input$oncoGenesTextArea})
             show.row.barplot <- isolate({input$oncoShowRowBarplot})
+
             msg <- ""
+            not.found <- c()
+
             if(isolate({input$oncoInputRb}) == "text" & !is.null(textarea)){
                 genes <- toupper(parse.textarea.input(textarea))
                 not.found <- genes[!(genes %in% mut$Hugo_Symbol)]
