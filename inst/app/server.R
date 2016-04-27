@@ -905,18 +905,23 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             } else if(isolate({input$oncoInputRb}) == "file") {
                 genes <- genesByFile()
                 not.found <- genes[!(genes %in% mut$Hugo_Symbol)]
+                msg <- ""
                 if(length(not.found) > 0){
-                    createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
-                                content = paste0("Sorry, I cant't find these genes: ", not.found), append = FALSE)
+                   msg <- paste0("Sorry, I cant't find these genes: ", paste(not.found,collapse = " "))
                     genes <-  genes[genes %in% mut$Hugo_Symbol]
+
                 }
             }
             if(is.null(genes)){
                 createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
                             content = "Please select the genes (max 50)", append = TRUE)
-            } else if( length(genes) > 50){
-                createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
-                            content = "The limit of the genes is 50", append = TRUE)
+            } else if( length(genes) > 100 &  length(not.found) > 0){
+                createAlert(session, "oncomessage", "oncoAlert", title = "Errors", style =  "danger",
+                            content = paste0("The limit of the genes is 100 \n",msg), append = TRUE)
+                return(NULL)
+            } else if(length(not.found) > 0){
+                createAlert(session, "oncomessage", "oncoAlert", title = "Errors", style =  "danger",
+                            content = msg, append = TRUE)
                 return(NULL)
             }
 

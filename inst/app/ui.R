@@ -428,7 +428,7 @@ body <-  dashboardBody(
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
 
                                    sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                                   sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 1200, value = 400)
+                                   sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 1200, value = 800)
                                ),
 
                                actionButton("oncoprintPlot",
