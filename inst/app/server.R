@@ -667,26 +667,26 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 withProgress(message = 'Creating plot',
                              detail = 'This may take a while...', value = 0, {
 
-                platform <- unique(x$Platform)
-                df <- as.data.frame(matrix(0,nrow=length(patient),ncol=length(platform)+1))
-                colnames(df) <- c("patient", platform)
-                df$patient <- patient
-                setProgress(value = 0.5, message = "Step 1", detail = "Creating matrix", session = getDefaultReactiveDomain())
+                                 platform <- unique(x$Platform)
+                                 df <- as.data.frame(matrix(0,nrow=length(patient),ncol=length(platform)+1))
+                                 colnames(df) <- c("patient", platform)
+                                 df$patient <- patient
+                                 setProgress(value = 0.1, message = "Step 1", detail = "Creating matrix", session = getDefaultReactiveDomain())
 
-                for (i in patient){
-                    idx <- grep(i,x$barcode)
-                    plat <- x[idx,"Platform"]
-                    for (j in plat){
-                        df[df$patient == i,j] <- 1
-                    }
-                }
-                if(nrow(df) == 0) {
-                    createAlert(session, "tcgaSummaryMessage", "tcgaSummaryAlert", title = "Results not found", style = "danger",
-                                content =  paste0("No results found"), append = FALSE)
-                    return(NULL)
-                }
-                setProgress(value = 0.5, message = "Step 2", detail = "Plotting", session = getDefaultReactiveDomain())
-                df$Type <- tcga.code[substr(df$patient,14,15)]
+                                 for (i in patient){
+                                     idx <- grep(i,x$barcode)
+                                     plat <- x[idx,"Platform"]
+                                     for (j in plat){
+                                         df[df$patient == i,j] <- 1
+                                     }
+                                 }
+                                 if(nrow(df) == 0) {
+                                     createAlert(session, "tcgaSummaryMessage", "tcgaSummaryAlert", title = "Results not found", style = "danger",
+                                                 content =  paste0("No results found"), append = FALSE)
+                                     return(NULL)
+                                 }
+                                 setProgress(value = 0.5, message = "Step 2", detail = "Plotting", session = getDefaultReactiveDomain())
+                                 df$Type <- tcga.code[substr(df$patient,14,15)]
 
                                  upset(df, nsets = length(platform),
                                        number.angles = 0,
@@ -699,6 +699,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                        decreasing = T,
                                        #group.by = "sets",
                                        sets.bar.color = isolate({input$summarySetsBarColor}))
+                                 setProgress(value = 1.0, message = "Completed", detail = "Done", session = getDefaultReactiveDomain())
                              })
             } else {
                 if(is.null(platform)){
@@ -2776,6 +2777,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              #--------------------------------------
                              # Step 3.1: Get diff methylated probes |
                              #--------------------------------------
+                             setProgress(value = which(j == direction) * 0.0, message = "Step 1", detail = paste0(j,": get.diff.meth"), session = getDefaultReactiveDomain())
                              Sig.probes <- get.diff.meth(mee,
                                                          cores=isolate({input$elmercores}),
                                                          dir.out =dir.out,
@@ -2786,10 +2788,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              # Step 3.2: Identify significant probe-gene pairs            |
                              #-------------------------------------------------------------
                              # Collect nearby 20 genes for Sig.probes
+                             setProgress(value = which(j == direction) * 0.1, message = "Step 2", detail = paste0(j,": GetNearGenes"), session = getDefaultReactiveDomain())
                              nearGenes <- GetNearGenes(TRange=getProbeInfo(mee, probe=Sig.probes$probe),
                                                        cores=isolate({input$elmercores}),
                                                        geneAnnot=getGeneInfo(mee),
                                                        geneNum = isolate({input$elmergetpairNumGenes}))
+
 
                              pair <- get.pair(mee=mee,
                                               probes=Sig.probes$probe,
@@ -2804,6 +2808,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                               portion = isolate({input$elmergetpairportion}),
                                               diffExp = isolate({input$elmergetpairdiffExp}))
 
+                             setProgress(value = which(j == direction) * 0.2, message = "Step 3", detail = paste0(j,": fetch.pair"), session = getDefaultReactiveDomain())
                              Sig.probes.paired <- fetch.pair(pair=pair,
                                                              probeInfo = getProbeInfo(mee),
                                                              geneInfo = getGeneInfo(mee))
@@ -2818,6 +2823,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                  #-------------------------------------------------------------
                                  # Step 3.3: Motif enrichment analysis on the selected probes |
                                  #-------------------------------------------------------------
+                                 setProgress(value = which(j == direction) * 0.3, message = "Step 4", detail = paste0(j,": get.enriched.motif"), session = getDefaultReactiveDomain())
                                  probe <- get.feature.probe()
                                  enriched.motif <- get.enriched.motif(probes = Sig.probes.paired,
                                                                       dir.out = dir.out,
@@ -2832,6 +2838,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                      # Step 3.4: Identifying regulatory TFs                        |
                                      #-------------------------------------------------------------
                                      print("get.TFs")
+                                     setProgress(value = which(j == direction) * 0.4, message = "Step 5", detail = paste0(j,": get.TFs"), session = getDefaultReactiveDomain())
 
                                      TF <- get.TFs(mee = mee,
                                                    enriched.motif = enriched.motif,
@@ -2845,7 +2852,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                           file=paste0(dir.out,"/ELMER_results_",j,".rda"))
                                  }
                              }
-                             incProgress(1/2, detail = paste0('Analysis in direction completed: ',j))
+                             setProgress(value = which(j == direction) * 0.5, message = "Step 5", detail = paste0('Analysis in direction completed: ',j), session = getDefaultReactiveDomain())
                          })
         }
     })

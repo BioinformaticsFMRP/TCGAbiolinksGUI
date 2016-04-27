@@ -93,20 +93,20 @@ pre {
 }
 .shiny-progress .bar {
     background-color: #FF0000;
-    .opacity 0.8;
+    .opacity 1.0;
 }
 .shiny-progress .progress {
-    background-color: #FF0000;
-    .opacity 0.8;
+    background-color: navy;
+    .opacity 1.0;
 }
 .shiny-progress-container. {
-    background-color: #FF0000;
-    .opacity 0.8;
+    background-color: navy;
+    .opacity 1.0;
     border-color: red;
 }
 .shiny-progress {
-    background-color: #FF0000;
-    .opacity 0.8;
+    background-color: navy;
+    .opacity 1.0;
 }
 .shiny-progress .progress {
     height: 7px;
