@@ -1195,7 +1195,22 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     ##----------------------------------------------------------------------
 
     #-------------------------START controlling show/hide states -----------------
-
+    observeEvent(input$meanmetSetLimits, {
+        if(input$meanmetSetLimits){
+            shinyjs::show("meanmetylimup")
+            shinyjs::show("meanmetylimlow")
+        } else {
+            shinyjs::hide("meanmetylimup")
+            shinyjs::hide("meanmetylimlow")
+        }
+    })
+    observeEvent(input$meanmetSortCB, {
+        if(input$meanmetSortCB){
+            shinyjs::show("meanmetsort")
+        } else {
+            shinyjs::hide("meanmetsort")
+        }
+    })
     #-------------------------END controlling show/hide states -----------------
     observeEvent(input$dmrAnalysis , {
 
@@ -1332,9 +1347,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         output$mean.plotting <- renderPlot({
             closeAlert(session, "meanmetAlert")
             jitter <- isolate({input$meanmetplotjitter})
-            sort <- isolate({input$meanmetsort})
+            sort <- NULL
+            if(isolate({input$meanmetSortCB})) sort <- isolate({input$meanmetsort})
             angle <- isolate({input$meanmetAxisAngle})
             data <- meandata()
+
+            y.limits <- NULL
+            if(isolate({input$meanmetSetLimits})) y.limits <- c(isolate({input$meanmetylimlow}),isolate({input$meanmetylimup}))
 
             if(is.null(data)){
                 createAlert(session, "meanmetmessage", "meanmetAlert", title = "Missing data", style =  "danger",
@@ -1367,6 +1386,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                                groupCol=group,
                                                                subgroupCol=subgroup,
                                                                filename = NULL,
+                                                               y.limits = y.limits,
                                                                plot.jitter = jitter,
                                                                axis.text.x.angle = angle )
                              } else {
@@ -1374,6 +1394,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                                groupCol=group,
                                                                subgroupCol=subgroup,
                                                                filename = NULL,
+                                                               y.limits = y.limits,
                                                                plot.jitter = jitter,
                                                                axis.text.x.angle = angle,
                                                                sort=sort)
@@ -1724,6 +1745,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 }
             }
 
+            xlim <- NULL
+            if(isolate({input$eaxlim}) > 0) xlim <- c(0,isolate({input$eaxlim}))
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
                              ansEA <- TCGAanalyze_EAcomplete(TFname="DEA genes", genes)
@@ -1732,11 +1755,17 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              ResBP <- NULL
                              ResCC <- NULL
                              ResPat <- NULL
-                             if(length(grep("NA",ansEA$ResBP)) != ncol(ansEA$ResBP)) ResBP <- ansEA$ResBP
-                             if(length(grep("NA",ansEA$ResCC)) != ncol(ansEA$ResCC)) ResCC <- ansEA$ResCC
-                             if(length(grep("NA",ansEA$ResMF)) != ncol(ansEA$ResMF)) ResMF <- ansEA$ResMF
-                             if(length(grep("NA",ansEA$ResPat)) != ncol(ansEA$ResPat)) ResPat <- ansEA$ResPat
+                             if(length(grep("NA",ansEA$ResBP)) != ncol(ansEA$ResBP) &  isolate({input$eaPlotBPCB})) ResBP <- ansEA$ResBP
+                             if(length(grep("NA",ansEA$ResCC)) != ncol(ansEA$ResCC) &  isolate({input$eaPlotCCCB})) ResCC <- ansEA$ResCC
+                             if(length(grep("NA",ansEA$ResMF)) != ncol(ansEA$ResMF) &  isolate({input$eaPlotMFCB})) ResMF <- ansEA$ResMF
+                             if(length(grep("NA",ansEA$ResPat)) != ncol(ansEA$ResPat) &  isolate({input$eaPlotPatCB})) ResPat <- ansEA$ResPat
 
+                             nbPlot <- table(c(is.null(ResMF),is.null(ResBP),is.null(ResCC),is.null(ResPat)))["FALSE"]
+
+                             if(nbPlot == 1)  mfrow = c(1,1)
+                             if(nbPlot == 2)  mfrow = c(2,1)
+                             if(nbPlot > 2)  mfrow = c(2,2)
+                             if(is.na(nbPlot)) return (NULL)
                              # Enrichment Analysis EA (TCGAVisualize)
                              # Gene Ontology (GO) and Pathway enrichment barPlot
 
@@ -1750,6 +1779,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                                isolate({input$colMF}),
                                                                isolate({input$colPat})),
                                                      nRGTab = genes,
+                                                     text.size = isolate({input$eaSizeText}),
+                                                     xlim = xlim,
+                                                     mfrow = mfrow,
                                                      nBar = isolate({input$nBar}),
                                                      filename = NULL)
                          })
