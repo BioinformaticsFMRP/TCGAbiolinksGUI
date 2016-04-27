@@ -350,10 +350,10 @@ body <-  dashboardBody(
                                checkboxInput("summaryAddBarCount", "Add counts label to barchart?", value = TRUE, width = NULL)
                            ),
                            box(title = "Colors control",width = NULL,
-                               solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
+                               solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                colourInput("summarySetsBarColor", "Sets Bar color", value = "#56B4E9")),
                            box(title = "Size controls",width = NULL,
-                               solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
+                               solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                #sliderInput("summaryncol", "Number columns", min = 1, max = 4, value = 3),
                                sliderInput("summarywidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                sliderInput("summaryheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
