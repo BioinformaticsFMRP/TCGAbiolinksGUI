@@ -6,7 +6,8 @@
 \usage{
 create.oncoprint(mut, genes, filename, color, annotation.position = "bottom",
   annotation, height, rm.empty.columns = FALSE, show.column.names = FALSE,
-  show.row.barplot = TRUE, label.title = "Mutation", font.size = 16)
+  show.row.barplot = TRUE, label.title = "Mutation", label.font.size = 16,
+  rows.font.size = 16, dist.col = 0.5, dist.row = 0.5)
 }
 \arguments{
 \item{mut}{Mutation file (see TCGAquery_maf from TCGAbiolinks)}
@@ -32,7 +33,9 @@ Should have a column bcr_patient_barcode with the same ID of the mutation object
 
 \item{label.title}{Title of the label}
 
-\item{font.size}{Size of the fonts}
+\item{rows.font.size}{Size of the fonts}
+
+\item{labels.font.size}{Size of the fonts}
 }
 \description{
 Creating a oncoprint
@@ -40,16 +43,16 @@ Creating a oncoprint
 \examples{
 mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM",
        archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
-create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10])
+create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10], rm.empty.columns = TRUE)
 create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
                  filename = "onco.pdf",
-                 color=c("DEL"="purple","INS"="yellow","SNP"="brown"))
+                 color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"))
 clin <- TCGAbiolinks::TCGAquery_clinic("gbm","clinical_patient")
 clin <- clin[,c("bcr_patient_barcode","disease","gender")]
 create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
                  filename = "onco.pdf",
                  annotation = clin,
-                 color=c("DEL"="purple","INS"="yellow","SNP"="brown"),font.size=10)
+                 color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"),font.size=10)
 
 }
 
