@@ -7,7 +7,8 @@
 #' @param rm.empty.columns If there is no alteration in that sample, whether remove it on the oncoprint
 #' @param show.row.barplot  Show barplot annotation on rows?
 #' @param show.column.names Show column names? Default: FALSE
-#' @param font.size Size of the fonts
+#' @param rows.font.size Size of the fonts
+#' @param labels.font.size Size of the fonts
 #' @param annotation Matrix or data frame with the annotation.
 #' Should have a column bcr_patient_barcode with the same ID of the mutation object
 #' @param annotation.position Position of the annotation "bottom" or "top"
@@ -18,16 +19,16 @@
 #' @examples
 #' mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM",
 #'        archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
-#' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10])
+#' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10], rm.empty.columns = TRUE)
 #' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
 #'                  filename = "onco.pdf",
-#'                  color=c("DEL"="purple","INS"="yellow","SNP"="brown"))
+#'                  color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"))
 #' clin <- TCGAbiolinks::TCGAquery_clinic("gbm","clinical_patient")
 #' clin <- clin[,c("bcr_patient_barcode","disease","gender")]
 #' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
 #'                  filename = "onco.pdf",
 #'                  annotation = clin,
-#'                  color=c("DEL"="purple","INS"="yellow","SNP"="brown"),font.size=10)
+#'                  color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"),font.size=10)
 #'
 #' @export
 create.oncoprint <- function (mut,
@@ -41,7 +42,10 @@ create.oncoprint <- function (mut,
                               show.column.names = FALSE,
                               show.row.barplot = TRUE,
                               label.title = "Mutation",
-                              font.size = 16){
+                              label.font.size = 16,
+                              rows.font.size = 16,
+                              dist.col = 0.5,
+                              dist.row = 0.5){
 
 
     if(missing(mut))   stop("Missing mut argument")
@@ -75,8 +79,6 @@ create.oncoprint <- function (mut,
         if(length(grep(i,mat$value)) > 0) mutation.type <- c(mutation.type,i)
     }
 
-
-
     # now we have a matrix with pairs samples/genes mutations
     # we want a matrix with samples vs genes mutations with the content being the value
     mat <- setDF(dcast(mat, Tumor_Sample_Barcode~Hugo_Symbol, value.var="value",fill=""))
@@ -87,31 +89,34 @@ create.oncoprint <- function (mut,
 
     alter_fun = list(
         background = function(x, y, w, h) {
-            grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = "#CCCCCC", col = NA))
+            grid.rect(x, y, w-unit(dist.col, "mm"), h-unit(dist.row, "mm"), gp = gpar(fill = color["background"], col = NA))
         },
         INS = function(x, y, w, h) {
-            grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = color["INS"], col = NA))
+            grid.rect(x, y, w-unit(dist.col, "mm"), h-unit(dist.row, "mm"), gp = gpar(fill = color["INS"], col = NA))
         },
         DEL = function(x, y, w, h) {
-            grid.rect(x, y, w-unit(0.5, "mm"), h-unit(0.5, "mm"), gp = gpar(fill = color["DEL"], col = NA))
+            grid.rect(x, y, w-unit(dist.col, "mm"), h-unit(dist.row, "mm"), gp = gpar(fill = color["DEL"], col = NA))
         },
         SNP = function(x, y, w, h) {
-            grid.rect(x, y, w-unit(0.5, "mm"), h*0.33, gp = gpar(fill = color["SNP"], col = NA))
+            grid.rect(x, y, w-unit(dist.col, "mm"), h*0.33, gp = gpar(fill = color["SNP"], col = NA))
         },
         DNP = function(x, y, w, h) {
-            grid.rect(x, y, w-unit(0.5, "mm"), h*0.33, gp = gpar(fill = color["DNP"], col = NA))
+            grid.rect(x, y, w-unit(dist.col, "mm"), h*0.45, gp = gpar(fill = color["DNP"], col = NA))
         }
     )
-
 
     # get only the colors to the mutations
     # otherwise it gives errors
 
     if(missing(color)){
-        color <- c(rainbow(length(mutation.type)))
-        names(color) <- mutation.type
+        color <- c(rainbow(length(mutation.type)), "#CCCCCC")
+        names(color) <- c(mutation.type,"background")
     } else{
-        color <- color[mutation.type]
+        if("background" %in% names(color)) {
+            color <- color[c(mutation.type,"background")]
+        } else {
+            color <- c(color[mutation.type],"background"= "#CCCCCC")
+        }
     }
     alt = intersect(names(alter_fun), c("background",as.character(mutation.type)))
     alter_fun <- alter_fun[alt]
@@ -141,7 +146,14 @@ create.oncoprint <- function (mut,
             start <- 1
             if(idx != 1) start <- length(unique(unlist(c(df[,1:(idx-1)])))) + 1
             end <- start + length(unique(df[,col])) -1
-            diff.colors <- c("dimgray","thistle","deeppink3","magenta4","lightsteelblue1","black","chartreuse","lightgreen","maroon4","darkslategray","lightyellow3","darkslateblue","firebrick1","aquamarine","dodgerblue4","bisque4","moccasin","indianred1","yellow","gray93","cyan","darkseagreen4","lightgoldenrodyellow","lightpink","sienna1","darkred","palevioletred","tomato4","blue","mediumorchid4","royalblue1","magenta2","darkgoldenrod1")
+            diff.colors <- c("dimgray","thistle","deeppink3","magenta4","lightsteelblue1","black",
+                             "chartreuse","lightgreen","maroon4","darkslategray",
+                             "lightyellow3","darkslateblue","firebrick1","aquamarine",
+                             "dodgerblue4","bisque4","moccasin","indianred1",
+                             "yellow","gray93","cyan","darkseagreen4",
+                             "lightgoldenrodyellow","lightpink","sienna1",
+                             "darkred","palevioletred","tomato4","blue",
+                             "mediumorchid4","royalblue1","magenta2","darkgoldenrod1")
             return(diff.colors[start:end])
         }
         col.annot <- lapply(colnames(annotation), function(x) {
@@ -156,9 +168,9 @@ create.oncoprint <- function (mut,
 
         annotHeatmap <- HeatmapAnnotation(df=annotation,
                                           col=col.annot,
-                                          annotation_legend_param=list(title_gp=gpar(fontsize=font.size,
+                                          annotation_legend_param=list(title_gp=gpar(fontsize=label.font.size,
                                                                                      fontface="bold"),
-                                                                       labels_gp=gpar(fontsize=font.size),#sizelabels
+                                                                       labels_gp=gpar(fontsize=label.font.size),#sizelabels
                                                                        grid_height=unit(8,"mm")))
     }
 
@@ -171,17 +183,18 @@ create.oncoprint <- function (mut,
                        show_row_barplot = show.row.barplot,
                        column_order = NULL, # Do not sort the columns
                        alter_fun = alter_fun, col = color,
-                       row_names_gp = gpar(fontsize = font.size),  # set size for row names
-                       pct_gp = gpar(fontsize = font.size), # set size for percentage labels
-                       axis_gp = gpar(fontsize = font.size),# size of axis
+                       row_names_gp = gpar(fontsize = rows.font.size),  # set size for row names
+                       pct_gp = gpar(fontsize = rows.font.size), # set size for percentage labels
+                       axis_gp = gpar(fontsize = rows.font.size),# size of axis
                        #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
                        #column_title_gp = gpar(fontsize = 11),
                        row_barplot_width = unit(2, "cm"), #size barplot
                        heatmap_legend_param = list(title = label.title, at = names(color),
                                                    labels = names(color),
-                                                   title_gp = gpar(fontsize = font.size, fontface = "bold"),
-                                                   labels_gp = gpar(fontsize = font.size), # size labels
-                                                   grid_height = unit(8, "mm") # vertical distance labels
+                                                   title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
+                                                   labels_gp = gpar(fontsize = label.font.size), # size labels
+                                                   grid_height = unit(8, "mm"), # vertical distance labels
+                                                   nrow = 1, title_position = "leftcenter"
                        )
         )
     } else if(!is.null(annotation) & annotation.position == "bottom"){
@@ -193,18 +206,19 @@ create.oncoprint <- function (mut,
                        show_column_names = show.column.names,
                        column_order = NULL, # Do not sort the columns
                        alter_fun = alter_fun, col = color,
-                       row_names_gp = gpar(fontsize = font.size),  # set size for row names
-                       pct_gp = gpar(fontsize = font.size), # set size for percentage labels
-                       axis_gp = gpar(fontsize = font.size),# size of axis
+                       row_names_gp = gpar(fontsize = rows.font.size),  # set size for row names
+                       pct_gp = gpar(fontsize = rows.font.size), # set size for percentage labels
+                       axis_gp = gpar(fontsize = rows.font.size),# size of axis
                        #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
                        #column_title_gp = gpar(fontsize = 11),
                        row_barplot_width = unit(2, "cm"), #size barplot
                        bottom_annotation = annotHeatmap,
                        heatmap_legend_param = list(title = label.title, at = names(color),
                                                    labels = names(color),
-                                                   title_gp = gpar(fontsize = font.size, fontface = "bold"),
-                                                   labels_gp = gpar(fontsize = font.size), # size labels
-                                                   grid_height = unit(8, "mm") # vertical distance labels
+                                                   title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
+                                                   labels_gp = gpar(fontsize = label.font.size), # size labels
+                                                   grid_height = unit(8, "mm"), # vertical distance labels
+                                                   nrow = 1, title_position = "leftcenter"
                        )
         )
 
@@ -216,22 +230,23 @@ create.oncoprint <- function (mut,
                        show_row_barplot = show.row.barplot,
                        column_order = NULL, # Do not sort the columns
                        alter_fun = alter_fun, col = color,
-                       row_names_gp = gpar(fontsize = font.size),  # set size for row names
-                       pct_gp = gpar(fontsize = font.size), # set size for percentage labels
-                       axis_gp = gpar(fontsize = font.size),# size of axis
+                       row_names_gp = gpar(fontsize = rows.font.size),  # set size for row names
+                       pct_gp = gpar(fontsize = rows.font.size), # set size for percentage labels
+                       axis_gp = gpar(fontsize = rows.font.size),# size of axis
                        #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
                        #column_title_gp = gpar(fontsize = 11),
                        row_barplot_width = unit(2, "cm"), #size barplot
                        top_annotation = annotHeatmap,
                        heatmap_legend_param = list(title = label.title, at = names(color),
                                                    labels = names(color),
-                                                   title_gp = gpar(fontsize = font.size, fontface = "bold"),
-                                                   labels_gp = gpar(fontsize = font.size), # size labels
-                                                   grid_height = unit(8, "mm") # vertical distance labels
+                                                   title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
+                                                   labels_gp = gpar(fontsize = label.font.size), # size labels
+                                                   grid_height = unit(8, "mm"),  # vertical distance labels
+                                                   nrow = 1, title_position = "leftcenter"
                        )
         )
     }
 
     if(!missing(filename)) dev.off()
-    draw(p)
+    draw(p, heatmap_legend_side = "bottom")
 }

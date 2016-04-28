@@ -952,8 +952,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                               rm.empty.columns = rm.empty.cols,
                                               show.column.names = show.col.names,
                                               show.row.barplot = show.row.barplot,
-                                              font.size = isolate(input$oncoTextSize),
-                                              color = c("SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
+                                              label.font.size = isolate(input$oncoTextLabelSize),
+                                              rows.font.size = isolate(input$oncoTextRowSize),
+                                              dist.row =  isolate(input$oncoHSpace),
+                                              dist.col =  isolate(input$oncoWSpace),
+                                              color = c("background" = isolate(input$colBG),
+                                                        "SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
                                                         "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))
 
                          })
