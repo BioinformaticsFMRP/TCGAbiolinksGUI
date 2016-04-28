@@ -414,6 +414,7 @@ body <-  dashboardBody(
 
                                    bsTooltip("oncoRmCols", "If there is no alteration in that sample, whether remove it on the oncoprint",
                                              "left"),
+                                   checkboxInput("oncoRowSort", "Sort by frequency of alterations decreasingly?", value = FALSE, width = NULL),
                                    checkboxInput("oncoRmCols", "Remove empty columns?", value = FALSE, width = NULL),
                                    checkboxInput("oncoShowColsNames", "Show column names?", value = FALSE, width = NULL),
                                    checkboxInput("oncoShowRowBarplot", "Show barplot annotation on rows?", value = TRUE, width = NULL),
@@ -433,7 +434,7 @@ body <-  dashboardBody(
                                    colourInput("colBG", "Background color", value = "#CCCCCC"),
                                    colourInput("colDEL", "DEL color", value = "red"),
                                    colourInput("colINS", "INS color", value = "blue"),
-                                   colourInput("colSNP", "SNP color", value = "green"),
+                                   colourInput("colSNP", "SNP color", value = "#008000"),
                                    colourInput("colDNP", "DNP color", value = "purple")),
                                box(title = "Size control",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,

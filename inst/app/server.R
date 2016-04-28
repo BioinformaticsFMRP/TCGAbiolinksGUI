@@ -956,6 +956,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                               rows.font.size = isolate(input$oncoTextRowSize),
                                               dist.row =  isolate(input$oncoHSpace),
                                               dist.col =  isolate(input$oncoWSpace),
+                                              row.order =  isolate(input$oncoRowSort),
                                               color = c("background" = isolate(input$colBG),
                                                         "SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
                                                         "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))

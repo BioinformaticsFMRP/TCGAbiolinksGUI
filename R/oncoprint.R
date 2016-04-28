@@ -45,7 +45,8 @@ create.oncoprint <- function (mut,
                               label.font.size = 16,
                               rows.font.size = 16,
                               dist.col = 0.5,
-                              dist.row = 0.5){
+                              dist.row = 0.5,
+                              row.order = FALSE){
 
 
     if(missing(mut))   stop("Missing mut argument")
@@ -174,8 +175,7 @@ create.oncoprint <- function (mut,
                                                                        grid_height=unit(8,"mm")))
     }
 
-
-    if(is.null(annotation)){
+    if(is.null(annotation) & !row.order){
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,
                        remove_empty_columns = FALSE,
@@ -197,7 +197,7 @@ create.oncoprint <- function (mut,
                                                    nrow = 1, title_position = "leftcenter"
                        )
         )
-    } else if(!is.null(annotation) & annotation.position == "bottom"){
+    } else if(!is.null(annotation) & annotation.position == "bottom" & !row.order){
 
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,
@@ -222,9 +222,76 @@ create.oncoprint <- function (mut,
                        )
         )
 
-    } else {
+    } else if(!is.null(annotation) & annotation.position == "top" & !row.order){
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,
+                       remove_empty_columns = FALSE,
+                       show_column_names = show.column.names,
+                       show_row_barplot = show.row.barplot,
+                       column_order = NULL, # Do not sort the columns
+                       alter_fun = alter_fun, col = color,
+                       row_names_gp = gpar(fontsize = rows.font.size),  # set size for row names
+                       pct_gp = gpar(fontsize = rows.font.size), # set size for percentage labels
+                       axis_gp = gpar(fontsize = rows.font.size),# size of axis
+                       #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
+                       #column_title_gp = gpar(fontsize = 11),
+                       row_barplot_width = unit(2, "cm"), #size barplot
+                       top_annotation = annotHeatmap,
+                       heatmap_legend_param = list(title = label.title, at = names(color),
+                                                   labels = names(color),
+                                                   title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
+                                                   labels_gp = gpar(fontsize = label.font.size), # size labels
+                                                   grid_height = unit(8, "mm"),  # vertical distance labels
+                                                   nrow = 1, title_position = "leftcenter"
+                       )
+        )
+    }  else if(is.null(annotation) & row.order){
+        p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+                       remove_empty_columns = FALSE,
+                       show_column_names = show.column.names,
+                       show_row_barplot = show.row.barplot,
+                       column_order = NULL, # Do not sort the columns
+                       alter_fun = alter_fun, col = color,
+                       row_names_gp = gpar(fontsize = rows.font.size),  # set size for row names
+                       pct_gp = gpar(fontsize = rows.font.size), # set size for percentage labels
+                       axis_gp = gpar(fontsize = rows.font.size),# size of axis
+                       #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
+                       #column_title_gp = gpar(fontsize = 11),
+                       row_barplot_width = unit(2, "cm"), #size barplot
+                       heatmap_legend_param = list(title = label.title, at = names(color),
+                                                   labels = names(color),
+                                                   title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
+                                                   labels_gp = gpar(fontsize = label.font.size), # size labels
+                                                   grid_height = unit(8, "mm"), # vertical distance labels
+                                                   nrow = 1, title_position = "leftcenter"
+                       )
+        )
+    } else if(!is.null(annotation) & annotation.position == "bottom" & row.order){
+
+        p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
+                       remove_empty_columns = FALSE,
+                       show_row_barplot = show.row.barplot,
+                       show_column_names = show.column.names,
+                       column_order = NULL, # Do not sort the columns
+                       alter_fun = alter_fun, col = color,
+                       row_names_gp = gpar(fontsize = rows.font.size),  # set size for row names
+                       pct_gp = gpar(fontsize = rows.font.size), # set size for percentage labels
+                       axis_gp = gpar(fontsize = rows.font.size),# size of axis
+                       #column_title = "OncoPrint for TCGA LGG, genes in Glioma signaling",
+                       #column_title_gp = gpar(fontsize = 11),
+                       row_barplot_width = unit(2, "cm"), #size barplot
+                       bottom_annotation = annotHeatmap,
+                       heatmap_legend_param = list(title = label.title, at = names(color),
+                                                   labels = names(color),
+                                                   title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
+                                                   labels_gp = gpar(fontsize = label.font.size), # size labels
+                                                   grid_height = unit(8, "mm"), # vertical distance labels
+                                                   nrow = 1, title_position = "leftcenter"
+                       )
+        )
+
+    } else if(!is.null(annotation) & annotation.position == "top" & row.order){
+        p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        remove_empty_columns = FALSE,
                        show_column_names = show.column.names,
                        show_row_barplot = show.row.barplot,
