@@ -867,7 +867,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         # if a data frame return the column with gene symbols
         if(class(df)==class(data.frame())){
             if("mRNA" %in% colnames(df)){
-                df <- subset(df,df$status != "Insignificant")
+                if("status" %in% colnames(df)) df <- subset(df,df$status != "Insignificant")
                 aux <- strsplit(df$mRNA,"\\|")
                 genes <- unlist(lapply(aux,function(x) x[1]))
             } else if("Gene_symbol" %in% colnames(df)){

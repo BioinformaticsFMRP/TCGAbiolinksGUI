@@ -728,6 +728,8 @@ body <-  dashboardBody(
                                                   "Genes",
                                                   choices = unique(rownames(TCGAbiolinks:::EAGenes)),
                                                   multiple = TRUE),
+                                   bsTooltip("eaGenesFiles", "Expecting a column Gene_symbol or mRNA in the file (csv,txt,rda). If it is the DEA_results files, it will ignore the insignificant genes",
+                                             "left"),
                                    shinyFilesButton('eaGenesFiles', 'Select file with genes', 'Please select a file with genes',  multiple = FALSE)),
                                box(title = "Parameters control",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
