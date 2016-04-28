@@ -7,6 +7,9 @@ This function will update the biomics database}
 \usage{
 update()
 }
+\value{
+Update maf files table
+}
 \description{
 Update database
 This function will update the biomics database

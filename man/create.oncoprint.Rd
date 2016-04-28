@@ -7,7 +7,8 @@
 create.oncoprint(mut, genes, filename, color, annotation.position = "bottom",
   annotation, height, rm.empty.columns = FALSE, show.column.names = FALSE,
   show.row.barplot = TRUE, label.title = "Mutation", label.font.size = 16,
-  rows.font.size = 16, dist.col = 0.5, dist.row = 0.5)
+  rows.font.size = 16, dist.col = 0.5, dist.row = 0.5,
+  row.order = FALSE, legend.side = "bottom")
 }
 \arguments{
 \item{mut}{Mutation file (see TCGAquery_maf from TCGAbiolinks)}
@@ -36,6 +37,9 @@ Should have a column bcr_patient_barcode with the same ID of the mutation object
 \item{rows.font.size}{Size of the fonts}
 
 \item{labels.font.size}{Size of the fonts}
+}
+\value{
+A oncoprint plot
 }
 \description{
 Creating a oncoprint

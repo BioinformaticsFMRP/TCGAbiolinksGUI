@@ -27,7 +27,6 @@ Imports:
     shinyFiles (>= 0.6.0),
     UpSetR,
     ggplot2  (>= 2.1.0),
-    pbapply,
     pathview,
     rvest,
     devtools,
@@ -48,5 +47,6 @@ biocViews: Genetics,
     MethylationArray,
     DifferentialExpression,
     Pathways,
-    Network
+    Network,
+    DNASeq
 RoxygenNote: 5.0.1

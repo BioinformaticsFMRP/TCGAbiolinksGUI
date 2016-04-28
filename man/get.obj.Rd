@@ -6,8 +6,14 @@
 \usage{
 get.obj(obj)
 }
+\value{
+Return object from package
+}
 \description{
 Get object from inside the package
+}
+\examples{
+maf.files <- get.obj("maf.files")
 }
 \keyword{internal}
 

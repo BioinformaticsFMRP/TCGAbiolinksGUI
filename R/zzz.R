@@ -25,9 +25,10 @@
 #' This function will update the biomics database
 #' @importFrom devtools use_data
 #' @keywords internal
+#' @return Update maf files table
 update <- function(){
     env <- as.environment("package:TCGAbiolinksGUI")
     load.maf(env)
     maf.files <- get("maf.files", envir = env)
-    use_data(maf.files, internal = TRUE, overwrite = T)
+    use_data(maf.files, internal = TRUE, overwrite = TRUE)
 }

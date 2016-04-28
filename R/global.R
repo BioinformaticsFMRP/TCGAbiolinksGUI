@@ -27,18 +27,13 @@ is.linux <- function() {
     Sys.info()["sysname"] == "Linux"
 }
 
-setOptionsProgressBar <- function(title, label) {
-    # if(is.linux() || is.mac() ) opb <-
-    # pbapply::pboptions(type='tk', title = title, label = label)
-    # else if(is.windows()) opb <- pbapply::pboptions(type='win',
-    # title = title, label = label) else
-    opb <- pbapply::pboptions(type = "txt", char = "+", title = title,
-        label = label)
-}
-
 #' Get object from inside the package
 #' @keywords internal
 #' @export
+#' @return Return object from package
+#' @examples
+#' maf.files <- get.obj("maf.files")
 get.obj <- function(obj){
+    if(is.null(obj)) return(NULL)
     return(get(obj))
 }

@@ -15,7 +15,7 @@
 #' @param label.title Title of the label
 #' @importFrom ComplexHeatmap oncoPrint draw HeatmapAnnotation
 #' @importFrom grid gpar grid.rect
-#' @importFrom data.table dcast setDT setDF
+#' @importFrom data.table dcast setDT setDF :=
 #' @examples
 #' mut <- TCGAbiolinks::TCGAquery_maf(tumor = "GBM",
 #'        archive.name = "ucsc.edu_GBM.IlluminaGA_DNASeq_automated.Level_2.1.1.0")
@@ -31,6 +31,7 @@
 #'                  color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"),font.size=10)
 #'
 #' @export
+#' @return A oncoprint plot
 create.oncoprint <- function (mut,
                               genes,
                               filename,
