@@ -915,9 +915,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             if(is.null(genes)){
                 createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
                             content = "Please select the genes (max 50)", append = TRUE)
-            } else if( length(genes) > 100 & length(not.found) > 0){
+            } else if( length(genes) > 100){
                 createAlert(session, "oncomessage", "oncoAlert", title = "Errors", style =  "danger",
-                            content = paste0("The limit of the genes is 100 \n",msg), append = TRUE)
+                            content = paste0("The limit of the genes is 100 \n You gave me: ",length(genes)), append = TRUE)
                 return(NULL)
             } else if(length(not.found) > 0){
                 createAlert(session, "oncomessage", "oncoAlert", title = "Errors", style =  "danger",
@@ -957,6 +957,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                               dist.row =  isolate(input$oncoHSpace),
                                               dist.col =  isolate(input$oncoWSpace),
                                               row.order =  isolate(input$oncoRowSort),
+                                              legend.side = isolate(input$oncoLegendSide),
                                               color = c("background" = isolate(input$colBG),
                                                         "SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
                                                         "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))

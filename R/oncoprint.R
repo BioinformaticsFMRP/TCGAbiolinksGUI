@@ -46,7 +46,8 @@ create.oncoprint <- function (mut,
                               rows.font.size = 16,
                               dist.col = 0.5,
                               dist.row = 0.5,
-                              row.order = FALSE){
+                              row.order = FALSE,
+                              legend.side = "bottom"){
 
 
     if(missing(mut))   stop("Missing mut argument")
@@ -174,7 +175,13 @@ create.oncoprint <- function (mut,
                                                                        labels_gp=gpar(fontsize=label.font.size),#sizelabels
                                                                        grid_height=unit(8,"mm")))
     }
-
+    if(legend.side == "bottom") {
+        nrow <- 1
+        title_position <- "leftcenter"
+    } else {
+        nrow <- 10
+        title_position <- "topcenter"
+    }
     if(is.null(annotation) & !row.order){
         p <- oncoPrint(mat, get_type = function(x) strsplit(x, ";")[[1]],
                        row_order = NULL,
@@ -194,7 +201,7 @@ create.oncoprint <- function (mut,
                                                    title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
                                                    labels_gp = gpar(fontsize = label.font.size), # size labels
                                                    grid_height = unit(8, "mm"), # vertical distance labels
-                                                   nrow = 1, title_position = "leftcenter"
+                                                   nrow = nrow, title_position = title_position
                        )
         )
     } else if(!is.null(annotation) & annotation.position == "bottom" & !row.order){
@@ -218,7 +225,7 @@ create.oncoprint <- function (mut,
                                                    title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
                                                    labels_gp = gpar(fontsize = label.font.size), # size labels
                                                    grid_height = unit(8, "mm"), # vertical distance labels
-                                                   nrow = 1, title_position = "leftcenter"
+                                                   nrow = nrow, title_position = title_position
                        )
         )
 
@@ -242,7 +249,7 @@ create.oncoprint <- function (mut,
                                                    title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
                                                    labels_gp = gpar(fontsize = label.font.size), # size labels
                                                    grid_height = unit(8, "mm"),  # vertical distance labels
-                                                   nrow = 1, title_position = "leftcenter"
+                                                   nrow = nrow, title_position = title_position
                        )
         )
     }  else if(is.null(annotation) & row.order){
@@ -263,7 +270,7 @@ create.oncoprint <- function (mut,
                                                    title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
                                                    labels_gp = gpar(fontsize = label.font.size), # size labels
                                                    grid_height = unit(8, "mm"), # vertical distance labels
-                                                   nrow = 1, title_position = "leftcenter"
+                                                   nrow = nrow, title_position = title_position
                        )
         )
     } else if(!is.null(annotation) & annotation.position == "bottom" & row.order){
@@ -286,7 +293,7 @@ create.oncoprint <- function (mut,
                                                    title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
                                                    labels_gp = gpar(fontsize = label.font.size), # size labels
                                                    grid_height = unit(8, "mm"), # vertical distance labels
-                                                   nrow = 1, title_position = "leftcenter"
+                                                   nrow = nrow, title_position = title_position
                        )
         )
 
@@ -309,11 +316,16 @@ create.oncoprint <- function (mut,
                                                    title_gp = gpar(fontsize = label.font.size, fontface = "bold"),
                                                    labels_gp = gpar(fontsize = label.font.size), # size labels
                                                    grid_height = unit(8, "mm"),  # vertical distance labels
-                                                   nrow = 1, title_position = "leftcenter"
+                                                   nrow = nrow, title_position = title_position
                        )
         )
     }
 
     if(!missing(filename)) dev.off()
-    draw(p, heatmap_legend_side = "bottom")
+
+    if(legend.side == "bottom"){
+        draw(p, heatmap_legend_side = "bottom")
+    } else {
+        draw(p)
+    }
 }
