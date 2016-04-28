@@ -87,7 +87,7 @@ create.oncoprint <- function (mut,
     rownames(mat) <- mat[,1]
     mat <- mat[,-1]
 
-    rownames(mat) <-  substr(rownames(mat),1,12)
+    #rownames(mat) <-  substr(rownames(mat),1,12)
 
     alter_fun = list(
         background = function(x, y, w, h) {

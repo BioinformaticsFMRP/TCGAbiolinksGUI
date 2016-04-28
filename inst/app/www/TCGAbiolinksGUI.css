@@ -10,6 +10,10 @@ h1 {
 body {
     background-color: #fff;
 }
+.small-box .icon-large {
+    color: rgba(255, 255, 255, 0.15);
+}
+
 .main-header .logo {
     /* font-family: 'Lobster', cursive;*/
     font-family: 'Raleway',sans-serif;

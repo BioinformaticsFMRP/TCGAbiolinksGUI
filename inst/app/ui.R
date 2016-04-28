@@ -384,6 +384,7 @@ body <-  dashboardBody(
                                                     multiple = FALSE),
                                    tags$br(),
                                    tags$br(),
+                                   bsTooltip("mafAnnotation", "The object must have a column with the ID of patients. We look for one of the following columns: bcr_patient_barcode or patient"),
                                    shinyFilesButton('mafAnnotation', 'Select annotation file', 'Please select a file with the annotation data frame ',
                                                     multiple = FALSE),
                                    useShinyjs(),
@@ -441,7 +442,7 @@ body <-  dashboardBody(
                                box(title = "Size control",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    sliderInput("oncowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                                   sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 1200, value = 800)
+                                   sliderInput("oncoheight", "Plot Height (px)", min = 0, max = 2000, value = 800)
                                ),
 
                                actionButton("oncoprintPlot",
@@ -457,12 +458,17 @@ body <-  dashboardBody(
                 )
         ),
         tabItem(tabName = "volcano",
-
                 fluidRow(
                     column(10,  bsAlert("volcanomessage"),
                            bsCollapse(id = "collapseVolcano", open = "Volcano plot",
                                       #bsCollapsePanel("Probes info", dataTableOutput('probesSE'), style = "default"),
-                                      bsCollapsePanel("Volcano plot", uiOutput("volcanoPlot"), style = "default"))),
+                                      bsCollapsePanel("Volcano plot", uiOutput("volcanoPlot"), style = "default")),
+                           fluidRow(
+                               column(width = 10,  offset = 3,
+                                valueBoxOutput("volcanoBoxDown", width = 3),
+                               valueBoxOutput("volcanoBoxInsig", width = 3),
+                               valueBoxOutput("volcanoBoxUp", width = 3))
+                           )),
                     column(2,
                            box(title = "Volcano Plot",width = NULL,
                                status = "danger",
