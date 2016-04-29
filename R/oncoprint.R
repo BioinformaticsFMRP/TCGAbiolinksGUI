@@ -24,11 +24,15 @@
 #'                  filename = "onco.pdf",
 #'                  color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"))
 #' clin <- TCGAbiolinks::TCGAquery_clinic("gbm","clinical_patient")
-#' clin <- clin[,c("bcr_patient_barcode","disease","gender")]
-#' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
-#'                  filename = "onco.pdf",
-#'                  annotation = clin,
-#'                  color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"),rows.font.size=10)
+#' clin <- clin[,c("bcr_patient_barcode","disease","gender","tumor_tissue_site","race","vital_status")]
+#' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:20],
+#'                 filename = "onco.pdf",
+#'                 annotation = clin,
+#'                 color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"),
+#'                 rows.font.size=10,
+#'                 heatmap.legend.side = "right",
+#'                 dist.col = 0,
+#'                 label.font.size = 10)
 #'
 #' @export
 #' @return A oncoprint plot
