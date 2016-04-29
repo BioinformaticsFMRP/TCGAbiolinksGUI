@@ -8,7 +8,8 @@ create.oncoprint(mut, genes, filename, color, annotation.position = "bottom",
   annotation, height, rm.empty.columns = FALSE, show.column.names = FALSE,
   show.row.barplot = TRUE, label.title = "Mutation", label.font.size = 16,
   rows.font.size = 16, dist.col = 0.5, dist.row = 0.5,
-  row.order = FALSE, legend.side = "bottom")
+  row.order = FALSE, heatmap.legend.side = "bottom",
+  annotation.legend.side = "bottom")
 }
 \arguments{
 \item{mut}{Mutation file (see TCGAquery_maf from TCGAbiolinks)}
@@ -56,7 +57,7 @@ clin <- clin[,c("bcr_patient_barcode","disease","gender")]
 create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
                  filename = "onco.pdf",
                  annotation = clin,
-                 color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"),font.size=10)
+                 color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"),rows.font.size=10)
 
 }
 
