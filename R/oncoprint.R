@@ -28,7 +28,7 @@
 #' create.oncoprint(mut = mut, genes = mut$Hugo_Symbol[1:10],
 #'                  filename = "onco.pdf",
 #'                  annotation = clin,
-#'                  color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"),font.size=10)
+#'                  color=c("background"="#CCCCCC","DEL"="purple","INS"="yellow","SNP"="brown"),rows.font.size=10)
 #'
 #' @export
 #' @return A oncoprint plot
@@ -48,7 +48,8 @@ create.oncoprint <- function (mut,
                               dist.col = 0.5,
                               dist.row = 0.5,
                               row.order = FALSE,
-                              legend.side = "bottom"){
+                              heatmap.legend.side = "bottom",
+                              annotation.legend.side = "bottom"){
 
 
     if(missing(mut))   stop("Missing mut argument")
@@ -174,9 +175,10 @@ create.oncoprint <- function (mut,
                                           annotation_legend_param=list(title_gp=gpar(fontsize=label.font.size,
                                                                                      fontface="bold"),
                                                                        labels_gp=gpar(fontsize=label.font.size),#sizelabels
-                                                                       grid_height=unit(8,"mm")))
+                                                                       grid_height=unit(8,"mm"))
+                                          )
     }
-    if(legend.side == "bottom") {
+    if(heatmap.legend.side == "bottom") {
         nrow <- 1
         title_position <- "leftcenter"
     } else {
@@ -324,9 +326,5 @@ create.oncoprint <- function (mut,
 
     if(!missing(filename)) dev.off()
 
-    if(legend.side == "bottom"){
-        draw(p, heatmap_legend_side = "bottom")
-    } else {
-        draw(p)
-    }
+    draw(p, heatmap_legend_side = heatmap.legend.side, annotation_legend_side = annotation.legend.side)
 }

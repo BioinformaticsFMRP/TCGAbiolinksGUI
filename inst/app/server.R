@@ -957,7 +957,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                               dist.row =  isolate(input$oncoHSpace),
                                               dist.col =  isolate(input$oncoWSpace),
                                               row.order =  isolate(input$oncoRowSort),
-                                              legend.side = isolate(input$oncoLegendSide),
+                                              annotation.legend.side = isolate(input$oncoAnnotationLegendSide),
+                                              heatmap.legend.side = isolate(input$oncoHeatmapLegendSide),
                                               color = c("background" = isolate(input$colBG),
                                                         "SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
                                                         "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))
