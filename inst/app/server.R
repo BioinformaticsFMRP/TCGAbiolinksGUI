@@ -1010,7 +1010,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     shinyFileChoose(input, 'volcanofile', roots=volumes, session=session, restrictions=system.file(package='base'))
 
     volcanodata <-  reactive({
-        if(input$volcanoPlotBt){
+
         inFile <- input$volcanofile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
@@ -1028,7 +1028,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          df <- read.csv2(file,header = T)
                      })
         return(df)
-        }
+
     })
 
     observeEvent(input$volcanofile, {
@@ -1045,143 +1045,144 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
     })
     volcano.values <- reactive({
-        # read csv file with results
-        data <- volcanodata()
-        if(is.null(data)) return(NULL)
-        names.fill <- isolate({input$volcanoNamesFill})
-        if(isolate({input$volcanoInputRb})=="met") {
-            x.cut <- isolate({as.numeric(input$volcanoxcutMet)})
-        } else {
-            x.cut <- isolate({as.numeric(input$volcanoxcutExp)})
-        }
-        y.cut <- isolate({as.numeric(input$volcanoycut)})
-
-        # Set parameters based in the filename
-        # patterns are
-        # DEA_result_groupCol_group1_group2_pcut_0.05_logFC.cut_0.csv
-        # DMR_results_groupCol_group1_group2_pcut_0.05_meancut_0.3.csv
-        file  <- basename(as.character(parseFilePaths(volumes, input$volcanofile)$datapath))
-        file <- unlist(str_split(file,"_"))
-        groupCol <- file[3]
-        group1 <- file[4]
-        group2 <- file[5]
-        names <- NULL
-
-        # methylation pipeline
-        if(isolate({input$volcanoInputRb})=="met"){
-
-            diffcol <- paste("diffmean", group1, group2,sep = ".")
-            pcol <- paste("p.value.adj", group1, group2,sep = ".")
-
-            if(isolate({input$volcanoNames})) names <- data$probeID
-            label <- c("Not Significant",
-                       "Hypermethylated",
-                       "Hypomethylated")
-            label[2:3] <-  paste(label[2:3], "in", group2)
-
-            # Update data into a file
-
-            statuscol <- paste("status",group1,group2,sep = ".")
-            statuscol2 <- paste("status",group2,group1,sep = ".")
-            data[,statuscol] <-  "Not Significant"
-            data[,statuscol2] <-  "Not Significant"
-
-            # get significant data
-            sig <-  data[,pcol] < y.cut
-            sig[is.na(sig)] <- FALSE
-            # hypermethylated samples compared to old state
-            hyper <- data[,diffcol]  > x.cut
-            hyper[is.na(hyper)] <- FALSE
-
-            # hypomethylated samples compared to old state
-            hypo <- data[,diffcol] < (-x.cut)
-            hypo[is.na(hypo)] <- FALSE
-
-            if (any(hyper & sig)) data[hyper & sig,statuscol] <- paste("Hypermethylated","in", group2)
-            if (any(hyper & sig)) data[hyper & sig,statuscol2] <- paste("Hypomethylated","in", group1)
-            if (any(hypo & sig)) data[hypo & sig,statuscol] <- paste("Hypomethylated","in", group2)
-            if (any(hypo & sig)) data[hypo & sig,statuscol2] <- paste("Hypermethylated","in", group1)
-            insig.count <- nrow(data) - table(sig)["TRUE"]
-            up.count <- table(hyper & sig)["TRUE"]
-            down.count <- table(hypo & sig)["TRUE"]
-
-            if(isolate({input$volcanoSave})){
-                csv <- paste0(paste("DMR_results",gsub("_",".",groupCol),gsub("_",".",group1),gsub("_",".",group2), "pcut",y.cut,"meancut",x.cut,  sep = "_"),".csv")
-                write.csv2(data,file =  csv)
-
+        if(input$volcanoPlotBt){
+            # read csv file with results
+            data <- volcanodata()
+            if(is.null(data)) return(NULL)
+            names.fill <- isolate({input$volcanoNamesFill})
+            if(isolate({input$volcanoInputRb})=="met") {
+                x.cut <- isolate({as.numeric(input$volcanoxcutMet)})
+            } else {
+                x.cut <- isolate({as.numeric(input$volcanoxcutExp)})
             }
+            y.cut <- isolate({as.numeric(input$volcanoycut)})
 
-            withProgress(message = 'Creating plot',
-                         detail = 'This may take a while...', value = 0, {
-                             p <-  TCGAVisualize_volcano(x = data[,diffcol],
-                                                         y = data[,pcol],
-                                                         ylab =   expression(paste(-Log[10],
-                                                                                   " (FDR corrected -P values)")),
-                                                         xlab =  expression(paste(
-                                                             "DNA Methylation difference (",beta,"-values)")
-                                                         ),
-                                                         color = c(isolate({input$colinsignificant}),
-                                                                   isolate({input$colHypermethylated}),
-                                                                   isolate({input$colHypomethylated})),
-                                                         title =  paste("Volcano plot", "(", group2, "vs", group1,")"),
-                                                         legend=  "Legend",
-                                                         label = label,
-                                                         names = names,
-                                                         names.fill = names.fill,
-                                                         x.cut = x.cut,
-                                                         y.cut = y.cut,
-                                                         show.names = isolate({input$volcanoShowHighlitgh}),
-                                                         highlight=isolate({input$volcanoHighlight}),
-                                                         highlight.color = isolate({input$volcanoColHighlight}),
-                                                         filename = NULL)
-                         })
-        } else {
+            # Set parameters based in the filename
+            # patterns are
+            # DEA_result_groupCol_group1_group2_pcut_0.05_logFC.cut_0.csv
+            # DMR_results_groupCol_group1_group2_pcut_0.05_meancut_0.3.csv
+            file  <- basename(as.character(parseFilePaths(volumes, input$volcanofile)$datapath))
+            file <- unlist(str_split(file,"_"))
+            groupCol <- file[3]
+            group1 <- file[4]
+            group2 <- file[5]
+            names <- NULL
 
-            label <- c("Not Significant",
-                       "Upregulated",
-                       "Downregulated")
-            label[2:3] <-  paste(label[2:3], "in", group2)
-            if(isolate({input$volcanoNames})) names <- as.character(data$mRNA)
+            # methylation pipeline
+            if(isolate({input$volcanoInputRb})=="met"){
 
-            data$status <- "Insignificant"
-            data[data$logFC >= x.cut & data$FDR <= y.cut,"status"] <- paste0("Upregulated in ", group2)
-            data[data$logFC <= -x.cut & data$FDR <= y.cut,"status"] <- paste0("Downregulated in ", group2)
+                diffcol <- paste("diffmean", group1, group2,sep = ".")
+                pcol <- paste("p.value.adj", group1, group2,sep = ".")
 
-            up.count <- table(data$logFC >= x.cut & data$FDR <= y.cut)["TRUE"]
-            if(is.na(up.count)) up.count <- 0
-            down.count <- table(data$logFC <= -x.cut & data$FDR <= y.cut)["TRUE"]
-            if(is.na(down.count)) down.count <- 0
-            insig.count <-  nrow(data) -  down.count - up.count
+                if(isolate({input$volcanoNames})) names <- data$probeID
+                label <- c("Not Significant",
+                           "Hypermethylated",
+                           "Hypomethylated")
+                label[2:3] <-  paste(label[2:3], "in", group2)
 
-            # Update data into a file
-            if(isolate({input$volcanoSave})){
-                out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),gsub("_",".",group1),gsub("_",".",group2),,"pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
-                write.csv2(data, file = out.filename)
+                # Update data into a file
+
+                statuscol <- paste("status",group1,group2,sep = ".")
+                statuscol2 <- paste("status",group2,group1,sep = ".")
+                data[,statuscol] <-  "Not Significant"
+                data[,statuscol2] <-  "Not Significant"
+
+                # get significant data
+                sig <-  data[,pcol] < y.cut
+                sig[is.na(sig)] <- FALSE
+                # hypermethylated samples compared to old state
+                hyper <- data[,diffcol]  > x.cut
+                hyper[is.na(hyper)] <- FALSE
+
+                # hypomethylated samples compared to old state
+                hypo <- data[,diffcol] < (-x.cut)
+                hypo[is.na(hypo)] <- FALSE
+
+                if (any(hyper & sig)) data[hyper & sig,statuscol] <- paste("Hypermethylated","in", group2)
+                if (any(hyper & sig)) data[hyper & sig,statuscol2] <- paste("Hypomethylated","in", group1)
+                if (any(hypo & sig)) data[hypo & sig,statuscol] <- paste("Hypomethylated","in", group2)
+                if (any(hypo & sig)) data[hypo & sig,statuscol2] <- paste("Hypermethylated","in", group1)
+                insig.count <- nrow(data) - table(sig)["TRUE"]
+                up.count <- table(hyper & sig)["TRUE"]
+                down.count <- table(hypo & sig)["TRUE"]
+
+                if(isolate({input$volcanoSave})){
+                    csv <- paste0(paste("DMR_results",gsub("_",".",groupCol),gsub("_",".",group1),gsub("_",".",group2), "pcut",y.cut,"meancut",x.cut,  sep = "_"),".csv")
+                    write.csv2(data,file =  csv)
+
+                }
+
+                withProgress(message = 'Creating plot',
+                             detail = 'This may take a while...', value = 0, {
+                                 p <-  TCGAVisualize_volcano(x = data[,diffcol],
+                                                             y = data[,pcol],
+                                                             ylab =   expression(paste(-Log[10],
+                                                                                       " (FDR corrected -P values)")),
+                                                             xlab =  expression(paste(
+                                                                 "DNA Methylation difference (",beta,"-values)")
+                                                             ),
+                                                             color = c(isolate({input$colinsignificant}),
+                                                                       isolate({input$colHypermethylated}),
+                                                                       isolate({input$colHypomethylated})),
+                                                             title =  paste("Volcano plot", "(", group2, "vs", group1,")"),
+                                                             legend=  "Legend",
+                                                             label = label,
+                                                             names = names,
+                                                             names.fill = names.fill,
+                                                             x.cut = x.cut,
+                                                             y.cut = y.cut,
+                                                             show.names = isolate({input$volcanoShowHighlitgh}),
+                                                             highlight=isolate({input$volcanoHighlight}),
+                                                             highlight.color = isolate({input$volcanoColHighlight}),
+                                                             filename = NULL)
+                             })
+            } else {
+
+                label <- c("Not Significant",
+                           "Upregulated",
+                           "Downregulated")
+                label[2:3] <-  paste(label[2:3], "in", group2)
+                if(isolate({input$volcanoNames})) names <- as.character(data$mRNA)
+
+                data$status <- "Insignificant"
+                data[data$logFC >= x.cut & data$FDR <= y.cut,"status"] <- paste0("Upregulated in ", group2)
+                data[data$logFC <= -x.cut & data$FDR <= y.cut,"status"] <- paste0("Downregulated in ", group2)
+
+                up.count <- table(data$logFC >= x.cut & data$FDR <= y.cut)["TRUE"]
+                if(is.na(up.count)) up.count <- 0
+                down.count <- table(data$logFC <= -x.cut & data$FDR <= y.cut)["TRUE"]
+                if(is.na(down.count)) down.count <- 0
+                insig.count <-  nrow(data) -  down.count - up.count
+
+                # Update data into a file
+                if(isolate({input$volcanoSave})){
+                    out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),gsub("_",".",group1),gsub("_",".",group2),,"pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
+                    write.csv2(data, file = out.filename)
+                }
+
+                withProgress(message = 'Creating plot',
+                             detail = 'This may take a while...', value = 0, {
+                                 p <- TCGAVisualize_volcano(x = data$logFC,
+                                                            y = data$FDR,
+                                                            ylab =   expression(paste(-Log[10],
+                                                                                      " (FDR corrected -P values)")),
+                                                            xlab = " Gene expression fold change (Log2)",
+                                                            color = c(isolate({input$colinsignificant}),
+                                                                      isolate({input$colUpregulated}),
+                                                                      isolate({input$colDownregulated})),
+                                                            title =  paste("Volcano plot", "(", group2, "vs", group1,")"),
+                                                            legend=  "Legend",
+                                                            label = label,
+                                                            names = names,
+                                                            x.cut = x.cut,
+                                                            y.cut = y.cut,
+                                                            show.names = isolate({input$volcanoShowHighlitgh}),
+                                                            highlight=isolate({input$volcanoHighlight}),
+                                                            highlight.color = isolate({input$volcanoColHighlight}),
+                                                            filename = NULL)
+                             })
             }
-
-            withProgress(message = 'Creating plot',
-                         detail = 'This may take a while...', value = 0, {
-                             p <- TCGAVisualize_volcano(x = data$logFC,
-                                                        y = data$FDR,
-                                                        ylab =   expression(paste(-Log[10],
-                                                                                  " (FDR corrected -P values)")),
-                                                        xlab = " Gene expression fold change (Log2)",
-                                                        color = c(isolate({input$colinsignificant}),
-                                                                  isolate({input$colUpregulated}),
-                                                                  isolate({input$colDownregulated})),
-                                                        title =  paste("Volcano plot", "(", group2, "vs", group1,")"),
-                                                        legend=  "Legend",
-                                                        label = label,
-                                                        names = names,
-                                                        x.cut = x.cut,
-                                                        y.cut = y.cut,
-                                                        show.names = isolate({input$volcanoShowHighlitgh}),
-                                                        highlight=isolate({input$volcanoHighlight}),
-                                                        highlight.color = isolate({input$volcanoColHighlight}),
-                                                        filename = NULL)
-                         })
         }
-
         ret <- list(plot = p, up = up.count, down = down.count, insig =insig.count)
     })
     observeEvent(input$volcanoPlotBt , {
