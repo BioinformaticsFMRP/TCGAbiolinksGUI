@@ -1255,9 +1255,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         data <- volcanodata()
         if(!is.null(data)) {
             file  <- basename(as.character(parseFilePaths(volumes, input$volcanofile)$datapath))
-
             if(grepl("DEA",file)){
-                updateSelectizeInput(session, 'volcanoHighlight', choices = as.character(na.omit(unique(data$Gene_Symbol))), server = TRUE)
+                if("Gene_Symbol" %in% colnames(data)){
+                    updateSelectizeInput(session, 'volcanoHighlight', choices = as.character(na.omit(unique(data$Gene_Symbol))), server = TRUE)
+                }
+                if("mRNA" %in% colnames(data)){
+                    updateSelectizeInput(session, 'volcanoHighlight', choices = as.character(na.omit(unique(data$mRNA))), server = TRUE)
+                }
             } else {
                 updateSelectizeInput(session, 'volcanoHighlight', choices = as.character(na.omit(unique(data$probeID))), server = TRUE)
             }
@@ -2189,8 +2193,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                                qnt.cut =  isolate({input$deafilteringcut}))
                          }
 
-                         exp <- TCGAanalyze_DEA(mat1 = assay(se[,samples.g1]),
-                                                mat2 = assay(se[,samples.g2]),
+                         exp <- TCGAanalyze_DEA(mat1 = dataFilt[,samples.g1],
+                                                mat2 = dataFilt[,samples.g2],
                                                 Cond1type = g1 ,
                                                 Cond2type = g2,
                                                 #fdr.cut  = fdr.cut,
@@ -2199,11 +2203,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          exp <- TCGAanalyze_LevelTab(exp,
                                                      typeCond1 = g1,
                                                      typeCond2 = g2,
-                                                     TableCond1 = assay(se[,samples.g1]),
-                                                     TableCond2 = assay(se[,samples.g2]))
+                                                     TableCond1 = dataFilt[,samples.g1],
+                                                     TableCond2 = dataFilt[,samples.g2])
                          exp$status <- "Insignificant"
                          exp[exp$logFC >= logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Upregulated in ", g2)
                          exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g2)
+                         exp$Gene_Symbol <- unlist(lapply(strsplit(exp$mRNA,"\\|"),function(x) x[2]))
                      })
 
         out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),
