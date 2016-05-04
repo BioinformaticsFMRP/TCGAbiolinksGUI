@@ -1010,6 +1010,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     shinyFileChoose(input, 'volcanofile', roots=volumes, session=session, restrictions=system.file(package='base'))
 
     volcanodata <-  reactive({
+        if(input$volcanoPlotBt){
         inFile <- input$volcanofile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
@@ -1027,6 +1028,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          df <- read.csv2(file,header = T)
                      })
         return(df)
+        }
     })
 
     observeEvent(input$volcanofile, {
@@ -1104,7 +1106,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             down.count <- table(hypo & sig)["TRUE"]
 
             if(isolate({input$volcanoSave})){
-                csv <- paste0(paste("DMR_results",groupCol,group1,group2, "pcut",y.cut,"meancut",x.cut,  sep = "_"),".csv")
+                csv <- paste0(paste("DMR_results",gsub("_",".",groupCol),gsub("_",".",group1),gsub("_",".",group2), "pcut",y.cut,"meancut",x.cut,  sep = "_"),".csv")
                 write.csv2(data,file =  csv)
 
             }
@@ -1153,7 +1155,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
             # Update data into a file
             if(isolate({input$volcanoSave})){
-                out.filename <- paste0(paste("DEA_results",groupCol, group1, group2,"pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
+                out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),gsub("_",".",group1),gsub("_",".",group2),,"pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
                 write.csv2(data, file = out.filename)
             }
 
