@@ -51,37 +51,37 @@ sidebar <-  dashboardSidebar(
     width = 250,
     sidebarMenu(
         menuItem("Data information" , tabName = "tcgaSummary", icon = icon("info")),
-        menuItem("Get data", icon = icon(menu.icon),
+        menuItem("Get data", icon = icon("database"),
                  menuSubItem("Molecular data" , tabName = "tcgaSearch", icon = icon("database")),
                  menuSubItem("Mutation data" , tabName = "tcgaMutation", icon = icon("database")),
                  menuSubItem("Clinical data" , tabName = "tcgaClinical", icon = icon("database")),
                  menuSubItem("Subtype data" , tabName = "tcgaSubtype", icon = icon("database"))
         ),
-        menuItem("Clinical analysis", icon = icon(menu.icon),
+        menuItem("Clinical analysis", icon = icon("flask"),
                  menuSubItem("Profile plot" , tabName = "tcgaProfilePlot", icon = icon("picture-o")),
                  menuSubItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o"))
         ),
 
-        menuItem("Epigenetic analysis", icon = icon(menu.icon),
+        menuItem("Epigenetic analysis", icon = icon("flask"),
                  menuSubItem("Differential methylation analysis" , tabName = "dmr", icon = icon("flask")),
                  menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
                  menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
                  menuItem("Mean DNA methylation plot" , tabName = "meanmet", icon = icon("picture-o"))
         ),
-        menuItem("Transcriptomic analysis", icon = icon(menu.icon),
+        menuItem("Transcriptomic analysis", icon =  icon("flask"),
                  menuSubItem("Differential expression analysis" , tabName = "dea", icon = icon("flask")),
                  menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
                  menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
                  menuSubItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
         ),
-        menuItem("Genomic analysis", icon = icon(menu.icon),
+        menuItem("Genomic analysis", icon = icon("flask"),
                  menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o"))
         ),
-        menuItem("Integrative analysis", icon = icon(menu.icon),
+        menuItem("Integrative analysis", icon = icon("flask"),
                  menuSubItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
                  menuSubItem("ELMER" , tabName = "elmer", icon = icon("flask"))
-        )
-        #menuItem("ELMER analysis" , tabName = "elmer", icon = icon("flask"))
+        ),
+        menuItem("TCGAbiolinksGUI Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("book"))
     )
 )
 

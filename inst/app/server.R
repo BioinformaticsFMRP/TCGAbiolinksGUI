@@ -67,7 +67,7 @@ parse.textarea.input <- function(text){
 #' @import pathview ELMER TCGAbiolinks SummarizedExperiment shiny ggrepel UpSetR
 #' @keywords internal
 TCGAbiolinksGUIServer <- function(input, output, session) {
-    addClass(selector = "body", class = "sidebar-collapse")
+    #addClass(selector = "body", class = "sidebar-collapse")
     setwd(Sys.getenv("HOME"))
     volumes <- c('Working directory'=getwd())
 
