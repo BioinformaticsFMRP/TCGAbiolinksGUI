@@ -5,6 +5,7 @@ library(shinyBS)
 library(shinyjs)
 library(SummarizedExperiment)
 library(pathview)
+library(reshape2)
 data(paths.hsa)
 pathways.id <- names(paths.hsa)
 names(pathways.id) <- unname(paths.hsa)
@@ -49,9 +50,12 @@ header$children[[2]]$children <-  tags$a(href='http://bioconductor.org/packages/
 sidebar <-  dashboardSidebar(
     width = 250,
     sidebarMenu(
-        menuItem("TCGA Data", icon = icon(menu.icon),
-                 menuSubItem("TCGA search" , tabName = "tcgaSearch", icon = icon("search")),
-                 menuSubItem("Data summmary" , tabName = "tcgaSummary", icon = icon("info"))
+        menuItem("Data information" , tabName = "tcgaSummary", icon = icon("info")),
+        menuItem("Get data", icon = icon(menu.icon),
+                 menuSubItem("Molecular data" , tabName = "tcgaSearch", icon = icon("database")),
+                 menuSubItem("Mutation data" , tabName = "tcgaMutation", icon = icon("database")),
+                 menuSubItem("Clinical data" , tabName = "tcgaClinical", icon = icon("database")),
+                 menuSubItem("Subtype data" , tabName = "tcgaSubtype", icon = icon("database"))
         ),
         menuItem("Clinical analysis", icon = icon(menu.icon),
                  menuSubItem("Profile plot" , tabName = "tcgaProfilePlot", icon = icon("picture-o")),
@@ -198,41 +202,28 @@ body <-  dashboardBody(
                                             margin-right: auto;
                                             width: 100%",
                                             icon = icon("cogs"))),
-                           box(title = "Subtype search",width = NULL,
+
+                           box(title = "Directory to save & prepare files",width = NULL,
                                status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-                               selectizeInput('tcgasubtypeFilter',
-                                              'Tumor filter',
-                                              c("brca"="brca",
-                                                "coad"="coad",
-                                                "gbm"="gbm",
-                                                "hnsc"="hnsc",
-                                                "kich"="kich",
-                                                "kirp"="kirp",
-                                                "kirc"="kirc",
-                                                "lgg"="lgg",
-                                                "luad"="luad",
-                                                "lusc"="lusc",
-                                                "prad"="prad",
-                                                "pancan"="pancan",
-                                                "read"="read",
-                                                "skcm"="skcm",
-                                                "stad"="stad",
-                                                "thca"="thca", "ucec"="ucec"),
-                                              multiple = FALSE),
-                               checkboxInput("saveSubtypeRda", "Save as rda?", value = FALSE, width = NULL),
-                               checkboxInput("saveSubtypeCsv", "Save as csv?", value = FALSE, width = NULL),
-                               actionButton("tcgaSubtypeBt",
-                                            "TCGA Subtype Search",
-                                            style = "background-color: #000080;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 100%",
-                                            icon = icon("search"))),
-                           box(title = "Clinical data search",width = NULL,
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
+                               bsTooltip("tcgafolder", "Select a folder where data will be read/saved/downloaded",
+                                         "left"),
+                               shinyDirButton('tcgafolder', 'Select directory', 'Please select a folder where files will be saved',
+                                              class='shinyDirectories btn-default')
+                           ),
+                           bsAlert("tcgaddirmessage")
+                    ))
+        ),
+        tabItem(tabName = "tcgaClinical",
+                fluidRow(
+                    column(10, bsAlert("tcgaClinicalmessage"),
+                           bsCollapse(id = "collapseTCGAClinical", open = "Clincal data",
+                                      bsCollapsePanel("Clinical data", dataTableOutput('tcgaClinicaltbl'), style = "default")
+                           )),
+                    column(2,
+                           box(title = "Search",width = NULL,
                                status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               solidHeader = FALSE, collapsible = FALSE,
                                radioButtons("clinicalSearchType", "Search by:",
                                             c("Tumor" = TRUE,
                                               "Samples" = FALSE)),
@@ -269,19 +260,28 @@ body <-  dashboardBody(
                                                 "clinical_patient",
                                                 "clinical_radiation"),
                                               multiple = FALSE),
-                               checkboxInput("saveClinicalRda", "Save result as rda?", value = FALSE, width = NULL),
+                               bsTooltip("saveClinicalRda", "A Rda file stores a single R object (can only be openned in R)","left"),
+                               checkboxInput("saveClinicalRda", "Save result as Rda?", value = FALSE, width = NULL),
                                checkboxInput("saveClinicalCsv", "Save result as csv?", value = FALSE, width = NULL),
                                actionButton("tcgaClinicalBt",
-                                            "TCGA Subtype Search",
+                                            "Search",
                                             style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                            icon = icon("search"))),
-                           box(title = "MAF data search",width = NULL,
+                                            icon = icon("search")))
+                    ))),
+        tabItem(tabName = "tcgaMutation",
+                fluidRow(
+                    column(10, bsAlert("tcgaMutationmessage"),
+                           bsCollapse(id = "collapseTCGAMutation", open = "Mutation data",
+                                      bsCollapsePanel("Mutation data", dataTableOutput('tcgaMutationtbl'), style = "default")
+                           )),
+                    column(2,
+                           box(title = "Search: Mutation data",width = NULL,
                                status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+                               solidHeader = FALSE, collapsible = FALSE,
                                selectizeInput('tcgaMafTumorFilter',
                                               'Tumor filter',
                                               unique(TCGAquery()$Disease),
@@ -289,31 +289,61 @@ body <-  dashboardBody(
                                actionButton("tcgaMafSearchBt",
                                             "Search",
                                             style = "background-color: #000080;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 49%",
+                                     color: #FFFFFF;
+                                     margin-left: auto;
+                                     margin-right: auto;
+                                     width: 49%",
                                             icon = icon("search")),
                                actionButton("mafDownloadBt",
                                             "Download",
                                             style = "background-color: #000080;
+                                     color: #FFFFFF;
+                                     margin-left: auto;
+                                     margin-right: auto;
+                                     width: 49%",
+                                            icon = icon("download")))
+                    ))),
+        tabItem(tabName = "tcgaSubtype",
+                fluidRow(
+                    column(10, bsAlert("tcgaSubtypemessage"),
+                           bsCollapse(id = "collapseTCGASubtype", open = "Subtype data",
+                                      bsCollapsePanel("Subtype data", dataTableOutput('tcgaSubtypetbl'), style = "default")
+                           )),
+                    column(2,
+                           box(title = "Subtype search",width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               selectizeInput('tcgasubtypeFilter',
+                                              'Tumor filter',
+                                              c("brca"="brca",
+                                                "coad"="coad",
+                                                "gbm"="gbm",
+                                                "hnsc"="hnsc",
+                                                "kich"="kich",
+                                                "kirp"="kirp",
+                                                "kirc"="kirc",
+                                                "lgg"="lgg",
+                                                "luad"="luad",
+                                                "lusc"="lusc",
+                                                "prad"="prad",
+                                                "pancan"="pancan",
+                                                "read"="read",
+                                                "skcm"="skcm",
+                                                "stad"="stad",
+                                                "thca"="thca", "ucec"="ucec"),
+                                              multiple = FALSE),
+                               bsTooltip("saveSubtypeRda", "A Rda file stores a single R object (can only be openned in R)","left"),
+                               checkboxInput("saveSubtypeRda", "Save as rda?", value = FALSE, width = NULL),
+                               checkboxInput("saveSubtypeCsv", "Save as csv?", value = FALSE, width = NULL),
+                               actionButton("tcgaSubtypeBt",
+                                            "TCGA Subtype Search",
+                                            style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
                                             margin-right: auto;
-                                            width: 49%",
-                                            icon = icon("download"))
-                           ),
-                           box(title = "Directory to save & prepare files",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
-                               bsTooltip("tcgafolder", "Select a folder where data will be read/saved/downloaded",
-                                         "left"),
-                               shinyDirButton('tcgafolder', 'Select directory', 'Please select a folder where files will be saved',
-                                              class='shinyDirectories btn-default')
-                           ),
-                           bsAlert("tcgaddirmessage")
-                    ))
-        ),
+                                            width: 100%",
+                                            icon = icon("search")))
+                    ))),
         tabItem(tabName = "tcgaSummary",
                 fluidRow(
                     column(10, bsAlert("tcgaSummaryMessage"),
@@ -468,9 +498,9 @@ body <-  dashboardBody(
                                       bsCollapsePanel("Volcano plot", uiOutput("volcanoPlot"), style = "default")),
                            fluidRow(
                                column(width = 10,  offset = 3,
-                                valueBoxOutput("volcanoBoxDown", width = 3),
-                               valueBoxOutput("volcanoBoxInsig", width = 3),
-                               valueBoxOutput("volcanoBoxUp", width = 3))
+                                      valueBoxOutput("volcanoBoxDown", width = 3),
+                                      valueBoxOutput("volcanoBoxInsig", width = 3),
+                                      valueBoxOutput("volcanoBoxUp", width = 3))
                            )),
                     column(2,
                            box(title = "Volcano Plot",width = NULL,

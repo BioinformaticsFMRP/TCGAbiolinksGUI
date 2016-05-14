@@ -366,8 +366,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     # Subtype
 
     observeEvent(input$tcgaSubtypeBt, {
-        updateCollapse(session, "collapseTCGA", open = "TCGA search results")
-        output$tcgaSearchtbl <- renderDataTable({
+        updateCollapse(session, "collapseTCGASubtype", open = "Subtype data")
+        output$tcgaSubtypetbl <- renderDataTable({
             tumor <- isolate({input$tcgasubtypeFilter})
             tbl <- data.frame()
 
@@ -377,20 +377,20 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
 
             }, error = function(e) {
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "No results found", style =  "warning",
                             content = "Sorry there are subtypes for your query.", append = FALSE)
             })
 
             if(is.null(tbl)){
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "No results found", style =  "warning",
                             content = "Sorry there are subtypes for your query.", append = FALSE)
                 return()
             } else if(nrow(tbl) ==0) {
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "No results found", style =  "warning",
                             content = "Sorry there are subtypes for your query.", append = FALSE)
                 return()
             } else {
-                closeAlert(session, "tcgasearchAlert")
+                closeAlert(session, "tcgaSubtypeAlert")
                 doi <- c("aml"="doi:10.1056/NEJMoa1301689",
                          "blca"="doi:10.1038/nature12965",
                          "brca"="doi:10.1038/nature11412",
@@ -425,14 +425,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         write.csv2(tbl, file = gsub("rda","csv",filename))
                         save.message <- paste0(save.message,"<br> File created: ", gsub("rda","csv",filename))
                     }
-                    createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = paste0("Success"), style =  "success",
+                    createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = paste0("Success"), style =  "success",
                                 content = paste0(save.message,"<br>Source of the data:", doi[tumor]), append = TRUE)
 
                 } else {
-                    createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Source of the data", style =  "success",
+                    createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "Source of the data", style =  "success",
                                 content = paste0(doi[tumor]), append = TRUE)
                 }
-
 
                 return(tbl)
             }
@@ -460,8 +459,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         )})
 
     observeEvent(input$tcgaClinicalBt, {
-        updateCollapse(session, "collapseTCGA", open = "TCGA search results")
-        output$tcgaSearchtbl <- renderDataTable({
+        updateCollapse(session, "collapseTCGAClinical", open = "Clincal data")
+        output$tcgaClinicaltbl <- renderDataTable({
             tumor <- isolate({input$tcgatumorClinicalFilter})
             type <- isolate({input$tcgaClinicalFilter})
             text.samples <- isolate({input$clinicalBarcode})
@@ -540,22 +539,22 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     # Maf Search
     observeEvent(input$tcgaMafSearchBt, {
 
-        output$tcgaSearchtbl <- renderDataTable({
+        output$tcgaMutationtbl <- renderDataTable({
             tumor <- isolate({input$tcgaMafTumorFilter})
 
             maf.files <- get.obj("maf.files")
             maf.files[,c(10,1,2,4,5,7)]
             tbl <- subset(maf.files,maf.files$Tumor == tumor)
             if(is.null(tbl)){
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "No results found", style =  "warning",
                             content = "Sorry there are no results for your query.", append = FALSE)
                 return()
             } else if(nrow(tbl) ==0) {
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "No results found", style =  "warning",
                             content = "Sorry there are no results for your query.", append = FALSE)
                 return()
             } else {
-                closeAlert(session, "tcgasearchAlert")
+                closeAlert(session, "tcgaMutationAlert")
             }
             return(tbl)
         },
@@ -589,8 +588,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         withProgress(message = 'Download in progress',
                      detail = 'This may take a while...', value = 0, {
                          if(is.null(input$allRows)){
-                             closeAlert(session, "tcgasearchAlert")
-                             createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Error", style = "alert",
+                             closeAlert(session, "tcgaMutationAlert")
+                             createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Error", style = "alert",
                                          content =  paste0("Please select which files will be downloaded"), append = TRUE)
                              req(input$allRows)
                          }
@@ -602,8 +601,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              fout <- file.path(getPath,basename(df[1,]$Deploy.Location))
                              if (!file.exists(fout))  downloader::download(df[1,]$Deploy.Location,fout)
                          }})
-        closeAlert(session, "tcgasearchAlert")
-        createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "Download completed", style = "success",
+        closeAlert(session, "tcgaMutationAlert")
+        createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Download completed", style = "success",
                     content =  paste0("Saved file: ",fout), append = FALSE)
     })
     #----------------------------------------------------------------------
@@ -719,12 +718,15 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                             tab <- table(substr(patient,14,15))
                             names(tab) <- tcga.code[names(tab)]
                             tab <- tab[!is.na(names(tab))]
-                            tab <- (as.data.frame(tab))
-                            tab$type <- rownames(tab)
+                            tab <- melt(tab)
                             tab$Platform <- i
                             tab$Tumor <- j
-                            colnames(tab) <- c("Freq","type","Platform","Tumor")
 
+                            if( ncol(tab) == 4)  colnames(tab) <- c("type","Freq","Platform","Tumor")
+                            if( ncol(tab) == 3) {
+                                colnames(tab) <- c("Freq","Platform","Tumor")
+                                tab$type <- rownames(tab)
+                            }
                             if(nrow(tbl) == 0){
                                 tbl <- tab
                             } else {
@@ -753,7 +755,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         legend.position=c(1,1),
                         text = element_text(size=16),
                         axis.text.x = element_text(angle = 45, hjust = 1)) + xlab("Type of sample") +
-                    scale_fill_brewer(palette="Set1") + guides(fill=FALSE)
+                    scale_fill_brewer(palette="Set1") + guides(fill = FALSE)
                 #facet_wrap(~Platform + Tumor, ncol = isolate({input$summaryncol}))
                 if(isolate({input$summaryAddBarCount})){
                     p <- p + geom_text(aes(vjust = 0, nudge_y = 0.7,label = Freq), size = 4)
