@@ -120,3 +120,78 @@ pre {
     border-color: #000000;
 }
 
+hr {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+hr.lineDoc {
+    padding: 0;
+    border: 1px solid;
+    color: rgba(144, 156, 255, 0.43);
+    text-align: center;
+    margin-top: 40px;
+}
+hr.lineDoc:after {
+    content:"Documentation";
+    display: inline-block;
+    position: relative;
+    top: -1.6em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: rgba(255, 255, 255, 0);
+    color: #909CFF;
+}
+hr.lineAnalysis {
+    padding: 0;
+    border: 1px solid;
+    color: rgba(57, 221, 72, 0.23);
+    text-align: center;
+    margin-top: 40px;
+}
+hr.lineAnalysis:after {
+    content:"Analysis";
+    display: inline-block;
+    position: relative;
+    top: -1.6em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: rgba(255, 255, 255, 0);
+    color: #0AC71B;
+}
+
+hr.lineIntegrative {
+    padding: 0;
+    border: 1px solid;
+    color: rgba(246, 255, 144, 0.34);
+    text-align: center;
+    margin-top: 40px;
+}
+hr.lineIntegrative:after {
+    content:"Integrative analysis";
+    display: inline-block;
+    position: relative;
+    top: -1.6em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: rgba(255, 255, 255, 0);
+    color: rgb(246, 255, 144);
+}
+
+hr.lineData  {
+    padding: 0;
+    border: 1px solid;
+    text-align: center;
+    margin-top: 40px;
+    color: rgba(255, 84, 84, 0.36);
+}
+hr.lineData:after {
+    content:"Data";
+    display: inline-block;
+    position: relative;
+    top: -1.6em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: rgba(255, 255, 255, 0);
+    color: #FF5151
+}
+

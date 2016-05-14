@@ -50,6 +50,7 @@ header$children[[2]]$children <-  tags$a(href='http://bioconductor.org/packages/
 sidebar <-  dashboardSidebar(
     width = 250,
     sidebarMenu(
+        tags$hr(class="lineData"),
         menuItem("Data information" , tabName = "tcgaSummary", icon = icon("info")),
         menuItem("Get data", icon = icon("database"),
                  menuSubItem("Molecular data" , tabName = "tcgaSearch", icon = icon("database")),
@@ -57,6 +58,7 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Clinical data" , tabName = "tcgaClinical", icon = icon("database")),
                  menuSubItem("Subtype data" , tabName = "tcgaSubtype", icon = icon("database"))
         ),
+        tags$hr(class="lineAnalysis"),
         menuItem("Clinical analysis", icon = icon("flask"),
                  menuSubItem("Profile plot" , tabName = "tcgaProfilePlot", icon = icon("picture-o")),
                  menuSubItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o"))
@@ -77,11 +79,15 @@ sidebar <-  dashboardSidebar(
         menuItem("Genomic analysis", icon = icon("flask"),
                  menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o"))
         ),
+        tags$hr(class="lineIntegrative"),
         menuItem("Integrative analysis", icon = icon("flask"),
                  menuSubItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
                  menuSubItem("ELMER" , tabName = "elmer", icon = icon("flask"))
         ),
-        menuItem("TCGAbiolinksGUI Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("book"))
+        tags$hr(class="lineDoc"),
+        menuItem("TCGAbiolinksGUI Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("book")),
+        menuItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("book")),
+        menuItem("ELMER Manual" , href = "https://www.bioconductor.org/packages/3.3/bioc/vignettes/ELMER/inst/doc/vignettes.pdf", icon = icon("book"))
     )
 )
 
