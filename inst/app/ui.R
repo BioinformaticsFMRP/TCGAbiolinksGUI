@@ -84,6 +84,14 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
                  menuSubItem("ELMER" , tabName = "elmer", icon = icon("flask"))
         ),
+        #menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
+        #menuItem("ELMER analysis", icon = icon("flask"),
+        #         menuSubItem("Create ELMER object" , tabName = "elmer", icon = icon("database")),
+        #         menuSubItem("Analysis" , tabName = "elmer", icon = icon("flask")),
+        #         menuSubItem("Visualize Results" , tabName = "elmer", icon = icon("picture-o"))
+        #),
+        tags$hr(class="lineConfig"),
+        menuItem("Configuration", tabName = "config", icon = icon("cogs")),
         tags$hr(class="lineDoc"),
         menuItem("TCGAbiolinksGUI Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("book")),
         menuItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("book")),
@@ -1250,7 +1258,20 @@ body <-  dashboardBody(
                                               multiple = FALSE))
                     )
                 )
-        )
+        ),
+        tabItem(tabName = "config",
+                fluidRow(
+                    column(1),
+                    column(8,
+                    box(title = "Configuration options", width = NULL,
+                        status = "danger",
+                        solidHeader = FALSE, collapsible = FALSE,
+                    column(3,
+                    bsTooltip("workingDir", "Select where to save outputs","left"),
+                    shinyDirButton('workingDir', 'Set working directory', 'Set working directory',
+                                   class='shinyDirectories btn-default')),
+                    column(9, verbatimTextOutput("wd"))
+                    ))))
     )
 )
 

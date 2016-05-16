@@ -188,8 +188,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         )})
 
     # Download
-    shinyDirChoose(input, 'tcgafolder', roots=volumes, session=session,
-                   restrictions=system.file(package='base'))
+    shinyDirChoose(input, 'tcgafolder', roots=volumes, session=session, restrictions=system.file(package='base'))
 
     observeEvent(input$tcgafolder , {
         closeAlert(session, "tcgadownloaddirAlert")
@@ -3121,4 +3120,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         )
     })
 
+    # Config
+    shinyDirChoose(input, 'workingDir', roots=volumes, session=session, restrictions=system.file(package='base'))
+    output$wd <- renderPrint({
+        path <- parseDirPath(volumes, input$workingDir)
+        if(identical(path, character(0))) path <- getwd()
+        return(path)
+        })
 }

@@ -195,3 +195,20 @@ hr.lineData:after {
     color: #FF5151
 }
 
+hr.lineConfig  {
+    padding: 0;
+    border: 1px solid;
+    text-align: center;
+    margin-top: 40px;
+    color: rgba(84, 158, 255, 0.36);
+}
+hr.lineConfig:after {
+    content:"Configuration";
+    display: inline-block;
+    position: relative;
+    top: -1.6em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: rgba(255, 255, 255, 0);
+    color: #51B4FF
+}
