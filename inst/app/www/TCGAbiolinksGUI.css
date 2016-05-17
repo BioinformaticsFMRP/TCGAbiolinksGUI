@@ -132,7 +132,7 @@ hr.lineDoc {
     margin-top: 40px;
 }
 hr.lineDoc:after {
-    content:"Documentation";
+    content:"Help Documents";
     display: inline-block;
     position: relative;
     top: -1.6em;
@@ -185,7 +185,7 @@ hr.lineData  {
     color: rgba(255, 84, 84, 0.36);
 }
 hr.lineData:after {
-    content:"Data";
+    content:"TCGA Data";
     display: inline-block;
     position: relative;
     top: -1.6em;

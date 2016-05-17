@@ -686,7 +686,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                  }
                                  setProgress(value = 0.5, message = "Step 2", detail = "Plotting", session = getDefaultReactiveDomain())
                                  df$Type <- tcga.code[substr(df$patient,14,15)]
-
+                                if(!isolate({input$summaryShowSampleType})){
                                  upset(df, nsets = length(platform),
                                        number.angles = 0,
                                        nintersects = 100,
@@ -697,7 +697,41 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                        order.by = "freq",
                                        decreasing = T,
                                        #group.by = "sets",
-                                       sets.bar.color = isolate({input$summarySetsBarColor}))
+                                       sets.bar.color = isolate({input$summarySetsBarColor})
+                                       )
+                                } else {
+                                    upset(df,  nsets = length(platform),
+                                          number.angles = 0,
+                                          nintersects = 100,
+                                          point.size = 3, name.size = 12,
+                                          line.size = 1,
+                                          mainbar.y.label = "Platform Intersections",
+                                          sets.x.label = "Samples Per Platform",
+                                          order.by = "freq",
+                                          decreasing = T,
+                                          queries = list(
+                                              list(query = elements,params = list("Type", "Primary solid Tumor"), color = isolate({input$summaryQueryColorTP}), active = F),
+                                              list(query = elements,params = list("Type", "Control Analyte"), color = isolate({input$summaryQueryColorCELLC}), active = F),
+                                              list(query = elements,params = list("Type", "Recurrent Solid Tumor"), color = isolate({input$summaryQueryColorTR}), active = F),
+                                              list(query = elements,params = list("Type", "Primary Blood Derived Cancer - Peripheral Blood"), color = isolate({input$summaryQueryColorTB}), active = F),
+                                              list(query = elements,params = list("Type", "Recurrent Blood Derived Cancer - Bone Marrow"), color = isolate({input$summaryQueryColorTRBM}), active = F),
+                                              list(query = elements,params = list("Type", "Additional - New Primary"), color = isolate({input$summaryQueryColorTAP}), active = F),
+                                              list(query = elements,params = list("Type", "Metastatic"), color = isolate({input$summaryQueryColorTM}), active = F),
+                                              list(query = elements,params = list("Type", "Additional Metastatic"), color = isolate({input$summaryQueryColorTAM}), active = F),
+                                              list(query = elements,params = list("Type", "Human Tumor Original Cells"), color = isolate({input$summaryQueryColorTHOC}), active = F),
+                                              list(query = elements,params = list("Type", "Primary Blood Derived Cancer - Bone Marrow"), color = isolate({input$summaryQueryColorTBM}), active = F),
+                                              list(query = elements,params = list("Type", "Blood Derived Normal"), color = isolate({input$summaryQueryColorNB}), active = F),
+                                              list(query = elements,params = list("Type", "Buccal Cell Normal"), color = isolate({input$summaryQueryColorNBC}), active = F),
+                                              list(query = elements,params = list("Type", "EBV Immortalized Normal"), color = isolate({input$summaryQueryColorNEBV}), active = F),
+                                              list(query = elements,params = list("Type", "Bone Marrow Normal"), color = isolate({input$summaryQueryColorNBM}), active = F),
+                                              list(query = elements,params = list("Type", "Cell Lines"), color = isolate({input$summaryQueryColorCELL}), active = F),
+                                              list(query = elements,params = list("Type", "Recurrent Blood Derived Cancer - Peripheral Blood"), color = isolate({input$summaryQueryColorTRB}), active = F),
+                                              list(query = elements,params = list("Type", "Primary Xenograft Tissue"), color = isolate({input$summaryQueryColorXP}), active = F),
+                                              list(query = elements,params = list("Type", "Cell Line Derived Xenograft Tissue"), color = isolate({input$summaryQueryColorXCL}), active = F),
+                                              list(query = elements,params = list("Type", "Solid Tissue Normal"), color = isolate({input$summaryQueryColorNT}), active = F))
+                                    )
+
+                                }
                                  setProgress(value = 1.0, message = "Completed", detail = "Done", session = getDefaultReactiveDomain())
                              })
             } else {
