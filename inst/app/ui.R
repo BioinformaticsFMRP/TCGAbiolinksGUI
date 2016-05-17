@@ -90,13 +90,19 @@ sidebar <-  dashboardSidebar(
         #         menuSubItem("Analysis" , tabName = "elmer", icon = icon("flask")),
         #         menuSubItem("Visualize Results" , tabName = "elmer", icon = icon("picture-o"))
         #),
-        tags$hr(class="lineConfig"),
-        menuItem("Configuration", tabName = "config", icon = icon("cogs")),
+        #tags$hr(class="lineConfig"),
+        #menuItem("Configuration", tabName = "config", icon = icon("cogs")),
         tags$hr(class="lineDoc"),
-        menuItem("TCGAbiolinksGUI Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("book")),
-        menuItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("book")),
-        menuItem("ELMER Manual" , href = "https://www.bioconductor.org/packages/3.3/bioc/vignettes/ELMER/inst/doc/vignettes.pdf", icon = icon("book"))
-    )
+        menuItem("vignettes", icon = icon("book"),
+                 menuSubItem("TCGAbiolinksGUI Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("external-link")),
+                 menuSubItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("external-link")),
+                 menuSubItem("ELMER Manual" , href = "https://www.bioconductor.org/packages/3.3/bioc/vignettes/ELMER/inst/doc/vignettes.pdf", icon = icon("external-link"))
+    ),
+    menuItem("Papers", icon = icon("file-text-o"),
+             menuSubItem("TCGAbiolinks" , href = "https://doi.org/10.1093/nar/gkv1507", icon = icon("external-link")),
+             menuSubItem("ELMER" , href = "https://doi.org/10.1186/s13059-015-0668-3", icon = icon("external-link"))
+    ), div(id = "greetbox-outer",
+    menuItem("welcome", tabName = "welcome",selected = T)))
 )
 
 body <-  dashboardBody(
@@ -120,8 +126,14 @@ body <-  dashboardBody(
         singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css",
                                       href = "TCGAbiolinksGUI.css")))
     ),
-    tabItems(
 
+    tabItems(
+        tabItem(tabName = "welcome",
+                fluidRow(
+                    column(1),
+                    column(10,
+                    includeHTML("index.html")
+                    ))),
         tabItem(tabName = "tcgaSearch",
                 fluidRow(
                     column(10, bsAlert("tcgasearchmessage"),

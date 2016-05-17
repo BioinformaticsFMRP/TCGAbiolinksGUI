@@ -70,6 +70,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     #addClass(selector = "body", class = "sidebar-collapse")
     setwd(Sys.getenv("HOME"))
     volumes <- c('Working directory'=getwd())
+    shinyjs::hide("greetbox-outer")
 
     #-------------------------------------------------------------------------
     #                            TCGA Search

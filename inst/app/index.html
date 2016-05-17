@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>TCGAbiolinksGUI</title>
+    <meta name="description" content="TCGAbiolinksGUI.">
+    <link rel="stylesheet" href="main.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <h1><center>Welcome to TCGAbiolinksGUI</center></h1>
+
+    <p>
+        TCGAbiolinksGUI, a graphical user interface (GUI) for integrative analysis of TCGA data, was created to help
+        users to use some R/Biocondcutor packages in their analysis.
+    </p>
+
+    <h3>Description of the menus</h3>
+
+    <div class="panel panel-danger">
+        <div class="panel-heading"> <span class="label label-danger">Step 1</span>
+        <span style="padding-left:10px">Data </span></div>
+        <div class="panel-body">
+            <style type="text/css">
+                .tg {
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border: none;
+                }
+
+                .tg td {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+
+                .tg th {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    font-weight: normal;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+
+                .tg .tg-s6z2 {
+                    text-align: center
+                }
+            </style>
+            <table class="tg">
+                <tr>
+                    <td class="tg-031e"> <span class="label label-danger">Step 1.a: Data information</span></td>
+                    <td class="tg-031e"> See some information about the freely availbale TCGA data through some graphics. Which are the available platforms, the samples types, how many samples has more than one experiment etc.</td>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-danger">Step 1.b: Get Data</span></th>
+                    <th class="tg-031e"> Download TCGA data (molecular data, mutation data, clinical data, subtype information) that will be used in the analysis steps. </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="panel panel-success">
+        <div class="panel-heading"> <span class="label label-success">Step 2</span><span style="padding-left:10px">Data </span></div>
+        <div class="panel-body">
+            <style type="text/css">
+                .tg {
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border: none;
+                }
+
+                .tg td {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+
+                .tg th {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    font-weight: normal;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+
+                .tg .tg-s6z2 {
+                    text-align: center
+                }
+            </style>
+            <table class="tg">
+                <tr>
+                    <th class="tg-031e"> <span class="label label-success">Step 2.a: Clinical analysis</span></th>
+                    <th class="tg-031e"> Perform a survival analysis and visualize the groups/subgroups relation </th>
+                </tr>
+                <tr>
+                    <td class="tg-031e"> <span class="label label-success">Step 2.b: Epigenetic analysis</span></td>
+                    <td class="tg-031e"> Perform differentially methylated regions (DMR) analysis.The result can be seen through a volcano plot, a heatmap plot. </td>
+                </tr>
+                <tr>
+                    <td class="tg-031e"> <span class="label label-success">Step 2.c: Transcriptomic analysis</span></td>
+                    <td class="tg-031e"> Perform differential expression analysis (DEA). The result can be seen through a volcano plot, a heatmap plot and for the genes that were identified as upregulated or downregulated an enrichment analysis can be done. </td>
+                </tr>
+                <tr>
+                    <td class="tg-031e"> <span class="label label-success">Step 2.d: Genomic analysis</span></td>
+                    <td class="tg-031e"> Visualize mutation status through a oncoprint using a TCGA Mutation Annotation Format (MAF) file. </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+
+
+    <div class="panel panel-warning">
+        <div class="panel-heading"> <span class="label label-warning">Step 3</span><span style="padding-left:10px">Integrative analysis </span></div>
+        <div class="panel-body">
+            <style type="text/css">
+                .tg {
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border: none;
+                }
+
+                .tg td {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+
+                .tg th {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    font-weight: normal;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+
+                .tg .tg-s6z2 {
+                    text-align: center
+                }
+            </style>
+            <table class="tg">
+                <tr>
+                    <th class="tg-031e"> <span class="label label-warning">Step 3.a: Starburst plot </span>
+                    </th>
+                    <th class="tg-031e"> The user will be able to use the result from the epigenetic analysis and transcriptomic analysis in a starburstplot (correlates the DNA methylation level and nearest gene expression level) </th>
+                    <tr>
+                    <th class="tg-031e"> <span class="label label-warning">Step 3.b: ELMER </span>
+                    </th>
+                    <th class="tg-031e"> After downloading DNA methylation data (platform 450k) and gene expression data the user will be able to perform ELEMR analysis, this package is designed to identify candidate regulatory elements in the non-coding regions of the genome associated with cancer</th>
+
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>
