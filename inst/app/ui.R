@@ -80,10 +80,10 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o"))
         ),
         tags$hr(class="lineIntegrative"),
-        menuItem("Integrative analysis", icon = icon("flask"),
-                 menuSubItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
-                 menuSubItem("ELMER" , tabName = "elmer", icon = icon("flask"))
-        ),
+        #menuItem("Integrative analysis", icon = icon("flask"),
+        menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
+        menuItem("ELMER" , tabName = "elmer", icon = icon("flask")),
+        #),
         #menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
         #menuItem("ELMER analysis", icon = icon("flask"),
         #         menuSubItem("Create ELMER object" , tabName = "elmer", icon = icon("database")),
