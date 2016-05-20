@@ -42,10 +42,10 @@ inputTextarea <- function(inputId, value="", nrows, ncols) {
 
 header <- dashboardHeader(
     title = "TCGAbiolinks",
-    titleWidth = 300
+    titleWidth = 250
 )
 header$children[[2]]$children <-  tags$a(href='http://bioconductor.org/packages/TCGAbiolinksGUI/',
-                                         tags$img(src='logo_red.png',height='30',width='250'))
+                                         tags$img(src='logo_no_text.png',height='50',width='220'))
 
 sidebar <-  dashboardSidebar(
     width = 250,
