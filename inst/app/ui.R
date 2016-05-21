@@ -317,7 +317,7 @@ body <-  dashboardBody(
                                      color: #FFFFFF;
                                      margin-left: auto;
                                      margin-right: auto;
-                                     width: 49%",
+                                     width: 100%",
                                             icon = icon("search")),
                                actionButton("mafDownloadBt",
                                             "Download",
@@ -325,7 +325,7 @@ body <-  dashboardBody(
                                      color: #FFFFFF;
                                      margin-left: auto;
                                      margin-right: auto;
-                                     width: 49%",
+                                     width: 100%",
                                             icon = icon("download")))
                     ))),
         tabItem(tabName = "tcgaSubtype",
@@ -340,7 +340,8 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = FALSE,
                                selectizeInput('tcgasubtypeFilter',
                                               'Tumor filter',
-                                              c("brca"="brca",
+                                              c("acc"="acc",
+                                                "brca"="brca",
                                                 "coad"="coad",
                                                 "gbm"="gbm",
                                                 "hnsc"="hnsc",
@@ -361,7 +362,7 @@ body <-  dashboardBody(
                                checkboxInput("saveSubtypeRda", "Save as rda?", value = FALSE, width = NULL),
                                checkboxInput("saveSubtypeCsv", "Save as csv?", value = FALSE, width = NULL),
                                actionButton("tcgaSubtypeBt",
-                                            "TCGA Subtype Search",
+                                            "Search",
                                             style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;
