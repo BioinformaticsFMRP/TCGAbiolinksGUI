@@ -457,11 +457,11 @@ studies of various diseases. We have added some of the subtypes defined by these
 reports in our package. The BRCA [@ref11], COAD [@ref12], GBM [@ref8], HNSC [@ref14], KICH [@ref15], KIRC[@ref21], KIRP [@ref20], LGG [@ref8], LUAD [@ref9], 
 LUSC[@ref16], PRAD[@ref19], READ [@ref12],  SKCM [@ref13], STAD [@ref10], THCA [@ref18], UCEC [@ref17] tumors have data added. 
 
-The user can visualize the table with the information and save it as csv or rda file.
+The user can visualize the table with the information and save it as csv or an R object (rda) file.
 
 #### Sub-menu: Mutation data
 In order to download the Mutation Annotation Format (MAF), it will get the tables from [TCGA MAF](https://wiki.nci.nih.gov/display/TCGA/TCGA+MAF+Files), remove the obsolete/protected
-files. The user can select from the table which MAF file to download. The output will be a rda file.
+files. The user can select from the table which MAF file to download. The output will be a R object (rda) file.
 
 ## Menu: TCGA Data information
 
@@ -514,7 +514,7 @@ has some relation with the subgroup informatio. So IDH status might be defining 
 ![Profile plot menu: Main window.](profileplot.png)
 
 ##### Data 
-A cvs or rda file with the subtype information.
+A cvs or R object (rda) file with the subtype information.
 
 ##### General parameters 
 
@@ -549,7 +549,7 @@ From the clinical data download in the TCGA data menu, the user can use it to ve
 ![Survival plot menu: Main window.](survival.png)
 
 ##### Data 
-A cvs or rda file with the clinical information.
+A cvs or R object (rda) file with the clinical information.
 
 ##### Parameters 
 
@@ -639,7 +639,7 @@ In this sub-menu the user will be able to plot the mean DNA methylation by group
 ![Mean DNA methylation plot menu: Main window.](meanmet.png)
 
 ##### Data
-Expected input a rda file with a summarized Experiment object.
+Expected input a R object (rda) file with a summarized Experiment object.
 
 ##### Parameters control
 
@@ -701,7 +701,7 @@ Select a summarized Experiment object (rda)
 
 ##### Data
 
-* Select rda file: Should receive a summarized Experiment object
+* Select R object (rda) file: Should receive a summarized Experiment object
 * Results file: Should receive the output from the DEA or DMR analysis.
 
 DEA result file should have the following pattern: DEA_result_groupCol_group1_group2_pcut_0.05_logFC.cut_0.csv
@@ -783,7 +783,7 @@ this sub-menu offer a way to visualize multiple genomic alteration.
 #### Data
 
 * Select MAF file: Select a MAF file (.rda) with mutatation annotation information
-* Select annotation file: Select a rda rda with the metadata information. Columns "patient" or "bcr_patient_barcode"
+* Select annotation file: Select a R object (rda)  with the metadata information. Columns "patient" or "bcr_patient_barcode"
 should exist.
 * Annotation columns: Which columns of the annotation file should be showed?
 * Annotation position: where the annotation should be added? Top or bottom.
@@ -874,8 +874,8 @@ anottation data.
 
 ### Data box
 
-* Select mee: select an rda file with a mee object
-* Select results: select an rda file with the results from ELMER analysis.
+* Select mee: select an R object (rda) file with a mee object
+* Select results: select an R object (rda) file with the results from ELMER analysis.
 
 ### Analysis
 
