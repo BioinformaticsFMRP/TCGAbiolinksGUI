@@ -303,26 +303,34 @@ In order to present the package we divided this vignette based in the GUI menus 
 were created based on different group of analysis. The menus and sub-menus are:
 
 * TCGA Data
-    + TCGA search
-    + Data summary
-* Clinical analysis
-    + Profile plot
-    + Survival plot
-* Epigenetic analysis
-    + Differential methylation analysis
-    + Volcano plot
-    + Heatmap plot
-    + Mean DNA methylation plot
-* Transcriptomic analysis
-    + Differential expression analysis
-    + Volcano plot
-    + Heatmap plot
-    + Enrichement analysis
-* Genomic analysis
-    + Oncoprint Plot
+    + TCGA data information
+    + Get TCGA data
+        + Molecular data
+        + Mutation data
+        + Clinical data
+        + Subtype data
+* Analysis        
+    * Clinical analysis
+        + Profile plot
+        + Survival plot
+    * Epigenetic analysis
+        + Differential methylation analysis
+        + Volcano plot
+        + Heatmap plot
+        + Mean DNA methylation plot
+    * Transcriptomic analysis
+        + Differential expression analysis
+        + Volcano plot
+        + Heatmap plot
+        + Enrichement analysis
+    * Genomic analysis
+        + Oncoprint Plot
 * Integrative analysis
     + Starburst plot
     + ELMER
+* Help documents
+    + Tutorial/vignettes
+    + References
 
 After the presentation of each menu, we dedicated a section to show how to execute some of the cases of studies showed in [TCGAbiolinks paper](http://doi.org/10.1093/nar/gkv1507) and [vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html) but using only the TCGAbiolinksGUI.
 
