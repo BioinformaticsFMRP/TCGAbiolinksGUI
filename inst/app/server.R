@@ -1161,10 +1161,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                   ".csv")
                     write.csv2(data,file =  csv)
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
-                                content = csv, append = FALSE)
+                                content = paste0(getwd(),"/",csv), append = FALSE)
 
                 }
-
                 withProgress(message = 'Creating plot',
                              detail = 'This may take a while...', value = 0, {
                                  p <-  TCGAVisualize_volcano(x = data[,diffcol],
@@ -1219,7 +1218,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                            ".csv")
                     write.csv2(data, file = out.filename)
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
-                                content = out.filename, append = FALSE)
+                                content =  paste0(getwd(),"/",out.filename), append = FALSE)
                 }
 
                 withProgress(message = 'Creating plot',
