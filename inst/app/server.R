@@ -867,15 +867,21 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     #-------------------------END controlling show/hide states -----------------
 
-    shinyFileChoose(input, 'maffile', roots=volumes, session=session, restrictions=system.file(package='base'))
-    shinyFileChoose(input, 'mafAnnotation', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'maffile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'), filetypes=c('', 'maf'))
+    shinyFileChoose(input, 'mafAnnotation', roots=volumes, session=session,
+                    restrictions=system.file(package='base'), filetypes=c('', 'csv','rda'))
     shinyFileChoose(input, 'oncoGenesFiles', roots=volumes, session=session, restrictions=system.file(package='base'))
 
     annotation.maf <- function(){
         inFile <- input$mafAnnotation
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$mafAnnotation)$datapath)
-        se <- get(load(file))
+        if(tools::file_ext(file)=="csv"){
+            se <- read.csv2(file,header = T,stringsAsFactors = FALSE, row.names = 1)
+        } else if(tools::file_ext(file)=="rda"){
+            se <- get(load(file))
+        }
 
         if(class(se)!= class(data.frame())){
             createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
@@ -1412,10 +1418,14 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     content = paste0("Summarized Experiment object with results saved in: ", file, message,"<ul>"),
                     append = FALSE)
     })
-    shinyFileChoose(input, 'dmrfile', roots=volumes, session=session, restrictions=system.file(package='base'))
-    shinyFileChoose(input, 'meanmetfile', roots=volumes, session=session, restrictions=system.file(package='base'))
-    shinyFileChoose(input, 'heatmapfile', roots=volumes, session=session, restrictions=system.file(package='base'))
-    shinyFileChoose(input, 'heatmapresultsfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'dmrfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'),filetypes=c('', 'rda'))
+    shinyFileChoose(input, 'meanmetfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'),filetypes=c('', 'rda'))
+    shinyFileChoose(input, 'heatmapfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'),filetypes=c('', 'rda'))
+    shinyFileChoose(input, 'heatmapresultsfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'),filetypes=c('', 'csv'))
 
     meandata <-  reactive({
         inFile <- input$meanmetfile
@@ -2731,10 +2741,14 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
     #----------------------- END controlling show/hide states -----------------
     shinyDirChoose(input, 'elmerFolder', roots=volumes, session=session, restrictions=system.file(package='base'))
-    shinyFileChoose(input, 'elmermeefile', roots=volumes, session=session, restrictions=system.file(package='base'))
-    shinyFileChoose(input, 'elmerresultsfile', roots=volumes, session=session, restrictions=system.file(package='base'))
-    shinyFileChoose(input, 'elmermetfile', roots=volumes, session=session, restrictions=system.file(package='base'))
-    shinyFileChoose(input, 'elmerexpfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'elmermeefile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'), filetypes=c('', 'rda'))
+    shinyFileChoose(input, 'elmerresultsfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'), filetypes=c('', 'rda'))
+    shinyFileChoose(input, 'elmermetfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'), filetypes=c('', 'rda'))
+    shinyFileChoose(input, 'elmerexpfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'), filetypes=c('', 'rda'))
 
     # mee create
     observe({
