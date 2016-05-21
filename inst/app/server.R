@@ -1049,7 +1049,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
     })
 
-    shinyFileChoose(input, 'volcanofile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'volcanofile', roots=volumes, session=session, restrictions=system.file(package='base'),filetypes=c('excel', 'csv'))
 
     volcanodata <-  reactive({
 
@@ -1088,6 +1088,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
     volcano.values <- reactive({
         if(input$volcanoPlotBt){
+            closeAlert(session, "volcanoAlert")
+
             # read csv file with results
             data <- volcanodata()
             if(is.null(data)) return(NULL)
@@ -1149,8 +1151,17 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 down.count <- table(hypo & sig)["TRUE"]
 
                 if(isolate({input$volcanoSave})){
-                    csv <- paste0(paste("DMR_results",gsub("_",".",groupCol),gsub("_",".",group1),gsub("_",".",group2), "pcut",y.cut,"meancut",x.cut,  sep = "_"),".csv")
+                    csv <- paste0(paste("DMR_results",
+                                        gsub("_",".",groupCol),
+                                        gsub("_",".",group1),
+                                        gsub("_",".",group2),
+                                        "pcut",y.cut,
+                                        "meancut",x.cut,
+                                        sep = "_"),
+                                  ".csv")
                     write.csv2(data,file =  csv)
+                    createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
+                                content = csv, append = FALSE)
 
                 }
 
@@ -1198,8 +1209,17 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
                 # Update data into a file
                 if(isolate({input$volcanoSave})){
-                    out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),gsub("_",".",group1),gsub("_",".",group2),,"pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
+                    out.filename <- paste0(paste("DEA_results",
+                                                 gsub("_",".",groupCol),
+                                                 gsub("_",".",group1),
+                                                 gsub("_",".",group2),
+                                                 "pcut", y.cut,
+                                                 "logFC.cut",x.cut,
+                                                 sep="_"),
+                                           ".csv")
                     write.csv2(data, file = out.filename)
+                    createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
+                                content = out.filename, append = FALSE)
                 }
 
                 withProgress(message = 'Creating plot',
@@ -1225,7 +1245,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              })
             }
         }
-        ret <- list(plot = p, up = up.count, down = down.count, insig =insig.count)
+        ret <- list(plot = p, up = up.count, down = down.count, insig =insig.count, label = label)
     })
     observeEvent(input$volcanoPlotBt , {
         output$volcanoBoxUp <- renderValueBox({
@@ -1237,7 +1257,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             }
             valueBox(
                 value = value,
-                subtitle = "Upregulated/Hypermethyladed",
+                subtitle = ret$label[2],
                 icon = icon("arrow-up"),
                 color = "red"
             )
@@ -1253,7 +1273,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             }
             valueBox(
                 value = value,
-                "Insignificant",
+                ret$label[1],
                 icon = icon("minus"),
                 color = "black"
             )
@@ -1269,7 +1289,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             }
             valueBox(
                 value = value,
-                "Downregulated/Hypomethylated",
+                ret$label[3],
                 icon = icon("arrow-down"),
                 color = "olive"
             )

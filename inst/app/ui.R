@@ -175,8 +175,7 @@ body <-  dashboardBody(
                                               'Sample type filter',
                                               table.code,
                                               multiple = TRUE),
-                               bsTooltip("tcgaDownloadBarcode", "Barcodes separeted by (;), (,) or (new line)",
-                                         "left"),
+                               bsTooltip("tcgaDownloadBarcode", "Barcodes separeted by (;), (,) or (new line)", "left"),
                                useShinyjs(),
                                inputTextarea('tcgaDownloadBarcode', '', 2, 30),
                                useShinyjs(),
@@ -545,10 +544,10 @@ body <-  dashboardBody(
                                       #bsCollapsePanel("Probes info", dataTableOutput('probesSE'), style = "default"),
                                       bsCollapsePanel("Volcano plot", uiOutput("volcanoPlot"), style = "default")),
                            fluidRow(
-                               column(width = 10,  offset = 3,
-                                      valueBoxOutput("volcanoBoxDown", width = 3),
+                               column(width = 10,  offset = 1,
+                                      valueBoxOutput("volcanoBoxDown", width = 4),
                                       valueBoxOutput("volcanoBoxInsig", width = 3),
-                                      valueBoxOutput("volcanoBoxUp", width = 3))
+                                      valueBoxOutput("volcanoBoxUp", width = 4))
                            )),
                     column(2,
                            box(title = "Volcano Plot",width = NULL,
@@ -595,6 +594,7 @@ body <-  dashboardBody(
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    sliderInput("volcanowidth", "Plot Width (%)", min = 0, max = 100, value = 100),
                                    sliderInput("volcanoheight", "Plot Height (px)", min = 0, max = 1200, value = 400)),
+                               bsTooltip("volcanoSave", "Along with the plot, it will save a new csv with the cut-offs set", "left"),
                                checkboxInput("volcanoSave", "Save file with results?", value = FALSE, width = NULL),
                                actionButton("volcanoPlotBt",
                                             "Volcano plot",
