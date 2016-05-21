@@ -133,6 +133,16 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     #----------------------- END controlling show/hide states -----------------
     # Table render
     observeEvent(input$tcgaSearchBt, {
+        data.name <- paste0(paste(isolate({input$tcgaTumorFilter}),collapse = "_"),
+                            paste(isolate({input$tcgaExpFilter}),collapse = "_"))
+        if(isolate({input$prepareRb}) == TRUE){
+            data.name <- paste0(data.name,"_se")
+            if(isolate({input$addSubTypeTCGA}))  data.name <- paste0(data.name,"_withsubtype")
+        } else {
+            data.name <- paste0(data.name,"_df")
+        }
+        data.name <- paste0(data.name,".rda")
+        updateTextInput(session, "tcgafilename", value = data.name)
         updateCollapse(session, "collapseTCGA", open = "TCGA search results")
         output$tcgaSearchtbl <- renderDataTable({
             tumor = input$tcgaTumorFilter
@@ -280,7 +290,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Download completed", style =  "success",
                     content =  paste0("Saved in: ", getPath), append = FALSE)
     })
-
     # TCGAPrepare
     observeEvent(input$tcgaPrepareBt, {
 
@@ -477,20 +486,20 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                   }
 
                               }, error = function(e) {
-                                  createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                                  createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "warning",
                                               content = "Sorry there are clinical files for your query.", append = FALSE)
                               })
                           })
             if(is.null(tbl)){
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "warning",
                             content = "Sorry there are clinical files for your query.", append = FALSE)
                 return()
             } else if(nrow(tbl) ==0) {
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
+                createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "warning",
                             content = "Sorry there are clinical files for your query.", append = FALSE)
                 return()
             } else {
-                closeAlert(session, "tcgasearchAlert")
+                closeAlert(session, "tcgaClinicalAlert")
                 # Saving data
                 if (isolate({input$saveClinicalRda}) || isolate({input$saveClinicalCsv})){
                     if(isolate({input$clinicalSearchType})){
@@ -504,13 +513,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     save.message <- ""
                     if (isolate({input$saveClinicalRda})){
                         save(tbl, file = filename)
-                        save.message <-  paste0(save.message,"<br>File created: ",filename)
+                        save.message <-  paste0(save.message,"File created: ",filename,"<br>")
                     }
                     if (isolate({input$saveClinicalCsv})){
                         write.csv2(tbl, file = gsub("rda","csv",filename))
-                        save.message <-  paste0(save.message,"<br>File created: ",gsub("rda","csv",filename))
+                        save.message <-  paste0(save.message,"File created: ",gsub("rda","csv",filename))
                     }
-                    createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "File created", style =  "info",
+                    createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "File created", style =  "info",
                                 content = save.message, append = TRUE)
                 }
                 return(tbl)
@@ -590,7 +599,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                      detail = 'This may take a while...', value = 0, {
                          if(is.null(input$allRows)){
                              closeAlert(session, "tcgaMutationAlert")
-                             createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Error", style = "alert",
+                             createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Error", style = "danger",
                                          content =  paste0("Please select which files will be downloaded"), append = TRUE)
                              req(input$allRows)
                          }
@@ -1068,7 +1077,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         df <- read.csv2(file,header = T)
+                         df <- read.csv2(file,header = T,row.names = 1)
                      })
         return(df)
 
@@ -1150,7 +1159,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 insig.count <- nrow(data) - table(sig)["TRUE"]
                 up.count <- table(hyper & sig)["TRUE"]
                 down.count <- table(hypo & sig)["TRUE"]
-
+                rownames(data) <- data$probeID
                 if(isolate({input$volcanoSave})){
                     csv <- paste0(paste("DMR_results",
                                         gsub("_",".",groupCol),
@@ -1196,7 +1205,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                            "Downregulated")
                 label[2:3] <-  paste(label[2:3], "in", group2)
                 if(isolate({input$volcanoNames})) names <- as.character(data$mRNA)
-
+                data$Gene_Symbol  <- as.character(data$mRNA)
                 data$status <- "Insignificant"
                 data[data$logFC >= x.cut & data$FDR <= y.cut,"status"] <- paste0("Upregulated in ", group2)
                 data[data$logFC <= -x.cut & data$FDR <= y.cut,"status"] <- paste0("Downregulated in ", group2)
@@ -2538,9 +2547,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$starburstexpfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read.csv2(file,header = T)
-            rownames(se) <- se[,1]
-            se[,1] <- NULL
+            se <- read.csv2(file,header = T,row.names = 1)
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -2557,7 +2564,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read.csv2(file,header = T)
+            se <- read.csv2(file,header = T, row.names = 1)
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -2570,9 +2577,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         #}
         return(se)
     }
-    shinyFileChoose(input, 'starburstmetfile', roots=volumes, session=session, restrictions=system.file(package='base'))
-    shinyFileChoose(input, 'starburstexpfile', roots=volumes, session=session, restrictions=system.file(package='base'))
-
+    shinyFileChoose(input, 'starburstmetfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'), filetypes=c('excel', 'csv'))
+    shinyFileChoose(input, 'starburstexpfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'), filetypes=c('excel', 'csv'))
 
     output$starburstResult <- renderDataTable({
 

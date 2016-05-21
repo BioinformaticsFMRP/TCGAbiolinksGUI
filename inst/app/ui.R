@@ -242,7 +242,7 @@ body <-  dashboardBody(
         tabItem(tabName = "tcgaClinical",
                 fluidRow(
                     column(10, bsAlert("tcgaClinicalmessage"),
-                           bsCollapse(id = "collapseTCGAClinical", open = "Clincal data",
+                           bsCollapse(id = "collapseTCGAClinical", open = "Clinical data",
                                       bsCollapsePanel("Clinical data", dataTableOutput('tcgaClinicaltbl'), style = "default")
                            )),
                     column(2,
@@ -359,8 +359,8 @@ body <-  dashboardBody(
                                                 "thca"="thca", "ucec"="ucec"),
                                               multiple = FALSE),
                                bsTooltip("saveSubtypeRda", "A Rda file stores a single R object (can only be openned in R)","left"),
-                               checkboxInput("saveSubtypeRda", "Save as rda?", value = FALSE, width = NULL),
-                               checkboxInput("saveSubtypeCsv", "Save as csv?", value = FALSE, width = NULL),
+                               checkboxInput("saveSubtypeRda", "Save result as rda?", value = FALSE, width = NULL),
+                               checkboxInput("saveSubtypeCsv", "Save result as csv?", value = FALSE, width = NULL),
                                actionButton("tcgaSubtypeBt",
                                             "Search",
                                             style = "background-color: #000080;
