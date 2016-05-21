@@ -8,7 +8,7 @@
         " |_     _|      |     __|   _   |  |--.|__|.-----.|  |__|.-----.|  |--.-----.\n",
         "   |   | |   ---|    |  |       |  _  ||  ||  _  ||  |  ||     ||    <|__ --|\n",
         "   |___| |______|_______|___|___|_____||__||_____||__|__||__|__||__|__|_____|\n",
-            "     \n",
+        "     \n",
         "                      _______ _______ _______                        \n" ,
         "                     |     __|   |   |_     _|                \n"   ,
         "                     |    |  |   |   |_|   |_               \n"  ,
@@ -23,12 +23,14 @@
 
 #' Update database
 #' This function will update the biomics database
-#' @importFrom devtools use_data
+# @importFrom devtools use_data
 #' @keywords internal
 #' @return Update maf files table
 update <- function(){
     env <- as.environment("package:TCGAbiolinksGUI")
     load.maf(env)
     maf.files <- get("maf.files", envir = env)
-    use_data(maf.files, internal = TRUE, overwrite = TRUE)
+    if (requireNamespace("devtools", quietly = TRUE)) {
+        devtools::use_data(maf.files, internal = TRUE, overwrite = TRUE)
+    }
 }

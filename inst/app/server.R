@@ -1005,7 +1005,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
 
-                             create.oncoprint(mut=mut,genes=genes,annotation = annotation,
+                             TCGAvisualize_oncoprint(mut=mut,genes=genes,annotation = annotation,
                                               annotation.position=isolate(input$mafAnnotationpos),
                                               rm.empty.columns = rm.empty.cols,
                                               show.column.names = show.col.names,

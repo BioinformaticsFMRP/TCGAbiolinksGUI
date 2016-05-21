@@ -14,13 +14,14 @@ Suggests:
     testthat,
     knitr,
     roxygen2,
+    devtools,
+    rvest,
+    xml2,
     BiocStyle
 Imports:
     shiny (>= 0.13.1.9002),
-    ComplexHeatmap (>= 1.9.3),
     downloader (>= 0.4),
     grid,
-    data.table,
     stringr (>= 1.0),
     SummarizedExperiment,
     ggrepel,
@@ -28,13 +29,10 @@ Imports:
     UpSetR,
     ggplot2  (>= 2.1.0),
     pathview,
-    rvest,
-    devtools,
-    xml2,
     ELMER (>= 1.2.1),
     clusterProfiler,
     parallel,
-    TCGAbiolinks (>= 1.1.26),
+    TCGAbiolinks (>= 1.2.3),
     shinyjs (>= 0.5.2),
     shinyBS  (>= 0.62)
 VignetteBuilder: knitr
