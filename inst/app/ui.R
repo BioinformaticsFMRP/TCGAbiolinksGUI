@@ -621,7 +621,7 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = FALSE,
                                box(title = "Data",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                                   shinyFilesButton('meanmetfile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
+                                   shinyFilesButton('meanmetfile', 'Select file', 'Please select SummarizedExperiment object',
                                                     multiple = FALSE)),
                                box(title = "Parameters control",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,

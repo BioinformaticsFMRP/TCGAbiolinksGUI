@@ -1996,9 +1996,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- read.csv2(file,header = T)
-            rownames(df) <- df[,1]
-            df[,1] <- NULL
+            df <- read.csv2(file,header = T, row.names = 1)
         } else if(tools::file_ext(file)=="rda"){
             df <- get(load(file))
         } else {
@@ -2110,7 +2108,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         output$profileplot <- renderUI({
             plotOutput("profile.plotting", width = paste0(isolate({input$profilewidth}), "%"), height = isolate({input$profileheight}))
         })})
-    shinyFileChoose(input, 'profileplotfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'profileplotfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'),filetypes=c('', 'rda','csv'))
+
 
     #------------------------------------------------
     # Survival plot
@@ -2171,9 +2171,17 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
         return(df)
     }
+    observeEvent(input$survivalplotgroup , {
+        if(isolate({input$survivalplotgroup}) != ""){
+            updateTextInput(session, "survivalplotLegend", value = isolate({input$survivalplotgroup}))
+        }
+    })
 
     observeEvent(input$survivalplotBt , {
         output$survival.plotting <- renderPlot({
+
+            closeAlert(session, "survivalAlert")
+
             data <- isolate({survivalplotdata()})
             legend <- isolate({input$survivalplotLegend})
             main <- isolate({input$survivalplotMain})
@@ -2181,25 +2189,23 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             cut.off <- isolate({input$survivalplotLimit})
             print.pvalue <- isolate({input$survivalplotPvalue})
 
+
             #---------------------------
             # Input verification
             #---------------------------
             if(is.null(data)){
-                closeAlert(session, "survivalAlert")
                 createAlert(session, "survivalmessage", "survivalAlert", title = "Missing data", style =  "danger",
                             content = paste0("Please select the data"), append = FALSE)
                 return(NULL)
             }
 
             if(is.null(clusterCol) || nchar(clusterCol) == 0){
-                closeAlert(session, "survivalAlert")
                 createAlert(session, "survivalmessage", "survivalAlert", title = "Missing group", style =  "danger",
                             content = paste0("Please select group column"), append = FALSE)
                 return(NULL)
             }
 
             if(length(unique(data[,clusterCol])) == 1){
-                closeAlert(session, "survivalAlert")
                 createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
                             content = paste0("Sorry, but I'm expecting at least two groups"), append = FALSE)
                 return(NULL)
@@ -2225,7 +2231,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         output$survivalplot <- renderUI({
             plotOutput("survival.plotting", width = paste0(isolate({input$survivalwidth}), "%"), height = isolate({input$survivalheight}))
         })})
-    shinyFileChoose(input, 'survivalplotfile', roots=volumes, session=session, restrictions=system.file(package='base'))
+    shinyFileChoose(input, 'survivalplotfile', roots=volumes, session=session,
+                    restrictions=system.file(package='base'),filetypes=c('', 'csv','rda'))
 
     # -------------------------------------------------
     # DEA
