@@ -379,15 +379,18 @@ Also, if you have used ELMER analysis please cite:
 * Yao, Lijing, Benjamin P. Berman, and Peggy J. Farnham. "Demystifying the secret mission of enhancers: linking distal regulatory elements to target genes." Critical reviews in biochemistry and molecular biology 50.6 (2015): 550-573.
 
 \newpage
-# Menu: TCGA Data
 
-## Sub-menu: TCGA search
+# TCGA Data
+
+## Menu: Get TCGA Data
+
+#### Sub-menu: Molecular data
 
 In this sub-menu the user can search, download and prepare TCGA data.
 
 ![TCGA search menu: Main window.](tcgasearch.png)
 
-### Advanced seach box
+##### Advanced seach box
 
 Based on the following filters, it will show a table with results:
 
@@ -395,7 +398,7 @@ Based on the following filters, it will show a table with results:
 * Platform filter
 * Level filter
 
-### Download box
+##### Download box
 
 After the search, the user can download the data by selecting the lines that will be downloaded, if no lines are 
 select, all lines from the result will be downloaded.
@@ -430,7 +433,7 @@ For some platforms, there are filter for file types:
     + mirna.quantification
     + isoform.quantification
 
-### Prepare box
+##### Prepare box
 
 This step used the information from Advanced search box and download box to prepare the data.
 
@@ -442,7 +445,12 @@ The data can be prepared into:
 
 For the Summarized Experiment object information subytpe can be added if the checkbox is selected (see next subsection).
 
-### Subtype search box
+##### Directory to save and prepare files
+
+Use this to select where the data should be downloaded and prepared in the computer.
+
+
+#### Sub-menu: Subtype data
 
 The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-wide 
 studies of various diseases. We have added some of the subtypes defined by these
@@ -451,31 +459,26 @@ LUSC[@ref16], PRAD[@ref19], READ [@ref12],  SKCM [@ref13], STAD [@ref10], THCA [
 
 The user can visualize the table with the information and save it as csv or rda file.
 
-### MAF search box
+#### Sub-menu: Mutation data
 In order to download the Mutation Annotation Format (MAF), it will get the tables from [TCGA MAF](https://wiki.nci.nih.gov/display/TCGA/TCGA+MAF+Files), remove the obsolete/protected
 files. The user can select from the table which MAF file to download. The output will be a rda file.
 
-### Directory to save and prepare files
+## Menu: TCGA Data information
 
-Use this to select where the data should be downloaded and prepared in the computer.
-
-
-## Sub-menu: Data summary
-
-In this sub-menu the user can view a summary of the TCGA data.
+In this menu the user can view a summary of the TCGA data.
 
 
 ![Data summary: Main window.](dataSummary.png)
 
 
-### Type of plot
+#### Type of plot
 
 * Type of samples: Creates a barplot for each tumor vs platform showing the type of samples in each. This is useful, for example, to know if we have normal or recurrent samples.
 * Platform vs samples: Creates a  UpSet Plot for a tumor type. This will show how many samples do we have for each platform,
 and how many samples have data for different platforms. For example, in the figure before it shows that
 102 patients have samples only for Genome_Wide_SNP_6 platform (first vertical bar) while 45 patients have samples for all the five platforms (second vertical bar).
 
-### Parameters
+#### Parameters
 
 * Tumor: Tumor selection. For the plot "Type of samples" more than one can be selected, while for "Platform vs samples"
 only one can be selected.
@@ -484,16 +487,17 @@ only one can be selected.
 * Sample type: Filter samples by types. Only used in "Platform vs samples" plot.
 * Add counts label to barchart: Add numbers for each bar in the plot. Only used in "Type of samples" plot.
 
-### Colors control
+#### Colors control
 Change the color of the plot
 
-### Size control
+#### Size control
 Change the size of the plot
 
 \newpage
-# Menu: Clinical analysis
+# Analysis
+## Menu: Clinical analysis
 
-## Sub-menu: Profile plot
+#### Sub-menu: Profile plot
 Sometimes we would like to see the distribution of some features in each cluster. 
 We could do a barplot for each cluster in which the bars would have the counts of the subtypes.
 
@@ -509,17 +513,17 @@ has some relation with the subgroup informatio. So IDH status might be defining 
 
 ![Profile plot menu: Main window.](profileplot.png)
 
-### Data 
+##### Data 
 A cvs or rda file with the subtype information.
 
-### General parameters 
+##### General parameters 
 
 * Group column: select the column that defines the groups
 * Subgroup column: select the column that defines the subpgroups
 * Remove NA groups: if any of the groups is NA it will be removed
 * Remove NA subgroups: if any of the subgroups is NA it will be removed
 
-### Text parameters 
+##### Text parameters 
 
 * Size title left barplot 
 * Text size cluster names 
@@ -527,27 +531,27 @@ A cvs or rda file with the subtype information.
 * Title legend size 
 * Size % cluster distribution
 
-### Color control
+##### Color control
 
 Control colors in the plot
 
-### Left bar control
+##### Left bar control
 
 Change the size of the plot and the margins that will control the position of the left bar if not very well aligned.
 
-### Size control
+##### Size control
 Change the size of the plot
 
 
-## Sub-menu: Survival plot
+#### Sub-menu: Survival plot
 From the clinical data download in the TCGA data menu, the user can use it to verify the survival of groups.
 
 ![Survival plot menu: Main window.](survival.png)
 
-### Data 
+##### Data 
 A cvs or rda file with the clinical information.
 
-### Parameters 
+##### Parameters 
 
 * Group column: Select the column that identifies the group of each sample.
 * Legend text: Text of the legend.
@@ -555,13 +559,13 @@ A cvs or rda file with the clinical information.
 * x-axis limit: Limits the x-axis, if 0 no cut-off is considered.
 * Add p-value: Add p-value to the plot.
 
-### Size control
+##### Size control
 Change the size of the plot
 
 \newpage
-# Menu: Epigenetic analysis
+## Menu: Epigenetic analysis
 
-## Sub-menu: Differential methylation analysis
+#### Sub-menu: Differential methylation analysis
 
 The user will be able to perform a Differential methylation Regions (DMR) analysis.
 The output will be a file with the folowing pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv
@@ -571,11 +575,11 @@ Obs: Depending on the number of samples and the number of probes, this analysis 
 
 ![Differential methylation analysis menu: Main window.](dmr.png)
 
-### Data
+##### Data
 
 Select a summarized Experiment object (rda)
 
-### Parameters control
+##### Parameters control
 
 * Cores: Selects the number of cores to be used in the analysis
 * DNA methylation threshold: minimun difference of DNA methylation levels to be considered as hyper/hypomethylated
@@ -585,24 +589,24 @@ Select a summarized Experiment object (rda)
 output g1 vs g2, g1 vs g3 and g2 vs g3.
 
 
-## Sub-menu: Volcano plot
+#### Sub-menu: Volcano plot
 
 In this sub-menu the user will be able to plot the results from Differentially methylated regions (DMR) 
 analysis and differential expression analysis (DEA). 
 
 ![Volcano plot menu: Main window.](volcano.png)
 
-### Data 
+##### Data 
 Expected input a csv file with the following pattern:
 
 * For expression: DEA_results_Group_subgruop1_subgroup2_pcut_0.01_logFC.cut_2.csv
 * For DNA methylation: DMR_results_Group_subgruop1_subgroup2_pcut_1e-30_meancut_0.55.csv
 
-### Volcano options
+##### Volcano options
 This box will control the x-axis thresholds "Log FC threshold" for expression and "DNA methylation threshold" for DNA methylation and the y-axis thresholds "P-value adj cut-off".
 
 
-### Highligthing options  options
+##### Highligthing options  options
 
 Checkbox option:
 
@@ -616,13 +620,13 @@ The option "points to highlight" has the possibilities:
 * sinigifcant - show the names for only the up/down regulated genes or hypo/hyper methylated probes 
 * both - show both gtoups
 
-### Color control
+##### Color control
 Change the color of the plot
 
-### Size control
+##### Size control
 Change the size of the plot
 
-### Other 
+##### Other 
 
 * Save file with results: Create a file with the same pattern as the one in the input, but with the 
 new thersholds.
@@ -634,10 +638,10 @@ In this sub-menu the user will be able to plot the mean DNA methylation by group
 
 ![Mean DNA methylation plot menu: Main window.](meanmet.png)
 
-### Data
+##### Data
 Expected input a rda file with a summarized Experiment object.
 
-### Parameters control
+##### Parameters control
 
 * Groups column: Select the column that will split the data into groups. 
 This column is selected from the  sample matrix (accessed with colData)
@@ -648,33 +652,33 @@ This column is selected from the  sample matrix (accessed with colData)
 * Sort method: Methods to sort the groups in the plot
 * x-axis label angle: Change angle of the text in the x-axis
 
-### Size control
+##### Size control
 Change the size of the plot
 
 \newpage
-# Menu: Transcriptomic analysis
+## Menu: Transcriptomic analysis
 In this sub-menu the user will be able to perform an enrichemnt analysis and see
 the biological process, cellular component, molecular function and pathways in which the genes 
 select have a role.
 
-## Sub-menu: Differential expression analysis
+### Sub-menu: Differential expression analysis
 
-### Gene expression object box
+##### Gene expression object box
 
 Select a summarized Experiment object (rda)
 
-### Normalization of genes
+##### Normalization of genes
 
 * Normalization of genes? Normalize the genes?
 * Normalization of genes method? Options: gcContent, geneLength
 
-### Quantile filter of genes
+##### Quantile filter of genes
 
 * Quantile filter of genes?
 * DEA test method: quantile, varFilter, filter1, filter2
 * Threshold selected as mean for filtering
 
-### DEA analysis
+##### DEA analysis
 
 * Log FC threshold: Log2FoldChange  threshold
 * P-value adj cut-off: significant threshold
@@ -683,7 +687,7 @@ Select a summarized Experiment object (rda)
 * Group 2: Group 2 for comparison
 * DEA test method: options glmRT, exactTest
 
-### Pathway graphs
+##### Pathway graphs
 
 * DEA result: Select csv file create by the analysis.
 * Pathway ID: plot results in a pathway graphs. See bioconductor [pathview](http://bioconductor.org/packages/pathview/) [@ref5] package.
@@ -691,11 +695,11 @@ Select a summarized Experiment object (rda)
 ![Pathway graphs output.](pathview.png)
 
 
-## Sub-menu: Heatmap plot
+### Sub-menu: Heatmap plot
 
 ![Heatmap plot menu: Main window.](heatmap.png)
 
-### Data
+##### Data
 
 * Select rda file: Should receive a summarized Experiment object
 * Results file: Should receive the output from the DEA or DMR analysis.
@@ -704,19 +708,19 @@ DEA result file should have the following pattern: DEA_result_groupCol_group1_gr
 DMR result file should have the following pattern:  DMR_results_groupCol_group1_group2_pcut_0.05_meancut_0.3.csv
 
 
-### Genes/Probes selection
+##### Genes/Probes selection
 
 * By status: Based on the results file the user can select to see hyper/hypo methylated probes
 * Text: the user can write a list of genes separeted by ";" , "," or a new line
 
-### Annotation options
+#### Annotation options
 
 * Columns annotation: using the data in the summarized experiment the user can annotate the heatmap.
 * Sort by column: The order of the columns can be sorted by one of the selected columns
 * Row annotation: Add annotation to rows
 
 
-### Other options
+#### Other options
 
 * Scale data: option "none", "by row","column"
 * Cluster rows ?
@@ -724,10 +728,10 @@ DMR result file should have the following pattern:  DMR_results_groupCol_group1_
 * Show row names ?
 * Show col names ?
 
-### Size control
+#### Size control
 Change the size of the plot and the number of bars to plot
 
-## Sub-menu: Enrichment analysis
+### Sub-menu: Enrichment analysis
 
 Researchers, in order to better understand the underlying biological processes, often want to retrieve a functional profile of a set of genes that might have an important role. This can be done by performing an enrichment analysis.
 
@@ -736,47 +740,47 @@ Given a set of genes that are up-regulated under certain conditions, an enrichme
 ![Enrichment analysis  menu: Main window.](ea.png)
 
 
-### Gene selection
+#### Gene selection
 Input a list of genes by:
 
 * Selection: The user can select by hand multiple genes from a list
 * Text: the user can write a list of genes separeted by ";" , "," or a new line
 * File: select a file (rda, csv, txt) with a column Gene_symbol or mRNA
 
-### Paramenter control
+#### Paramenter control
 
 * Size of the text
 * x upper limit: x-axis upper limit. If 0 no limit is used.
 * Number of bar histogram to show: Maximum number of bars to plot
 
-### Plot selection
+#### Plot selection
 
 * Plot biological process?
 * Plot Cellular Component?
 * Plot Molecular function?
 * Plot Pathways?
 
-### Colors control
+#### Colors control
 Change the color of the plot
 
-### Size control
+#### Size control
 Change the size of the plot and the number of bars to plot
 
 \newpage
-# Menu: Genomic analysis
+## Menu: Genomic analysis
 
-## Sub-menu: Oncoprint
+### Sub-menu: Oncoprint
 
 Using oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package,
 this sub-menu offer a way to visualize multiple genomic alteration.
 
 ![Oncorpint plot menu: Main window.](oncoprint.png)
 
-### Video
+#### Video
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/v2kBGkUCaZs/0.jpg)](http://www.youtube.com/watch?v=v2kBGkUCaZs "Onconprint example")
 
 
-### Data
+#### Data
 
 * Select MAF file: Select a MAF file (.rda) with mutatation annotation information
 * Select annotation file: Select a rda rda with the metadata information. Columns "patient" or "bcr_patient_barcode"
@@ -785,30 +789,30 @@ should exist.
 * Annotation position: where the annotation should be added? Top or bottom.
 
 
-### Gene selection
+#### Gene selection
 
 * Selection: The user can select by hand multiple genes from a list
 * Text: the user can write a list of genes separeted by ";" , "," or a new line
 * File: select a file (rda, csv, txt) with a column Gene_symbol or mRNA
 
-### Parameters control
+#### Parameters control
 
 * Remove empty columns? If a samples has no mutation it will be removed from the plot 
 * Show column names? Show patient barcodes
 * Show barplot annotation on rows? Show right barplot?
 
 
-### Colors control
+#### Colors control
 Change the color of the plot
 
-### Size control
+#### Size control
 Change the size of the plot
 
 
 \newpage
-# Menu: Integrative analysis
+# Integrative analysis
 
-## Sub-menu: Starburst plot
+## Menu: Starburst plot
 
 ![Starburst plot menu: Main window.](starburst.png)
 
@@ -848,7 +852,7 @@ Change the size of the plot
 
 * Save result: save results in a csv file
 
-## Sub-menu: ELMER
+## Menu: ELMER
 This sub-menu will help the user to perform the analysis from R/bioconductor ELMER package [@ref4].
 
 ![ELMER menu: Main window.](elmer.png)
