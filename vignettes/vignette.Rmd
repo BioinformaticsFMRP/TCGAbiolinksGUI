@@ -777,8 +777,7 @@ this sub-menu offer a way to visualize multiple genomic alteration.
 ![Oncorpint plot menu: Main window.](oncoprint.png)
 
 #### Video
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/v2kBGkUCaZs/0.jpg)](http://www.youtube.com/watch?v=v2kBGkUCaZs "Onconprint example")
-
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/0AhQI2vfTGQ/0.jpg)](http://www.youtube.com/watch?v=0AhQI2vfTGQ "Oncoprint example")
 
 #### Data
 
@@ -851,6 +850,10 @@ Change the size of the plot
 ### Other option
 
 * Save result: save results in a csv file
+
+### Video:
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/_ec6Sij4MBc/0.jpg)](http://www.youtube.com/watch?v=_ec6Sij4MBc "Starburst plot example")
+
 
 ## Menu: ELMER
 This sub-menu will help the user to perform the analysis from R/bioconductor ELMER package [@ref4].
