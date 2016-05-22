@@ -12,6 +12,12 @@ names(pathways.id) <- unname(paths.hsa)
 
 menu.icon <- "arrow-circle-right"
 
+
+disease <- TCGAbiolinks:::disease.table$abbreviation
+names(disease) <- TCGAbiolinks:::disease.table$name
+disease <- sort(disease)
+disease <- disease[disease %in% unique(TCGAquery()$Disease)]
+
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
 names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
@@ -255,7 +261,7 @@ body <-  dashboardBody(
                                useShinyjs(),
                                selectizeInput('tcgatumorClinicalFilter',
                                               'Tumor filter',
-                                              unique(TCGAquery()$Disease),
+                                              disease,
                                               multiple = FALSE),
                                bsTooltip("clinicalBarcode", "Barcodes separeted by (;), (,) or (new line)",
                                          "left"),
