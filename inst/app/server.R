@@ -69,7 +69,12 @@ parse.textarea.input <- function(text){
 TCGAbiolinksGUIServer <- function(input, output, session) {
     #addClass(selector = "body", class = "sidebar-collapse")
     setwd(Sys.getenv("HOME"))
-    volumes <- c('Working directory'=getwd())
+    #volumes <- c('Working directory'=getwd())
+    #switch(Sys.info()[['sysname']],
+    #       Windows= {root = "C:\\"},
+    #       Linux  = {root = "~"},
+    #       Darwin = {root = file.path("~", "Desktop")})
+    volumes <- c(home=getwd(),getVolumes()(),temp=tempdir(),wd="./")
     shinyjs::hide("greetbox-outer")
 
     #-------------------------------------------------------------------------
@@ -198,15 +203,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
         )})
 
-    # Download
-    shinyDirChoose(input, 'tcgafolder', roots=volumes, session=session, restrictions=system.file(package='base'))
-
-    observeEvent(input$tcgafolder , {
-        closeAlert(session, "tcgadownloaddirAlert")
-        createAlert(session, "tcgaddirmessage", "tcgadownloaddirAlert", title = "Download folder", style =  "success",
-                    content =  parseDirPath(volumes, input$tcgafolder), append = TRUE)
-    })
-
     observeEvent(input$tcgaDownloadBt,{
 
         # Files types
@@ -216,7 +212,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         gwsFtype <- isolate({input$tcgaFgwstypeFilter})
 
         # Dir to save the files
-        getPath <- parseDirPath(volumes, input$tcgafolder)
+        getPath <- parseDirPath(volumes, input$workingDir)
         if (length(getPath) == 0) getPath <- "."
         samplesType <- input$tcgasamplestypeFilter
 
@@ -303,11 +299,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         gwsFtype <- isolate({input$tcgaFgwstypeFilter})
 
         # Dir to saved the files
-        getPath <- parseDirPath(volumes, input$tcgafolder)
+        getPath <- parseDirPath(volumes, input$workingDir)
         if (length(getPath) == 0) getPath <- "."
         samplesType <- input$tcgasamplestypeFilter
 
-        save.dir <- parseDirPath(volumes, input$tcgafolder)
+        save.dir <- parseDirPath(volumes, input$workingDir)
         if(length(save.dir) == 0) {
             filename <- isolate({input$tcgafilename})
         } else {
@@ -424,7 +420,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          "ucs"="")
                 if (isolate({input$saveSubtypeRda}) || isolate({input$saveSubtypeCsv})) {
                     save.message <- ""
-                    getPath <- parseDirPath(volumes, input$tcgafolder)
+                    getPath <- parseDirPath(volumes, input$workingDir)
                     if (length(getPath) == 0) getPath <- "."
                     filename <- file.path(getPath,paste0(tumor,"_subtype.rda"))
                     if (isolate({input$saveSubtypeRda})) {
@@ -507,7 +503,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     } else {
                         filename <- paste0("samples_clinic_",type,gsub(" ","_",Sys.time()),".rda")
                     }
-                    getPath <- parseDirPath(volumes, input$tcgafolder)
+                    getPath <- parseDirPath(volumes, input$workingDir)
                     if (length(getPath) == 0) getPath <- "."
                     filename <- file.path(getPath,filename)
                     save.message <- ""
@@ -592,7 +588,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$mafDownloadBt , {
         maf.files <- get.obj("maf.files")
         # Dir to save the files
-        getPath <- parseDirPath(volumes, input$tcgafolder)
+        getPath <- parseDirPath(volumes, input$workingDir)
         if (length(getPath) == 0) getPath <- "."
 
         withProgress(message = 'Download in progress',
@@ -3212,9 +3208,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     # Config
     shinyDirChoose(input, 'workingDir', roots=volumes, session=session, restrictions=system.file(package='base'))
+
+
     output$wd <- renderPrint({
         path <- parseDirPath(volumes, input$workingDir)
-        if(identical(path, character(0))) path <- getwd()
+        if (identical(path, character(0))) path <- getwd()
         return(path)
     })
 }

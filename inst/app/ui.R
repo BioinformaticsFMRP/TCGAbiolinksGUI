@@ -96,19 +96,19 @@ sidebar <-  dashboardSidebar(
         #         menuSubItem("Analysis" , tabName = "elmer", icon = icon("flask")),
         #         menuSubItem("Visualize Results" , tabName = "elmer", icon = icon("picture-o"))
         #),
-        #tags$hr(class="lineConfig"),
-        #menuItem("Configuration", tabName = "config", icon = icon("cogs")),
+        tags$hr(class="lineConfig"),
+        menuItem("Configuration", tabName = "config", icon = icon("cogs")),
         tags$hr(class="lineDoc"),
         menuItem("Tutorial/Vignettes", icon = icon("book"),
                  menuSubItem("TCGAbiolinksGUI Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("external-link")),
                  menuSubItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("external-link")),
                  menuSubItem("ELMER Manual" , href = "https://www.bioconductor.org/packages/3.3/bioc/vignettes/ELMER/inst/doc/vignettes.pdf", icon = icon("external-link"))
-    ),
-    menuItem("References", icon = icon("file-text-o"),
-             menuSubItem("TCGAbiolinks" , href = "https://doi.org/10.1093/nar/gkv1507", icon = icon("external-link")),
-             menuSubItem("ELMER" , href = "https://doi.org/10.1186/s13059-015-0668-3", icon = icon("external-link"))
-    ), div(id = "greetbox-outer",
-    menuItem("welcome", tabName = "welcome",selected = T)))
+        ),
+        menuItem("References", icon = icon("file-text-o"),
+                 menuSubItem("TCGAbiolinks" , href = "https://doi.org/10.1093/nar/gkv1507", icon = icon("external-link")),
+                 menuSubItem("ELMER" , href = "https://doi.org/10.1186/s13059-015-0668-3", icon = icon("external-link"))
+        ), div(id = "greetbox-outer",
+               menuItem("welcome", tabName = "welcome",selected = T)))
 )
 
 body <-  dashboardBody(
@@ -138,7 +138,7 @@ body <-  dashboardBody(
                 fluidRow(
                     column(1),
                     column(10,
-                    includeHTML("index.html")
+                           includeHTML("index.html")
                     ))),
         tabItem(tabName = "tcgaSearch",
                 fluidRow(
@@ -232,17 +232,7 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                            icon = icon("cogs"))),
-
-                           box(title = "Directory to save & prepare files",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
-                               bsTooltip("tcgafolder", "Select a folder where data will be read/saved/downloaded",
-                                         "left"),
-                               shinyDirButton('tcgafolder', 'Select directory', 'Please select a folder where files will be saved',
-                                              class='shinyDirectories btn-default')
-                           ),
-                           bsAlert("tcgaddirmessage")
+                                            icon = icon("cogs")))
                     ))
         ),
         tabItem(tabName = "tcgaClinical",
@@ -435,7 +425,7 @@ body <-  dashboardBody(
                                    colourInput("summaryQueryColorCELL", " Cell Lines color", value = colorRampPalette(rainbow(20),interpolate = "spline")(20)[16]),
                                    colourInput("summaryQueryColorXP", " Primary Xenograft Tissue color", value = colorRampPalette(rainbow(20),interpolate = "spline")(20)[17]),
                                    colourInput("summaryQueryColorXCL", " Cell Line Derived Xenograft Tissue color", value = colorRampPalette(rainbow(20),interpolate = "spline")(20)[18])
-                                   ),
+                               ),
 
                                box(title = "Size controls",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
@@ -1305,15 +1295,15 @@ body <-  dashboardBody(
                 fluidRow(
                     column(1),
                     column(8,
-                    box(title = "Configuration options", width = NULL,
-                        status = "danger",
-                        solidHeader = FALSE, collapsible = FALSE,
-                    column(3,
-                    bsTooltip("workingDir", "Select where to save outputs","left"),
-                    shinyDirButton('workingDir', 'Set working directory', 'Set working directory',
-                                   class='shinyDirectories btn-default')),
-                    column(9, verbatimTextOutput("wd"))
-                    ))))
+                           box(title = "Configuration options", width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = FALSE,
+                               column(3,
+                                      bsTooltip("workingDir", "Select where to save outputs","left"),
+                                      shinyDirButton('workingDir', 'Set working directory', 'Set working directory',
+                                                     class='shinyDirectories btn-default')),
+                               column(9, verbatimTextOutput("wd"))
+                           ))))
     )
 )
 
