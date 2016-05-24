@@ -1,4 +1,4 @@
-![](inst/app/www/logo_red.png)
+![](inst/app/www/logo_gray2.png)
 
 # Introduction
 
