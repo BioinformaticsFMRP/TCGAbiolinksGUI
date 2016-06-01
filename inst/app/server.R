@@ -2793,6 +2793,14 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                      detail = 'This may take a while...', value = 0, {
                          met <- get(load(file))
                      })
+
+        if(class(met)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+            createAlert(session, "elmermessage", "elmerAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
+                                         class(met)), append = FALSE)
+            return(NULL)
+        }
+
         return(met)
     })
 
