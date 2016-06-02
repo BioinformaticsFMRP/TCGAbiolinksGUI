@@ -142,11 +142,11 @@ body <-  dashboardBody(
                     ))),
         tabItem(tabName = "tcgaSearch",
                 fluidRow(
-                    column(10, bsAlert("tcgasearchmessage"),
+                    column(8, bsAlert("tcgasearchmessage"),
                            bsCollapse(id = "collapseTCGA", open = "TCGA search results",
-                                      bsCollapsePanel("TCGA search results", dataTableOutput('tcgaSearchtbl'), style = "default")
+                                      bsCollapsePanel("TCGA search results", htmlOutput("tcgaview"), style = "default")
                            )),
-                    column(2,
+                    column(4,
                            box(title = "Advanced search",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE,
@@ -165,7 +165,7 @@ body <-  dashboardBody(
                                               c(1:3),
                                               multiple = TRUE, selected = NULL),
                                actionButton("tcgaSearchBt",
-                                            "TCGA Search",
+                                            "Visualize Data",
                                             style = "background-color: #000080;
                                             color: #FFFFFF;
                                             margin-left: auto;

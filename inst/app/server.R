@@ -9,6 +9,7 @@ library(stringr)
 library(ggrepel)
 library(pathview)
 library(ELMER)
+library(googleVis)
 library(grid)
 options(shiny.maxRequestSize=10000*1024^2)
 
@@ -209,59 +210,58 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     # Table render
     observeEvent(input$tcgaSearchBt, {
         updateCollapse(session, "collapseTCGA", open = "TCGA search results")
-        output$tcgaSearchtbl <- renderDataTable({
-            tumor = input$tcgaTumorFilter
-            platform = input$tcgaExpFilter
-            level = input$tcgaLevelFilter
+        output$tcgaview <- renderGvis({
 
+            tumor <- isolate({input$tcgaTumorFilter})
+            platform <- isolate({input$tcgaExpFilter})
+            level <- isolate({input$tcgaLevelFilter})
+            if(is.null(tumor)){
+                createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Data input error", style =  "danger",
+                            content = "Please select a tumor type", append = FALSE)
+                return(NULL)
+            }
+
+            not.found <- c()
             tbl <- data.frame()
-            if(length(level) > 0){
-                for(i in level){
-                    tbl <- rbind(tbl,
-                                 TCGAquery(tumor = tumor,
-                                           platform = platform,
-                                           level = i))
-                }
-            } else {
-                tbl <- TCGAquery(tumor = tumor,
-                                 platform = platform,
-                                 level = level)
-            }
-            if(is.null(tbl)){
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
-                            content = "Sorry there are no results for your query.", append = FALSE)
-                return()
-            } else if(nrow(tbl) ==0) {
-                createAlert(session, "tcgasearchmessage", "tcgasearchAlert", title = "No results found", style =  "warning",
-                            content = "Sorry there are no results for your query.", append = FALSE)
-                return()
-            } else {
-                closeAlert(session, "tcgasearchAlert")
-                tbl$Level <- stringr::str_extract(tbl$name,"Level_[1-3]|mage-tab|aux")
-                tbl <- tbl[,c(1,10,11,12,13,7,8)]
-            }
+            for(i in platform){
+                for(j in tumor){
+                    x <- TCGAquery(tumor = j,platform = i,level=level)
+                    if(!is.null(x)){
+                        patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,15))
+                        if(nchar(patient[1]) < 15) next
+                        type <- tcga.code[substr(patient,14,15)]
+                        tab <- table(substr(patient,14,15))
+                        names(tab) <- tcga.code[names(tab)]
+                        tab <- tab[!is.na(names(tab))]
+                        tab <- melt(tab)
+                        tab$Platform <- i
+                        tab$Tumor <- j
 
-        },
-        options = list(pageLength = 10,
-                       scrollX = TRUE,
-                       jQueryUI = TRUE,
-                       pagingType = "full",
-                       lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                       language.emptyTable = "No results found",
-                       "dom" = 'T<"clear">lfrtip',
-                       "oTableTools" = list(
-                           "sSelectedClass" = "selected",
-                           "sRowSelect" = "os",
-                           "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                           "aButtons" = list(
-                               list("sExtends" = "collection",
-                                    "sButtonText" = "Save",
-                                    "aButtons" = c("csv","xls")
-                               )
-                           )
-                       )
-        ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-        )})
+                        if( ncol(tab) == 4)  colnames(tab) <- c("type","Freq","Platform","Tumor")
+                        if( ncol(tab) == 3) {
+                            colnames(tab) <- c("Freq","Platform","Tumor")
+                            tab$type <- rownames(tab)
+                        }
+                        if(nrow(tbl) == 0){
+                            tbl <- tab
+                        } else {
+                            tbl <- rbind(tbl,tab)
+                        }
+                    } else {
+                        not.found <- c(not.found, paste0("<li>Tumor: ",j,"  | Platform: ",i,"  | Level: ", level,"</li>"))
+                    }
+                }
+            }
+            a <- lapply(unique(tbl$Tumor),
+                        function(x) {
+                            df <- tbl[tbl$Tumor == x,1:3]
+                            df <-reshape(df,timevar="type",idvar="Platform",direction="wide")
+                            colnames(df) <- gsub("Freq\\.","",colnames(df))
+                            gvisColumnChart(df, options=list( title=x,width=800,height = 300,legend="{ position: 'top', maxLines: 2 }"))
+                        })
+            Reduce(gvisMerge, a)
+        })
+       })
 
     observeEvent(input$tcgaDownloadBt,{
 
@@ -318,8 +318,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          if(isolate({input$tcgaMatchedPlatform})){
                              samples <- getMatchedPlatform(x)
                          }
-                         print(length(samples))
-                         print(sort(samples))
 
                          if(downloadType == "barcode"){
                              # This will ignore the other selections the user should
