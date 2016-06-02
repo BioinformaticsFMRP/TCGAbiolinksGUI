@@ -10,6 +10,7 @@ library(ggrepel)
 library(pathview)
 library(ELMER)
 library(googleVis)
+library(readr)
 library(grid)
 options(shiny.maxRequestSize=10000*1024^2)
 
@@ -1614,22 +1615,35 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
     observe({
         updateSelectizeInput(session, 'dmrgroupCol', choices = {
-            if(!is.null(dmrdata())) as.character(colnames(colData(dmrdata())))
+            # remove numeric columns
+            data <- dmrdata()
+            if(!is.null(data)){
+                data <- colData(data)
+                data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
+                as.character(colnames(data))
+            }
         }, server = TRUE)
     })
     observe({
         updateSelectizeInput(session, 'meanmetsubgroupCol', choices = {
-            if(!is.null(meandata())) as.character(colnames(colData(meandata())))
+            data <- meandata()
+            if(!is.null(data)){
+                data <- colData(data)
+                data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
+                as.character(colnames(data))
+            }
         }, server = TRUE)
     })
     observe({
         updateSelectizeInput(session, 'meanmetgroupCol', choices = {
-            if(!is.null(meandata())) as.character(colnames(colData(meandata())))
+            data <- meandata()
+            if(!is.null(data)){
+                data <- colData(data)
+                data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
+                as.character(colnames(data))
+            }
         }, server = TRUE)
     })
-
-
-
 
     observeEvent(input$meanmetPlot , {
 
@@ -2096,17 +2110,19 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     observe({
         data <- profileplotdata()
+        if(!is.null(data)) {
+        # remove numeric columns
+        data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
+        names <- colnames(data)[apply(data,2,function(x) length(unique(x))) > 1]
         updateSelectizeInput(session, 'profileplotgroup', choices = {
-            if(!is.null(data)) as.character(colnames(data))
+             as.character(names)
         }, server = TRUE)
+        updateSelectizeInput(session, 'profileplotsubtype', choices = {
+            as.character(names)
+        }, server = TRUE)
+        }
     })
 
-    observe({
-        data <- profileplotdata()
-        updateSelectizeInput(session, 'profileplotsubtype', choices = {
-            if(!is.null(data)) as.character(colnames(data))
-        }, server = TRUE)
-    })
 
     profileplotdata <- function(){
         inFile <- input$profileplotfile
@@ -2148,6 +2164,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         if (x == 2) { m1 <- -5.0; m3 <-  1.8}
         if (x == 3) { m1 <- -5.0; m3 <-  0.0}
+        if (x == 4) { m1 <- -5.0; m3 <- -1.5}
         if (x == 5) { m1 <- -4.8; m3 <- -1.5}
         if (x == 6) { m1 <- -4.8; m3 <- -2.0}
         if (x == 7) { m1 <- -4.8; m3 <- -2.1}

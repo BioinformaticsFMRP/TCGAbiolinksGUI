@@ -22,6 +22,8 @@ Imports:
     shiny (>= 0.13.1.9002),
     downloader (>= 0.4),
     grid,
+    googleVis,
+    readr,
     stringr (>= 1.0),
     SummarizedExperiment,
     ggrepel,
