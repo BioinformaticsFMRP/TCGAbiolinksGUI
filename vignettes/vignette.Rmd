@@ -351,7 +351,7 @@ To install the package from a binary package, please, use the code below.
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
 source("https://bioconductor.org/biocLite.R")
 biocLite(c("pathview","clusterProfiler"))
-install.packages(c("UpSetR","shiny"))
+install.packages(c("UpSetR","shiny","readr","googleVis"))
 devtools::install_github("thomasp85/shinyFiles")
 devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
 devtools::install_github("daattali/shinyjs")
@@ -890,6 +890,32 @@ are selected. Please, see ELMER vignette.
 
 ### Results table
 Select which ELMER results in a table.  It needs that the results to be selected.
+
+# Data input summary
+```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <- "  
+| Menu                    | Sub-menu                          | Button             | Data input  |
+|---------------------------------|-----------------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| Clinical analysis       | Profile Plot                      | Select file        | A table with at least two categorial columns  |
+| Clinical analysis       | Survival Plot                     | Select file        | A table with at lest the following columns: days_to_death, days_to_last_followup and one column with a group |
+| Epigenetic analysis     | Differential methylation analysis | Select data (.rda) | A summarizedExperiment object |
+| Epigenetic analysis     | Volcano Plot                      | Select results     | A csv file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv  (Where GroupCol, group1, group2 are the names of the columns selected in the  DMR steps. |
+| Epigenetic analysis     | Heatmap plot                      | Select file        | A summarizedExperiment object  |
+| Epigenetic analysis     | Heatmap plot                      | Select results     | Same as Epigenetic analysis >Volcano Plot > Select results |
+| Epigenetic analysis     | Mean DNA methylation              | Select file        | A summarizedExperiment object |
+| Transcriptomic Analysis | Volcano Plot                      | Select results     | A csv file with the following pattern: DEA_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DEA steps. |
+| Transcriptomic Analysis | Heatmap plot                      | Select file        | A summarizedExperiment object  |
+| Transcriptomic Analysis | OncoPrint plot                      | Select MAF file        | A MAF file (columns needed: Hugo_Symbol,Tumor_Sample_Barcode,Variant_Type) |   |
+| Transcriptomic Analysis | OncoPrint plot                      | Select Annotation file        | A file with at least the following columns: bcr_patient_barcode  |    |
+|  Integrative analysis   | Starbrust plot                      | DMR result        | A csv file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DMR steps.  |
+|  Integrative analysis   | Starbrust plot                      | DEA result        | A csv file with the following pattern: DEA_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DEA steps.  |
+|  Integrative analysis   | ELMER                      | Create mee > Select DNA methylation object         | An rda file with a sumarized Exepriemnt object |   
+|  Integrative analysis   | ELMER                      | Select results > Select expression object         |  An rda file with the RNAseq data frame |   
+|  Integrative analysis   | ELMER                      | Select mee         | An rda file with a mee object |   
+|  Integrative analysis   | ELMER                      | Select results         | An rda file with the results of the ELMER analysis |   
+"
+cat(tabl) 
+```
 
 \newpage
 # Cases of study 

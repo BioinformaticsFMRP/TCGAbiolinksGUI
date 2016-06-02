@@ -1682,6 +1682,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 subgroup <- isolate({input$meanmetsubgroupCol})
             }
 
+            legend.position <- isolate({input$meanmetLegendPos})
+            legend.title.position <- isolate({input$meanmetLegendTitlePos})
+            legend.ncols <- isolate({input$meanmetLegendncols})
+            add.axis.x.text <- isolate({input$meanmetXnames})
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
                              if(is.null(sort)){
@@ -1690,6 +1694,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                                subgroupCol=subgroup,
                                                                filename = NULL,
                                                                y.limits = y.limits,
+                                                               legend.position = legend.position,
+                                                               legend.title.position = legend.title.position,
+                                                               legend.ncols = legend.ncols,
+                                                               add.axis.x.text = add.axis.x.text,
                                                                plot.jitter = jitter,
                                                                axis.text.x.angle = angle )
                              } else {
@@ -1697,6 +1705,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                                groupCol=group,
                                                                subgroupCol=subgroup,
                                                                filename = NULL,
+                                                               legend.position = legend.position,
+                                                               legend.title.position = legend.title.position,
+                                                               legend.ncols = legend.ncols,
+                                                               add.axis.x.text = add.axis.x.text,
                                                                y.limits = y.limits,
                                                                plot.jitter = jitter,
                                                                axis.text.x.angle = angle,
