@@ -386,7 +386,7 @@ body <-  dashboardBody(
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
                                    selectizeInput('tcgaSummaryTumorFilter',
                                                   'Tumor',
-                                                  unique(TCGAquery()$Disease),
+                                                  disease,
                                                   multiple = TRUE),
                                    selectizeInput('tcgaSummaryExpFilter',
                                                   'Platforms',

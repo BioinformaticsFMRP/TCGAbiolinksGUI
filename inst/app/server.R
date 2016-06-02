@@ -74,7 +74,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     #       Windows= {root = "C:\\"},
     #       Linux  = {root = "~"},
     #       Darwin = {root = file.path("~", "Desktop")})
-    volumes <- c(home=getwd(),getVolumes()(),temp=tempdir(),wd="./")
+    dir.create(paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI"), showWarnings = FALSE)
+
+    volumes <- c(TCGAbiolinksGUI=paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI"),home=getwd(),getVolumes()(),temp=tempdir(),wd="./")
     shinyjs::hide("greetbox-outer")
 
     #-------------------------------------------------------------------------
@@ -213,7 +215,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         # Dir to save the files
         getPath <- parseDirPath(volumes, input$workingDir)
-        if (length(getPath) == 0) getPath <- "."
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
         samplesType <- input$tcgasamplestypeFilter
 
 
@@ -261,7 +263,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
                          } else if(downloadType == "type"){
                              samples <- unlist(lapply(samplesType,function(type){
-                                 s <- unlist(str_split(aux$barcode,","))
+                                 s <- unlist(str_split(x$barcode,","))
                                  s[grep(type,substr(s,14,15))]
                              }))
                          }
@@ -300,7 +302,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         # Dir to saved the files
         getPath <- parseDirPath(volumes, input$workingDir)
-        if (length(getPath) == 0) getPath <- "."
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
         samplesType <- input$tcgasamplestypeFilter
 
         save.dir <- parseDirPath(volumes, input$workingDir)
@@ -421,7 +423,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 if (isolate({input$saveSubtypeRda}) || isolate({input$saveSubtypeCsv})) {
                     save.message <- ""
                     getPath <- parseDirPath(volumes, input$workingDir)
-                    if (length(getPath) == 0) getPath <- "."
+                    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
                     filename <- file.path(getPath,paste0(tumor,"_subtype.rda"))
                     if (isolate({input$saveSubtypeRda})) {
                         save(tbl, file = filename)
@@ -504,7 +506,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         filename <- paste0("samples_clinic_",type,gsub(" ","_",Sys.time()),".rda")
                     }
                     getPath <- parseDirPath(volumes, input$workingDir)
-                    if (length(getPath) == 0) getPath <- "."
+                    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
                     filename <- file.path(getPath,filename)
                     save.message <- ""
                     if (isolate({input$saveClinicalRda})){
@@ -589,7 +591,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         maf.files <- get.obj("maf.files")
         # Dir to save the files
         getPath <- parseDirPath(volumes, input$workingDir)
-        if (length(getPath) == 0) getPath <- "."
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
 
         withProgress(message = 'Download in progress',
                      detail = 'This may take a while...', value = 0, {
@@ -618,13 +620,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     observeEvent(input$summaryInputRb, {
         if(isolate({input$summaryInputRb}) == "platsample"){
-            shinyjs::hide("tcgaSummaryExpFilter")
             shinyjs::show("tcgaSummarySamplestypeFilter")
             shinyjs::show("summarySetsBarColor")
             shinyjs::hide("summaryAddBarCount")
 
         } else {
-            shinyjs::show("tcgaSummaryExpFilter")
             shinyjs::hide("tcgaSummarySamplestypeFilter")
             shinyjs::show("summaryAddBarCount")
             shinyjs::hide("summarySetsBarColor")
@@ -650,15 +650,14 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
             if(isolate({input$summaryInputRb}) == "platsample"){
 
-
                 result = tryCatch({
-                    x <- TCGAquery(tumor = tumor,level=level)
+                    x <- TCGAquery(tumor = tumor,level=level, platform = platform)
                 }, warning = function(w) {
                     next
                 }, error = function(e) {
                     next
                 })
-                x <- TCGAquery(tumor = tumor,level=level)
+                x <- TCGAquery(tumor = tumor,level=level, platform = platform)
                 if(nrow(x)==0) next
                 patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,15))
 
@@ -3217,10 +3216,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     # Config
     shinyDirChoose(input, 'workingDir', roots=volumes, session=session, restrictions=system.file(package='base'))
 
-
     output$wd <- renderPrint({
         path <- parseDirPath(volumes, input$workingDir)
-        if (identical(path, character(0))) path <- getwd()
+        if (identical(path, character(0))) path <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
         return(path)
     })
 }
