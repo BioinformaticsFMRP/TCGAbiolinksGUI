@@ -262,7 +262,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         })
             Reduce(gvisMerge, a)
         })
-       })
+    })
 
     observeEvent(input$tcgaDownloadBt,{
 
@@ -2123,15 +2123,15 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observe({
         data <- profileplotdata()
         if(!is.null(data)) {
-        # remove numeric columns
-        data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
-        names <- colnames(data)[apply(data,2,function(x) length(unique(x))) > 1]
-        updateSelectizeInput(session, 'profileplotgroup', choices = {
-             as.character(names)
-        }, server = TRUE)
-        updateSelectizeInput(session, 'profileplotsubtype', choices = {
-            as.character(names)
-        }, server = TRUE)
+            # remove numeric columns
+            data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
+            names <- colnames(data)[apply(data,2,function(x) length(unique(x))) > 1]
+            updateSelectizeInput(session, 'profileplotgroup', choices = {
+                as.character(names)
+            }, server = TRUE)
+            updateSelectizeInput(session, 'profileplotsubtype', choices = {
+                as.character(names)
+            }, server = TRUE)
         }
     })
 
@@ -2292,6 +2292,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
 
     survivalplotdata <- function(){
+        closeAlert(session, "survivalAlert")
         inFile <- input$survivalplotfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
@@ -2302,17 +2303,21 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         } else if(tools::file_ext(file)=="rda"){
             df <- get(load(file))
         } else {
-            closeAlert(session, "survivalAlert")
             createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
                         content = paste0("Sorry, but I'm expecting a csv or rda file, but I got a: ",
                                          tools::file_ext(file)), append = FALSE)
             return(NULL)
         }
         if(class(df)!= class(data.frame())){
-            closeAlert(session, "survivalAlert")
             createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
                         content = paste0("Sorry, but I'm expecting a Data frame object, but I got a: ",
                                          class(df)), append = FALSE)
+            return(NULL)
+        }
+        cols <- c("days_to_death","days_to_last_followup","vital_status")
+        if(!(all(cols %in% colnames(df)))){
+            createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
+                        content = paste0("Sorry, but I'm expecting columns: ",paste(cols,collapse = ", ")), append = FALSE)
             return(NULL)
         }
         return(df)
