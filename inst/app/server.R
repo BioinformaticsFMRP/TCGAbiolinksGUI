@@ -88,17 +88,40 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     shinyjs::hide("tcgaFrnaseqv2typeFilter")
     shinyjs::hide("tcgaFgwstypeFilter")
     shinyjs::show("addSubTypeTCGA")
-
+    shinyjs::hide("tcgaMatchedPlatform")
+    observeEvent(input$tcgaExpFilter, {
+        if(length(input$tcgaExpFilter) > 1){
+            shinyjs::show("tcgaMatchedPlatform")
+        } else {
+            shinyjs::hide("tcgaMatchedPlatform")
+        }
+    })
+    observeEvent(input$tcgasamplestypeFilter, {
+        if(length(input$tcgasamplestypeFilter) > 1){
+            shinyjs::show("tcgaMatchedType")
+        } else {
+            shinyjs::hide("tcgaMatchedType")
+        }
+    })
     observeEvent(input$tcgaDownloadTypeRb, {
         if(input$tcgaDownloadTypeRb == "none") {
             shinyjs::hide("tcgasamplestypeFilter")
             shinyjs::hide("tcgaDownloadBarcode")
+            shinyjs::hide("tcgaMatchedType")
         } else if(input$tcgaDownloadTypeRb == "barcode") {
             shinyjs::hide("tcgasamplestypeFilter")
             shinyjs::show("tcgaDownloadBarcode")
+            shinyjs::hide("tcgaMatchedType")
         } else{
             shinyjs::show("tcgasamplestypeFilter")
             shinyjs::hide("tcgaDownloadBarcode")
+        }
+    })
+    observeEvent(input$prepareRb, {
+        if(input$prepareRb) {
+            shinyjs::show("addSubTypeTCGA")
+        } else {
+            shinyjs::hide("addSubTypeTCGA")
         }
     })
 
@@ -274,7 +297,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              x <- x[idx,]
                          }
 
-
                          for (i in 1:nrow(x)) {
                              incProgress(1/nrow(x))
                              aux <- x[i,]
@@ -339,30 +361,30 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                  level = level)
                               }
                           }
-                          if(length(unique(x$Platform)) > 1 & !all(grepl("humanmethylation",unique(x$Platform),ignore.case = TRUE))) {
-                              print("We can't prepare these data together")
-                              return(NULL)
-                          }
-                          ftype <- NULL
-                          if ("IlluminaHiSeq_RNASeqV2" %in% unique(x$Platform)) ftype <- rnaseqv2Ftype
-                          if ("IlluminaHiSeq_RNASeq"  %in% unique(x$Platform)) ftype <- rnaseqFtype
-                          if ("Genome_Wide_SNP_6" %in% unique(x$Platform)) ftype <- gwsFtype
-                          if (length(samplesType) == 0) {
-                              samples <- NULL
-                          } else {
-                              samples <- unlist(lapply(samplesType,function(type){
-                                  s <- unlist(str_split(x$barcode,","))
-                                  s[grep(type,substr(s,14,15))]
-                              }))
-                          }
 
-                          trash <- TCGAprepare(x,dir = getPath,
-                                               summarizedExperiment = isolate({as.logical(input$prepareRb)}),
-                                               save = TRUE,
-                                               type = ftype,
-                                               filename=filename,
-                                               samples = samples,
-                                               add.subtype = isolate({input$addSubTypeTCGA}))
+                          for(plat in unique(x$Platform)){
+                              query <- x[x$Platform == plat,]
+                              ftype <- NULL
+                              if ("IlluminaHiSeq_RNASeqV2" == plat) ftype <- rnaseqv2Ftype
+                              if ("IlluminaHiSeq_RNASeq"  == plat) ftype <- rnaseqFtype
+                              if ("Genome_Wide_SNP_6" == plat) ftype <- gwsFtype
+                              if (length(samplesType) == 0) {
+                                  samples <- NULL
+                              } else {
+                                  samples <- unlist(lapply(samplesType,function(type){
+                                      s <- unlist(str_split(query$barcode,","))
+                                      s[grep(type,substr(s,14,15))]
+                                  }))
+                              }
+
+                              trash <- TCGAprepare(query,dir = getPath,
+                                                   summarizedExperiment = isolate({as.logical(input$prepareRb)}),
+                                                   save = TRUE,
+                                                   type = ftype,
+                                                   filename=filename,
+                                                   samples = samples,
+                                                   add.subtype = isolate({input$addSubTypeTCGA}))
+                          }
                       })
         closeAlert(session, "tcgaAlert")
         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
@@ -1001,20 +1023,20 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          detail = 'This may take a while...', value = 0, {
 
                              TCGAvisualize_oncoprint(mut=mut,genes=genes,annotation = annotation,
-                                              annotation.position=isolate(input$mafAnnotationpos),
-                                              rm.empty.columns = rm.empty.cols,
-                                              show.column.names = show.col.names,
-                                              show.row.barplot = show.row.barplot,
-                                              label.font.size = isolate(input$oncoTextLabelSize),
-                                              rows.font.size = isolate(input$oncoTextRowSize),
-                                              dist.row =  isolate(input$oncoHSpace),
-                                              dist.col =  isolate(input$oncoWSpace),
-                                              row.order =  isolate(input$oncoRowSort),
-                                              annotation.legend.side = isolate(input$oncoAnnotationLegendSide),
-                                              heatmap.legend.side = isolate(input$oncoHeatmapLegendSide),
-                                              color = c("background" = isolate(input$colBG),
-                                                        "SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
-                                                        "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))
+                                                     annotation.position=isolate(input$mafAnnotationpos),
+                                                     rm.empty.columns = rm.empty.cols,
+                                                     show.column.names = show.col.names,
+                                                     show.row.barplot = show.row.barplot,
+                                                     label.font.size = isolate(input$oncoTextLabelSize),
+                                                     rows.font.size = isolate(input$oncoTextRowSize),
+                                                     dist.row =  isolate(input$oncoHSpace),
+                                                     dist.col =  isolate(input$oncoWSpace),
+                                                     row.order =  isolate(input$oncoRowSort),
+                                                     annotation.legend.side = isolate(input$oncoAnnotationLegendSide),
+                                                     heatmap.legend.side = isolate(input$oncoHeatmapLegendSide),
+                                                     color = c("background" = isolate(input$colBG),
+                                                               "SNP"=isolate(input$colSNP),"INS"=isolate(input$colINS),
+                                                               "DEL"=isolate(input$colDEL),"DNP"=isolate(input$colDNP)))
 
                          })
         })})

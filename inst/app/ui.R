@@ -158,6 +158,8 @@ body <-  dashboardBody(
                                               'Platforms filter',
                                               unique(TCGAquery()$Platform),
                                               multiple = TRUE, selected = NULL),
+                               bsTooltip("tcgaMatchedPlatform", "If checked only samples that have data in all platforms will be downloaded", "left"),
+                               checkboxInput("tcgaMatchedPlatform", "Only samples with all platforms?", value = FALSE, width = NULL),
                                selectizeInput('tcgaLevelFilter',
                                               'Level filter',
                                               c(1:3),
@@ -181,6 +183,9 @@ body <-  dashboardBody(
                                               'Sample type filter',
                                               table.code,
                                               multiple = TRUE),
+                               bsTooltip("tcgaMatchedType", "If checked only samples that have data for all sample types will be downloaded", "left"),
+
+                               checkboxInput("tcgaMatchedType", "Only samples with all sample types?", value = FALSE, width = NULL),
                                bsTooltip("tcgaDownloadBarcode", "Barcodes separeted by (;), (,) or (new line)", "left"),
                                useShinyjs(),
                                inputTextarea('tcgaDownloadBarcode', '', 2, 30),
