@@ -100,7 +100,7 @@ sidebar <-  dashboardSidebar(
         menuItem("Configuration", tabName = "config", icon = icon("cogs")),
         tags$hr(class="lineDoc"),
         menuItem("Tutorial/Vignettes", icon = icon("book"),
-                 menuSubItem("TCGAbiolinksGUI Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("external-link")),
+                 menuSubItem("TCGAbiolinksGUI Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinksGUI/inst/doc/vignette.html", icon = icon("external-link")),
                  menuSubItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("external-link")),
                  menuSubItem("ELMER Manual" , href = "https://www.bioconductor.org/packages/3.3/bioc/vignettes/ELMER/inst/doc/vignettes.pdf", icon = icon("external-link"))
         ),
@@ -229,7 +229,7 @@ body <-  dashboardBody(
                                               "Dataframe" = FALSE)),
                                useShinyjs(),
                                checkboxInput("addSubTypeTCGA", "Add information about subtypes", value = FALSE, width = NULL),
-                               textInput("tcgafilename", "File name", value = "data.rda", width = NULL, placeholder = NULL),
+                               textInput("tcgafilename", "File name prefix", value = "TCGA", width = NULL, placeholder = NULL),
                                actionButton("tcgaPrepareBt",
                                             "Prepare data",
                                             style = "background-color: #000080;
