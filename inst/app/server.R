@@ -251,34 +251,35 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 for (j in tumor){
                     x <- query[query$Platform == i & query$Disease == j,]
                     if(!is.null(x)){
+                        if(nrow(x) > 0){
+                            if(!is.null(samples)) {
+                                patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,nchar(samples[1])))
+                                patient <-  patient[patient %in% samples]
+                            } else {
+                                patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,15))
+                            }
+                            if(nchar(patient[1]) < 15) next
+                            type <- tcga.code[substr(patient,14,15)]
+                            tab <- table(substr(patient,14,15))
+                            names(tab) <- tcga.code[names(tab)]
+                            tab <- tab[!is.na(names(tab))]
+                            tab <- melt(tab)
+                            tab$Platform <- i
+                            tab$Tumor <- j
 
-                        if(!is.null(samples)) {
-                            patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,nchar(samples[1])))
-                            patient <-  patient[patient %in% samples]
+                            if (ncol(tab) == 4)  colnames(tab) <- c("type","Freq","Platform","Tumor")
+                            if (ncol(tab) == 3) {
+                                colnames(tab) <- c("Freq","Platform","Tumor")
+                                tab$type <- rownames(tab)
+                            }
+                            if(nrow(tbl) == 0){
+                                tbl <- tab
+                            } else {
+                                tbl <- rbind(tbl,tab)
+                            }
                         } else {
-                            patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,15))
+                            not.found <- c(not.found, paste0("<li>Tumor: ",j,"  | Platform: ",i,"  | Level: ", level,"</li>"))
                         }
-                        if(nchar(patient[1]) < 15) next
-                        type <- tcga.code[substr(patient,14,15)]
-                        tab <- table(substr(patient,14,15))
-                        names(tab) <- tcga.code[names(tab)]
-                        tab <- tab[!is.na(names(tab))]
-                        tab <- melt(tab)
-                        tab$Platform <- i
-                        tab$Tumor <- j
-
-                        if (ncol(tab) == 4)  colnames(tab) <- c("type","Freq","Platform","Tumor")
-                        if (ncol(tab) == 3) {
-                            colnames(tab) <- c("Freq","Platform","Tumor")
-                            tab$type <- rownames(tab)
-                        }
-                        if(nrow(tbl) == 0){
-                            tbl <- tab
-                        } else {
-                            tbl <- rbind(tbl,tab)
-                        }
-                    } else {
-                        not.found <- c(not.found, paste0("<li>Tumor: ",j,"  | Platform: ",i,"  | Level: ", level,"</li>"))
                     }
                 }
             }

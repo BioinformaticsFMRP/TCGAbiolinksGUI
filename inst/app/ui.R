@@ -309,7 +309,7 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = FALSE,
                                selectizeInput('tcgaMafTumorFilter',
                                               'Tumor filter',
-                                              unique(TCGAquery()$Disease),
+                                              disease,
                                               multiple = FALSE),
                                actionButton("tcgaMafSearchBt",
                                             "Search",

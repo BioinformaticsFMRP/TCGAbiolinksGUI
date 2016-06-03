@@ -1,6 +1,13 @@
 @import url("//fonts.googleapis.com/css?family=Lobster|Cabin:400,700");
 @import url("//fonts.googleapis.com/css?family=Nunito|Cabin:400,700");
 
+@media only screen and (max-width: 1540px) {
+    body {
+       zoom: 0.9;  /* all browsers */
+       -moz-transform: scale(0.9);  /* Firefox */
+    }
+}
+
 h1 {
     font-family: 'Lobster', cursive;
     font-weight: 500;
