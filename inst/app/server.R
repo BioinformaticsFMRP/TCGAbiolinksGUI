@@ -283,9 +283,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     }
                 }
             }
+            print(tbl)
             a <- lapply(unique(tbl$Tumor),
                         function(x) {
-                            df <- tbl[tbl$Tumor == x,1:3]
+                            df <- tbl[tbl$Tumor == x,c("Freq","Platform","type")]
                             df <-reshape(df,timevar="type",idvar="Platform",direction="wide")
                             colnames(df) <- gsub("Freq\\.","",colnames(df))
                             gvisColumnChart(df, options=list( title=x,width=800,height = 300,legend="{ position: 'top', maxLines: 2 }"))
