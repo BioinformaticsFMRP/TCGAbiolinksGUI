@@ -228,6 +228,7 @@ body <-  dashboardBody(
                                               "Dataframe" = FALSE)),
                                useShinyjs(),
                                checkboxInput("addSubTypeTCGA", "Add information about subtypes", value = FALSE, width = NULL),
+                               checkboxInput("addSClinicalTCGA", "Add clinical information", value = FALSE, width = NULL),
                                textInput("tcgafilename", "File name prefix", value = "TCGA", width = NULL, placeholder = NULL),
                                actionButton("tcgaPrepareBt",
                                             "Prepare data",
@@ -242,9 +243,9 @@ body <-  dashboardBody(
         tabItem(tabName = "tcgaClinical",
                 fluidRow(
                     column(10, bsAlert("tcgaClinicalmessage"),
-                           bsCollapse(id = "collapseTCGAClinical", open = "Clinical data",
-                                      bsCollapsePanel("About the data", includeHTML("clinical_help.html"), style = "default"),
-                                      bsCollapsePanel("Clinical data", dataTableOutput('tcgaClinicaltbl'), style = "default")
+                           bsCollapse(id = "collapseTCGAClinical", open = "Information about clinical data",
+                                      bsCollapsePanel("Information about clinical data", includeHTML("clinical_help.html"), style = "default"),
+                                      bsCollapsePanel("Clinical data table", dataTableOutput('tcgaClinicaltbl'), style = "default")
                            )),
                     column(2,
                            box(title = "Search",width = NULL,

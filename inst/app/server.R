@@ -515,6 +515,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                    type = ftype,
                                                    filename = fname,
                                                    samples = samples,
+                                                   add.clinical = isolate({input$addSClinicalTCGA}),
                                                    add.subtype = isolate({input$addSubTypeTCGA}))
                           }
                       })
@@ -621,7 +622,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         )})
 
     observeEvent(input$tcgaClinicalBt, {
-        updateCollapse(session, "collapseTCGAClinical", open = "Clincal data")
+        updateCollapse(session, "collapseTCGAClinical", open = "Clinical data table", close = "Information about clinical data")
         output$tcgaClinicaltbl <- renderDataTable({
             tumor <- isolate({input$tcgatumorClinicalFilter})
             type <- isolate({input$tcgaClinicalFilter})
