@@ -21,8 +21,8 @@ To install the package from a binary package, please, use the code below.
 # dependencies
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
 source("https://bioconductor.org/biocLite.R")
-biocLite(c("pathview","clusterProfiler"))
-install.packages(c("UpSetR","shiny","ReporteRs"))
+biocLite(c("pathview","clusterProfiler","ELMER"))
+install.packages(c("shiny","readr","googleVis","shinydashboard"))
 devtools::install_github("thomasp85/shinyFiles")
 devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
 devtools::install_github("daattali/shinyjs")
