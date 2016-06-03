@@ -1442,7 +1442,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             data <- dmrdata()
             if(!is.null(data)){
                 data <- colData(data)
-                data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
+                #data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
                 as.character(colnames(data))
             }
         }, server = TRUE)
@@ -1452,7 +1452,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             data <- meandata()
             if(!is.null(data)){
                 data <- colData(data)
-                data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
+                #data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
                 as.character(colnames(data))
             }
         }, server = TRUE)
@@ -1462,7 +1462,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             data <- meandata()
             if(!is.null(data)){
                 data <- colData(data)
-                data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
+                #data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
                 as.character(colnames(data))
             }
         }, server = TRUE)
@@ -1947,7 +1947,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         data <- profileplotdata()
         if(!is.null(data)) {
             # remove numeric columns
-            data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
+            #data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
             names <- colnames(data)[apply(data,2,function(x) length(unique(x))) > 1]
             updateSelectizeInput(session, 'profileplotgroup', choices = {
                 as.character(names)
