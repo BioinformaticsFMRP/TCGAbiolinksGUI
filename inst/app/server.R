@@ -283,7 +283,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     }
                 }
             }
-            print(tbl)
+
             a <- lapply(unique(tbl$Tumor),
                         function(x) {
                             df <- tbl[tbl$Tumor == x,c("Freq","Platform","type")]
