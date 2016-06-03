@@ -208,7 +208,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     #    shinyjs::toggle("clinicalBarcode")
     #})
     #----------------------- END controlling show/hide states -----------------
-    # Table render
     observeEvent(input$tcgaSearchBt, {
         updateCollapse(session, "collapseTCGA", open = "TCGA search results")
         output$tcgaview <- renderGvis({
@@ -216,19 +215,49 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             tumor <- isolate({input$tcgaTumorFilter})
             platform <- isolate({input$tcgaExpFilter})
             level <- isolate({input$tcgaLevelFilter})
+            samplesType <- isolate({input$tcgasamplestypeFilter})
             if(is.null(tumor)){
                 createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Data input error", style =  "danger",
                             content = "Please select a tumor type", append = FALSE)
                 return(NULL)
             }
+            query <- TCGAquery(tumor = tumor, platform = platform,level = level)
+            samples <- NULL
+            if(isolate({input$tcgaMatchedPlatform})){
+                samples <- getMatchedPlatform(query)
+            }
 
+            if(isolate({input$tcgaMatchedType})){
+                if(is.null(samples)){
+                    samples <- getMatchedType(unlist(str_split(query$barcode,",")),samplesType)
+                } else {
+                    samples <- getMatchedType(samples,samplesType)
+                }
+            } else if(length(samplesType)>0){
+                if(is.null(samples)){
+                    samples <- unlist(lapply(samplesType,function(type){
+                        s <- unlist(str_split(query$barcode,","))
+                        s[grep(type,substr(s,14,15))]
+                    }))
+                } else {
+                    samples <- unlist(lapply(samplesType,function(type){
+                        samples[grep(type,substr(samples,14,15))]
+                    }))
+                }
+            }
             not.found <- c()
             tbl <- data.frame()
-            for(i in platform){
-                for(j in tumor){
-                    x <- TCGAquery(tumor = j,platform = i,level=level)
+            for (i in platform){
+                for (j in tumor){
+                    x <- query[query$Platform == i & query$Disease == j,]
                     if(!is.null(x)){
-                        patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,15))
+
+                        if(!is.null(samples)) {
+                            patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,nchar(samples[1])))
+                            patient <-  patient[patient %in% samples]
+                        } else {
+                            patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,15))
+                        }
                         if(nchar(patient[1]) < 15) next
                         type <- tcga.code[substr(patient,14,15)]
                         tab <- table(substr(patient,14,15))
@@ -238,8 +267,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         tab$Platform <- i
                         tab$Tumor <- j
 
-                        if( ncol(tab) == 4)  colnames(tab) <- c("type","Freq","Platform","Tumor")
-                        if( ncol(tab) == 3) {
+                        if (ncol(tab) == 4)  colnames(tab) <- c("type","Freq","Platform","Tumor")
+                        if (ncol(tab) == 3) {
                             colnames(tab) <- c("Freq","Platform","Tumor")
                             tab$type <- rownames(tab)
                         }
@@ -253,6 +282,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     }
                 }
             }
+            print(tbl$Platform)
             a <- lapply(unique(tbl$Tumor),
                         function(x) {
                             df <- tbl[tbl$Tumor == x,1:3]
