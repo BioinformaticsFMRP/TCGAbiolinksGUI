@@ -463,36 +463,6 @@ The user can visualize the table with the information and save it as csv or an R
 In order to download the Mutation Annotation Format (MAF), it will get the tables from [TCGA MAF](https://wiki.nci.nih.gov/display/TCGA/TCGA+MAF+Files), remove the obsolete/protected
 files. The user can select from the table which MAF file to download. The output will be a R object (rda) file.
 
-## Menu: TCGA Data information
-
-In this menu the user can view a summary of the TCGA data.
-
-
-![Data summary: Main window.](dataSummary.png)
-
-
-#### Type of plot
-
-* Type of samples: Creates a barplot for each tumor vs platform showing the type of samples in each. This is useful, for example, to know if we have normal or recurrent samples.
-* Platform vs samples: Creates a  UpSet Plot for a tumor type. This will show how many samples do we have for each platform,
-and how many samples have data for different platforms. For example, in the figure before it shows that
-102 patients have samples only for Genome_Wide_SNP_6 platform (first vertical bar) while 45 patients have samples for all the five platforms (second vertical bar).
-
-#### Parameters
-
-* Tumor: Tumor selection. For the plot "Type of samples" more than one can be selected, while for "Platform vs samples"
-only one can be selected.
-* Platforms: Platform selection. For the plot "Type of samples" more than one can be selected.
-* Level filter: Level of data selection.Only one can be selected.
-* Sample type: Filter samples by types. Only used in "Platform vs samples" plot.
-* Add counts label to barchart: Add numbers for each bar in the plot. Only used in "Type of samples" plot.
-
-#### Colors control
-Change the color of the plot
-
-#### Size control
-Change the size of the plot
-
 \newpage
 # Analysis
 ## Menu: Clinical analysis
