@@ -12,7 +12,7 @@ library(ELMER)
 library(googleVis)
 library(readr)
 library(grid)
-options(shiny.maxRequestSize=10000*1024^2)
+options(shiny.maxRequestSize=-1)
 
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
@@ -121,9 +121,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     #       Windows= {root = "C:\\"},
     #       Linux  = {root = "~"},
     #       Darwin = {root = file.path("~", "Desktop")})
-    dir.create(paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI"), showWarnings = FALSE)
+    dir.create(paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI"), showWarnings = FALSE)
 
-    volumes <- c(TCGAbiolinksGUI=paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI"),home=getwd(),getVolumes()(),temp=tempdir(),wd="./")
+    volumes <- c(TCGAbiolinksGUI=paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI"),home=getwd(),getVolumes()(),temp=tempdir(),wd="./")
     shinyjs::hide("greetbox-outer")
 
     #-------------------------------------------------------------------------
@@ -305,7 +305,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         # Dir to save the files
         getPath <- parseDirPath(volumes, input$workingDir)
-        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         samplesType <- input$tcgasamplestypeFilter
 
 
@@ -420,7 +420,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         # Dir to saved the files
         getPath <- parseDirPath(volumes, input$workingDir)
-        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         filename <- file.path(getPath,isolate({input$tcgafilename}))
 
         samplesType <- input$tcgasamplestypeFilter
@@ -578,7 +578,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 if (isolate({input$saveSubtypeRda}) || isolate({input$saveSubtypeCsv})) {
                     save.message <- ""
                     getPath <- parseDirPath(volumes, input$workingDir)
-                    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
+                    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
                     filename <- file.path(getPath,paste0(tumor,"_subtype.rda"))
                     if (isolate({input$saveSubtypeRda})) {
                         save(tbl, file = filename)
@@ -661,7 +661,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         filename <- paste0("samples_clinic_",type,gsub(" ","_",Sys.time()),".rda")
                     }
                     getPath <- parseDirPath(volumes, input$workingDir)
-                    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
+                    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
                     filename <- file.path(getPath,filename)
                     save.message <- ""
                     if (isolate({input$saveClinicalRda})){
@@ -746,7 +746,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         maf.files <- get.obj("maf.files")
         # Dir to save the files
         getPath <- parseDirPath(volumes, input$workingDir)
-        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
 
         withProgress(message = 'Download in progress',
                      detail = 'This may take a while...', value = 0, {
@@ -3199,7 +3199,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     output$wd <- renderPrint({
         path <- parseDirPath(volumes, input$workingDir)
-        if (identical(path, character(0))) path <- paste0(Sys.getenv("HOME"),"/TGCAbiolinkGUI")
+        if (identical(path, character(0))) path <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         return(path)
     })
 }
