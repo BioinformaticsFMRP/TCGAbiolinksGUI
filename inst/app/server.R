@@ -515,7 +515,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                    type = ftype,
                                                    filename = fname,
                                                    samples = samples,
-                                                   add.clinical = isolate({input$addSClinicalTCGA}),
+                                                   add.clinical = isolate({input$addClinicalTCGA}),
                                                    add.subtype = isolate({input$addSubTypeTCGA}))
                           }
                       })
