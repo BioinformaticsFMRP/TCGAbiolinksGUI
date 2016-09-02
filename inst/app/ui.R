@@ -12,11 +12,11 @@ names(pathways.id) <- unname(paths.hsa)
 
 menu.icon <- "arrow-circle-right"
 
-
-disease <- TCGAbiolinks:::disease.table$abbreviation
-names(disease) <- TCGAbiolinks:::disease.table$name
+# Defining parameters
+disease <-  TCGAbiolinks:::getGDCprojects()$project_id
+names(disease) <-  TCGAbiolinks:::getGDCprojects()$disease_type
 disease <- sort(disease)
-disease <- disease[disease %in% unique(TCGAquery()$Disease)]
+
 
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
@@ -149,20 +149,25 @@ body <-  dashboardBody(
                            box(title = "Advanced search",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE,
-                               selectizeInput('tcgaTumorFilter',
-                                              'Tumor filter',
-                                              disease,
-                                              multiple = TRUE),
-                               selectizeInput('tcgaExpFilter',
-                                              'Platforms filter',
-                                              sort(unique(TCGAquery()$Platform)),
-                                              multiple = TRUE, selected = NULL),
-                               bsTooltip("tcgaMatchedPlatform", "If checked only samples that have data in all platforms will be downloaded", "left"),
-                               checkboxInput("tcgaMatchedPlatform", "Only samples with all platforms?", value = FALSE, width = NULL),
-                               selectizeInput('tcgaLevelFilter',
-                                              'Level filter',
-                                              c(1:3),
-                                              multiple = TRUE, selected = NULL),
+                               selectizeInput('tcgaProjectFilter',
+                                              'Project filter',
+                                              TCGAbiolinks:::getGDCprojects()$project_id,
+                                              multiple = FALSE),
+                               selectizeInput('tcgaDataCategoryFilter',
+                                              'Data Category filter',
+                                              NULL,
+                                              multiple = FALSE),
+                               #selectizeInput('tcgaExpFilter',
+                               #              'Platforms filter',
+                               #               sort(unique(TCGAquery()$Platform)),
+                               #               multiple = TRUE, selected = NULL),
+                               #bsTooltip("tcgaMatchedPlatform", "If checked only samples that have data in all platforms will be downloaded", "left"),
+                               #checkboxInput("tcgaMatchedPlatform", "Only samples with all platforms?", value = FALSE, width = NULL),
+                               checkboxInput("tcgaLegacy", "Legacy", value = FALSE, width = NULL),
+                               #selectizeInput('tcgaLevelFilter',
+                               #              'Level filter',
+                               #               c(1:3),
+                               #                  multiple = TRUE, selected = NULL),
                                actionButton("tcgaSearchBt",
                                             "Visualize Data",
                                             style = "background-color: #000080;

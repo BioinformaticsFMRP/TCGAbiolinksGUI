@@ -14,6 +14,19 @@ library(readr)
 library(grid)
 options(shiny.maxRequestSize=-1)
 
+
+getDataCategory <- function(legacy){
+    data.category.hamonirzed <- c("Transcriptome Profiling","Copy number variation",
+                                  "Simple Nucleotide Variation","Simple Nucleotide Variation",
+                                  "Raw Sequencing Data","Biospecimen","Clinical")
+
+    data.category.legacy <- c("Transcriptome Profiling","Copy number variation",
+                              "Simple Nucleotide Variation","Simple Nucleotide Variation",
+                              "Raw Sequencing Data","Biospecimen","Clinical","Protein expression","Gene expression",
+                              "DNA methylation","Raw Microarray Data","Structural Rearrangement","Other")
+    if(legacy) return(data.category.legacy)
+    return(data.category.hamonirzed)
+}
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
 names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
@@ -973,6 +986,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         })})
     observe({
         updateSelectizeInput(session, 'mafAnnotationcols', choices = as.character(colnames(annotation.maf())), server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'tcgaDataCategoryFilter', choices =  getDataCategory(input$tcgaLegacy), server = TRUE)
     })
 
     observe({
