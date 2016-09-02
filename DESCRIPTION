@@ -36,6 +36,7 @@ Imports:
     parallel,
     TCGAbiolinks (>= 1.2.3),
     shinyjs (>= 0.5.2),
+    colourpicker,
     shinyBS  (>= 0.62)
 VignetteBuilder: knitr
 biocViews: Genetics,

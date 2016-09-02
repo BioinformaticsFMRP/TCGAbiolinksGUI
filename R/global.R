@@ -3,7 +3,7 @@
 #' @examples
 #'    TCGAbiolinksGUI()
 #' @name TCGAbiolinksGUI
-#' @import shiny shinyFiles shinydashboard downloader
+#' @import shiny shinyFiles shinydashboard downloader colourpicker
 #' TCGAbiolinks UpSetR ggplot2 shinyBS stringr ggrepel pathview ELMER grid
 #' clusterProfiler parallel
 #' @importFrom SummarizedExperiment SummarizedExperiment values rowRanges colData<- assay colData
