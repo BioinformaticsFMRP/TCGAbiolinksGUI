@@ -27,6 +27,59 @@ getDataCategory <- function(legacy){
     if(legacy) return(data.category.legacy)
     return(data.category.hamonirzed)
 }
+
+getFileType <-  function(legacy, data.category){
+    file.type <- NULL
+    if(data.category == "Copy number variation" & legacy)
+        file.type <- c("nocnv_hg18.seg","nocnv_hg19.seg","hg19.seg","hg18.seg")
+    if(data.category == "Gene expression" & legacy)
+        file.type <- c("normalized_results","results")
+
+    return(file.type)
+}
+
+getWorkFlow <-  function(legacy, data.category){
+    workflow <- NULL
+    if(data.category == "Transcriptome Profiling" & !legacy)
+        workflow <- c("HTSeq - Counts",
+                       "HTSeq - FPKM-UQ",
+                       "HTSeq - FPKM")
+    return(workflow)
+}
+
+getPlatform <-  function(legacy, data.category){
+    platform <- NULL
+    if(!legacy) return(platform) # platform is not used for harmonized
+    if(data.category == "Copy number variation") platform <- "Affymetrix SNP Array 6.0"
+    if(data.category == "Protein expression") platform <- "MDA RPPA Core"
+    if(data.category == "Gene expression") platform <- c("Illumina HiSeq","HT_HG-U133A","AgilentG4502A_07_2","AgilentG4502A_07_1","HuEx-1_0-st-v2")
+    if(data.category == "DNA methylation") platform <- c("Illumina Human Methylation 450","Illumina Human Methylation 27",
+                                                         "Illumina DNA Methylation OMA003 CPI","Illumina DNA Methylation OMA002 CPI",
+                                                         "Illumina Hi Seq")
+    return(platform)
+}
+
+getDataType <- function(legacy, data.category){
+    data.type <- NULL
+    if(data.category == "Copy number variation" & !legacy)
+        data.type <- c("Copy Number Segment",
+                       "Masked Copy Number Segment")
+
+    if(data.category == "Gene expression" & !legacy)
+        data.type <- c("Gene Expression Quantification",
+                       "Isoform Expression Quantification",
+                       "miRNA Expression Quantification")
+
+    if(data.category == "Gene expression" & legacy)
+        data.type  <- c("Gene expression quantification",
+                        "miRNA gene quantification",
+                        "Exon junction quantification",
+                        "Exon quantification",
+                        "miRNA isoform quantification")
+
+    return(data.type)
+}
+
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
 names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
@@ -989,6 +1042,39 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
     observe({
         updateSelectizeInput(session, 'tcgaDataCategoryFilter', choices =  getDataCategory(input$tcgaLegacy), server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'tcgaDataTypeFilter', choices =  getDataType(input$tcgaLegacy,input$tcgaDataCategoryFilter), server = TRUE)
+        if(is.null(getDataType(input$tcgaLegacy,input$tcgaDataCategoryFilter))) {
+            shinyjs::hide("tcgaDataTypeFilter")
+        } else {
+            shinyjs::show("tcgaDataTypeFilter")
+        }
+    })
+    observe({
+        updateSelectizeInput(session, 'tcgaPlatformFilter', choices =  getPlatform(input$tcgaLegacy,input$tcgaDataCategoryFilter), server = TRUE)
+        if(is.null(getPlatform(input$tcgaLegacy,input$tcgaDataCategoryFilter))) {
+            shinyjs::hide("tcgaPlatformFilter")
+        } else {
+            shinyjs::show("tcgaPlatformFilter")
+        }
+    })
+    observe({
+        updateSelectizeInput(session, 'tcgaWorkFlowFilter', choices =  getWorkFlow(input$tcgaLegacy,input$tcgaDataCategoryFilter), server = TRUE)
+        if(is.null(getWorkFlow(input$tcgaLegacy,input$tcgaDataCategoryFilter))) {
+            shinyjs::hide("tcgaWorkFlowFilter")
+        } else {
+            shinyjs::show("tcgaWorkFlowFilter")
+        }
+
+    })
+    observe({
+        updateSelectizeInput(session, 'tcgaFileTypeFilter', choices =  getFileType(input$tcgaLegacy,input$tcgaDataCategoryFilter), server = TRUE)
+        if(is.null(getFileType(input$tcgaLegacy,input$tcgaDataCategoryFilter))) {
+            shinyjs::hide("tcgaFileTypeFilter")
+        } else {
+            shinyjs::show("tcgaFileTypeFilter")
+        }
     })
 
     observe({
