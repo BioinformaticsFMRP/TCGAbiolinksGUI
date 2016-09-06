@@ -323,7 +323,7 @@ body <-  dashboardBody(
                 fluidRow(
                     column(8, bsAlert("tcgaMutationmessage"),
                            bsCollapse(id = "collapseTCGAMutation", open = "Mutation data",
-                                      bsCollapsePanel("Mutation data", dataTableOutput('tcgaMutationtbl'), style = "default")
+                                      bsCollapsePanel("Mutation data",div(dataTableOutput("tcgaMutationtbl"), style = "font-size: 90%;"), style = "default")
                            )),
                     column(4,
                            box(title = "Search: Mutation data",width = NULL,
@@ -331,23 +331,16 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = FALSE,
                                selectizeInput('tcgaMafTumorFilter',
                                               'Tumor filter',
-                                              disease,
+                                              NULL,
                                               multiple = FALSE),
+                               checkboxInput("saveMafcsv", "Save MAF as csv?", value = TRUE, width = NULL),
                                actionButton("tcgaMafSearchBt",
-                                            "Search",
-                                            style = "background-color: #000080;
-                                     color: #FFFFFF;
-                                     margin-left: auto;
-                                     margin-right: auto;
-                                     width: 100%",
-                                            icon = icon("search")),
-                               actionButton("mafDownloadBt",
                                             "Download",
                                             style = "background-color: #000080;
-                                     color: #FFFFFF;
-                                     margin-left: auto;
-                                     margin-right: auto;
-                                     width: 100%",
+                                                     color: #FFFFFF;
+                                                     margin-left: auto;
+                                                     margin-right: auto;
+                                                     width: 100%",
                                             icon = icon("download")))
                     ))),
         tabItem(tabName = "tcgaSubtype",

@@ -8,9 +8,11 @@ library(shinyBS)
 library(stringr)
 library(ggrepel)
 library(pathview)
+library(htmlwidgets)
 library(ELMER)
 library(googleVis)
 library(readr)
+library(data.table)
 library(grid)
 options(shiny.maxRequestSize=-1)
 
@@ -42,9 +44,21 @@ getWorkFlow <-  function(legacy, data.category){
     workflow <- NULL
     if(data.category == "Transcriptome Profiling" & !legacy)
         workflow <- c("HTSeq - Counts",
-                       "HTSeq - FPKM-UQ",
-                       "HTSeq - FPKM")
+                      "HTSeq - FPKM-UQ",
+                      "HTSeq - FPKM")
     return(workflow)
+}
+
+getMafTumors <- function(){
+    root <- "https://gdc-api.nci.nih.gov/data/"
+    maf <- fread("https://gdc-docs.nci.nih.gov/Data/Release_Notes/Manifests/GDC_open_MAFs_manifest.txt",
+                 data.table = FALSE, verbose = FALSE, showProgress = FALSE)
+    tumor <- unlist(lapply(maf$filename, function(x){unlist(str_split(x,"\\."))[2]}))
+    disease <-  gsub("TCGA-","",TCGAbiolinks:::getGDCprojects()$project_id)
+    names(disease) <-  TCGAbiolinks:::getGDCprojects()$disease_type
+    disease <- sort(disease)
+    ret <- disease[disease %in% tumor]
+    return(ret)
 }
 
 getPlatform <-  function(legacy, data.category){
@@ -770,10 +784,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         output$tcgaMutationtbl <- renderDataTable({
             tumor <- isolate({input$tcgaMafTumorFilter})
-
-            maf.files <- get.obj("maf.files")
-            maf.files[,c(10,1,2,4,5,7)]
-            tbl <- subset(maf.files,maf.files$Tumor == tumor)
+            getPath <- parseDirPath(volumes, input$workingDir)
+            if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+            print( isolate({input$saveMafcsv}))
+            withProgress(message = 'Download in progress',
+                         detail = 'This may take a while...', value = 0, {
+                             tbl <- GDCquery_Maf(tumor, directory = getPath, save.csv =  isolate({input$saveMafcsv}))
+                         })
             if(is.null(tbl)){
                 createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "No results found", style =  "warning",
                             content = "Sorry there are no results for your query.", append = FALSE)
@@ -785,13 +802,32 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             } else {
                 closeAlert(session, "tcgaMutationAlert")
             }
+            root <- "https://gdc-api.nci.nih.gov/data/"
+            maf <- fread("https://gdc-docs.nci.nih.gov/Data/Release_Notes/Manifests/GDC_open_MAFs_manifest.txt",
+                         data.table = FALSE, verbose = FALSE, showProgress = FALSE)
+            maf <- maf[grepl(tumor,maf$filename),]
+            fout <- file.path(getPath, maf$filename)
+            closeAlert(session, "tcgaMutationAlert")
+            if( isolate({input$saveMafcsv})) {
+                createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Download completed", style = "success",
+                            content =  paste0("Saved file: ",fout), append = FALSE)
+            } else {
+                createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Download completed", style = "success",
+                            content =  paste0("Saved file: ",fout), append = FALSE)
+            }
             return(tbl)
         },
         options = list(pageLength = 10,
                        scrollX = TRUE,
                        jQueryUI = TRUE,
                        pagingType = "full",
-                       lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                       lengthMenu = list(c(6, 20, -1), c('10', '20', 'All')),
+                       #autoWidth = TRUE,
+                       #columnDefs = list(list(width = '200px', targets = 110:ncol(tbl))),
+                       #initComplete = JS(
+                       #   "function(settings, json) {",
+                       #   "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
+                       #   "}"),
                        language.emptyTable = "No results found",
                        "dom" = 'T<"clear">lfrtip',
                        "oTableTools" = list(
@@ -808,32 +844,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
         )})
 
-    observeEvent(input$mafDownloadBt , {
-        maf.files <- get.obj("maf.files")
-        # Dir to save the files
-        getPath <- parseDirPath(volumes, input$workingDir)
-        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
-
-        withProgress(message = 'Download in progress',
-                     detail = 'This may take a while...', value = 0, {
-                         if(is.null(input$allRows)){
-                             closeAlert(session, "tcgaMutationAlert")
-                             createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Error", style = "danger",
-                                         content =  paste0("Please select which files will be downloaded"), append = TRUE)
-                             req(input$allRows)
-                         }
-                         df <- data.frame(name = input$allRows[seq(5, length(input$allRows), 7)])
-                         df <- maf.files[maf.files$Archive.Name %in% df$name,]
-
-                         for (i in 1:nrow(df)) {
-                             incProgress(1/nrow(df))
-                             fout <- file.path(getPath,basename(df[1,]$Deploy.Location))
-                             if (!file.exists(fout))  downloader::download(df[1,]$Deploy.Location,fout)
-                         }})
-        closeAlert(session, "tcgaMutationAlert")
-        createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Download completed", style = "success",
-                    content =  paste0("Saved file: ",fout), append = FALSE)
-    })
 
     #----------------------------------------------------------------------
     #                                         MAF
@@ -1068,6 +1078,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
 
     })
+    observe({
+        updateSelectizeInput(session, 'tcgaMafTumorFilter', choices =  getMafTumors(), server = TRUE)
+    })
+
     observe({
         updateSelectizeInput(session, 'tcgaFileTypeFilter', choices =  getFileType(input$tcgaLegacy,input$tcgaDataCategoryFilter), server = TRUE)
         if(is.null(getFileType(input$tcgaLegacy,input$tcgaDataCategoryFilter))) {
