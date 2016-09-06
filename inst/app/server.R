@@ -704,27 +704,33 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$tcgaClinicalBt, {
         updateCollapse(session, "collapseTCGAClinical", open = "Clinical data table", close = "Information about clinical data")
         output$tcgaClinicaltbl <- renderDataTable({
+            closeAlert(session, "tcgaClinicalAlert")
             project <- isolate({input$tcgatumorClinicalFilter})
             type <- isolate({input$tcgaClinicalTypeFilter})
             parser <- isolate({input$tcgaClinicalFilter})
             text.samples <- isolate({input$clinicalBarcode})
             tbl <- data.frame()
+
+            getPath <- parseDirPath(volumes, input$workingDir)
+            if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+
             withProgress( message = 'Search in progress',
                           detail = 'This may take a while...', value = 0, {
                               result = tryCatch({
                                   if(isolate({input$clinicalIndexed})){
                                       tbl <- rbind(tbl, GDCquery_clinic(project = project, type = type))
                                   } else {
-                                      query <- GDCquery(project = project, data.category = "Clinical")
+                                      type <- "Clinical"
+                                      query <- GDCquery(project = project, data.category = type)
                                       incProgress(1/2, detail = paste("Downloading data"))
                                       result = tryCatch({
-                                      GDCdownload(query)
+                                      GDCdownload(query, directory = getPath)
                                       } , error = function(e) {
                                           createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "error",
                                                       content = "There was a problem to download the data. Please try again later.", append = FALSE)
 
                                       })
-                                      clinical <- GDCprepare_clinic(query,parser)
+                                      clinical <- GDCprepare_clinic(query,parser, directory = getPath)
                                       tbl <- rbind(tbl, clinical)
                                   }
                               }, error = function(e) {
@@ -736,7 +742,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "warning",
                             content = "Sorry there are clinical files for your query.", append = FALSE)
                 return()
-            } else if(nrow(tbl) ==0) {
+            } else if(nrow(tbl) == 0) {
                 createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "warning",
                             content = "Sorry there are clinical files for your query.", append = FALSE)
                 return()
@@ -744,13 +750,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 closeAlert(session, "tcgaClinicalAlert")
                 # Saving data
                 if (isolate({input$saveClinicalRda}) || isolate({input$saveClinicalCsv})){
-                    if(isolate({input$clinicalSearchType})){
-                        filename <- paste0(tumor,"_clinic_",type,".rda")
+                    if(isolate({input$clinicalIndexed})){
+                        filename <- paste0(project,"_",type,".rda")
                     } else {
-                        filename <- paste0("samples_clinic_",type,gsub(" ","_",Sys.time()),".rda")
+                        filename <- paste0(project,"_clinical_",parser,".rda")
                     }
-                    getPath <- parseDirPath(volumes, input$workingDir)
-                    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+
                     filename <- file.path(getPath,filename)
                     save.message <- ""
                     if (isolate({input$saveClinicalRda})){
@@ -758,7 +763,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         save.message <-  paste0(save.message,"File created: ",filename,"<br>")
                     }
                     if (isolate({input$saveClinicalCsv})){
-                        write.csv2(tbl, file = gsub("rda","csv",filename))
+                        if(grepl("biospecimen",type, ignore.case = TRUE))  tbl$portions <- NULL
+                        write_csv(tbl,gsub("rda","csv",filename))
                         save.message <-  paste0(save.message,"File created: ",gsub("rda","csv",filename))
                     }
                     createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "File created", style =  "info",
