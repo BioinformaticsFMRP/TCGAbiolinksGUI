@@ -210,7 +210,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     #                            TCGA Search
     #-------------------------------------------------------------------------
     #--------------------- START controlling show/hide states ----------------
-    shinyjs::hide("tcgatumorClinicalFilter")
     shinyjs::hide("tcgaFrnaseqtypeFilter")
     shinyjs::hide("tcgaFrnaseqv2typeFilter")
     shinyjs::hide("tcgaFgwstypeFilter")
@@ -221,6 +220,15 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             shinyjs::show("tcgaMatchedPlatform")
         } else {
             shinyjs::hide("tcgaMatchedPlatform")
+        }
+    })
+    observeEvent(input$clinicalIndexed, {
+        if(input$clinicalIndexed){
+            shinyjs::show("tcgaClinicalTypeFilter")
+            shinyjs::hide("tcgaClinicalFilter")
+        } else {
+            shinyjs::hide("tcgaClinicalTypeFilter")
+            shinyjs::show("tcgaClinicalFilter")
         }
     })
     observeEvent(input$tcgasamplestypeFilter, {
@@ -259,10 +267,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             shinyjs::hide("addSubTypeTCGA")
         }
     })
-    observeEvent(input$clinicalSearchType, {
-        shinyjs::toggle("clinicalBarcode")
-        shinyjs::toggle("tcgatumorClinicalFilter")
-    })
     observeEvent(input$tcgaExpFilter, {
         exp <- isolate({input$tcgaExpFilter})
 
@@ -283,10 +287,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             shinyjs::hide("tcgaFgwstypeFilter")
         }
     })
-    #observeEvent(input$deafilter, {
-    #    shinyjs::toggle("tcgatumorClinicalFilter")
-    #    shinyjs::toggle("clinicalBarcode")
-    #})
     #----------------------- END controlling show/hide states -----------------
     observeEvent(input$tcgaSearchBt, {
         updateCollapse(session, "collapseTCGA", open = "TCGA search results")
@@ -704,23 +704,32 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$tcgaClinicalBt, {
         updateCollapse(session, "collapseTCGAClinical", open = "Clinical data table", close = "Information about clinical data")
         output$tcgaClinicaltbl <- renderDataTable({
-            tumor <- isolate({input$tcgatumorClinicalFilter})
-            type <- isolate({input$tcgaClinicalFilter})
+            project <- isolate({input$tcgatumorClinicalFilter})
+            type <- isolate({input$tcgaClinicalTypeFilter})
+            parser <- isolate({input$tcgaClinicalFilter})
             text.samples <- isolate({input$clinicalBarcode})
             tbl <- data.frame()
             withProgress( message = 'Search in progress',
                           detail = 'This may take a while...', value = 0, {
                               result = tryCatch({
-                                  if(isolate({input$clinicalSearchType})){
-                                      tbl <- rbind(tbl, TCGAquery_clinic(tumor = tumor, clinical_data_type = type))
+                                  if(isolate({input$clinicalIndexed})){
+                                      tbl <- rbind(tbl, GDCquery_clinic(project = project, type = type))
                                   } else {
-                                      samples <- parse.textarea.input(text.samples)
-                                      tbl <- rbind(tbl, TCGAquery_clinic(samples = samples, clinical_data_type = type))
-                                  }
+                                      query <- GDCquery(project = project, data.category = "Clinical")
+                                      incProgress(1/2, detail = paste("Downloading data"))
+                                      result = tryCatch({
+                                      GDCdownload(query)
+                                      } , error = function(e) {
+                                          createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "error",
+                                                      content = "There was a problem to download the data. Please try again later.", append = FALSE)
 
+                                      })
+                                      clinical <- GDCprepare_clinic(query,parser)
+                                      tbl <- rbind(tbl, clinical)
+                                  }
                               }, error = function(e) {
                                   createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "warning",
-                                              content = "Sorry there are clinical files for your query.", append = FALSE)
+                                              content = "Sorry, we could not find the clinical information for your query.", append = FALSE)
                               })
                           })
             if(is.null(tbl)){
@@ -763,6 +772,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                        scrollX = TRUE,
                        jQueryUI = TRUE,
                        pagingType = "full",
+                       autoWidth = TRUE,
                        lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
                        language.emptyTable = "No results found",
                        "dom" = 'T<"clear">lfrtip',
