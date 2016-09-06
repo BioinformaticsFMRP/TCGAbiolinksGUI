@@ -786,7 +786,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             tumor <- isolate({input$tcgaMafTumorFilter})
             getPath <- parseDirPath(volumes, input$workingDir)
             if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
-            print( isolate({input$saveMafcsv}))
+
             withProgress(message = 'Download in progress',
                          detail = 'This may take a while...', value = 0, {
                              tbl <- GDCquery_Maf(tumor, directory = getPath, save.csv =  isolate({input$saveMafcsv}))
@@ -810,7 +810,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             closeAlert(session, "tcgaMutationAlert")
             if( isolate({input$saveMafcsv})) {
                 createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Download completed", style = "success",
-                            content =  paste0("Saved file: ",fout), append = FALSE)
+                            content =  paste0("Saved file: <br><ul>",fout,"</ul><ul>", gsub(".gz",".csv",fout), "</ul>"), append = FALSE)
             } else {
                 createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Download completed", style = "success",
                             content =  paste0("Saved file: ",fout), append = FALSE)
