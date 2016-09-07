@@ -18,7 +18,7 @@ options(shiny.maxRequestSize=-1)
 
 
 getDataCategory <- function(legacy){
-    data.category.hamonirzed <- c("Transcriptome Profiling","Copy number variation",
+    data.category.hamonirzed <- c("Transcriptome Profiling","Copy Number Variation",
                                   "Simple Nucleotide Variation","Simple Nucleotide Variation",
                                   "Raw Sequencing Data","Biospecimen","Clinical")
 
@@ -32,9 +32,9 @@ getDataCategory <- function(legacy){
 
 getFileType <-  function(legacy, data.category){
     file.type <- NULL
-    if(data.category == "Copy number variation" & legacy)
+    if(grepl("Copy number variation",data.category, ignore.case = TRUE) & legacy)
         file.type <- c("nocnv_hg18.seg","nocnv_hg19.seg","hg19.seg","hg18.seg")
-    if(data.category == "Gene expression" & legacy)
+    if(grepl("Gene expression", data.category, ignore.case = TRUE)  & legacy)
         file.type <- c("normalized_results","results")
 
     return(file.type)
@@ -64,7 +64,7 @@ getMafTumors <- function(){
 getPlatform <-  function(legacy, data.category){
     platform <- NULL
     if(!legacy) return(platform) # platform is not used for harmonized
-    if(data.category == "Copy number variation") platform <- "Affymetrix SNP Array 6.0"
+    if(grepl("Copy number variation",data.category, ignore.case = TRUE)) platform <- "Affymetrix SNP Array 6.0"
     if(data.category == "Protein expression") platform <- "MDA RPPA Core"
     if(data.category == "Gene expression") platform <- c("Illumina HiSeq","HT_HG-U133A","AgilentG4502A_07_2","AgilentG4502A_07_1","HuEx-1_0-st-v2")
     if(data.category == "DNA methylation") platform <- c("Illumina Human Methylation 450","Illumina Human Methylation 27",
@@ -75,7 +75,7 @@ getPlatform <-  function(legacy, data.category){
 
 getDataType <- function(legacy, data.category){
     data.type <- NULL
-    if(data.category == "Copy number variation" & !legacy)
+    if(grepl("Copy number variation",data.category, ignore.case = TRUE) & !legacy)
         data.type <- c("Copy Number Segment",
                        "Masked Copy Number Segment")
 
@@ -291,87 +291,73 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$tcgaSearchBt, {
         updateCollapse(session, "collapseTCGA", open = "TCGA search results")
         output$tcgaview <- renderGvis({
+            closeAlert(session,"tcgaAlert")
+            tumor <- isolate({input$tcgaProjectFilter})
+            data.category <- isolate({input$tcgaDataCategoryFilter})
 
-            tumor <- isolate({input$tcgaTumorFilter})
-            platform <- isolate({input$tcgaExpFilter})
-            level <- isolate({input$tcgaLevelFilter})
+            # Data type
+            data.type <- isolate({input$tcgaDataTypeFilter})
+            print(str_length(data.type))
+            if(str_length(data.type) == 0) data.type <- FALSE
+
+            platform <- isolate({input$tcgaPlatformFilter})
+            workflow <- isolate({input$tcgaWorkFlowFilter})
+            file.type <- isolate({input$tcgaFileTypeFilter})
+            legacy <- isolate({as.logical(input$tcgaDatabase)})
             samplesType <- isolate({input$tcgasamplestypeFilter})
             if(is.null(tumor)){
                 createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Data input error", style =  "danger",
-                            content = "Please select a tumor type", append = FALSE)
+                            content = "Please select a project", append = FALSE)
                 return(NULL)
             }
-            query <- TCGAquery(tumor = tumor, platform = platform,level = level)
-            samples <- NULL
-            if(isolate({input$tcgaMatchedPlatform})){
-                samples <- getMatchedPlatform(query)
+            if(is.null(data.category)){
+                createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Data input error", style =  "danger",
+                            content = "Please select a data.category", append = FALSE)
+                return(NULL)
             }
 
-            if(isolate({input$tcgaMatchedType})){
-                if(is.null(samples)){
-                    samples <- getMatchedType(unlist(str_split(query$barcode,",")),samplesType)
-                } else {
-                    samples <- getMatchedType(samples,samplesType)
-                }
-            } else if(length(samplesType)>0){
-                if(is.null(samples)){
-                    samples <- unlist(lapply(samplesType,function(type){
-                        s <- unlist(str_split(query$barcode,","))
-                        s[grep(type,substr(s,14,15))]
-                    }))
-                } else {
-                    samples <- unlist(lapply(samplesType,function(type){
-                        samples[grep(type,substr(samples,14,15))]
-                    }))
-                }
+            print(workflow)
+            print(tumor)
+            print(data.category)
+            print(data.type)
+            withProgress(message = 'Search in progress',
+                         detail = 'This may take a while...', value = 0, {
+                             query = tryCatch({
+                                 query <- GDCquery(project = tumor,  data.category = data.category, data.type = data.type)
+                             }, warning = function(w) {
+                                 createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
+                                             content = "There are more than one file for the same case.", append = FALSE)
+                             }, error = function(e) {
+                                 createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                                             content = "No results for this query", append = FALSE)
+                                 return(NULL)
+                             })
+                         })
+            print(is.null(query))
+            if(is.null(query)) return(NULL)
+            samples <- NULL
+
+            if(length(samplesType)>0){
+                samples <- unlist(lapply(samplesType,function(type){
+                    s <- unlist(str_split(query$barcode,","))
+                    s[grep(type,substr(s,14,15))]
+                }))
             }
             not.found <- c()
             tbl <- data.frame()
-            for (i in platform){
-                for (j in tumor){
-                    x <- query[query$Platform == i & query$Disease == j,]
-                    if(!is.null(x)){
-                        if(nrow(x) > 0){
-                            if(!is.null(samples)) {
-                                patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,nchar(samples[1])))
-                                patient <-  patient[patient %in% samples]
-                            } else {
-                                patient <- unique(substr(unlist(stringr::str_split(x$barcode,",")),1,15))
-                            }
-                            if(nchar(patient[1]) < 15) next
-                            type <- tcga.code[substr(patient,14,15)]
-                            tab <- table(substr(patient,14,15))
-                            names(tab) <- tcga.code[names(tab)]
-                            tab <- tab[!is.na(names(tab))]
-                            tab <- melt(tab)
-                            tab$Platform <- i
-                            tab$Tumor <- j
+            results <- query$results[[1]]
 
-                            if (ncol(tab) == 4)  colnames(tab) <- c("type","Freq","Platform","Tumor")
-                            if (ncol(tab) == 3) {
-                                colnames(tab) <- c("Freq","Platform","Tumor")
-                                tab$type <- rownames(tab)
-                            }
-                            if(nrow(tbl) == 0){
-                                tbl <- tab
-                            } else {
-                                tbl <- rbind(tbl,tab)
-                            }
-                        } else {
-                            not.found <- c(not.found, paste0("<li>Tumor: ",j,"  | Platform: ",i,"  | Level: ", level,"</li>"))
-                        }
-                    }
-                }
-            }
 
-            a <- lapply(unique(tbl$Tumor),
-                        function(x) {
-                            df <- tbl[tbl$Tumor == x,c("Freq","Platform","type")]
-                            df <-reshape(df,timevar="type",idvar="Platform",direction="wide")
-                            colnames(df) <- gsub("Freq\\.","",colnames(df))
-                            gvisColumnChart(df, options=list( title=x,width=800,height = 300,legend="{ position: 'top', maxLines: 2 }"))
-                        })
-            Reduce(gvisMerge, a)
+            data.type <- gvisPieChart(as.data.frame(table(results$data_type)),  options=list( title="Data type"))
+            tissue.definition <- gvisPieChart(as.data.frame(table(results$tissue.definition)),  options=list( title="Tissue definition"))
+            experimental_strategy  <- gvisPieChart(as.data.frame(table(results$experimental_strategy )),  options=list( title="Experimental strategy"))
+            analysis.workflow_type <- gvisPieChart(as.data.frame(table(paste0(
+                results$analysis$workflow_type,"(", results$analysis$workflow_link, ")"))),
+                options=list( title="Workflow type"))
+            data.category <- gvisPieChart(as.data.frame(table(results$data_category)),  options=list( title="Data category"))
+            gvisMerge(gvisMerge(tissue.definition, data.type, horizontal=TRUE),
+                      gvisMerge(experimental_strategy, analysis.workflow_type, horizontal=TRUE)
+            )
         })
     })
 
@@ -724,7 +710,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                       query <- GDCquery(project = project, data.category = type)
                                       incProgress(1/2, detail = paste("Downloading data"))
                                       result = tryCatch({
-                                      GDCdownload(query, directory = getPath)
+                                          GDCdownload(query, directory = getPath)
                                       } , error = function(e) {
                                           createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "error",
                                                       content = "There was a problem to download the data. Please try again later.", append = FALSE)
@@ -1067,27 +1053,27 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         updateSelectizeInput(session, 'mafAnnotationcols', choices = as.character(colnames(annotation.maf())), server = TRUE)
     })
     observe({
-        updateSelectizeInput(session, 'tcgaDataCategoryFilter', choices =  getDataCategory(input$tcgaLegacy), server = TRUE)
+        updateSelectizeInput(session, 'tcgaDataCategoryFilter', choices =  getDataCategory(as.logical(input$tcgaDatabase)), server = TRUE)
     })
     observe({
-        updateSelectizeInput(session, 'tcgaDataTypeFilter', choices =  getDataType(input$tcgaLegacy,input$tcgaDataCategoryFilter), server = TRUE)
-        if(is.null(getDataType(input$tcgaLegacy,input$tcgaDataCategoryFilter))) {
+        updateSelectizeInput(session, 'tcgaDataTypeFilter', choices =  getDataType(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter), server = TRUE)
+        if(is.null(getDataType(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter))) {
             shinyjs::hide("tcgaDataTypeFilter")
         } else {
             shinyjs::show("tcgaDataTypeFilter")
         }
     })
     observe({
-        updateSelectizeInput(session, 'tcgaPlatformFilter', choices =  getPlatform(input$tcgaLegacy,input$tcgaDataCategoryFilter), server = TRUE)
-        if(is.null(getPlatform(input$tcgaLegacy,input$tcgaDataCategoryFilter))) {
+        updateSelectizeInput(session, 'tcgaPlatformFilter', choices =  getPlatform(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter), server = TRUE)
+        if(is.null(getPlatform(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter))) {
             shinyjs::hide("tcgaPlatformFilter")
         } else {
             shinyjs::show("tcgaPlatformFilter")
         }
     })
     observe({
-        updateSelectizeInput(session, 'tcgaWorkFlowFilter', choices =  getWorkFlow(input$tcgaLegacy,input$tcgaDataCategoryFilter), server = TRUE)
-        if(is.null(getWorkFlow(input$tcgaLegacy,input$tcgaDataCategoryFilter))) {
+        updateSelectizeInput(session, 'tcgaWorkFlowFilter', choices =  getWorkFlow(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter), server = TRUE)
+        if(is.null(getWorkFlow(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter))) {
             shinyjs::hide("tcgaWorkFlowFilter")
         } else {
             shinyjs::show("tcgaWorkFlowFilter")
@@ -1099,8 +1085,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
 
     observe({
-        updateSelectizeInput(session, 'tcgaFileTypeFilter', choices =  getFileType(input$tcgaLegacy,input$tcgaDataCategoryFilter), server = TRUE)
-        if(is.null(getFileType(input$tcgaLegacy,input$tcgaDataCategoryFilter))) {
+        updateSelectizeInput(session, 'tcgaFileTypeFilter', choices =  getFileType(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter), server = TRUE)
+        if(is.null(getFileType(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter))) {
             shinyjs::hide("tcgaFileTypeFilter")
         } else {
             shinyjs::show("tcgaFileTypeFilter")
