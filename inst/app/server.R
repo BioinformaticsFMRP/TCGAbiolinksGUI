@@ -22,7 +22,7 @@ getDataCategory <- function(legacy){
                                   "Simple Nucleotide Variation","Simple Nucleotide Variation",
                                   "Raw Sequencing Data","Biospecimen","Clinical")
 
-    data.category.legacy <- c("Transcriptome Profiling","Copy number variation",
+    data.category.legacy <- c("Copy number variation",
                               "Simple Nucleotide Variation","Simple Nucleotide Variation",
                               "Raw Sequencing Data","Biospecimen","Clinical","Protein expression","Gene expression",
                               "DNA methylation","Raw Microarray Data","Structural Rearrangement","Other")
@@ -39,6 +39,22 @@ getFileType <-  function(legacy, data.category){
 
     return(file.type)
 }
+
+getExpStrategy <-  function(legacy, platform){
+    experimental.strategy <- NULL
+
+    # These are the cases we need to distinguish
+    if(grepl("Illumina HiSeq", platform, ignore.case = TRUE)  & legacy)
+        experimental.strategy <- c("Total RNA-Seq",
+                                   "RNA-Seq",
+                                   "miRNA-Seq")
+    if(grepl("Illumina GA", platform, ignore.case = TRUE)  & legacy)
+        experimental.strategy <- c("RNA-Seq",
+                                   "miRNA-Seq")
+
+    return(experimental.strategy)
+}
+
 
 getWorkFlow <-  function(legacy, data.category){
     workflow <- NULL
@@ -75,6 +91,11 @@ getPlatform <-  function(legacy, data.category){
 
 getDataType <- function(legacy, data.category){
     data.type <- NULL
+    if(data.category == "Transcriptome Profiling" & !legacy)
+        data.type <- c("Gene Expression Quantification",
+                       "Isoform Expression Quantification",
+                       "miRNA Expression Quantification")
+
     if(grepl("Copy number variation",data.category, ignore.case = TRUE) & !legacy)
         data.type <- c("Copy Number Segment",
                        "Masked Copy Number Segment")
@@ -292,19 +313,54 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         updateCollapse(session, "collapseTCGA", open = "TCGA search results")
         output$tcgaview <- renderGvis({
             closeAlert(session,"tcgaAlert")
+
+            #------------------- STEP 1: Argument-------------------------
+            # Set arguments for GDCquery, if value is empty we will set it to FALSE (same as empty)
             tumor <- isolate({input$tcgaProjectFilter})
             data.category <- isolate({input$tcgaDataCategoryFilter})
 
             # Data type
             data.type <- isolate({input$tcgaDataTypeFilter})
-            print(str_length(data.type))
             if(str_length(data.type) == 0) data.type <- FALSE
 
+            # platform
             platform <- isolate({input$tcgaPlatformFilter})
-            workflow <- isolate({input$tcgaWorkFlowFilter})
+            if(str_length(platform) == 0) platform <- FALSE
+
+            # workflow
+            workflow.type <- isolate({input$tcgaWorkFlowFilter})
+            if(str_length(workflow.type) == 0) workflow.type <- FALSE
+
+            # file.type
             file.type <- isolate({input$tcgaFileTypeFilter})
+            if(str_length(file.type) == 0) file.type <- FALSE
+
+            # access
+            #access <- isolate({input$tcgaAcessFilter})
+            #if(str_length(access) == 0) access <- FALSE
+            access <- "open"
+
             legacy <- isolate({as.logical(input$tcgaDatabase)})
-            samplesType <- isolate({input$tcgasamplestypeFilter})
+
+            # bacode
+            text.samples <- isolate({input$tcgaDownloadBarcode})
+            if(!is.null(text.samples)){
+                barcode <- parse.textarea.input(text.samples)
+            }
+            if(str_length(barcode) == 0) barcode <- FALSE
+
+            # Samples type
+            sample.type <- isolate({input$tcgasamplestypeFilter})
+
+            if(is.null(sample.type)) {
+                sample.type <- FALSE
+            } else if(str_length(sample.type) == 0) {
+                sample.type <- FALSE
+            }
+
+            experimental.strategy <- isolate({input$tcgaExpStrategyFilter})
+            if(str_length(experimental.strategy) == 0) experimental.strategy <- FALSE
+
             if(is.null(tumor)){
                 createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Data input error", style =  "danger",
                             content = "Please select a project", append = FALSE)
@@ -315,37 +371,80 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                             content = "Please select a data.category", append = FALSE)
                 return(NULL)
             }
+            # print(tumor)
+            # print(data.category)
+            # print(workflow.type)
+            # print(legacy)
+            # print(platform)
+            # print(file.type)
+            # print(access)
+            # print(barcode)
+            # print(experimental.strategy)
+            # print(data.type)
+            # print(sample.type)
 
-            print(workflow)
-            print(tumor)
-            print(data.category)
-            print(data.type)
             withProgress(message = 'Search in progress',
                          detail = 'This may take a while...', value = 0, {
                              query = tryCatch({
-                                 query <- GDCquery(project = tumor,  data.category = data.category, data.type = data.type)
-                             }, warning = function(w) {
-                                 createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
-                                             content = "There are more than one file for the same case.", append = FALSE)
+                                 query <- GDCquery(project = tumor,
+                                                   data.category = data.category,
+                                                   workflow.type = workflow.type,
+                                                   legacy = legacy,
+                                                   platform = platform,
+                                                   file.type = file.type,
+                                                   access = access,
+                                                   barcode = barcode,
+                                                   experimental.strategy = experimental.strategy,
+                                                   sample.type = sample.type,
+                                                   data.type = data.type)
                              }, error = function(e) {
                                  createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
                                              content = "No results for this query", append = FALSE)
                                  return(NULL)
                              })
                          })
-            print(is.null(query))
+            # print(is.null(query))
             if(is.null(query)) return(NULL)
-            samples <- NULL
-
-            if(length(samplesType)>0){
-                samples <- unlist(lapply(samplesType,function(type){
-                    s <- unlist(str_split(query$barcode,","))
-                    s[grep(type,substr(s,14,15))]
-                }))
-            }
             not.found <- c()
             tbl <- data.frame()
             results <- query$results[[1]]
+            if(any(duplicated(results$cases)))
+                createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
+                            content = "There are more than one file for the same case.", append = FALSE)
+
+            #------------------- STEP 2: Clinical features-------------------------
+            clinical <- GDCquery_clinic(tumor)
+            stage <- isolate({input$tcgaClinicalTumorStageFilter})
+            stage.idx <- NA
+            if(!is.null(stage) & all(str_length(stage) > 0)){
+                stage.idx <- sapply(stage, function(y) clinical$tumor_stage %in% y)
+                stage.idx <- apply(stage.idx,1,any)
+            }
+
+            vital.status <- isolate({input$tcgaClinicalVitalStatusFilter})
+            vital.status.idx <- NA
+            if(!is.null(vital.status) & all(str_length(vital.status) > 0)){
+                vital.status.idx <- sapply(vital.status, function(y) clinical$vital_status %in% y)
+                vital.status.idx <- apply(vital.status.idx,1,any)
+            }
+            race <- isolate({input$tcgaClinicalRaceFilter})
+            race.idx <- NA
+            if(!is.null(race) & all(str_length(race) > 0)){
+                race.idx <- sapply(race, function(y) clinical$race %in% y)
+                race.idx <- apply(race.idx,1,any)
+            }
+            gender <- isolate({input$tcgaClinicalGenderFilter})
+            gender.idx <- NA
+            if(!is.null(gender) & all(str_length(gender) > 0)){
+                gender.idx <- sapply(gender, function(y) clinical$gender %in% y)
+                gender.idx <- apply(gender.idx,1,any)
+            }
+            idx <- apply(data.frame(gender.idx,race.idx,vital.status.idx,stage.idx),1,function(x)all(x,na.rm = TRUE))
+            clinical <- clinical[idx,]
+            results <- results[substr(results$cases,1,12) %in% clinical$bcr_patient_barcode,]
+            # filter samples
+
+            #------------------- STEP 3: Plot-------------------------
 
 
             data.type <- gvisPieChart(as.data.frame(table(results$data_type)),  options=list( title="Data type"))
@@ -355,9 +454,24 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 results$analysis$workflow_type,"(", results$analysis$workflow_link, ")"))),
                 options=list( title="Workflow type"))
             data.category <- gvisPieChart(as.data.frame(table(results$data_category)),  options=list( title="Data category"))
-            gvisMerge(gvisMerge(tissue.definition, data.type, horizontal=TRUE),
-                      gvisMerge(experimental_strategy, analysis.workflow_type, horizontal=TRUE)
-            )
+
+            gender.plot <- gvisPieChart(as.data.frame(table(clinical$gender)),  options=list( title="Gender"))
+            race.plot <- gvisPieChart(as.data.frame(table(clinical$race)),  options=list( title="Race"))
+            vital.status.plot <- gvisPieChart(as.data.frame(table(clinical$vital_status)),  options=list( title="Vital status"))
+            tumor.stage.plot <- gvisPieChart(as.data.frame(table(clinical$tumor_stage)),  options=list( title="Tumor stage"))
+
+            clinical.plots <- gvisMerge(gvisMerge(tumor.stage.plot,vital.status.plot , horizontal = TRUE),
+                                        gvisMerge(race.plot, gender.plot, horizontal = TRUE))
+
+            if(!legacy) {
+                data.plots <- gvisMerge(gvisMerge(tissue.definition, data.type, horizontal = TRUE),
+                                        gvisMerge(experimental_strategy, analysis.workflow_type, horizontal = TRUE))
+
+            } else {
+                data.plots <- gvisMerge(gvisMerge(tissue.definition, data.type, horizontal = TRUE),
+                                        experimental_strategy)
+            }
+            gvisMerge(data.plots,clinical.plots)
         })
     })
 
@@ -1055,6 +1169,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observe({
         updateSelectizeInput(session, 'tcgaDataCategoryFilter', choices =  getDataCategory(as.logical(input$tcgaDatabase)), server = TRUE)
     })
+
     observe({
         updateSelectizeInput(session, 'tcgaDataTypeFilter', choices =  getDataType(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter), server = TRUE)
         if(is.null(getDataType(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter))) {
@@ -1078,8 +1193,17 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         } else {
             shinyjs::show("tcgaWorkFlowFilter")
         }
-
     })
+
+    observe({
+        updateSelectizeInput(session, 'tcgaExpStrategyFilter', choices =  getExpStrategy(as.logical(input$tcgaDatabase),input$tcgaPlatformFilter), server = TRUE)
+        if(is.null(getExpStrategy(as.logical(input$tcgaDatabase),input$tcgaPlatformFilter))) {
+            shinyjs::hide("tcgaExpStrategyFilter")
+        } else {
+            shinyjs::show("tcgaExpStrategyFilter")
+        }
+    })
+
     observe({
         updateSelectizeInput(session, 'tcgaMafTumorFilter', choices =  getMafTumors(), server = TRUE)
     })
@@ -1091,6 +1215,27 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         } else {
             shinyjs::show("tcgaFileTypeFilter")
         }
+    })
+
+
+    observe({
+        print(input$tcgaProjectFilter)
+        tryCatch({
+            clin <- GDCquery_clinic(input$tcgaProjectFilter)
+            updateSelectizeInput(session, 'tcgaClinicalGenderFilter', choices =  unique(clin$gender), server = TRUE)
+            updateSelectizeInput(session, 'tcgaClinicalVitalStatusFilter', choices =  unique(clin$vital_status), server = TRUE)
+            updateSelectizeInput(session, 'tcgaClinicalRaceFilter', choices =  unique(clin$race), server = TRUE)
+            updateSelectizeInput(session, 'tcgaClinicalTumorStageFilter', choices =  unique(clin$tumor_stage), server = TRUE)
+            shinyjs::show("tcgaClinicalGenderFilter")
+            shinyjs::show("tcgaClinicalVitalStatusFilter")
+            shinyjs::show("tcgaClinicalRaceFilter")
+            shinyjs::show("tcgaClinicalTumorStageFilter")
+        }, error = function(e){
+            shinyjs::hide("tcgaClinicalGenderFilter")
+            shinyjs::hide("tcgaClinicalVitalStatusFilter")
+            shinyjs::hide("tcgaClinicalRaceFilter")
+            shinyjs::hide("tcgaClinicalTumorStageFilter")
+        })
     })
 
     observe({
