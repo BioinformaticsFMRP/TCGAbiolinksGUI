@@ -231,18 +231,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     #                            TCGA Search
     #-------------------------------------------------------------------------
     #--------------------- START controlling show/hide states ----------------
-    shinyjs::hide("tcgaFrnaseqtypeFilter")
-    shinyjs::hide("tcgaFrnaseqv2typeFilter")
-    shinyjs::hide("tcgaFgwstypeFilter")
-    shinyjs::show("addSubTypeTCGA")
-    shinyjs::hide("tcgaMatchedPlatform")
-    observeEvent(input$tcgaExpFilter, {
-        if(length(input$tcgaExpFilter) > 1){
-            shinyjs::show("tcgaMatchedPlatform")
-        } else {
-            shinyjs::hide("tcgaMatchedPlatform")
-        }
-    })
     observeEvent(input$clinicalIndexed, {
         if(input$clinicalIndexed){
             shinyjs::show("tcgaClinicalTypeFilter")
@@ -252,62 +240,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             shinyjs::show("tcgaClinicalFilter")
         }
     })
-    observeEvent(input$tcgasamplestypeFilter, {
-        if(length(input$tcgasamplestypeFilter) > 1){
-            shinyjs::show("tcgaMatchedType")
-        } else {
-            shinyjs::hide("tcgaMatchedType")
-        }
-    })
-    observeEvent(input$tcgaDownloadTypeRb, {
-        if(input$tcgaDownloadTypeRb == "none") {
-            shinyjs::hide("tcgasamplestypeFilter")
-            shinyjs::hide("tcgaDownloadBarcode")
-            shinyjs::hide("tcgaMatchedType")
-        } else if(input$tcgaDownloadTypeRb == "barcode") {
-            shinyjs::hide("tcgasamplestypeFilter")
-            shinyjs::show("tcgaDownloadBarcode")
-            shinyjs::hide("tcgaMatchedType")
-        } else{
-            shinyjs::show("tcgasamplestypeFilter")
-            shinyjs::hide("tcgaDownloadBarcode")
-        }
-    })
-    observeEvent(input$prepareRb, {
-        if(input$prepareRb) {
-            shinyjs::show("addSubTypeTCGA")
-        } else {
-            shinyjs::hide("addSubTypeTCGA")
-        }
-    })
 
-    observeEvent(input$prepareRb, {
-        if(input$prepareRb) {
-            shinyjs::show("addSubTypeTCGA")
-        } else {
-            shinyjs::hide("addSubTypeTCGA")
-        }
-    })
-    observeEvent(input$tcgaExpFilter, {
-        exp <- isolate({input$tcgaExpFilter})
-
-        if(any(sapply(exp, function(x) {grepl("RNASeqV2",x,ignore.case = TRUE)}))) {
-            shinyjs::show("tcgaFrnaseqv2typeFilter")
-        } else {
-            shinyjs::hide("tcgaFrnaseqv2typeFilter")
-        }
-
-        if("IlluminaHiSeq_RNASeq" %in% exp) {
-            shinyjs::show("tcgaFrnaseqtypeFilter")
-        } else {
-            shinyjs::hide("tcgaFrnaseqtypeFilter")
-        }
-        if("Genome_Wide_SNP_6" %in% exp) {
-            shinyjs::show("tcgaFgwstypeFilter")
-        } else {
-            shinyjs::hide("tcgaFgwstypeFilter")
-        }
-    })
     #----------------------- END controlling show/hide states -----------------
     observeEvent(input$tcgaSearchBt, {
         updateCollapse(session, "collapseTCGA", open = "TCGA search results")
@@ -335,7 +268,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             file.type <- isolate({input$tcgaFileTypeFilter})
             if(str_length(file.type) == 0) file.type <- FALSE
 
-            # access
+            # access: we will only work with open access data
             #access <- isolate({input$tcgaAcessFilter})
             #if(str_length(access) == 0) access <- FALSE
             access <- "open"
@@ -413,6 +346,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                             content = "There are more than one file for the same case.", append = FALSE)
 
             #------------------- STEP 2: Clinical features-------------------------
+            # In this step we will download indexed clinical data
+            # Get the barcodes that repects user inputs
+            # And select only the results that respects it
+
             clinical <- GDCquery_clinic(tumor)
             stage <- isolate({input$tcgaClinicalTumorStageFilter})
             stage.idx <- NA
@@ -445,20 +382,29 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             # filter samples
 
             #------------------- STEP 3: Plot-------------------------
+            # Plot informations to help the user visualize the data that will
+            # be downloaded
 
-
-            data.type <- gvisPieChart(as.data.frame(table(results$data_type)),  options=list( title="Data type"))
-            tissue.definition <- gvisPieChart(as.data.frame(table(results$tissue.definition)),  options=list( title="Tissue definition"))
-            experimental_strategy  <- gvisPieChart(as.data.frame(table(results$experimental_strategy )),  options=list( title="Experimental strategy"))
+            data.type <- gvisPieChart(as.data.frame(table(results$data_type)),
+                                      options=list( title="Data type"))
+            tissue.definition <- gvisPieChart(as.data.frame(table(results$tissue.definition)),
+                                              options=list( title="Tissue definition"))
+            experimental_strategy  <- gvisPieChart(as.data.frame(table(results$experimental_strategy )),
+                                                   options=list( title="Experimental strategy"))
             analysis.workflow_type <- gvisPieChart(as.data.frame(table(paste0(
                 results$analysis$workflow_type,"(", results$analysis$workflow_link, ")"))),
                 options=list( title="Workflow type"))
-            data.category <- gvisPieChart(as.data.frame(table(results$data_category)),  options=list( title="Data category"))
+            data.category <- gvisPieChart(as.data.frame(table(results$data_category)),
+                                          options=list( title="Data category"))
 
-            gender.plot <- gvisPieChart(as.data.frame(table(clinical$gender)),  options=list( title="Gender"))
-            race.plot <- gvisPieChart(as.data.frame(table(clinical$race)),  options=list( title="Race"))
-            vital.status.plot <- gvisPieChart(as.data.frame(table(clinical$vital_status)),  options=list( title="Vital status"))
-            tumor.stage.plot <- gvisPieChart(as.data.frame(table(clinical$tumor_stage)),  options=list( title="Tumor stage"))
+            gender.plot <- gvisPieChart(as.data.frame(table(clinical$gender)),
+                                        options=list( title = "Gender"))
+            race.plot <- gvisPieChart(as.data.frame(table(clinical$race)),
+                                      options=list( title = "Race"))
+            vital.status.plot <- gvisPieChart(as.data.frame(table(clinical$vital_status)),
+                                              options=list( title="Vital status"))
+            tumor.stage.plot <- gvisPieChart(as.data.frame(table(clinical$tumor_stage)),
+                                             options=list( title="Tumor stage"))
 
             clinical.plots <- gvisMerge(gvisMerge(tumor.stage.plot,vital.status.plot , horizontal = TRUE),
                                         gvisMerge(race.plot, gender.plot, horizontal = TRUE))
@@ -475,235 +421,27 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         })
     })
 
-    observeEvent(input$tcgaDownloadBt,{
-
-        # Files types
-        ftype <- NULL
-        rnaseqFtype <- isolate({input$tcgaFrnaseqtypeFilter})
-        rnaseqv2Ftype <- isolate({input$tcgaFrnaseqv2typeFilter})
-        gwsFtype <- isolate({input$tcgaFgwstypeFilter})
+    observeEvent(input$tcgaPrepareBt,{
 
         # Dir to save the files
         getPath <- parseDirPath(volumes, input$workingDir)
         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
-        samplesType <- input$tcgasamplestypeFilter
-
 
         withProgress(message = 'Download in progress',
                      detail = 'This may take a while...', value = 0, {
-                         # Decision, if no rows selected download all
-                         if(!is.null(input$allRows)) {
-                             df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
-                             x <- TCGAquery()
-                             x <- x[x$name %in% df$name,]
-
-                         } else {
-
-                             tumor <- isolate({input$tcgaTumorFilter})
-                             platform <- isolate({input$tcgaExpFilter})
-                             level <- isolate({input$tcgaLevelFilter})
-
-                             x <- data.frame()
-                             if(length(level) > 0){
-                                 for(i in level){
-                                     x <- rbind(x,
-                                                TCGAquery(tumor = tumor,
-                                                          platform = platform,
-                                                          level = i))
-                                 }
-                             } else {
-                                 x <- TCGAquery(tumor = tumor,
-                                                platform = platform,
-                                                level = level)
-                             }
-                         }
-
-                         # handling samples input
-                         # there are two inputs: type, list of barcodes
-                         # if types is selected ignore barcodes,
-                         # if barcodes is not null ignore selected
-                         text.samples <- isolate({input$tcgaDownloadBarcode})
-                         samples <- NULL
-                         downloadType <- isolate({input$tcgaDownloadTypeRb})
-
-                         # If matched platforms get the barcodes that are only in both platforms
-                         if(isolate({input$tcgaMatchedPlatform})){
-                             samples <- getMatchedPlatform(x)
-                         }
-
-                         if(downloadType == "barcode"){
-                             # This will ignore the other selections the user should
-                             # do it manually.
-                             if(!is.null(text.samples)){
-                                 samples <- parse.textarea.input(text.samples)
-                             }
-
-                         } else if(downloadType == "type"){
-
-                             if(isolate({input$tcgaMatchedType})){
-                                 if(is.null(samples)){
-                                     samples <- getMatchedType(unlist(str_split(x$barcode,",")),samplesType)
-                                 } else {
-                                     samples <- getMatchedType(samples,samplesType)
-                                     print(samplesType)
-                                 }
-                             } else {
-                                 if(is.null(samples)){
-                                     samples <- unlist(lapply(samplesType,function(type){
-                                         s <- unlist(str_split(x$barcode,","))
-                                         s[grep(type,substr(s,14,15))]
-                                     }))
-                                 } else {
-                                     samples <- unlist(lapply(samplesType,function(type){
-                                         samples[grep(type,substr(samples,14,15))]
-                                     }))
-                                 }
-                             }
-                         }
-
-                         if(!is.null(samples)){
-                             # filter query
-                             idx <- unique(unlist(lapply(samples,function(y) {grep(y,x$barcode)})))
-                             x <- x[idx,]
-                         }
-                         if(nrow(x) > 0){
-                             for (i in 1:nrow(x)) {
-                                 incProgress(1/nrow(x))
-                                 aux <- x[i,]
-                                 ftype <- NULL
-                                 if (grepl("RNASeqV2",aux$Platform,ignore.case = T)) ftype <- rnaseqv2Ftype
-                                 if (aux$Platform == "IlluminaHiSeq_RNASeq") ftype <- rnaseqFtype
-                                 if (aux$Platform == "Genome_Wide_SNP_6") ftype <- gwsFtype
-
-                                 TCGAdownload(aux, path = getPath,type = ftype,samples = samples)
-                             }
+                            GDCdownload(query = query, directory = getPath)
+                         GDCprepare(query, save = TRUE,
+                                    save.filename = ,
+                                    summarizedExperiment = isolate({input$prepareRb}),
+                                    directory = getPath)
                              createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Download completed", style =  "success",
                                          content =  paste0("Saved in: ", getPath), append = FALSE)
-                         } else {
-                             # No samples found for this search
-                             createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
-                                         content =  "There are no files for these parameters", append = FALSE)
+                             closeAlert(session, "tcgaAlert")
+                             createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
+                                         content =  paste0("Saved in: ", getPath,"<br><ul>", paste(all.saved, collapse = ""),"</ul>"), append = FALSE)
 
-                         }})
+                         })
     })
-    # TCGAPrepare
-    observeEvent(input$tcgaPrepareBt, {
-
-        # read the data from the downloaded path
-        # prepare it
-
-        # Files types
-        ftype <- NULL
-        rnaseqFtype <- isolate({input$tcgaFrnaseqtypeFilter})
-        rnaseqv2Ftype <- isolate({input$tcgaFrnaseqv2typeFilter})
-        gwsFtype <- isolate({input$tcgaFgwstypeFilter})
-
-        # Dir to saved the files
-        getPath <- parseDirPath(volumes, input$workingDir)
-        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
-        filename <- file.path(getPath,isolate({input$tcgafilename}))
-
-        samplesType <- input$tcgasamplestypeFilter
-
-        withProgress( message = 'Prepare in progress',
-                      detail = 'This may take a while...', value = 0, {
-                          if(!is.null(input$allRows)) {
-                              df <- data.frame(name = input$allRows[seq(6, length(input$allRows), 7)])
-                              query <- TCGAquery()
-                              query <- query[query$name %in% df$name,]
-
-                          } else {
-
-                              tumor <- isolate({input$tcgaTumorFilter})
-                              platform <- isolate({input$tcgaExpFilter})
-                              level <- isolate({input$tcgaLevelFilter})
-
-                              query <- data.frame()
-                              if(length(level) > 0){
-                                  for(i in level){
-                                      query <- rbind(query,
-                                                     TCGAquery(tumor = tumor,
-                                                               platform = platform,
-                                                               level = i))
-                                  }
-                              } else {
-                                  query <- TCGAquery(tumor = tumor,
-                                                     platform = platform,
-                                                     level = level)
-                              }
-                          }
-                          all.saved <- c() # save the name of all prepared files for message
-                          for(plat in unique(query$Platform)){
-                              fname <- paste0(paste(filename, tumor, plat, sep = "_"),".rda")
-                              x <- query[query$Platform == plat,]
-                              ftype <- NULL
-                              if ("IlluminaHiSeq_RNASeqV2" == plat) ftype <- rnaseqv2Ftype
-                              if ("IlluminaHiSeq_RNASeq"  == plat) ftype <- rnaseqFtype
-                              if ("Genome_Wide_SNP_6" == plat) ftype <- gwsFtype
-
-                              # handling samples input
-                              # there are two inputs: type, list of barcodes
-                              # if types is selected ignore barcodes,
-                              # if barcodes is not null ignore selected
-                              text.samples <- isolate({input$tcgaDownloadBarcode})
-                              samples <- NULL
-                              downloadType <- isolate({input$tcgaDownloadTypeRb})
-
-                              # If matched platforms get the barcodes that are only in both platforms
-                              if(isolate({input$tcgaMatchedPlatform})){
-                                  samples <- getMatchedPlatform(query)
-                              }
-
-                              if(downloadType == "barcode"){
-                                  # This will ignore the other selections the user should
-                                  # do it manually.
-                                  if(!is.null(text.samples)){
-                                      samples <- parse.textarea.input(text.samples)
-                                  }
-
-                              } else if(downloadType == "type"){
-
-                                  if(isolate({input$tcgaMatchedType})){
-                                      if(is.null(samples)){
-                                          samples <- getMatchedType(unlist(str_split(x$barcode,",")),samplesType)
-                                      } else {
-                                          samples <- getMatchedType(samples,samplesType)
-                                      }
-                                  } else {
-                                      if(is.null(samples)){
-                                          samples <- unlist(lapply(samplesType,function(type){
-                                              s <- unlist(str_split(x$barcode,","))
-                                              s[grep(type,substr(s,14,15))]
-                                          }))
-                                      } else {
-                                          samples <- unlist(lapply(samplesType,function(type){
-                                              samples[grep(type,substr(samples,14,15))]
-                                          }))
-                                      }
-                                  }
-                              }
-
-                              if(!is.null(samples)){
-                                  # filter query
-                                  idx <- unique(unlist(lapply(samples,function(y) {grep(y,x$barcode)})))
-                                  x <- x[idx,]
-                              }
-                              all.saved <- paste0(all.saved,"<li>",fname,"</li>")
-                              trash <- TCGAprepare(x,dir = getPath,
-                                                   summarizedExperiment = isolate({as.logical(input$prepareRb)}),
-                                                   save = TRUE,
-                                                   type = ftype,
-                                                   filename = fname,
-                                                   samples = samples,
-                                                   add.clinical = isolate({input$addClinicalTCGA}),
-                                                   add.subtype = isolate({input$addSubTypeTCGA}))
-                          }
-                      })
-        closeAlert(session, "tcgaAlert")
-        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
-                    content =  paste0("Saved in: ", getPath,"<br><ul>", paste(all.saved, collapse = ""),"</ul>"), append = FALSE)
-    })
-
 
     # Subtype
 
