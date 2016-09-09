@@ -203,7 +203,7 @@ body <-  dashboardBody(
                                bsTooltip("tcgaDownloadBarcode", "Barcodes separeted by (;), (,) or (new line)", "left"),
                                useShinyjs(),
                                h5(strong("Barcode")),
-                               inputTextarea('tcgaDownloadBarcode', '', 2, 80),
+                               inputTextarea('tcgaDownloadBarcode', '', 2, 60),
                                box(title = "Clinical filters",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    selectizeInput('tcgaClinicalGenderFilter',
