@@ -2201,7 +2201,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                          class(df)), append = FALSE)
             return(NULL)
         }
-        cols <- c("days_to_death","days_to_last_followup","vital_status")
+        cols <- c("days_to_death","days_to_last_follow_up","vital_status")
         if(!(all(cols %in% colnames(df)))){
             createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
                         content = paste0("Sorry, but I'm expecting columns: ",paste(cols,collapse = ", ")), append = FALSE)
