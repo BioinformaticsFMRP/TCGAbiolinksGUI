@@ -18,24 +18,24 @@ options(shiny.maxRequestSize=-1)
 
 
 getDataCategory <- function(legacy){
-    data.category.hamonirzed <- c("Transcriptome Profiling",
-                                  "Copy Number Variation",
-                                  "Simple Nucleotide Variation",
-                                  # "Raw Sequencing Data", # This is controlled
-                                  "Biospecimen",
-                                  "Clinical")
+    data.category.hamonirzed <- sort(c("Transcriptome Profiling",
+                                       "Copy Number Variation",
+                                       "Simple Nucleotide Variation",
+                                       # "Raw Sequencing Data", # This is controlled
+                                       "Biospecimen",
+                                       "Clinical"))
 
-    data.category.legacy <- c("Copy number variation",
-                              "Simple Nucleotide Variation",
-                              "Raw Sequencing Data",
-                              "Biospecimen",
-                              "Clinical",
-                              "Protein expression",
-                              "Gene expression",
-                              "DNA methylation",
-                              "Raw Microarray Data",
-                              # "Structural Rearrangement", # Controlled
-                              "Other")
+    data.category.legacy <- sort(c("Copy number variation",
+                                   "Simple Nucleotide Variation",
+                                   "Raw Sequencing Data",
+                                   "Biospecimen",
+                                   "Clinical",
+                                   "Protein expression",
+                                   "Gene expression",
+                                   "DNA methylation",
+                                   "Raw Microarray Data",
+                                   # "Structural Rearrangement", # Controlled
+                                   "Other"))
     if(legacy) return(data.category.legacy)
     return(data.category.hamonirzed)
 }
