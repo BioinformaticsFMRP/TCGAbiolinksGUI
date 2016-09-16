@@ -238,6 +238,38 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     shinyjs::hide("greetbox-outer")
 
 
+    getClinical.info <-  reactive({
+        project <- input$tcgaProjectFilter
+        baseURL <- "https://gdc-api.nci.nih.gov/cases/?"
+        options.pretty <- "pretty=true"
+        options.expand <- "expand=diagnoses,demographic"
+        option.size <- paste0("size=", TCGAbiolinks:::getNbCases(project, "Clinical"))
+        files.data_category <- "Clinical"
+        options.filter <- paste0("filters=", URLencode("{\"op\":\"and\",\"content\":[{\"op\":\"in\",\"content\":{\"field\":\"cases.project.project_id\",\"value\":[\""),
+                                 project, URLencode("\"]}},{\"op\":\"in\",\"content\":{\"field\":\"files.data_category\",\"value\":[\""),
+                                 files.data_category, URLencode("\"]}}]}"))
+        print(paste0(baseURL, paste(options.pretty, options.expand,
+                                    option.size, options.filter, sep = "&")))
+
+        withProgress(message = 'Loading clinical data',
+                     detail = 'This may take a while...', value = 0, {
+                         json <- jsonlite::fromJSON(paste0(baseURL, paste(options.pretty, options.expand,
+                                                                          option.size, options.filter, sep = "&")), simplifyDataFrame = TRUE)
+                     })
+        results <- json$data$hits
+        diagnoses <- rbindlist(results$diagnoses, fill = TRUE)
+        diagnoses$submitter_id <- gsub("_diagnosis", "", diagnoses$submitter_id)
+        results$demographic$submitter_id <- gsub("_demographic",
+                                                 "", results$demographic$submitter_id)
+        df <- merge(diagnoses, results$demographic, by = "submitter_id",
+                    all = TRUE)
+        df$bcr_patient_barcode <- df$submitter_id
+        df$disease <- gsub("TCGA-|TARGET-", "", project)
+        setDF(df)
+        return(df)
+    })
+
+
     #-------------------------------------------------------------------------
     #                            TCGA Search
     #-------------------------------------------------------------------------
@@ -251,7 +283,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             shinyjs::show("tcgaClinicalFilter")
         }
     })
-    query.result <- reactive({ #------------------- STEP 1: Argument-------------------------
+    query.result <-  reactive({
+        input$tcgaSearchBt # the trigger
+        #------------------- STEP 1: Argument-------------------------
         # Set arguments for GDCquery, if value is empty we will set it to FALSE (same as empty)
         tumor <- isolate({input$tcgaProjectFilter})
         data.category <- isolate({input$tcgaDataCategoryFilter})
@@ -309,26 +343,28 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             return(NULL)
         }
 
+        withProgress(message = 'Accessing GDC',
+                     detail = 'This may take a while...', value = 0, {
 
-        query = tryCatch({
-            query <- GDCquery(project = tumor,
-                              data.category = data.category,
-                              workflow.type = workflow.type,
-                              legacy = legacy,
-                              platform = platform,
-                              file.type = file.type,
-                              access = access,
-                              barcode = barcode,
-                              experimental.strategy = experimental.strategy,
-                              sample.type = sample.type,
-                              data.type = data.type)
-        }, error = function(e) {
-            createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
-                        content = "No results for this query", append = FALSE)
-            return(NULL)
-        })
+                         query = tryCatch({
+                             query <- GDCquery(project = tumor,
+                                               data.category = data.category,
+                                               workflow.type = workflow.type,
+                                               legacy = legacy,
+                                               platform = platform,
+                                               file.type = file.type,
+                                               access = access,
+                                               barcode = barcode,
+                                               experimental.strategy = experimental.strategy,
+                                               sample.type = sample.type,
+                                               data.type = data.type)
+                         }, error = function(e) {
+                             createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                                         content = "No results for this query", append = FALSE)
+                             return(NULL)
+                         })
+                     })
 
-        print(is.null(query))
         if(is.null(query)) return(NULL)
         not.found <- c()
         tbl <- data.frame()
@@ -340,7 +376,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         # Get the barcodes that repects user inputs
         # And select only the results that respects it
 
-        clinical <- GDCquery_clinic(tumor)
+        clinical <- getClinical.info()
+
         stage <- isolate({input$tcgaClinicalTumorStageFilter})
         stage.idx <- NA
         if(!is.null(stage) & all(str_length(stage) > 0)){
@@ -383,9 +420,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         updateCollapse(session, "collapseTCGA", open = "TCGA search results")
         output$tcgaview <- renderGvis({
             closeAlert(session,"tcgaAlert")
-            print(query.result())
-            results <- query.result()$query$results[[1]]
-            clinical <- query.result()$clinical
+            results <- query.result()[[1]]$results[[1]]
+            print(dim(results))
+            clinical <- query.result()[[2]]
             if(any(duplicated(results$cases)))
                 createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
                             content = "There are more than one file for the same case.", append = FALSE)
@@ -393,6 +430,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             # Plot informations to help the user visualize the data that will
             # be downloaded
             if(is.null(results)) return(NULL)
+            legacy <- isolate({as.logical(input$tcgaDatabase)})
+
             data.type <- gvisPieChart(as.data.frame(table(results$data_type)),
                                       options=list( title="Data type"))
             tissue.definition <- gvisPieChart(as.data.frame(table(results$tissue.definition)),
@@ -432,7 +471,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$tcgaPrepareBt,{
         closeAlert(session,"tcgaAlert")
 
-        query <- query.result()
+        query <- query.result()[[1]]
+        results <- query$results[[1]]
         # Dir to save the files
         getPath <- parseDirPath(volumes, input$workingDir)
         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
@@ -447,7 +487,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              end <- ifelse(((i + 1) * step) > n, n,((i + 1) * step))
                              query.aux$results[[1]] <- query.aux$results[[1]][((i * step) + 1):end,]
                              GDCdownload(query.aux, method = "api",directory = getPath)
-                             incProgress(1/step, detail = paste("Download part", i, " of ",(n/step)))
+                             incProgress(1/step, detail = paste("Download part", i, " of ",ceiling(n/step)))
                          }
                          # just to be sure it was all downloaded
                          GDCdownload(query, method = "api", directory = getPath)
@@ -978,9 +1018,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
 
     observe({
-        print(input$tcgaProjectFilter)
+        input$tcgaProjectFilter
         tryCatch({
-            clin <- GDCquery_clinic(input$tcgaProjectFilter)
+            clin <- getClinical.info()
             updateSelectizeInput(session, 'tcgaClinicalGenderFilter', choices =  unique(clin$gender), server = TRUE)
             updateSelectizeInput(session, 'tcgaClinicalVitalStatusFilter', choices =  unique(clin$vital_status), server = TRUE)
             updateSelectizeInput(session, 'tcgaClinicalRaceFilter', choices =  unique(clin$race), server = TRUE)
