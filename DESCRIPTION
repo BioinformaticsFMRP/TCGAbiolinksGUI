@@ -9,7 +9,7 @@ Description: TCGAbiolinksGUI: A Graphical User Interface for integrative analysi
 License: GPL (>= 3)
 Depends:
     R (>= 3.2),
-    shinydashboard (>= 0.4.0)
+    shinydashboard (>= 0.5.2)
 Suggests:
     testthat,
     knitr,
@@ -19,7 +19,7 @@ Suggests:
     xml2,
     BiocStyle
 Imports:
-    shiny (>= 0.13.1.9002),
+    shiny (>= 0.14),
     downloader (>= 0.4),
     grid,
     googleVis,
@@ -27,14 +27,14 @@ Imports:
     stringr (>= 1.0),
     SummarizedExperiment,
     ggrepel,
-    shinyFiles (>= 0.6.0),
+    shinyFiles (>= 0.6.2),
     ggplot2  (>= 2.1.0),
     pathview,
     ELMER (>= 1.2.1),
     clusterProfiler,
     parallel,
     TCGAbiolinks (>= 2.1.6),
-    shinyjs (>= 0.5.2),
+    shinyjs (>= 0.7),
     colourpicker,
     shinyBS  (>= 0.62)
 VignetteBuilder: knitr
