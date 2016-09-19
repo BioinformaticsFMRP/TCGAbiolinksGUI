@@ -1198,9 +1198,15 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             if(isolate({input$volcanoInputRb})=="met"){
 
                 diffcol <- paste("diffmean", group1, group2,sep = ".")
-                if(! diffcol %in% colnames(data)) diffcol <- gsub("_",".",paste("diffmean", group1, group2,sep = "."))
+                if(!(diffcol %in% colnames(data))) {
+                    idx <- which(gsub("_",".",paste("diffmean", group1, group2,sep = ".")) == colnames(data))
+                    diffcol <- colnames(data)[idx]
+                }
                 pcol <- paste("p.value.adj", group1, group2,sep = ".")
-                if(! pcol %in% colnames(data)) pcol <- gsub("_",".",paste("p.value.adj", group1, group2,sep = "."))
+                if(! pcol %in% colnames(data)) {
+                    idx <- which(gsub("_",".",paste("p.value.adj", group1, group2,sep = ".")) == colnames(data))
+                    pcol <- colnames(data)[idx]
+                }
                 if(!(pcol %in% colnames(data) & diffcol %in% colnames(data) )) {
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "Error", style =  "success",
                                 content = "We couldn't find the right columns in the data", append = FALSE)
@@ -1463,7 +1469,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             group1 <- groups[i,1]
             group2 <- groups[i,2]
             results <- NULL
-            withProgress(message = 'DMR analysis in progress (this might take from hours up to days)',
+            withProgress(message = 'DMR analysis in progress',
                          detail = paste(group1," vs ", group2), value = 0, {
                              message <- "<br>Saving the results also in a csv file:<ul>"
                              step <- 1000
@@ -1481,7 +1487,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                                          cores = isolate({input$dmrcores}))))
                                  incProgress(1/ceiling(n/step), detail = paste("Completed ", j + 1, " of ",ceiling(n/step)))
                              }
-                             results <- results[,!(colnames(results) %in% values(se))]
+                             results <- results[,!(colnames(results) %in% colnames(values(se)))]
                              values(se) <- cbind(values(se),results)
                              se <- TCGAanalyze_DMR(data = se,
                                                    groupCol = isolate({input$dmrgroupCol}),
