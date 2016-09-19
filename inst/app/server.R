@@ -1482,6 +1482,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                                          group1 = group1,
                                                                          group2 = group2,
                                                                          plot.filename = FALSE,
+                                                                         save = FALSE,
                                                                          p.cut = isolate({input$dmrpvalue}),
                                                                          diffmean.cut = isolate({input$dmrthrsld}),
                                                                          cores = isolate({input$dmrcores}))))
@@ -1493,6 +1494,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                    groupCol = isolate({input$dmrgroupCol}),
                                                    group1 = group1,
                                                    group2 = group2,
+                                                   save = TRUE,
                                                    plot.filename = paste0("DMR_volcano_",group1,"_vs_",group2,".pdf"),
                                                    p.cut = isolate({input$dmrpvalue}),
                                                    diffmean.cut = isolate({input$dmrthrsld}),
