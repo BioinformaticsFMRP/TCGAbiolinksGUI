@@ -824,17 +824,50 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
         return(se)
     }
-    mut <- function(){
+    mut <-  reactive({
         #inFile <- input$maffile
         #if (is.null(inFile)) return(NULL)
         inFile <- parseFilePaths(volumes, input$maffile)
         if (nrow(inFile) == 0) return(NULL)
         file <- as.character(inFile$datapath)
-        ret <- read.table(file, fill = TRUE,
-                          comment.char = "#", header = TRUE, sep = "\t", quote='')
+        withProgress(message = 'Reading MAF file',
+                     detail = 'This may take a while...', value = 0, {
+                         ret <- read_tsv(file,
+                                         comment = "#",
+                                         col_types = cols(
+                                             Entrez_Gene_Id = col_integer(),
+                                             Start_Position = col_integer(),
+                                             End_Position = col_integer(),
+                                             t_depth = col_integer(),
+                                             t_ref_count = col_integer(),
+                                             t_alt_count = col_integer(),
+                                             n_depth = col_integer(),
+                                             ALLELE_NUM = col_integer(),
+                                             TRANSCRIPT_STRAND = col_integer(),
+                                             PICK = col_integer(),
+                                             TSL = col_integer(),
+                                             HGVS_OFFSET = col_integer(),
+                                             MINIMISED = col_integer()))
+                         if(ncol(ret) == 1) ret <- read_csv(file,
+                                                            comment = "#",
+                                                            col_types = cols(
+                                                                Entrez_Gene_Id = col_integer(),
+                                                                Start_Position = col_integer(),
+                                                                End_Position = col_integer(),
+                                                                t_depth = col_integer(),
+                                                                t_ref_count = col_integer(),
+                                                                t_alt_count = col_integer(),
+                                                                n_depth = col_integer(),
+                                                                ALLELE_NUM = col_integer(),
+                                                                TRANSCRIPT_STRAND = col_integer(),
+                                                                PICK = col_integer(),
+                                                                TSL = col_integer(),
+                                                                HGVS_OFFSET = col_integer(),
+                                                                MINIMISED = col_integer()))
+                         incProgress(1, detail = paste("Done"))
+                     })
         return(ret)
-
-    }
+    })
 
     genesByFile <- function(){
         inFile <- input$oncoGenesFiles
@@ -903,13 +936,20 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     genes <-  genes[genes %in% mut$Hugo_Symbol]
                 }
             }
+
             if(is.null(genes)){
                 createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
                             content = "Please select the genes (max 50)", append = TRUE)
+                return(NULL)
             } else if( length(genes) > 200){
                 createAlert(session, "oncomessage", "oncoAlert", title = "Errors", style =  "danger",
                             content = paste0("The limit of the genes is 200 \n You gave me: ",length(genes)), append = TRUE)
                 return(NULL)
+            } else if(all(genes == "")){
+                createAlert(session, "oncomessage", "oncoAlert", title = "Errors", style =  "danger",
+                            content = paste0("The limit of the genes is 200 \n You gave me: ",length(genes)), append = TRUE)
+                return(NULL)
+
             } else if(length(not.found) > 0){
                 createAlert(session, "oncomessage", "oncoAlert", title = "Errors", style =  "danger",
                             content = msg, append = TRUE)
