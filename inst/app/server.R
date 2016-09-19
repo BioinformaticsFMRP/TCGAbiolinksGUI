@@ -425,7 +425,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         output$tcgaview <- renderGvis({
             closeAlert(session,"tcgaAlert")
             results <- query.result()[[1]]$results[[1]]
-            print(dim(results))
             clinical <- query.result()[[2]]
             if(any(duplicated(results$cases)))
                 createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
@@ -1161,7 +1160,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             group1 <- file[4]
             group2 <- file[5]
             pcut <- file[7]
-            print(pcut)
             meancut <- gsub(".csv","",file[9])
             updateNumericInput(session, "volcanoxcutMet", value = meancut)
             updateNumericInput(session, "volcanoxcutExp", value = meancut)
