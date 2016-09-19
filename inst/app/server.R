@@ -1199,12 +1199,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
                 diffcol <- paste("diffmean", group1, group2,sep = ".")
                 if(!(diffcol %in% colnames(data))) {
-                    idx <- which(gsub("_",".",paste("diffmean", group1, group2,sep = ".")) == colnames(data))
+                    idx <- which(gsub("_",".",paste("diffmean", group1, group2,sep = ".")) == gsub("_",".",colnames(data)))
                     diffcol <- colnames(data)[idx]
                 }
                 pcol <- paste("p.value.adj", group1, group2,sep = ".")
                 if(! pcol %in% colnames(data)) {
-                    idx <- which(gsub("_",".",paste("p.value.adj", group1, group2,sep = ".")) == colnames(data))
+                    idx <- which(gsub("_",".",paste("p.value.adj", group1, group2,sep = ".")) == gsub("_",".",colnames(data)))
                     pcol <- colnames(data)[idx]
                 }
                 if(!(pcol %in% colnames(data) & diffcol %in% colnames(data) )) {
