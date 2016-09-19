@@ -2,7 +2,6 @@ library(shiny)
 library(shinyFiles)
 library(SummarizedExperiment)
 library(TCGAbiolinks)
-library(UpSetR)
 library(ggplot2)
 library(shinyBS)
 library(stringr)
@@ -487,7 +486,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              end <- ifelse(((i + 1) * step) > n, n,((i + 1) * step))
                              query.aux$results[[1]] <- query.aux$results[[1]][((i * step) + 1):end,]
                              GDCdownload(query.aux, method = "api",directory = getPath)
-                             incProgress(1/step, detail = paste("Download part", i, " of ",ceiling(n/step)))
+                             incProgress(1/ceiling(n/step), detail = paste("Download part", i, " of ",ceiling(n/step)))
                          }
                          # just to be sure it was all downloaded
                          GDCdownload(query, method = "api", directory = getPath)

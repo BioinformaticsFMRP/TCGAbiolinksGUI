@@ -4,7 +4,7 @@
 #'    TCGAbiolinksGUI()
 #' @name TCGAbiolinksGUI
 #' @import shiny shinyFiles shinydashboard downloader colourpicker
-#' TCGAbiolinks UpSetR ggplot2 shinyBS stringr ggrepel pathview ELMER grid
+#' TCGAbiolinks ggplot2 shinyBS stringr ggrepel pathview ELMER grid
 #' clusterProfiler parallel readr data.table
 #' @importFrom SummarizedExperiment SummarizedExperiment values rowRanges colData<- assay colData
 #' @importFrom shinyjs hide show toggle useShinyjs

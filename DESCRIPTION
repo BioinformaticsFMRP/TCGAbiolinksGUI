@@ -28,7 +28,6 @@ Imports:
     SummarizedExperiment,
     ggrepel,
     shinyFiles (>= 0.6.0),
-    UpSetR,
     ggplot2  (>= 2.1.0),
     pathview,
     ELMER (>= 1.2.1),
