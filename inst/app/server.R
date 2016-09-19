@@ -357,6 +357,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                experimental.strategy = experimental.strategy,
                                                sample.type = sample.type,
                                                data.type = data.type)
+                             incProgress(1, detail = "Completed")
+                             return(query)
                          }, error = function(e) {
                              createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
                                          content = "No results for this query", append = FALSE)
@@ -364,7 +366,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          })
                      })
 
-        if(is.null(query)) return(NULL)
+        if(is.null(query)) {
+            return(NULL)
+        }
         not.found <- c()
         tbl <- data.frame()
         results <- query$results[[1]]
@@ -410,12 +414,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
     #----------------------- END controlling show/hide states -----------------
     observeEvent(input$tcgaSearchBt, {
-
         updateTextInput(session, "tcgafilename", label =  "File name",
                         value = paste0(
                             paste(isolate({input$tcgaProjectFilter}),
                                   gsub(" ","_",isolate({input$tcgaDataCategoryFilter})),
-                                  gsub(" ","_",isolate({input$tcgaDataTypeFilter})), sep = "_"),".rda"))
+                                  gsub(" ","_",isolate({input$tcgaDataTypeFilter})),
+                                  ifelse(isolate({input$tcgaDatabase}),"hg19","hg38"),
+                                  sep = "_"),".rda"))
         updateCollapse(session, "collapseTCGA", open = "TCGA search results")
         output$tcgaview <- renderGvis({
             closeAlert(session,"tcgaAlert")
@@ -479,25 +484,36 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         withProgress(message = 'Download in progress',
                      detail = 'This may take a while...', value = 0, {
-                         n <- nrow(results)
-                         step <- 20
-                         for(i in 0:(n/step)){
-                             query.aux <- query
-                             end <- ifelse(((i + 1) * step) > n, n,((i + 1) * step))
-                             query.aux$results[[1]] <- query.aux$results[[1]][((i * step) + 1):end,]
-                             GDCdownload(query.aux, method = "api",directory = getPath)
-                             incProgress(1/ceiling(n/step), detail = paste("Download part", i, " of ",ceiling(n/step)))
-                         }
-                         # just to be sure it was all downloaded
-                         GDCdownload(query, method = "api", directory = getPath)
-
+                         trash = tryCatch({
+                             n <- nrow(results)
+                             step <- 20
+                             for(i in 0:(n/step)){
+                                 query.aux <- query
+                                 end <- ifelse(((i + 1) * step) > n, n,((i + 1) * step))
+                                 query.aux$results[[1]] <- query.aux$results[[1]][((i * step) + 1):end,]
+                                 GDCdownload(query.aux, method = "api",directory = getPath)
+                                 incProgress(1/ceiling(n/step), detail = paste("Completed ", i + 1, " of ",ceiling(n/step)))
+                             }
+                             # just to be sure it was all downloaded
+                             GDCdownload(query, method = "api", directory = getPath)
+                         }, error = function(e) {
+                             createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                                         content = "Error while downloading the files", append = FALSE)
+                             return(NULL)
+                         })
                      })
         withProgress(message = 'Prepare progress',
                      detail = 'This may take a while...', value = 0, {
-                         trash <- GDCprepare(query, save = TRUE,
-                                             save.filename = filename,
-                                             summarizedExperiment = isolate({input$prepareRb}),
-                                             directory = getPath)
+                         trash = tryCatch({
+                             trash <- GDCprepare(query, save = TRUE,
+                                                 save.filename = filename,
+                                                 summarizedExperiment = isolate({input$prepareRb}),
+                                                 directory = getPath)
+                         }, error = function(e) {
+                             createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                                         content = "Error while preparing the files", append = FALSE)
+                             return(NULL)
+                         })
                          createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
                                      content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = ""),"</ul>"), append = FALSE)
                      })
@@ -612,7 +628,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             getPath <- parseDirPath(volumes, input$workingDir)
             if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
 
-            withProgress( message = 'Search in progress',
+            withProgress( message = 'Download in progress',
                           detail = 'This may take a while...', value = 0, {
                               result = tryCatch({
                                   if(isolate({input$clinicalIndexed})){
@@ -620,7 +636,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                   } else {
                                       type <- "Clinical"
                                       query <- GDCquery(project = project, data.category = type)
-                                      incProgress(1/2, detail = paste("Downloading data"))
+
                                       result = tryCatch({
                                           GDCdownload(query, directory = getPath)
                                       } , error = function(e) {
@@ -628,9 +644,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                       content = "There was a problem to download the data. Please try again later.", append = FALSE)
 
                                       })
+                                      incProgress(1/2, detail = paste("Reading XML files"))
                                       clinical <- GDCprepare_clinic(query,parser, directory = getPath)
                                       tbl <- rbind(tbl, clinical)
                                   }
+                                  incProgress(1, detail = "Download completed")
+                                  return(tbl)
                               }, error = function(e) {
                                   createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "warning",
                                               content = "Sorry, we could not find the clinical information for your query.", append = FALSE)
@@ -704,6 +723,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             withProgress(message = 'Download in progress',
                          detail = 'This may take a while...', value = 0, {
                              tbl <- GDCquery_Maf(tumor, directory = getPath, save.csv =  isolate({input$saveMafcsv}))
+                             incProgress(1, detail = "Download completed")
                          })
             if(is.null(tbl)){
                 createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "No results found", style =  "warning",
@@ -722,7 +742,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             maf <- maf[grepl(tumor,maf$filename),]
             fout <- file.path(getPath, maf$filename)
             closeAlert(session, "tcgaMutationAlert")
-            if( isolate({input$saveMafcsv})) {
+            if(isolate({input$saveMafcsv})) {
                 createAlert(session, "tcgaMutationmessage", "tcgaMutationAlert", title = "Download completed", style = "success",
                             content =  paste0("Saved file: <br><ul>",fout,"</ul><ul>", gsub(".gz",".csv",fout), "</ul>"), append = FALSE)
             } else {
@@ -1128,6 +1148,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
                          df <- read.csv2(file,header = T,row.names = 1)
+                         incProgress(1, detail = "Completed")
                      })
         return(df)
 
@@ -1140,6 +1161,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             group1 <- file[4]
             group2 <- file[5]
             pcut <- file[7]
+            print(pcut)
             meancut <- gsub(".csv","",file[9])
             updateNumericInput(session, "volcanoxcutMet", value = meancut)
             updateNumericInput(session, "volcanoxcutExp", value = meancut)
@@ -1176,8 +1198,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             if(isolate({input$volcanoInputRb})=="met"){
 
                 diffcol <- paste("diffmean", group1, group2,sep = ".")
+                if(! diffcol %in% colnames(data)) diffcol <- gsub("_",".",paste("diffmean", group1, group2,sep = "."))
                 pcol <- paste("p.value.adj", group1, group2,sep = ".")
-
+                if(! pcol %in% colnames(data)) pcol <- gsub("_",".",paste("p.value.adj", group1, group2,sep = "."))
+                if(!(pcol %in% colnames(data) & diffcol %in% colnames(data) )) {
+                    createAlert(session, "volcanomessage", "volcanoAlert", title = "Error", style =  "success",
+                                content = "We couldn't find the right columns in the data", append = FALSE)
+                }
                 if(isolate({input$volcanoNames})) names <- data$probeID
                 label <- c("Not Significant",
                            "Hypermethylated",
@@ -1432,13 +1459,30 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         # prepare it
         se <- isolate({dmrdata()})
         se <- subset(se,subset = (rowSums(is.na(assay(se))) == 0))
-        withProgress(message = 'DMR analysis in progress',
-                     detail = 'This may take a while...', value = 0, {
-                         message <- "<br>Saving the results also in a csv file:<ul>"
-                         for(i in 1:nrow(groups)) {
-                             incProgress(1/(nrow(groups)+ 1 ), detail = paste(groups[i,1]," vs ", groups[i,2]))
-                             group1 <- groups[i,1]
-                             group2 <- groups[i,2]
+        for(i in 1:nrow(groups)) {
+            group1 <- groups[i,1]
+            group2 <- groups[i,2]
+            results <- NULL
+            withProgress(message = 'DMR analysis in progress (this might take from hours up to days)',
+                         detail = paste(group1," vs ", group2), value = 0, {
+                             message <- "<br>Saving the results also in a csv file:<ul>"
+                             step <- 1000
+                             n <- nrow(se)
+                             for(j in 0:floor(n/step)){
+                                 end <- ifelse(((j + 1) * step) > n, n,((j + 1) * step))
+                                 results <- rbind(results,
+                                                  values(TCGAanalyze_DMR(data = se[((j * step) + 1):end,],
+                                                                         groupCol = isolate({input$dmrgroupCol}),
+                                                                         group1 = group1,
+                                                                         group2 = group2,
+                                                                         plot.filename = FALSE,
+                                                                         p.cut = isolate({input$dmrpvalue}),
+                                                                         diffmean.cut = isolate({input$dmrthrsld}),
+                                                                         cores = isolate({input$dmrcores}))))
+                                 incProgress(1/ceiling(n/step), detail = paste("Completed ", j + 1, " of ",ceiling(n/step)))
+                             }
+                             results <- results[,!(colnames(results) %in% values(se))]
+                             values(se) <- cbind(values(se),results)
                              se <- TCGAanalyze_DMR(data = se,
                                                    groupCol = isolate({input$dmrgroupCol}),
                                                    group1 = group1,
@@ -1447,17 +1491,18 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                    p.cut = isolate({input$dmrpvalue}),
                                                    diffmean.cut = isolate({input$dmrthrsld}),
                                                    cores = isolate({input$dmrcores}))
+
                              message <- paste0(message,"<li>DMR_results_",
                                                gsub("_",".",isolate({input$dmrgroupCol})),
                                                "_", gsub("_",".",group1), "_", gsub("_",".",group2), "_",
                                                "pcut_",isolate({input$dmrpvalue}), "_",
                                                "meancut_",isolate({input$dmrthrsld}),".csv</li>")
-                         }
-                         file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
-                         if(!grepl("results",file)) file <- gsub(".rda","_results.rda",file)
-                         save(se,file = file)
-                         incProgress(1/(nrow(groups) + 1 ), detail = paste("Saving results"))
-                     })
+                             file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
+                             if(!grepl("results",file)) file <- gsub(".rda","_results.rda",file)
+                             save(se,file = file)
+                             incProgress(1/(nrow(groups) + 1 ), detail = paste("Saving results"))
+                         })
+        }
         createAlert(session, "dmrmessage", "dmrAlert", title = "DMR completed", style =  "danger",
                     content = paste0("Summarized Experiment object with results saved in: ", file, message,"<ul>"),
                     append = FALSE)
@@ -1484,6 +1529,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          } else {
                              se <- get(load(file))
                          }
+                         incProgress(1, detail = "Completed")
                      })
         if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
             createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
@@ -1507,6 +1553,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          } else {
                              se <- get(load(file))
                          }
+                         incProgress(1, detail = "Completed")
                      })
         if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
             createAlert(session, "dmrmessage", "dmrAlert", title = "Data input error", style =  "danger",
@@ -1739,6 +1786,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
                          df <- read.csv2(file,header = TRUE, stringsAsFactors = FALSE)
+                         incProgress(1, detail = "Completed")
                      })
         return(df)
     })
@@ -1756,6 +1804,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          } else {
                              se <- get(load(file))
                          }
+                         incProgress(1, detail = "Completed")
                      })
         if(class(se)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
             createAlert(session, "heatmapmessage", "heatmapAlert", title = "Data input error", style =  "danger",
@@ -2470,7 +2519,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         pathway.id <- isolate({input$pathway.id})
         kegg.native <- isolate({input$kegg.native.checkbt})
 
-        print(head(data))
         gene <- strsplit(data$mRNA,"\\|")
         data$SYMBOL <- unlist(lapply(gene,function(x) x[1]))
 
@@ -2862,6 +2910,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
                          exp <- get(load(file))
+                         incProgress(1, detail = "Completed")
                      })
         return(exp)
     })
@@ -2873,6 +2922,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
                          met <- get(load(file))
+                         incProgress(1, detail = "Completed")
                      })
 
         if(class(met)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
@@ -2955,6 +3005,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
                          load(file,envir = globalenv())
+                         incProgress(1, detail = "Completed")
                      })
     })
 
@@ -2966,6 +3017,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
                          mee <- get(load(file))
+                         incProgress(1, detail = "Completed")
                      })
         return(mee)
     })
