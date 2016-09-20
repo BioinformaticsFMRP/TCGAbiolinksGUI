@@ -1242,6 +1242,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 down.count <- table(hypo & sig)["TRUE"]
                 rownames(data) <- data$probeID
                 if(isolate({input$volcanoSave})){
+                    getPath <- parseDirPath(volumes, input$workingDir)
+                    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
                     csv <- paste0(paste("DMR_results",
                                         gsub("_",".",groupCol),
                                         gsub("_",".",group1),
@@ -1250,7 +1252,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                         "meancut",x.cut,
                                         sep = "_"),
                                   ".csv")
-                    write.csv2(data,file =  csv)
+                    write.csv2(data,file =  file.path(getPath, csv))
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
                                 content = paste0(getwd(),"/",csv), append = FALSE)
 
@@ -1456,7 +1458,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
     #-------------------------END controlling show/hide states -----------------
     observeEvent(input$dmrAnalysis , {
-
+        getPath <- parseDirPath(volumes, input$workingDir)
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         groups <- t(combn(isolate({input$dmrgroups}),2))
         print(groups)
         # read the data from the downloaded path
@@ -1474,6 +1477,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              n <- nrow(se)
                              for(j in 0:floor(n/step)){
                                  end <- ifelse(((j + 1) * step) > n, n,((j + 1) * step))
+                                 print(paste0("Step: ",i))
+                                 print(start)
+                                 print(end)
                                  results <- rbind(results,
                                                   values(TCGAanalyze_DMR(data = se[((j * step) + 1):end,],
                                                                          groupCol = isolate({input$dmrgroupCol}),
@@ -1488,11 +1494,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              }
                              results <- results[,!(colnames(results) %in% colnames(values(se)))]
                              values(se) <- cbind(values(se),results)
+
                              se <- TCGAanalyze_DMR(data = se,
                                                    groupCol = isolate({input$dmrgroupCol}),
                                                    group1 = group1,
                                                    group2 = group2,
                                                    save = TRUE,
+                                                   save.directory = getPath,
                                                    plot.filename = paste0("DMR_volcano_",group1,"_vs_",group2,".pdf"),
                                                    p.cut = isolate({input$dmrpvalue}),
                                                    diffmean.cut = isolate({input$dmrthrsld}),
