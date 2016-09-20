@@ -1507,10 +1507,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                    cores = isolate({input$dmrcores}))
 
                              message <- paste0(message,"<li>DMR_results_",
-                                               gsub("_",".",isolate({input$dmrgroupCol})),
+                                               file.path(getPath,
+                                                         paste0(gsub("_",".",isolate({input$dmrgroupCol})),
                                                "_", gsub("_",".",group1), "_", gsub("_",".",group2), "_",
                                                "pcut_",isolate({input$dmrpvalue}), "_",
-                                               "meancut_",isolate({input$dmrthrsld}),".csv</li>")
+                                               "meancut_",isolate({input$dmrthrsld}),".csv")),"</li>")
                              file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
                              if(!grepl("results",file)) file <- gsub(".rda","_results.rda",file)
                              save(se,file = file)
