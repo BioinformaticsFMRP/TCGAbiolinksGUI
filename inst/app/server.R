@@ -1477,9 +1477,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              n <- nrow(se)
                              for(j in 0:floor(n/step)){
                                  end <- ifelse(((j + 1) * step) > n, n,((j + 1) * step))
-                                 print(paste0("Step: ",i))
-                                 print(start)
-                                 print(end)
                                  results <- rbind(results,
                                                   values(TCGAanalyze_DMR(data = se[((j * step) + 1):end,],
                                                                          groupCol = isolate({input$dmrgroupCol}),
@@ -1490,11 +1487,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                                          p.cut = isolate({input$dmrpvalue}),
                                                                          diffmean.cut = isolate({input$dmrthrsld}),
                                                                          cores = isolate({input$dmrcores}))))
-                                 incProgress(1/ceiling(n/step), detail = paste("Completed ", j + 1, " of ",ceiling(n/step)))
+                                 incProgress(1/(ceiling(n/step) + 1), detail = paste("Completed ", j + 1, " of ",ceiling(n/step)))
                              }
                              results <- results[,!(colnames(results) %in% colnames(values(se)))]
                              values(se) <- cbind(values(se),results)
-
+                             incProgress(1/(ceiling(n/step) + 1), detail = "Saving restuls")
                              se <- TCGAanalyze_DMR(data = se,
                                                    groupCol = isolate({input$dmrgroupCol}),
                                                    group1 = group1,
@@ -1515,7 +1512,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
                              if(!grepl("results",file)) file <- gsub(".rda","_results.rda",file)
                              save(se,file = file)
-                             incProgress(1/(nrow(groups) + 1 ), detail = paste("Saving results"))
+                             setProgress(1, detail = paste("Saving completed"))
                          })
         }
         createAlert(session, "dmrmessage", "dmrAlert", title = "DMR completed", style =  "danger",
