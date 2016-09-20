@@ -1491,7 +1491,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              }
                              results <- results[,!(colnames(results) %in% colnames(values(se)))]
                              values(se) <- cbind(values(se),results)
-                             incProgress(1/(ceiling(n/step) + 1), detail = "Saving restuls")
+                             incProgress(1/(ceiling(n/step) + 1), detail = "Saving results")
+
                              se <- TCGAanalyze_DMR(data = se,
                                                    groupCol = isolate({input$dmrgroupCol}),
                                                    group1 = group1,
@@ -1849,16 +1850,16 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             sortCol <- isolate({input$heatmapSortCol})
             scale <- isolate({input$heatmapScale})
 
-            if( isolate({input$heatmapTypeInputRb}) == "met") type <-  "methylation"
-            if( isolate({input$heatmapTypeInputRb}) == "exp") type <-  "expression"
+            if(isolate({input$heatmapTypeInputRb}) == "met") type <-  "methylation"
+            if(isolate({input$heatmapTypeInputRb}) == "exp") type <-  "expression"
 
-            if(nchar(sortCol) ==0 &  isolate({input$heatmap.sortCb})){
+            if(nchar(sortCol) == 0 &  isolate({input$heatmap.sortCb})){
                 createAlert(session, "heatmapmessage", "heatmapAlert", title = "Columns metadata", style =  "danger",
                             content = paste0("Please select the heatmapSortCol"),append = FALSE)
                 return(NULL)
             }
 
-            if( isolate({input$heatmapTypeInputRb})=="met"){
+            if(isolate({input$heatmapTypeInputRb})=="met"){
                 # ---------------- probes selection
                 if(isolate({input$heatmapProbesInputRb}) == "Status"){
                     sig.probes <- ""
@@ -1867,14 +1868,19 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     sig.probes <- paste(sig.probes,"in",group2)
                     # Get hypo methylated and hypermethylated probes
                     idx <- paste("status",group1,group2, sep=".")
-                    print(table(results.data[,idx]))
                     probes <- results.data[,idx] %in% sig.probes
+                    if(length(probes) == 0){
+                        createAlert(session, "heatmapmessage", "heatmapAlert", title = "No significant probes", style =  "danger",
+                                    content = paste0("There are no significant probes"),append = FALSE)
+                        return(NULL)
+                    }
                 } else {
                     sig.probes <- parse.textarea.input(isolate({input$heatmapProbesTextArea}))
                     probes <- which(results.data$probeID %in% sig.probes)
                 }
                 data <- data[probes,]
                 results.data <- results.data[probes,]
+
             } else {
                 if(isolate({input$heatmapGenesInputRb}) == "Status"){
                     sig.genes <- ""
@@ -1909,7 +1915,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             # ---------------- row.metadata
             row.metadata <- NULL
             if(!is.null(rowmdata)) {
-                if(length(rowmdata) > 0) row.metadata <- subset(results.data, select=c(rowmdata))
+                if(length(rowmdata) > 0) row.metadata <- subset(values(data), select=c(rowmdata))
             }
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
@@ -1918,6 +1924,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                              col.metadata=col.metadata,
                                                              row.metadata=row.metadata,
                                                              title = "Heatmap",
+                                                             filename = NULL,
                                                              cluster_rows = cluster_rows,
                                                              show_column_names = show_column_names,
                                                              cluster_columns = cluster_columns,
@@ -1929,6 +1936,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                              col.metadata=col.metadata,
                                                              row.metadata=row.metadata,
                                                              title = "Heatmap",
+                                                             filename = NULL,
                                                              cluster_rows = cluster_rows,
                                                              show_column_names = show_column_names,
                                                              cluster_columns = cluster_columns,
@@ -2387,6 +2395,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
     #----------------------- END controlling show/hide states -----------------
     observeEvent(input$deaAnalysis , {
+        closeAlert(session, "deaAlert")
         # read the data from the downloaded path
         # prepare it
         se <- isolate({deadata()})
@@ -2401,6 +2410,15 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         method <- isolate({input$deamethod})
         fdr.cut <- isolate({input$deapvalue})
         logFC.cut <- isolate({input$deathrsld})
+
+
+        if(length(samples.g1) < 2 || length(samples.g2) < 2 ) {
+            createAlert(session, "deamessage", "deaAlert", title = "Error", style =  "danger",
+                        content = "Each group should have at least one sample", append = FALSE)
+            return(NULL)
+        }
+
+
         withProgress(message = 'Differential Expression Analysis in progress',
                      detail = 'This may take a while...', value = 0, {
 
