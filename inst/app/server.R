@@ -2546,6 +2546,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$pathwaygraphBt , {
 
         data <- pathway.data()
+        if(is.null(data)) {
+            createAlert(session, "deamessage", "deaAlert", title = "Data error", style =  "danger",
+                        content = "Please upload results", append = FALSE)
+            return(NULL)
+        }
         pathway.id <- isolate({input$pathway.id})
         kegg.native <- isolate({input$kegg.native.checkbt})
 
@@ -2557,7 +2562,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         eg = as.data.frame(bitr(data$SYMBOL,
                                 fromType="SYMBOL",
                                 toType="ENTREZID",
-                                annoDb="org.Hs.eg.db"))
+                                OrgDb="org.Hs.eg.db"))
         eg <- eg[!duplicated(eg$SYMBOL),]
 
         data <- merge(data,eg,by="SYMBOL")
@@ -2565,6 +2570,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         data <- subset(data, select = c("ENTREZID", "logFC"))
         genelistDEGs <- as.numeric(data$logFC)
         names(genelistDEGs) <- data$ENTREZID
+
         withProgress(message = 'Creating pathway graph',
                      detail = 'This may take a while...', value = 0, {
                          # pathway.id: hsa05214 is the glioma pathway

@@ -9,7 +9,7 @@ library(reshape2)
 data(paths.hsa)
 pathways.id <- names(paths.hsa)
 names(pathways.id) <- unname(paths.hsa)
-
+pathways.id <- pathways.id[sort(unname(paths.hsa))]
 menu.icon <- "arrow-circle-right"
 
 # Defining parameters
