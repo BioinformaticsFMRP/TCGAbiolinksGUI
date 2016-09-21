@@ -897,7 +897,7 @@ body <-  dashboardBody(
                                shinyFilesButton('deafile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
                                                 multiple = FALSE)),
                            box(title = "Pre-analysis options",width = NULL,
-                               solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
+                               solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                checkboxInput("deanormalization", "Normalization of genes?", value = FALSE, width = NULL),
                                useShinyjs(),
                                selectizeInput('deanormalizationmet',
@@ -913,7 +913,7 @@ body <-  dashboardBody(
                                             min = 0, max = 1, value = 0.25, step = 0.1)
                            ),
                            box(title = "Analysis parameter",width = NULL,
-                               solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
+                               solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                numericInput("deathrsld", "Log FC threshold",
                                             min = 0, max = 100, value = 0, step = 0.5),
                                numericInput("deapvalue", "P-value adj cut-off",

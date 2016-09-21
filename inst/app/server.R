@@ -1301,6 +1301,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
                 # Update data into a file
                 if(isolate({input$volcanoSave})){
+                    getPath <- parseDirPath(volumes, input$workingDir)
+                    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+
                     out.filename <- paste0(paste("DEA_results",
                                                  gsub("_",".",groupCol),
                                                  gsub("_",".",group1),
@@ -1309,6 +1312,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                  "logFC.cut",x.cut,
                                                  sep="_"),
                                            ".csv")
+                    out.filename <- file.path(getPath,out.filename)
                     write.csv2(data, file = out.filename)
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
                                 content =  paste0(getwd(),"/",out.filename), append = FALSE)
