@@ -73,7 +73,7 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Differential methylation analysis" , tabName = "dmr", icon = icon("flask")),
                  menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
                  menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
-                 menuItem("Mean DNA methylation plot" , tabName = "meanmet", icon = icon("picture-o"))
+                 menuSubItem("Mean DNA methylation plot" , tabName = "meanmet", icon = icon("picture-o"))
         ),
         menuItem("Transcriptomic analysis", icon =  icon("flask"),
                  menuSubItem("Differential expression analysis" , tabName = "dea", icon = icon("flask")),
@@ -103,9 +103,9 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("external-link")),
                  menuSubItem("ELMER Manual" , href = "https://www.bioconductor.org/packages/3.3/bioc/vignettes/ELMER/inst/doc/vignettes.pdf", icon = icon("external-link"))
         ),
-        menuItem("References", icon = icon("file-text-o"),
-                 menuSubItem("TCGAbiolinks" , href = "https://doi.org/10.1093/nar/gkv1507", icon = icon("external-link")),
-                 menuSubItem("ELMER" , href = "https://doi.org/10.1186/s13059-015-0668-3", icon = icon("external-link"))
+        menuItem("References", icon = icon("file-text-o"), tabName = "references"
+                 #menuSubItem("TCGAbiolinks" , href = "https://doi.org/10.1093/nar/gkv1507", icon = icon("external-link")),
+                 #menuSubItem("ELMER" , href = "https://doi.org/10.1186/s13059-015-0668-3", icon = icon("external-link"))
         ), div(id = "greetbox-outer",
                menuItem("welcome", tabName = "welcome",selected = T)))
 )
@@ -1223,7 +1223,14 @@ body <-  dashboardBody(
                                       shinyDirButton('workingDir', 'Set working directory', 'Set working directory',
                                                      class='shinyDirectories btn-default')),
                                column(9, verbatimTextOutput("wd"))
-                           ))))
+                           )))),
+        tabItem(tabName = "references",
+                fluidRow(
+                    column(1),
+                    column(8,
+                           includeHTML("references.html")
+                    )))
+
     )
 )
 
