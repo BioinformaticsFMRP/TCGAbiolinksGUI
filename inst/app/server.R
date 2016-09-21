@@ -2580,6 +2580,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                               species    = "hsa",
                                               kegg.native = kegg.native,
                                               limit      = list(gene=as.integer(max(abs(genelistDEGs)))))
+                         incProgress(1, detail = paste("Done"))
                      })
         if(kegg.native) {
             extension <- ".pathview.png"
