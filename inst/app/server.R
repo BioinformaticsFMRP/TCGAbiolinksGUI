@@ -2458,10 +2458,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g2)
                          exp$Gene_Symbol <- unlist(lapply(strsplit(exp$mRNA,"\\|"),function(x) x[2]))
                      })
-
+        print(head(exp))
         out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),
                                      gsub("_",".",g1), gsub("_",".",g2),
                                      "pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
+        getPath <- parseDirPath(volumes, input$workingDir)
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+        out.filename <- file.path(getPath,out.filename)
         write.csv2(exp, file = out.filename)
         createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "danger",
                     content = out.filename, append = FALSE)
@@ -2557,8 +2560,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
         pathway.id <- isolate({input$pathway.id})
         kegg.native <- isolate({input$kegg.native.checkbt})
+        print(head(data))
 
-        gene <- strsplit(data$mRNA,"\\|")
+        if("mRNA" %in% colnames(data)) {
+            gene <- strsplit(data$mRNA,"\\|")
+        } else {
+            gene <- rownames(data)
+        }
         data$SYMBOL <- unlist(lapply(gene,function(x) x[1]))
 
         # Converting Gene symbol to geneID
