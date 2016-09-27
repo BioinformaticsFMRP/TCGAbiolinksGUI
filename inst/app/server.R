@@ -480,21 +480,18 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         getPath <- parseDirPath(volumes, input$workingDir)
         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         filename <- file.path(getPath,isolate({input$tcgafilename}))
-
         withProgress(message = 'Download in progress',
                      detail = 'This may take a while...', value = 0, {
                          trash = tryCatch({
                              n <- nrow(results)
                              step <- 20
-                             for(i in 0:(n/step)){
+                             for(i in 0:ceiling(n/step - 1)){
                                  query.aux <- query
                                  end <- ifelse(((i + 1) * step) > n, n,((i + 1) * step))
                                  query.aux$results[[1]] <- query.aux$results[[1]][((i * step) + 1):end,]
                                  GDCdownload(query.aux, method = "api",directory = getPath)
                                  incProgress(1/ceiling(n/step), detail = paste("Completed ", i + 1, " of ",ceiling(n/step)))
                              }
-                             # just to be sure it was all downloaded
-                             GDCdownload(query, method = "api", directory = getPath)
                          }, error = function(e) {
                              createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
                                          content = "Error while downloading the files", append = FALSE)
@@ -1520,7 +1517,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              setProgress(1, detail = paste("Saving completed"))
                          })
         }
-        createAlert(session, "dmrmessage", "dmrAlert", title = "DMR completed", style =  "danger",
+        createAlert(session, "dmrmessage", "dmrAlert", title = "DMR completed", style =  "success",
                     content = paste0("Summarized Experiment object with results saved in: ", file, message,"<ul>"),
                     append = FALSE)
     })
