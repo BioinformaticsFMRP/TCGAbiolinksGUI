@@ -827,7 +827,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$mafAnnotation)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read.csv2(file,header = T,stringsAsFactors = FALSE, row.names = 1)
+            se <- read_csv2(file); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -890,7 +890,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- read.csv2(file,header = T,stringsAsFactors = FALSE)
+            se <- read_csv2(file);
             rownames(df) <- df[,1]
             df[,1] <- NULL
         } else if(tools::file_ext(file)=="rda"){
@@ -1143,7 +1143,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         df <- read.csv2(file,header = T,row.names = 1)
+                         df <- as.data.frame(read_csv2(file)); df$X1 <- NULL
                          incProgress(1, detail = "Completed")
                      })
         return(df)
@@ -1799,7 +1799,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         df <- read.csv2(file,header = TRUE, stringsAsFactors = FALSE)
+                         df <- read_csv2(file)
                          incProgress(1, detail = "Completed")
                      })
         return(df)
@@ -1996,7 +1996,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- read.csv2(file,header = T,stringsAsFactors = FALSE)
+            df <- read_csv2(file); se$X1 <- NULL
             rownames(df) <- df[,1]
             df[,1] <- NULL
         } else if(tools::file_ext(file)=="rda"){
@@ -2137,7 +2137,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- read.csv2(file,header = T, row.names = 1)
+            df <- read_csv2(file); df$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             df <- get(load(file))
         } else {
@@ -2293,7 +2293,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- read.csv2(file,header = T)
+            df <- read_csv2(file)
             rownames(df) <- df[,1]
             df[,1] <- NULL
         } else if(tools::file_ext(file)=="rda"){
@@ -2538,7 +2538,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$pathewayexpfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read.csv2(file,header = TRUE, stringsAsFactors = FALSE)
+            se <- read_csv2(file)
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -2735,7 +2735,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$starburstexpfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read.csv2(file,header = T,row.names = 1)
+            se <- read_csv2(file); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -2752,7 +2752,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read.csv2(file,header = T, row.names = 1)
+            se <- as.data.frame(read_csv2(file)); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
