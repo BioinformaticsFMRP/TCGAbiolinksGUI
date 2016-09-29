@@ -285,7 +285,6 @@ references:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dpi = 600)
-knitr::opts_chunk$set(cache=TRUE)
 ```
 
 ```{r, echo = FALSE,hide=TRUE, message=FALSE,warning=FALSE}

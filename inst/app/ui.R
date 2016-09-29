@@ -65,7 +65,6 @@ sidebar <-  dashboardSidebar(
         ),
         tags$hr(class="lineAnalysis"),
         menuItem("Clinical analysis", icon = icon("flask"),
-                 menuSubItem("Profile plot" , tabName = "tcgaProfilePlot", icon = icon("picture-o")),
                  menuSubItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o"))
         ),
 
@@ -767,74 +766,6 @@ body <-  dashboardBody(
                                               width: 100%",
                                             icon = icon("picture-o"))
                            )
-                    )
-                )
-        ),
-        tabItem(tabName = "tcgaProfilePlot",
-                fluidRow(
-                    column(8,  bsAlert("profileplotmessage"),
-                           bsCollapse(id = "collapseprofileplot", open = "Profile plot",
-                                      bsCollapsePanel("Profile plot", uiOutput("profileplot"), style = "default")
-                           )),
-                    column(4,
-                           box(title = "Profle Plot ",width = NULL,
-                               status = "danger",
-                               solidHeader = FALSE, collapsible = FALSE,
-                               box(title = "Data ",width = NULL,
-                                   solidHeader = TRUE, collapsible = TRUE,
-                                   shinyFilesButton('profileplotfile', 'Select file', 'Please select a rda file with a data frame',
-                                                    multiple = FALSE)),
-                               box(title = "General parameters ",width = NULL,
-                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                                   useShinyjs(),
-                                   selectizeInput('profileplotgroup',
-                                                  'Group column',
-                                                  choices=NULL,
-                                                  multiple = FALSE),
-                                   selectizeInput('profileplotsubtype',
-                                                  'Subgruoup column',
-                                                  choices=NULL,
-                                                  multiple = FALSE),
-                                   checkboxInput("profileplotrmnagroup", " Remove the NA groups?", value = FALSE, width = NULL),
-                                   checkboxInput("profileplotrmnasub", " Remove the NA subgroups?", value = FALSE, width = NULL)),
-                               box(title = "Text parameters",width = NULL,
-                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                                   numericInput("profileplot.axis.title.size", "Size title left barplot",
-                                                min = 0, max = 10, value = 1.0, step = 0.1),
-                                   numericInput("profileplot.axis.textsize", "Text size cluster names",
-                                                min = 0, max = 10, value = 1.0, step = 0.1),
-                                   numericInput("profileplot.legend.size", "Legend text size",
-                                                min = 0, max = 10, value = 1.0, step = 0.1),
-                                   numericInput("profileplot.legend.title.size", "Title legend size",
-                                                min = 0, max = 10, value = 1.0, step = 0.1),
-                                   numericInput("profileplot.geom.label.size", "Size % cluster distribution",
-                                                min = 0, max = 10, value = 4.0, step = 0.1)
-                               ),
-                               box(title = "Colors control",width = NULL,
-                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                                   colourInput("profileplotColorTextLeftBar", "Sets % text color", value = "black")),
-                               box(title = "Left bar control",width = NULL,
-                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                                   numericInput("margin1", "Move upper line of vertical bar",
-                                                min = -10, max = 10, value = 0.0, step = 0.1),
-                                   numericInput("margin2", "Move right line of vertical bar",
-                                                min = -10, max = 10, value = 0.0, step = 0.1),
-                                   numericInput("margin3", "Move bottom line of vertical bar",
-                                                min = -10, max = 10, value = 0.0, step = 0.1),
-                                   numericInput("margin4", "Move left line of vertical bar",
-                                                min = -10, max = 10, value = 0.0, step = 0.1)),
-                               box(title = "Size control",width = NULL,
-                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                                   sliderInput("profilewidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                                   sliderInput("profileheight", "Plot Height (px)", min = 0, max = 1200, value = 800)),
-                               actionButton("profileplotBt",
-                                            "Plot profile plot",
-                                            style = "background-color: #000080;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 100%",
-                                            icon = icon("picture-o")))
                     )
                 )
         ),
