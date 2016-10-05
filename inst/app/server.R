@@ -247,8 +247,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         options.filter <- paste0("filters=", URLencode("{\"op\":\"and\",\"content\":[{\"op\":\"in\",\"content\":{\"field\":\"cases.project.project_id\",\"value\":[\""),
                                  project, URLencode("\"]}},{\"op\":\"in\",\"content\":{\"field\":\"files.data_category\",\"value\":[\""),
                                  files.data_category, URLencode("\"]}}]}"))
-        print(paste0(baseURL, paste(options.pretty, options.expand,
-                                    option.size, options.filter, sep = "&")))
 
         withProgress(message = 'Loading clinical data',
                      detail = 'This may take a while...', value = 0, {
@@ -2307,7 +2305,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         out.filename <- file.path(getPath,out.filename)
         write.csv2(exp, file = out.filename)
-        createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "danger",
+        createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "success",
                     content = out.filename, append = FALSE)
     })
     shinyFileChoose(input, 'deafile', roots=volumes, session=session, restrictions=system.file(package='base'))
