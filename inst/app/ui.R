@@ -57,7 +57,7 @@ sidebar <-  dashboardSidebar(
     width = 250,
     sidebarMenu(
         tags$hr(class="lineData"),
-        menuItem("Get TCGA data", icon = icon("database"),
+        menuItem("Get GDC data", icon = icon("database"),
                  menuSubItem("Molecular data" , tabName = "tcgaSearch", icon = icon("database")),
                  menuSubItem("Mutation data" , tabName = "tcgaMutation", icon = icon("database")),
                  menuSubItem("Clinical data" , tabName = "tcgaClinical", icon = icon("database")),
@@ -141,8 +141,8 @@ body <-  dashboardBody(
         tabItem(tabName = "tcgaSearch",
                 fluidRow(
                     column(8, bsAlert("tcgasearchmessage"),
-                           bsCollapse(id = "collapseTCGA", open = "TCGA search results",
-                                      bsCollapsePanel("TCGA search results", htmlOutput("tcgaview"), style = "default")
+                           bsCollapse(id = "collapseTCGA", open = "GDC search results",
+                                      bsCollapsePanel("GDC search results", htmlOutput("tcgaview"), style = "default")
                            )),
                     column(4,
                            box(title = "Advanced search",width = NULL,

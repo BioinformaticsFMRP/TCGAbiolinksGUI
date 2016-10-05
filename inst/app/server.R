@@ -419,7 +419,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                   gsub(" ","_",isolate({input$tcgaDataTypeFilter})),
                                   ifelse(isolate({input$tcgaDatabase}),"hg19","hg38"),
                                   sep = "_"),".rda"))
-        updateCollapse(session, "collapseTCGA", open = "TCGA search results")
+        updateCollapse(session, "collapseTCGA", open = "GDC search results")
         output$tcgaview <- renderGvis({
             closeAlert(session,"tcgaAlert")
             results <- query.result()[[1]]$results[[1]]

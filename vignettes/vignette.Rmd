@@ -388,7 +388,7 @@ Also, if you have used ELMER analysis please cite:
 
 #### Sub-menu: Molecular data
 
-In this sub-menu the user can search, download and prepare TCGA data.
+In this sub-menu the user can search, download and prepare GDC data.
 
 ![TCGA search menu: Main window.](tcgasearch.png)
 
