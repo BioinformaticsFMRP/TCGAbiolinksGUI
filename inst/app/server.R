@@ -1249,7 +1249,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                   ".csv")
                     write.csv2(data,file =  file.path(getPath, csv))
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
-                                content = paste0(getwd(),"/",csv), append = FALSE)
+                                content = paste0(file.path(getPath, csv)), append = FALSE)
 
                 }
                 withProgress(message = 'Creating plot',
@@ -1310,7 +1310,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     out.filename <- file.path(getPath,out.filename)
                     write.csv2(data, file = out.filename)
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
-                                content =  paste0(getwd(),"/",out.filename), append = FALSE)
+                                content =  paste0(out.filename), append = FALSE)
                 }
 
                 withProgress(message = 'Creating plot',

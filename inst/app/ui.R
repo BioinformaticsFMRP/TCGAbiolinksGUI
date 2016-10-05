@@ -237,7 +237,7 @@ body <-  dashboardBody(
                                             c("SummarizedExperiment" = TRUE,
                                               "Dataframe" = FALSE)),
                                useShinyjs(),
-                               textInput("tcgafilename", "File name prefix", value = "TCGA", width = NULL, placeholder = NULL),
+                               textInput("tcgafilename", "File name", value = "TCGA.rda", width = NULL, placeholder = NULL),
                                actionButton("tcgaPrepareBt",
                                             "Download and prepare data",
                                             style = "background-color: #000080;
