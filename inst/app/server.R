@@ -1506,9 +1506,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              message <- paste0(message,"<li>DMR_results_",
                                                file.path(getPath,
                                                          paste0(gsub("_",".",isolate({input$dmrgroupCol})),
-                                               "_", gsub("_",".",group1), "_", gsub("_",".",group2), "_",
-                                               "pcut_",isolate({input$dmrpvalue}), "_",
-                                               "meancut_",isolate({input$dmrthrsld}),".csv")),"</li>")
+                                                                "_", gsub("_",".",group1), "_", gsub("_",".",group2), "_",
+                                                                "pcut_",isolate({input$dmrpvalue}), "_",
+                                                                "meancut_",isolate({input$dmrthrsld}),".csv")),"</li>")
                              file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
                              if(!grepl("results",file)) file <- gsub(".rda","_results.rda",file)
                              save(se,file = file)
@@ -1776,8 +1776,27 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             }
         }
     })
-    observeEvent(input$heatmap.sortCb, {
-        shinyjs::toggle("heatmapSortCol")
+    observeEvent(input$heatmap.colorsCb, {
+        if(input$heatmap.colorsCb){
+            shinyjs::show("heatmapcolMax")
+            shinyjs::show("heatmapcolMid")
+            shinyjs::show("heatmapcolMin")
+        } else {
+            shinyjs::hide("heatmapcolMax")
+            shinyjs::hide("heatmapcolMid")
+            shinyjs::hide("heatmapcolMin")
+        }
+    })
+    observeEvent(input$heatmap.extremesCb, {
+        if(input$heatmap.extremesCb) {
+            shinyjs::show("heatmapExtremeMax")
+            shinyjs::show("heatmapExtremeMid")
+            shinyjs::show("heatmapExtremeMin")
+        } else {
+            shinyjs::hide("heatmapExtremeMax")
+            shinyjs::hide("heatmapExtremeMid")
+            shinyjs::hide("heatmapExtremeMin")
+        }
     })
 
     #-------------------------END controlling show/hide states -----------------
@@ -1797,7 +1816,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         df <- read_csv2(file)
+                         df <- as.data.frame(read_csv2(file)); rownames(df) <- df$X1; df$X1 <- NULL;
                          incProgress(1, detail = "Completed")
                      })
         return(df)
@@ -1827,6 +1846,19 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         return(se)
 
     })
+
+    # If the user ulpload a DEA results, the type of heatmap should be changed automatically to avoid
+    # errors. Should this be visible to the user ?
+    observe({
+        if(!is.null(input$heatmapresultsfile)){
+            file  <- basename(as.character(parseFilePaths(volumes, input$heatmapresultsfile)$datapath))
+            selected <- "met"
+            if(grepl("DEA",file))  selected <- "exp"
+            updateRadioButtons(session, "heatmapTypeInputRb", selected = selected)
+            updateTextInput(session,"heatmapLabel", value = ifelse(selected == "met","DNA methylation level","Gene expression level"))
+        }
+    })
+
     observeEvent(input$heatmapPlotBt , {
         output$heatmap.plotting <- renderPlot({
 
@@ -1848,7 +1880,24 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             cluster_columns <- isolate({input$heatmap.clustercol})
             sortCol <- isolate({input$heatmapSortCol})
             scale <- isolate({input$heatmapScale})
+            title <-  isolate({input$heatmapMain})
+            values.label <-  isolate({input$heatmapLabel})
+            rownames.size <-  isolate({input$heatmapRownamesSize})
 
+            if(isolate({input$heatmap.colorsCb})) {
+                color.levels <- c(isolate({input$heatmapcolMin}),
+                                  isolate({input$heatmapcolMid}),
+                                  isolate({input$heatmapcolMax}))
+            } else {
+                color.levels <- NULL
+            }
+            if(isolate({input$heatmap.extremesCb})) {
+                extrems <- c(isolate({input$heatmapExtremeMin}),
+                             isolate({input$heatmapExtremeMid}),
+                             isolate({input$heatmapExtremeMax}))
+            } else {
+                extrems <- NULL
+            }
             if(isolate({input$heatmapTypeInputRb}) == "met") type <-  "methylation"
             if(isolate({input$heatmapTypeInputRb}) == "exp") type <-  "expression"
 
@@ -1890,14 +1939,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     genes <- results.data[,"status"] %in% sig.genes
                 } else {
                     sig.genes <- parse.textarea.input(isolate({input$heatmapGenesTextArea}))
-                    aux <- strsplit(results.data$mRNA,"\\|")
-                    results.data$gene <- unlist(lapply(aux,function(x) x[2]))
                     genes <- which(results.data$gene %in% sig.genes)
                 }
-
-                data <- data[genes,]
                 results.data <- results.data[genes,]
-
+                data <- data[values(data)$gene_id %in% results.data$mRNA ,]
             }
             # ---------------- col.metadata
             if(!("barcode" %in% colnames(colData(data)))){
@@ -1916,14 +1961,25 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             if(!is.null(rowmdata)) {
                 if(length(rowmdata) > 0) row.metadata <- subset(values(data), select=c(rowmdata))
             }
+
+            save(data, col.metadata, row.metadata, cluster_rows,show_column_names,type,scale, file = "debug_heatmap.rda")
+
+            if(isolate({input$heatmaplog2_plus_one})) {
+                assay(data) <- log2(assay(data) + 1) # if there were 0 values the scale was giving bugs
+            }
+
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
                              if(!isolate({input$heatmap.sortCb})) {
                                  p <-  TCGAvisualize_Heatmap(data=assay(data),
                                                              col.metadata=col.metadata,
                                                              row.metadata=row.metadata,
-                                                             title = "Heatmap",
+                                                             title = title,
+                                                             color.levels = color.levels,
+                                                             rownames.size = rownames.size,
+                                                             values.label = values.label,
                                                              filename = NULL,
+                                                             extrems = extrems,
                                                              cluster_rows = cluster_rows,
                                                              show_column_names = show_column_names,
                                                              cluster_columns = cluster_columns,
@@ -1934,7 +1990,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                  p <-  TCGAvisualize_Heatmap(data=assay(data),
                                                              col.metadata=col.metadata,
                                                              row.metadata=row.metadata,
-                                                             title = "Heatmap",
+                                                             title = title,
+                                                             extrems = extrems,
+                                                             color.levels = color.levels,
+                                                             rownames.size = rownames.size,
+                                                             values.label = values.label,
                                                              filename = NULL,
                                                              cluster_rows = cluster_rows,
                                                              show_column_names = show_column_names,

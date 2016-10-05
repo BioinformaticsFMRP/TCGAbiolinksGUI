@@ -636,12 +636,33 @@ body <-  dashboardBody(
                                    selectizeInput('rowmetadataheatmap',
                                                   "Rows annotations",
                                                   choices = NULL,  multiple = TRUE)),
+                               box(title = "Text options",width = NULL,
+                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                                   textInput("heatmapMain", label = "Title", value = "Heatmap"),
+                                   textInput("heatmapLabel", label = "Values label", value = "Values"),
+
+                                   sliderInput("heatmapRownamesSize", "Row names size", min = 1, max = 18, value = 6)
+                               ),
+                               box(title = "Color options",width = NULL,
+                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                                   checkboxInput("heatmap.colorsCb", "Set colors?", value = FALSE, width = NULL),
+                                   colourInput("heatmapcolMax", "Max level", value = "red"),
+                                   colourInput("heatmapcolMid", "Mid level", value = "black"),
+                                   colourInput("heatmapcolMin", "Min level", value = "green"),
+                                   checkboxInput("heatmap.extremesCb", "Set extremes?", value = FALSE, width = NULL),
+                                   numericInput("heatmapExtremeMax", "Max Level extreme",
+                                                min = -1000000, max = 10000000, value = 0, step = 1),
+                                   numericInput("heatmapExtremeMid",  "Mid Level extreme",
+                                                min = -1000000, max = 10000000, value = 0, step = 1),
+                                   numericInput("heatmapExtremeMin",  "Min Level extreme",
+                                                min = -1000000, max = 10000000, value = 0, step = 1)
+                               ),
                                box(title = "Other options",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-
                                    selectizeInput('heatmapScale',
                                                   "Scale data",
                                                   choices = c("none","row","col"),selected = "none",  multiple = FALSE),
+                                   checkboxInput("heatmaplog2_plus_one", "Take the log2(matrix + 1)?", value = FALSE, width = NULL),
                                    checkboxInput("heatmap.clusterrows", "Cluster rows?", value = FALSE, width = NULL),
                                    checkboxInput("heatmap.clustercol", "Cluster columns?", value = FALSE, width = NULL),
                                    checkboxInput("heatmap.show.row.names", "Show row names?", value = FALSE, width = NULL),
@@ -649,7 +670,7 @@ body <-  dashboardBody(
                                box(title = "Size control",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    sliderInput("heatmapwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                                   sliderInput("heatmapheight", "Plot Height (px)", min = 0, max = 800, value = 1000)
+                                   sliderInput("heatmapheight", "Plot Height (px)", min = 0, max = 1200, value = 1000)
                                ),
                                actionButton("heatmapPlotBt",
                                             "Heatmap plot",
