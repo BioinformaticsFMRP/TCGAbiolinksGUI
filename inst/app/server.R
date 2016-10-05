@@ -2054,7 +2054,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- read_csv2(file); se$X1 <- NULL
+            df <- as.data.frame(read_csv2(file));
             rownames(df) <- df[,1]
             df[,1] <- NULL
         } else if(tools::file_ext(file)=="rda"){
