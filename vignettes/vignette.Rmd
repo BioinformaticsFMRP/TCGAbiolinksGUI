@@ -296,13 +296,12 @@ devtools::load_all(".")
 
 TCGAbiolinksGUI was created to help users without knowledge of programming to search, download and analyze 
 TCGA data. This package offers an graphical user interface to the R/biocondcutor packages [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/) [@ref2] and [ELMER](http://bioconductor.org/packages/ELMER/) packages [@ref4].
-Also, some other useful packages from bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/)  package [@ref1] has been used for data visualization.
+Also, some other useful packages from bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package [@ref1] has been used for data visualization.
 
 In order to present the package we divided this vignette based in the GUI menus that
 were created based on different group of analysis. The menus and sub-menus are:
 
 * TCGA Data
-    + TCGA data information
     + Get TCGA data
         + Molecular data
         + Mutation data
@@ -310,7 +309,6 @@ were created based on different group of analysis. The menus and sub-menus are:
         + Subtype data
 * Analysis        
     * Clinical analysis
-        + Profile plot
         + Survival plot
     * Epigenetic analysis
         + Differential methylation analysis
@@ -327,6 +325,7 @@ were created based on different group of analysis. The menus and sub-menus are:
 * Integrative analysis
     + Starburst plot
     + ELMER
+* Configuration
 * Help documents
     + Tutorial/vignettes
     + References
@@ -371,6 +370,10 @@ TCGAbiolinksGUI()
 Please cite both TCGAbiolinks package and TCGAbiolinksGUI: 
 
 * Colaprico A, Silva TC, Olsen C, Garofano L, Cava C, Garolini D, Sabedot T, Malta TM, Pagnotta SM, Castiglioni I, Ceccarelli M, Bontempi G and Noushmehr H. "TCGAbiolinks: an R/Bioconductor package for integrative analysis of TCGA data." Nucleic acids research (2015): gkv1507.
+
+Other related publications to this package:
+
+* "TCGA Workflow: Analyze cancer genomics and epigenomics data using Bioconductor packages". F1000Research [10.12688/f1000research.8923.1](http://dx.doi.org/doi:10.12688/f1000research.8923.1) [@ref24]
 
 Also, if you have used ELMER analysis please cite:
 
@@ -465,52 +468,6 @@ files. The user can select from the table which MAF file to download. The output
 \newpage
 # Analysis
 ## Menu: Clinical analysis
-
-#### Sub-menu: Profile plot
-Sometimes we would like to see the distribution of some features in each cluster. 
-We could do a barplot for each cluster in which the bars would have the counts of the subtypes.
-
-But here, we propose another way to display the association between cancer subtypes and any kind of clustering is using the TCGAvisualize_profilePlot function.
-
-The profilePlot will have tree important regions, the distribuition in percentage of a feature inside the cluster (central bars), the distribution of the samples over the clusters (left bar), and the subytype distribution taking in cosideration all samples (bottom bar).
-
-For example in the plot below our groups are the DNA methylation cluster (Codel, Classic-like, G-CIMP-high, G-CIMP-low, mesenchymal-like,PA-like), the subgroup is the IDH status (Mutant or WT - wild Type). From the bottom bar
-we can easily see that the majority of samples are Mutant. From the left bar we can easily see that codel and 
-G-cimp-high are the bigger groups. And from the central plot we can see that mesenchymal-like, PA-like and classic-like 
-are all WT. As the distribution of this subgroup in not equal in the groups, this means that the division of the group
-has some relation with the subgroup informatio. So IDH status might be defining the group distribution.
-
-![Profile plot menu: Main window.](profileplot.png)
-
-##### Data 
-A cvs or R object (rda) file with the subtype information.
-
-##### General parameters 
-
-* Group column: select the column that defines the groups
-* Subgroup column: select the column that defines the subpgroups
-* Remove NA groups: if any of the groups is NA it will be removed
-* Remove NA subgroups: if any of the subgroups is NA it will be removed
-
-##### Text parameters 
-
-* Size title left barplot 
-* Text size cluster names 
-* Legend text size 
-* Title legend size 
-* Size % cluster distribution
-
-##### Color control
-
-Control colors in the plot
-
-##### Left bar control
-
-Change the size of the plot and the margins that will control the position of the left bar if not very well aligned.
-
-##### Size control
-Change the size of the plot
-
 
 #### Sub-menu: Survival plot
 From the clinical data download in the TCGA data menu, the user can use it to verify the survival of groups.
