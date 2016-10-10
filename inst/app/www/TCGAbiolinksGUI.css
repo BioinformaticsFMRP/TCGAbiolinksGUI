@@ -192,7 +192,7 @@ hr.lineData  {
     color: rgba(255, 84, 84, 0.36);
 }
 hr.lineData:after {
-    content:"TCGA Data";
+    content:"GDC Data";
     display: inline-block;
     position: relative;
     top: -1.6em;

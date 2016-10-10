@@ -256,8 +256,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         options.filter <- paste0("filters=", URLencode("{\"op\":\"and\",\"content\":[{\"op\":\"in\",\"content\":{\"field\":\"cases.project.project_id\",\"value\":[\""),
                                  project, URLencode("\"]}},{\"op\":\"in\",\"content\":{\"field\":\"files.data_category\",\"value\":[\""),
                                  files.data_category, URLencode("\"]}}]}"))
-        print(paste0(baseURL, paste(options.pretty, options.expand,
-                                    option.size, options.filter, sep = "&")))
 
         withProgress(message = 'Loading clinical data',
                      detail = 'This may take a while...', value = 0, {
@@ -430,7 +428,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                   gsub(" ","_",isolate({input$tcgaDataTypeFilter})),
                                   ifelse(isolate({input$tcgaDatabase}),"hg19","hg38"),
                                   sep = "_"),".rda"))
-        updateCollapse(session, "collapseTCGA", open = "TCGA search results")
+        updateCollapse(session, "collapseTCGA", open = "GDC search results")
         output$tcgaview <- renderGvis({
             closeAlert(session,"tcgaAlert")
             results <- query.result()[[1]]$results[[1]]
@@ -489,21 +487,18 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         getPath <- parseDirPath(volumes, input$workingDir)
         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         filename <- file.path(getPath,isolate({input$tcgafilename}))
-
         withProgress(message = 'Download in progress',
                      detail = 'This may take a while...', value = 0, {
                          trash = tryCatch({
                              n <- nrow(results)
                              step <- 20
-                             for(i in 0:(n/step)){
+                             for(i in 0:ceiling(n/step - 1)){
                                  query.aux <- query
                                  end <- ifelse(((i + 1) * step) > n, n,((i + 1) * step))
                                  query.aux$results[[1]] <- query.aux$results[[1]][((i * step) + 1):end,]
                                  GDCdownload(query.aux, method = "api",directory = getPath)
                                  incProgress(1/ceiling(n/step), detail = paste("Completed ", i + 1, " of ",ceiling(n/step)))
                              }
-                             # just to be sure it was all downloaded
-                             GDCdownload(query, method = "api", directory = getPath)
                          }, error = function(e) {
                              createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
                                          content = "Error while downloading the files", append = FALSE)
@@ -839,7 +834,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$mafAnnotation)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read.csv2(file,header = T,stringsAsFactors = FALSE, row.names = 1)
+            se <- read_csv2(file); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -902,7 +897,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- read.csv2(file,header = T,stringsAsFactors = FALSE)
+            se <- read_csv2(file);
             rownames(df) <- df[,1]
             df[,1] <- NULL
         } else if(tools::file_ext(file)=="rda"){
@@ -1159,7 +1154,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         df <- read.csv2(file,header = T,row.names = 1)
+                         df <- as.data.frame(read_csv2(file)); df$X1 <- NULL
                          incProgress(1, detail = "Completed")
                      })
         return(df)
@@ -1267,7 +1262,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                   ".csv")
                     write.csv2(data,file =  file.path(getPath, csv))
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
-                                content = paste0(getwd(),"/",csv), append = FALSE)
+                                content = paste0(file.path(getPath, csv)), append = FALSE)
 
                 }
                 withProgress(message = 'Creating plot',
@@ -1328,7 +1323,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     out.filename <- file.path(getPath,out.filename)
                     write.csv2(data, file = out.filename)
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
-                                content =  paste0(getwd(),"/",out.filename), append = FALSE)
+                                content =  paste0(out.filename), append = FALSE)
                 }
 
                 withProgress(message = 'Creating plot',
@@ -1524,16 +1519,16 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              message <- paste0(message,"<li>DMR_results_",
                                                file.path(getPath,
                                                          paste0(gsub("_",".",isolate({input$dmrgroupCol})),
-                                               "_", gsub("_",".",group1), "_", gsub("_",".",group2), "_",
-                                               "pcut_",isolate({input$dmrpvalue}), "_",
-                                               "meancut_",isolate({input$dmrthrsld}),".csv")),"</li>")
+                                                                "_", gsub("_",".",group1), "_", gsub("_",".",group2), "_",
+                                                                "pcut_",isolate({input$dmrpvalue}), "_",
+                                                                "meancut_",isolate({input$dmrthrsld}),".csv")),"</li>")
                              file  <- as.character(parseFilePaths(volumes, input$dmrfile)$datapath)
                              if(!grepl("results",file)) file <- gsub(".rda","_results.rda",file)
                              save(se,file = file)
                              setProgress(1, detail = paste("Saving completed"))
                          })
         }
-        createAlert(session, "dmrmessage", "dmrAlert", title = "DMR completed", style =  "danger",
+        createAlert(session, "dmrmessage", "dmrAlert", title = "DMR completed", style =  "success",
                     content = paste0("Summarized Experiment object with results saved in: ", file, message,"<ul>"),
                     append = FALSE)
     })
@@ -1794,8 +1789,27 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             }
         }
     })
-    observeEvent(input$heatmap.sortCb, {
-        shinyjs::toggle("heatmapSortCol")
+    observeEvent(input$heatmap.colorsCb, {
+        if(input$heatmap.colorsCb){
+            shinyjs::show("heatmapcolMax")
+            shinyjs::show("heatmapcolMid")
+            shinyjs::show("heatmapcolMin")
+        } else {
+            shinyjs::hide("heatmapcolMax")
+            shinyjs::hide("heatmapcolMid")
+            shinyjs::hide("heatmapcolMin")
+        }
+    })
+    observeEvent(input$heatmap.extremesCb, {
+        if(input$heatmap.extremesCb) {
+            shinyjs::show("heatmapExtremeMax")
+            shinyjs::show("heatmapExtremeMid")
+            shinyjs::show("heatmapExtremeMin")
+        } else {
+            shinyjs::hide("heatmapExtremeMax")
+            shinyjs::hide("heatmapExtremeMid")
+            shinyjs::hide("heatmapExtremeMin")
+        }
     })
 
     #-------------------------END controlling show/hide states -----------------
@@ -1815,7 +1829,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         df <- read.csv2(file,header = TRUE, stringsAsFactors = FALSE)
+                         df <- as.data.frame(read_csv2(file)); rownames(df) <- df$X1; df$X1 <- NULL;
                          incProgress(1, detail = "Completed")
                      })
         return(df)
@@ -1845,6 +1859,19 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         return(se)
 
     })
+
+    # If the user ulpload a DEA results, the type of heatmap should be changed automatically to avoid
+    # errors. Should this be visible to the user ?
+    observe({
+        if(!is.null(input$heatmapresultsfile)){
+            file  <- basename(as.character(parseFilePaths(volumes, input$heatmapresultsfile)$datapath))
+            selected <- "met"
+            if(grepl("DEA",file))  selected <- "exp"
+            updateRadioButtons(session, "heatmapTypeInputRb", selected = selected)
+            updateTextInput(session,"heatmapLabel", value = ifelse(selected == "met","DNA methylation level","Gene expression level"))
+        }
+    })
+
     observeEvent(input$heatmapPlotBt , {
         output$heatmap.plotting <- renderPlot({
 
@@ -1866,7 +1893,24 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             cluster_columns <- isolate({input$heatmap.clustercol})
             sortCol <- isolate({input$heatmapSortCol})
             scale <- isolate({input$heatmapScale})
+            title <-  isolate({input$heatmapMain})
+            values.label <-  isolate({input$heatmapLabel})
+            rownames.size <-  isolate({input$heatmapRownamesSize})
 
+            if(isolate({input$heatmap.colorsCb})) {
+                color.levels <- c(isolate({input$heatmapcolMin}),
+                                  isolate({input$heatmapcolMid}),
+                                  isolate({input$heatmapcolMax}))
+            } else {
+                color.levels <- NULL
+            }
+            if(isolate({input$heatmap.extremesCb})) {
+                extrems <- c(isolate({input$heatmapExtremeMin}),
+                             isolate({input$heatmapExtremeMid}),
+                             isolate({input$heatmapExtremeMax}))
+            } else {
+                extrems <- NULL
+            }
             if(isolate({input$heatmapTypeInputRb}) == "met") type <-  "methylation"
             if(isolate({input$heatmapTypeInputRb}) == "exp") type <-  "expression"
 
@@ -1908,14 +1952,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     genes <- results.data[,"status"] %in% sig.genes
                 } else {
                     sig.genes <- parse.textarea.input(isolate({input$heatmapGenesTextArea}))
-                    aux <- strsplit(results.data$mRNA,"\\|")
-                    results.data$gene <- unlist(lapply(aux,function(x) x[2]))
                     genes <- which(results.data$gene %in% sig.genes)
                 }
-
-                data <- data[genes,]
                 results.data <- results.data[genes,]
-
+                data <- data[values(data)$gene_id %in% results.data$mRNA ,]
             }
             # ---------------- col.metadata
             if(!("barcode" %in% colnames(colData(data)))){
@@ -1934,14 +1974,25 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             if(!is.null(rowmdata)) {
                 if(length(rowmdata) > 0) row.metadata <- subset(values(data), select=c(rowmdata))
             }
+
+            save(data, col.metadata, row.metadata, cluster_rows,show_column_names,type,scale, file = "debug_heatmap.rda")
+
+            if(isolate({input$heatmaplog2_plus_one})) {
+                assay(data) <- log2(assay(data) + 1) # if there were 0 values the scale was giving bugs
+            }
+
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
                              if(!isolate({input$heatmap.sortCb})) {
                                  p <-  TCGAvisualize_Heatmap(data=assay(data),
                                                              col.metadata=col.metadata,
                                                              row.metadata=row.metadata,
-                                                             title = "Heatmap",
+                                                             title = title,
+                                                             color.levels = color.levels,
+                                                             rownames.size = rownames.size,
+                                                             values.label = values.label,
                                                              filename = NULL,
+                                                             extrems = extrems,
                                                              cluster_rows = cluster_rows,
                                                              show_column_names = show_column_names,
                                                              cluster_columns = cluster_columns,
@@ -1952,7 +2003,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                  p <-  TCGAvisualize_Heatmap(data=assay(data),
                                                              col.metadata=col.metadata,
                                                              row.metadata=row.metadata,
-                                                             title = "Heatmap",
+                                                             title = title,
+                                                             extrems = extrems,
+                                                             color.levels = color.levels,
+                                                             rownames.size = rownames.size,
+                                                             values.label = values.label,
                                                              filename = NULL,
                                                              cluster_rows = cluster_rows,
                                                              show_column_names = show_column_names,
@@ -2012,7 +2067,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- read.csv2(file,header = T,stringsAsFactors = FALSE)
+            df <- as.data.frame(read_csv2(file));
             rownames(df) <- df[,1]
             df[,1] <- NULL
         } else if(tools::file_ext(file)=="rda"){
@@ -2114,162 +2169,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                      filename = NULL)
                          })
         })})
-    #--------------------------------------------------------------------------
-    #                           Profile plot
-    #--------------------------------------------------------------------------
-    #--------------------- START controlling show/hide states -----------------
-    shinyjs::hide("profileplotgroup")
-    shinyjs::hide("profileplotsubtype")
-    shinyjs::hide("profileplotrmnagroup")
-    shinyjs::hide("profileplotrmnasub")
-    observeEvent(input$profileplotfile, {
-        if(!is.null(profileplotdata())){
-            shinyjs::show("profileplotgroup")
-            shinyjs::show("profileplotsubtype")
-            shinyjs::show("profileplotrmnagroup")
-            shinyjs::show("profileplotrmnasub")
-        }
-    })
-    #----------------------- END controlling show/hide states -----------------
-
-    observe({
-        data <- profileplotdata()
-        if(!is.null(data)) {
-            # remove numeric columns
-            #data <- data[,which(apply(data,2,function(x) class(parse_guess((x)))) == "character")]
-            names <- colnames(data)[apply(data,2,function(x) length(unique(x))) > 1]
-            updateSelectizeInput(session, 'profileplotgroup', choices = {
-                as.character(names)
-            }, server = TRUE)
-            updateSelectizeInput(session, 'profileplotsubtype', choices = {
-                as.character(names)
-            }, server = TRUE)
-        }
-    })
-
-
-    profileplotdata <- function(){
-        inFile <- input$profileplotfile
-        if (is.null(inFile)) return(NULL)
-        file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
-        if(tools::file_ext(file)=="csv"){
-            df <- read.csv2(file,header = T, row.names = 1)
-        } else if(tools::file_ext(file)=="rda"){
-            df <- get(load(file))
-        } else {
-            createAlert(session, "profileplotmessage", "profileplotAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, but I'm expecting a csv or rda file, but I got a: ",
-                                         tools::file_ext(file)), append = FALSE)
-            return(NULL)
-        }
-
-        if(class(df)!= class(data.frame())){
-            createAlert(session, "profileplotmessage", "profileplotAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, but I'm expecting a Data frame object, but I got a: ",
-                                         class(df)), append = FALSE)
-            return(NULL)
-        }
-        return(df)
-    }
-
-    observe({
-        groupCol <-  input$profileplotgroup
-        na.rm.groups <-  input$profileplotrmnagroup
-        data <- isolate({profileplotdata()})
-
-
-        if(na.rm.groups){
-            data <- data[!is.na(data[,groupCol]),]
-            data <- data[which(data[,groupCol] != "NA"),]
-        }
-        x <- length(unique(data[,groupCol]))
-        m1 <- 0
-        m3 <- 0
-
-        if (x == 2) { m1 <- -5.0; m3 <-  1.8}
-        if (x == 3) { m1 <- -5.0; m3 <-  0.0}
-        if (x == 4) { m1 <- -5.0; m3 <- -1.5}
-        if (x == 5) { m1 <- -4.8; m3 <- -1.5}
-        if (x == 6) { m1 <- -4.8; m3 <- -2.0}
-        if (x == 7) { m1 <- -4.8; m3 <- -2.1}
-        if (x == 8) { m1 <- -4.8; m3 <- -2.5}
-
-        # Control the value, min, max, and step.
-        # Step size is 2 when input value is even; 1 when value is odd.
-        updateSliderInput(session, "margin1", value = m1,
-                          min = -10, max = 10, step = 0.1)
-        updateSliderInput(session, "margin3", value = m3,
-                          min = -10, max = 10, step = 0.1)
-
-    })
-
-    observeEvent(input$profileplotBt , {
-        output$profile.plotting <- renderPlot({
-            closeAlert(session, "profileplotAlert")
-
-            data <- isolate({profileplotdata()})
-            subtypeCol <- isolate({input$profileplotsubtype})
-            groupCol <-  isolate({input$profileplotgroup})
-            na.rm.groups <-  isolate({input$profileplotrmnagroup})
-            na.rm.subtypes  <-  isolate({input$profileplotrmnasub})
-            m1  <-  isolate({input$margin1})
-            m2  <-  isolate({input$margin2})
-            m3  <-  isolate({input$margin3})
-            m4  <-  isolate({input$margin4})
-
-            axis.title.size <-  isolate({input$profileplot.axis.title.size})
-            axis.textsize <-  isolate({input$profileplot.axis.textsize})
-            legend.size <-  isolate({input$profileplot.legend.size})
-            legend.title.size <- isolate({input$profileplot.legend.title.size})
-            geom.label.size <- isolate({input$profileplot.geom.label.size})
-
-            if(is.null(data)){
-                createAlert(session, "profileplotmessage", "profileplotAlert", title = "Missing data", style =  "danger",
-                            content = paste0("Please select the data"), append = FALSE)
-                return(NULL)
-            }
-
-            if(is.null(groupCol) || nchar(groupCol) == 0){
-                createAlert(session, "profileplotmessage", "profileplotAlert", title = "Missing group selection", style =  "danger",
-                            content = paste0("Please select the group column"), append = FALSE)
-                return(NULL)
-            }
-
-            if(is.null(subtypeCol) || nchar(subtypeCol) == 0){
-                createAlert(session, "profileplotmessage", "profileplotAlert", title = "Missing subgroup selection", style =  "danger",
-                            content = paste0("Please select the subgroup column"), append = FALSE)
-                return(NULL)
-            }
-
-
-            withProgress(message = 'Creating plot',
-                         detail = 'This may take a while...', value = 0, {
-
-                             TCGAvisualize_profilePlot(data = data,
-                                                       groupCol=groupCol,
-                                                       subtypeCol=subtypeCol,
-                                                       na.rm.groups = na.rm.groups,
-                                                       na.rm.subtypes = na.rm.subtypes,
-                                                       plot.margin=c(m1,m2,m3,m4),
-                                                       axis.title.size=axis.title.size,
-                                                       axis.textsize=axis.textsize,
-                                                       legend.size=legend.size,
-                                                       legend.title.size=legend.title.size,
-                                                       geom.label.size = geom.label.size,
-                                                       geom.label.color = isolate({input$profileplotColorTextLeftBar}))
-
-                         })
-        })})
-
-    observeEvent(input$profileplotBt , {
-        updateCollapse(session, "collapseprofileplot", open = "Profile plot")
-        output$profileplot <- renderUI({
-            plotOutput("profile.plotting", width = paste0(isolate({input$profilewidth}), "%"), height = isolate({input$profileheight}))
-        })})
-    shinyFileChoose(input, 'profileplotfile', roots=volumes, session=session,
-                    restrictions=system.file(package='base'),filetypes=c('', 'rda','csv'))
-
-
     #------------------------------------------------
     # Survival plot
     # -----------------------------------------------
@@ -2309,7 +2208,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- read.csv2(file,header = T)
+            df <- as.data.frame(read_csv2(file))
             rownames(df) <- df[,1]
             df[,1] <- NULL
         } else if(tools::file_ext(file)=="rda"){
@@ -2471,12 +2370,15 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g2)
                          exp$Gene_Symbol <- unlist(lapply(strsplit(exp$mRNA,"\\|"),function(x) x[2]))
                      })
-
+        print(head(exp))
         out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),
                                      gsub("_",".",g1), gsub("_",".",g2),
                                      "pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
+        getPath <- parseDirPath(volumes, input$workingDir)
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+        out.filename <- file.path(getPath,out.filename)
         write.csv2(exp, file = out.filename)
-        createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "danger",
+        createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "success",
                     content = out.filename, append = FALSE)
     })
     shinyFileChoose(input, 'deafile', roots=volumes, session=session, restrictions=system.file(package='base'))
@@ -2551,7 +2453,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$pathewayexpfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read.csv2(file,header = TRUE, stringsAsFactors = FALSE)
+            se <- read_csv2(file)
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -2570,8 +2472,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
         pathway.id <- isolate({input$pathway.id})
         kegg.native <- isolate({input$kegg.native.checkbt})
+        print(head(data))
 
-        gene <- strsplit(data$mRNA,"\\|")
+        if("mRNA" %in% colnames(data)) {
+            gene <- strsplit(data$mRNA,"\\|")
+        } else {
+            gene <- rownames(data)
+        }
         data$SYMBOL <- unlist(lapply(gene,function(x) x[1]))
 
         # Converting Gene symbol to geneID
@@ -2743,7 +2650,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$starburstexpfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read.csv2(file,header = T,row.names = 1)
+            se <- read_csv2(file); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -2760,7 +2667,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(volumes, input$starburstmetfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read.csv2(file,header = T, row.names = 1)
+            se <- as.data.frame(read_csv2(file)); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
