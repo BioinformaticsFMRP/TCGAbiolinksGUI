@@ -12,10 +12,6 @@ names(pathways.id) <- unname(paths.hsa)
 pathways.id <- pathways.id[sort(unname(paths.hsa))]
 menu.icon <- "arrow-circle-right"
 
-# Defining parameters
-disease <-  TCGAbiolinks:::getGDCprojects()$project_id
-names(disease) <-  paste0(TCGAbiolinks:::getGDCprojects()$disease_type, " (",disease,")")
-disease <- disease[sort(names(disease))]
 
 
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
@@ -156,7 +152,7 @@ body <-  dashboardBody(
                                          "left"),
                                selectizeInput('tcgaProjectFilter',
                                               'Project filter',
-                                              disease,
+                                              NULL,
                                               multiple = FALSE),
                                selectizeInput('tcgaDataCategoryFilter',
                                               'Data Category filter',
@@ -261,7 +257,7 @@ body <-  dashboardBody(
                                solidHeader = FALSE, collapsible = FALSE,
                                selectizeInput('tcgatumorClinicalFilter',
                                               'Tumor filter',
-                                              disease,
+                                              NULL,
                                               multiple = FALSE),
                                checkboxInput("clinicalIndexed", "Indexed data ?", value = TRUE, width = NULL),
                                bsTooltip("clinicalIndexed", "The indexed data is the patient data updated with the las follow up, but has not drug, radiation and other informations",

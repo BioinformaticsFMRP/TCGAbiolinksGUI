@@ -156,6 +156,15 @@ tcga.code <- c("Primary solid Tumor","Recurrent Solid Tumor",
 names(tcga.code) <- c('01','02','03','04','05','06','07','08','09','10',
                       '11','12','13','14','20','40','50','60','61')
 
+# Defining parameters
+getTCGAdisease <- function(){
+    projects <- TCGAbiolinks:::getGDCprojects()
+    disease <-  projects$project_id
+    names(disease) <-  paste0(projects$disease_type, " (",disease,")")
+    disease <- disease[sort(names(disease))]
+    return(disease)
+}
+
 getMatchedPlatform <- function(query){
     matched <- NULL
     for(plat in query$Platform){
@@ -1063,6 +1072,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     observe({
         updateSelectizeInput(session, 'tcgaMafTumorFilter', choices =  getMafTumors(), server = TRUE)
+    })
+    observe({
+        updateSelectizeInput(session, 'tcgaProjectFilter', choices =  getTCGAdisease(), server = TRUE)
+        updateSelectizeInput(session, 'tcgatumorClinicalFilter', choices =  getTCGAdisease(), server = TRUE)
     })
 
     observe({
