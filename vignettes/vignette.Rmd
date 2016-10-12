@@ -427,9 +427,11 @@ LUSC[@ref16], PRAD[@ref19], READ [@ref12],  SKCM [@ref13], STAD [@ref10], THCA [
 
 The user can visualize the table with the information and save it as csv or an R object (rda) file.
 
+#### Sub-menu: Clinical data
+Download GDC clinical data
+
 #### Sub-menu: Mutation data
-In order to download the Mutation Annotation Format (MAF), it will get the tables from [TCGA MAF](https://wiki.nci.nih.gov/display/TCGA/TCGA+MAF+Files), remove the obsolete/protected
-files. The user can select from the table which MAF file to download. The output will be a R object (rda) file.
+Download the Mutation Annotation Format (MAF)
 
 \newpage
 # Analysis
@@ -477,7 +479,7 @@ Select a summarized Experiment object (rda)
 * DNA methylation threshold: minimun difference of DNA methylation levels to be considered as hyper/hypomethylated
 * P-value adj cut-off: minimun adjusted P-value to be considered as siginificant.
 * Group column: columns with the groups to be used in the analysis
-* Groups: Select at least two groups to the analyis. For example if it has three groups (g1,g2 and g3) the analysis will
+* Groups: Select at least two groups to the analyis. For example if it has three groups (g1, g2 and g3) the analysis will
 output g1 vs g2, g1 vs g3 and g2 vs g3.
 
 

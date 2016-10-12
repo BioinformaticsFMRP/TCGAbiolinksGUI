@@ -508,13 +508,17 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         withProgress(message = 'Prepare progress',
                      detail = 'This may take a while...', value = 0, {
                          trash = tryCatch({
+                             genes <- isolate({input$gisticGenes})
                              trash <- GDCprepare(query, save = TRUE,
                                                  save.filename = filename,
-                                                 summarizedExperiment = isolate({input$prepareRb}),
-                                                 directory = getPath)
+                                                 summarizedExperiment = as.logical(isolate({input$prepareRb})),
+                                                 directory = getPath,
+                                                 add.gistic2.mut = genes)
+
                          }, error = function(e) {
                              createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
                                          content = "Error while preparing the files", append = FALSE)
+                             print(e)
                              return(NULL)
                          })
                          createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
@@ -792,6 +796,21 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     shinyjs::hide("oncoGenes")
     #shinyjs::hide("oncoInputRb")
     shinyjs::hide("oncoGenesTextArea")
+    observeEvent(input$prepareRb, {
+        if(input$prepareRb) {
+            shinyjs::show("addGistic")
+        } else {
+            shinyjs::hide("addGistic")
+        }
+    })
+
+    observeEvent(input$addGistic, {
+        if(input$addGistic) {
+            shinyjs::show("gisticGenes")
+        } else {
+            shinyjs::hide("gisticGenes")
+        }
+    })
 
     observeEvent(input$mafAnnotation, {
         if(!is.null(annotation.maf())){
