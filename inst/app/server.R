@@ -227,15 +227,14 @@ parse.textarea.input <- function(text){
 
 get.volumes <- function(directory = NULL){
 
-    if(is.null(directory)) {
-        path <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
-        names(path) <- path
+    if(is.null(directory) ||  identical(directory, character(0))) {
+        volumes <- c(wd="./",home=Sys.getenv("HOME"), getVolumes()(), temp=tempdir())
     } else {
-        volumes <- c(home=getwd(), getVolumes()(), temp=tempdir(),wd="./")
+        volumes <- c(home=Sys.getenv("HOME"), getVolumes()(), temp=tempdir(),wd="./")
         path <- parseDirPath(volumes, directory)
         names(path) <- path
+        volumes <- c(path, home=Sys.getenv("HOME"), getVolumes()(), temp=tempdir(),wd="./")
     }
-    volumes <- c(path, home=getwd(), getVolumes()(), temp=tempdir(),wd="./")
     return(volumes)
 }
 
@@ -247,11 +246,14 @@ get.volumes <- function(directory = NULL){
 #' @import pathview ELMER TCGAbiolinks SummarizedExperiment shiny ggrepel UpSetR
 #' @keywords internal
 TCGAbiolinksGUIServer <- function(input, output, session) {
+
+    # Directory management
     #addClass(selector = "body", class = "sidebar-collapse")
-    setwd(Sys.getenv("HOME"))
     # Config
     dir.create(paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI"), showWarnings = FALSE)
+    setwd(file.path(Sys.getenv("HOME"), "TCGAbiolinksGUI"))
     shinyDirChoose(input, 'workingDir', roots=get.volumes(), session=session, restrictions=system.file(package='base'))
+
     shinyjs::hide("greetbox-outer")
     getClinical.info <-  reactive({
         project <- input$tcgaProjectFilter
@@ -848,13 +850,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
 
     #-------------------------END controlling show/hide states -----------------
-    observeEvent(input$workingDir, {
-
-        shinyFileChoose(input, 'maffile', roots=get.volumes(isolate({input$workingDir})), session=session,
+    observe({
+        shinyFileChoose(input, 'maffile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('', 'maf',"csv"))
-        shinyFileChoose(input, 'mafAnnotation', roots=get.volumes(isolate({input$workingDir})), session=session,
+        shinyFileChoose(input, 'mafAnnotation', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('', 'csv','rda'))
-        shinyFileChoose(input, 'oncoGenesFiles', roots=get.volumes(isolate({input$workingDir})), session=session, restrictions=system.file(package='base'))
+        shinyFileChoose(input, 'oncoGenesFiles', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
     })
     annotation.maf <- function(){
         inFile <- input$mafAnnotation
@@ -1163,9 +1164,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
     })
 
-    observeEvent(input$workingDir, {
-
-        shinyFileChoose(input, 'volcanofile', roots=get.volumes(isolate({input$workingDir})), session=session, restrictions=system.file(package='base'),filetypes=c('excel', 'csv'))
+    observe({
+        shinyFileChoose(input, 'volcanofile', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'),filetypes=c('excel', 'csv'))
     })
     volcanodata <-  reactive({
 
@@ -1561,15 +1561,14 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     content = paste0("Summarized Experiment object with results saved in: ", file, message,"<ul>"),
                     append = FALSE)
     })
-    observeEvent(input$workingDir, {
-
-        shinyFileChoose(input, 'dmrfile', roots=get.volumes(isolate({input$workingDir})), session=session,
+    observe({
+        shinyFileChoose(input, 'dmrfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'),filetypes=c('', 'rda'))
-        shinyFileChoose(input, 'meanmetfile', roots=get.volumes(isolate({input$workingDir})), session=session,
+        shinyFileChoose(input, 'meanmetfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'),filetypes=c('', 'rda'))
-        shinyFileChoose(input, 'heatmapfile', roots=get.volumes(isolate({input$workingDir})), session=session,
+        shinyFileChoose(input, 'heatmapfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'),filetypes=c('', 'rda'))
-        shinyFileChoose(input, 'heatmapresultsfile', roots=get.volumes(isolate({input$workingDir})), session=session,
+        shinyFileChoose(input, 'heatmapresultsfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'),filetypes=c('', 'csv'))
     })
     meandata <-  reactive({
@@ -2092,9 +2091,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
     })
     #----------------------- END controlling show/hide states -----------------
-    observeEvent(input$workingDir, {
-
-        shinyFileChoose(input, 'eaGenesFiles', roots=get.volumes(isolate({input$workingDir})), session=session, restrictions=system.file(package='base'))
+    observe({
+        shinyFileChoose(input, 'eaGenesFiles', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
     })
     eaGenesByFile <- function(){
         inFile <- input$eaGenesFiles
@@ -2328,9 +2326,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         output$survivalplot <- renderUI({
             plotOutput("survival.plotting", width = paste0(isolate({input$survivalwidth}), "%"), height = isolate({input$survivalheight}))
         })})
-    observeEvent(input$workingDir, {
+        observe({
 
-        shinyFileChoose(input, 'survivalplotfile', roots=get.volumes(isolate({input$workingDir})), session=session,
+        shinyFileChoose(input, 'survivalplotfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'),filetypes=c('', 'csv','rda'))
     })
     # -------------------------------------------------
@@ -2418,9 +2416,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "success",
                     content = out.filename, append = FALSE)
     })
-    observeEvent(input$workingDir, {
+        observe({
 
-        shinyFileChoose(input, 'deafile', roots=get.volumes(isolate({input$workingDir})), session=session, restrictions=system.file(package='base'))
+        shinyFileChoose(input, 'deafile', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
     })
     deadata <- function(){
         inFile <- input$deafile
@@ -2499,9 +2497,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         return(se)
     }
-    observeEvent(input$workingDir, {
+        observe({
 
-        shinyFileChoose(input, 'pathewayexpfile', roots=get.volumes(isolate({input$workingDir})), session=session, restrictions=system.file(package='base'))
+        shinyFileChoose(input, 'pathewayexpfile', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
     })
     observeEvent(input$pathwaygraphBt , {
 
@@ -2721,11 +2719,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         #}
         return(se)
     }
-    observeEvent(input$workingDir, {
+        observe({
 
-        shinyFileChoose(input, 'starburstmetfile', roots=get.volumes(isolate({input$workingDir})), session=session,
+        shinyFileChoose(input, 'starburstmetfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('excel', 'csv'))
-        shinyFileChoose(input, 'starburstexpfile', roots=get.volumes(isolate({input$workingDir})), session=session,
+        shinyFileChoose(input, 'starburstexpfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('excel', 'csv'))
     })
     output$starburstResult <- renderDataTable({
@@ -2876,15 +2874,15 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
     })
     #----------------------- END controlling show/hide states -----------------
-    observeEvent(input$workingDir, {
-        shinyDirChoose(input, 'elmerFolder', roots=get.volumes(isolate({input$workingDir})), session=session, restrictions=system.file(package='base'))
-        shinyFileChoose(input, 'elmermeefile', roots=get.volumes(isolate({input$workingDir})), session=session,
+        observe({
+        shinyDirChoose(input, 'elmerFolder', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
+        shinyFileChoose(input, 'elmermeefile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('', 'rda'))
-        shinyFileChoose(input, 'elmerresultsfile', roots=get.volumes(isolate({input$workingDir})), session=session,
+        shinyFileChoose(input, 'elmerresultsfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('', 'rda'))
-        shinyFileChoose(input, 'elmermetfile', roots=get.volumes(isolate({input$workingDir})), session=session,
+        shinyFileChoose(input, 'elmermetfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('', 'rda'))
-        shinyFileChoose(input, 'elmerexpfile', roots=get.volumes(isolate({input$workingDir})), session=session,
+        shinyFileChoose(input, 'elmerexpfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('', 'rda'))
     })
     # mee create
@@ -3352,10 +3350,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         )
     })
 
-
     output$wd <- renderPrint({
         path <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
-        if (identical(path, character(0))) path <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+        if(identical(path, character(0))) path <- getwd()
         return(path)
     })
 }
