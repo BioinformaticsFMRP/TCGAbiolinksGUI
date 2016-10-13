@@ -1958,7 +1958,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     group1.col <- gsub("[[:punct:]]| ", ".", group1)
                     group2.col <- gsub("[[:punct:]]| ", ".", group2)
                     idx <- paste("status",group1.col,group2.col, sep=".")
-                    probes <- results.data[,idx] %in% sig.probes
+                    probes <- apply(sapply(sig.probes, function(x) {grepl(x,results.data[,idx])}),1,any)
 
                     if(length(probes) == 0){
                         createAlert(session, "heatmapmessage", "heatmapAlert", title = "No significant probes", style =  "danger",
@@ -2407,9 +2407,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          }
 
                      })
-        print(head(exp))
         out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),
-                                     gsub("_",".",g1), gsub("_",".",g2),
+                                     gsub("[[:punct:]]| ", ".",g1), gsub("[[:punct:]]| ", ".",g2),
                                      "pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
         getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
@@ -2594,7 +2593,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
 
     # Main function
-    starburst <- function(){
+    # Main function
+    starburst <-  reactive({
 
         closeAlert(session,"starburstAlert")
         if(is.null(result.dea.data())){
@@ -2638,9 +2638,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             exp.group1 <- file[4]
             exp.group2 <- file[5]
         }
-
-        if(group1 == exp.group1 & group2 == exp.group2){
-
+        if(gsub("[[:punct:]]| ", ".", group1) == gsub("[[:punct:]]| ", ".", exp.group1)
+           & gsub("[[:punct:]]| ", ".", group2) == gsub("[[:punct:]]| ", ".", exp.group2)){
             result <- TCGAvisualize_starburst(met = met,
                                               exp = exp,
                                               group1 = group1,
@@ -2664,8 +2663,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                             content = paste0("Results saved in: ", out.filename), append = FALSE)
             }
             return(result)
+        } else {
+            createAlert(session, "starburstmessage", "starburstAlert", title = "Error", style =  "error",
+                        content = paste0("The sames groups were not found in the results files"), append = FALSE)
         }
-    }
+    })
     # -------------- Starburst plot
     observeEvent(input$starburstPlot , {
         # validate input
