@@ -1231,17 +1231,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
             # methylation pipeline
             if(isolate({input$volcanoInputRb})=="met"){
-
-                diffcol <- paste("diffmean", group1, group2,sep = ".")
-                if(!(diffcol %in% colnames(data))) {
-                    idx <- which(gsub("_",".",paste("diffmean", group1, group2,sep = ".")) == gsub("_",".",colnames(data)))
-                    diffcol <- colnames(data)[idx]
-                }
-                pcol <- paste("p.value.adj", group1, group2,sep = ".")
-                if(! pcol %in% colnames(data)) {
-                    idx <- which(gsub("_",".",paste("p.value.adj", group1, group2,sep = ".")) == gsub("_",".",colnames(data)))
-                    pcol <- colnames(data)[idx]
-                }
+                group1.col <- gsub("[[:punct:]]| ", ".", group1)
+                group2.col <- gsub("[[:punct:]]| ", ".", group2)
+                diffcol <- paste("diffmean", group1.col, group2.col,sep = ".")
+                pcol <- paste("p.value.adj", group1.col, group2.col,sep = ".")
                 if(!(pcol %in% colnames(data) & diffcol %in% colnames(data) )) {
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "Error", style =  "success",
                                 content = "We couldn't find the right columns in the data", append = FALSE)
@@ -1254,8 +1247,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
                 # Update data into a file
 
-                statuscol <- paste("status",group1,group2,sep = ".")
-                statuscol2 <- paste("status",group2,group1,sep = ".")
+                statuscol <- paste("status",group1.col,group2.col,sep = ".")
+                statuscol2 <- paste("status",group2.col,group1.col,sep = ".")
                 data[,statuscol] <-  "Not Significant"
                 data[,statuscol2] <-  "Not Significant"
 
@@ -1283,8 +1276,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
                     csv <- paste0(paste("DMR_results",
                                         gsub("_",".",groupCol),
-                                        gsub("_",".",group1),
-                                        gsub("_",".",group2),
+                                        group1.col,
+                                        group2.col,
                                         "pcut",y.cut,
                                         "meancut",x.cut,
                                         sep = "_"),
@@ -1958,8 +1951,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     if(isolate({input$heatmap.hyperprobesCb})) sig.probes <- c("Hypermethylated",sig.probes)
                     sig.probes <- paste(sig.probes,"in",group2)
                     # Get hypo methylated and hypermethylated probes
-                    idx <- paste("status",group1,group2, sep=".")
+                    group1.col <- gsub("[[:punct:]]| ", ".", group1)
+                    group2.col <- gsub("[[:punct:]]| ", ".", group2)
+                    idx <- paste("status",group1.col,group2.col, sep=".")
                     probes <- results.data[,idx] %in% sig.probes
+
                     if(length(probes) == 0){
                         createAlert(session, "heatmapmessage", "heatmapAlert", title = "No significant probes", style =  "danger",
                                     content = paste0("There are no significant probes"),append = FALSE)
@@ -1971,7 +1967,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 }
                 data <- data[probes,]
                 results.data <- results.data[probes,]
-
             } else {
                 if(isolate({input$heatmapGenesInputRb}) == "Status"){
                     sig.genes <- ""
@@ -2002,11 +1997,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             # ---------------- row.metadata
             row.metadata <- NULL
             if(!is.null(rowmdata)) {
-                if(length(rowmdata) > 0) row.metadata <- subset(values(data), select=c(rowmdata))
+                # We will consider the values in the resutls object, as the main object may not have the results
+                if(length(rowmdata) > 0) row.metadata <- subset(results.data, select=c(rowmdata))
             }
-
-            save(data, col.metadata, row.metadata, cluster_rows,show_column_names,type,scale, file = "debug_heatmap.rda")
-
             if(isolate({input$heatmaplog2_plus_one})) {
                 assay(data) <- log2(assay(data) + 1) # if there were 0 values the scale was giving bugs
             }
