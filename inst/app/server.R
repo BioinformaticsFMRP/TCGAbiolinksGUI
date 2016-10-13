@@ -2686,12 +2686,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         })})
 
     # Starburst plot input data
-    result.dea.data <- function(){
+    # Starburst plot input data
+    result.dea.data <-  reactive({
         inFile <- input$starburstexpfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$starburstexpfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read_csv2(file); se$X1 <- NULL
+            se <- as.data.frame(read_csv2(file)); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -2702,8 +2703,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             return(NULL)
         }
         return(se)
-    }
-    result.dmr.data <- function(){
+    })
+    result.dmr.data <-  reactive({
         inFile <- input$starburstmetfile
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$starburstmetfile)$datapath)
@@ -2720,7 +2721,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         #    return(NULL)
         #}
         return(se)
-    }
+    })
     observe({
 
         shinyFileChoose(input, 'starburstmetfile', roots=get.volumes(input$workingDir), session=session,
