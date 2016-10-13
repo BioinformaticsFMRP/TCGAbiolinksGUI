@@ -1318,7 +1318,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                            "Downregulated")
                 label[2:3] <-  paste(label[2:3], "in", group2)
                 if(isolate({input$volcanoNames})) names <- as.character(data$mRNA)
-                data$Gene_Symbol  <- as.character(data$mRNA)
+                data$Gene_symbol  <- as.character(data$mRNA)
                 data$status <- "Insignificant"
                 data[data$logFC >= x.cut & data$FDR <= y.cut,"status"] <- paste0("Upregulated in ", group2)
                 data[data$logFC <= -x.cut & data$FDR <= y.cut,"status"] <- paste0("Downregulated in ", group2)
@@ -1444,8 +1444,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if(!is.null(data)) {
             file  <- basename(as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$volcanofile)$datapath))
             if(grepl("DEA",file)){
-                if("Gene_Symbol" %in% colnames(data)){
-                    updateSelectizeInput(session, 'volcanoHighlight', choices = as.character(na.omit(unique(data$Gene_Symbol))), server = TRUE)
+                if("Gene_symbol" %in% colnames(data)){
+                    updateSelectizeInput(session, 'volcanoHighlight', choices = as.character(na.omit(unique(data$Gene_symbol))), server = TRUE)
                 }
                 if("mRNA" %in% colnames(data)){
                     updateSelectizeInput(session, 'volcanoHighlight', choices = as.character(na.omit(unique(data$mRNA))), server = TRUE)
@@ -2400,7 +2400,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                          exp$status <- "Insignificant"
                          exp[exp$logFC >= logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Upregulated in ", g2)
                          exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g2)
-                         exp$Gene_Symbol <- unlist(lapply(strsplit(exp$mRNA,"\\|"),function(x) x[2]))
+                         if(all(grepl("\\|",exp$mRNA))) {
+                             exp$Gene_symbol <- unlist(lapply(strsplit(exp$mRNA,"\\|"),function(x) x[2]))
+                         } else {
+                             exp$Gene_symbol <- exp$mRNA
+                         }
+
                      })
         print(head(exp))
         out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),
