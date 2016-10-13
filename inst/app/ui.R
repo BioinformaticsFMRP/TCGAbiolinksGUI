@@ -252,7 +252,7 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("cogs")))
                     ))
-                               ),
+        ),
         tabItem(tabName = "tcgaClinical",
                 fluidRow(
                     column(8, bsAlert("tcgaClinicalmessage"),
@@ -448,8 +448,8 @@ body <-  dashboardBody(
                                             icon = icon("picture-o")
                                ))
                     )
-                           )
-                           ),
+                )
+        ),
         tabItem(tabName = "volcano",
                 fluidRow(
                     column(8,  bsAlert("volcanomessage"),
@@ -519,8 +519,8 @@ body <-  dashboardBody(
                                             icon = icon("picture-o")
                                ))
                     )
-                           )
-                           ),
+                )
+        ),
         tabItem(tabName = "meanmet",
 
                 fluidRow(
@@ -584,8 +584,8 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("picture-o")))
                     )
-                           )
-                           ),
+                )
+        ),
         tabItem(tabName = "heatmap",
 
                 fluidRow(
@@ -686,8 +686,8 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("picture-o")))
                     )
-                           )
-                           ),
+                )
+        ),
         tabItem(tabName = "dmr",
 
                 fluidRow(
@@ -730,8 +730,8 @@ body <-  dashboardBody(
                                             icon = icon("flask")),
                                bsTooltip("dmrAnalysis", "This might take from hours up to days", "left"))
                     )
-                    )
-                    ),
+                )
+        ),
         tabItem(tabName = "ea",
                 fluidRow(
                     column(8,
@@ -792,9 +792,9 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("picture-o"))
                            )
-                           )
-                           )
-                           ),
+                    )
+                )
+        ),
         tabItem(tabName = "tcgasurvival",
                 fluidRow(
                     column(8,  bsAlert("survivalmessage"),
@@ -838,8 +838,8 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("picture-o")))
                     )
-                           )
-                           ),
+                )
+        ),
         tabItem(tabName = "dea",
                 fluidRow(
                     column(8,  bsAlert("deamessage"),
@@ -916,9 +916,9 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("file-pdf-o"))
                            )
-                           )
-                           )
-                           ),
+                    )
+                )
+        ),
         tabItem(tabName = "starburst",
                 fluidRow(
                     useShinyjs(),
@@ -988,8 +988,8 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("picture-o")))
                     )
-                           )
-                           ),
+                )
+        ),
         tabItem(tabName = "elmer",
                 fluidRow(
                     column(8,  bsAlert("elmermessage"),
@@ -1170,8 +1170,8 @@ body <-  dashboardBody(
                                               ),
                                               multiple = FALSE))
                     )
-                           )
-                           ),
+                )
+        ),
         tabItem(tabName = "config",
                 fluidRow(
                     column(1),
@@ -1192,8 +1192,8 @@ body <-  dashboardBody(
                            includeHTML("references.html")
                     )))
 
-                               )
-                )
+    )
+)
 
 # @title  Client side
 # @description Client side - Download data from roadmap project
