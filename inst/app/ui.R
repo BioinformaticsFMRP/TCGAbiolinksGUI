@@ -252,7 +252,7 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("cogs")))
                     ))
-        ),
+                               ),
         tabItem(tabName = "tcgaClinical",
                 fluidRow(
                     column(8, bsAlert("tcgaClinicalmessage"),
@@ -309,10 +309,10 @@ body <-  dashboardBody(
                                actionButton("tcgaMafSearchBt",
                                             "Download",
                                             style = "background-color: #000080;
-                                                     color: #FFFFFF;
-                                                     margin-left: auto;
-                                                     margin-right: auto;
-                                                     width: 100%",
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
                                             icon = icon("download")))
                     ))),
         tabItem(tabName = "tcgaSubtype",
@@ -441,15 +441,15 @@ body <-  dashboardBody(
                                actionButton("oncoprintPlot",
                                             "Plot oncoprint",
                                             style = "background-color: #000080;
-                                              color: #FFFFFF;
-                                              margin-left: auto;
-                                              margin-right: auto;
-                                              width: 100%",
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
                                             icon = icon("picture-o")
                                ))
                     )
-                )
-        ),
+                           )
+                           ),
         tabItem(tabName = "volcano",
                 fluidRow(
                     column(8,  bsAlert("volcanomessage"),
@@ -512,15 +512,15 @@ body <-  dashboardBody(
                                actionButton("volcanoPlotBt",
                                             "Volcano plot",
                                             style = "background-color: #000080;
-                                 color: #FFFFFF;
-                                 margin-left: auto;
-                                 margin-right: auto;
-                                 width: 100%",
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
                                             icon = icon("picture-o")
                                ))
                     )
-                )
-        ),
+                           )
+                           ),
         tabItem(tabName = "meanmet",
 
                 fluidRow(
@@ -584,8 +584,8 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("picture-o")))
                     )
-                )
-        ),
+                           )
+                           ),
         tabItem(tabName = "heatmap",
 
                 fluidRow(
@@ -680,14 +680,14 @@ body <-  dashboardBody(
                                actionButton("heatmapPlotBt",
                                             "Heatmap plot",
                                             style = "background-color: #000080;
-                                                 color: #FFFFFF;
-                                                 margin-left: auto;
-                                                 margin-right: auto;
-                                                 width: 100%",
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
                                             icon = icon("picture-o")))
                     )
-                )
-        ),
+                           )
+                           ),
         tabItem(tabName = "dmr",
 
                 fluidRow(
@@ -723,15 +723,15 @@ body <-  dashboardBody(
                                actionButton("dmrAnalysis",
                                             "DMR analysis",
                                             style = "background-color: #000080;
-                                              color: #FFFFFF;
-                                              margin-left: auto;
-                                              margin-right: auto;
-                                              width: 100%",
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
                                             icon = icon("flask")),
                                bsTooltip("dmrAnalysis", "This might take from hours up to days", "left"))
                     )
-                )
-        ),
+                    )
+                    ),
         tabItem(tabName = "ea",
                 fluidRow(
                     column(8,
@@ -786,15 +786,15 @@ body <-  dashboardBody(
                                actionButton("eaplot",
                                             "EA barplot",
                                             style = "background-color: #000080;
-                                              color: #FFFFFF;
-                                              margin-left: auto;
-                                              margin-right: auto;
-                                              width: 100%",
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
                                             icon = icon("picture-o"))
                            )
-                    )
-                )
-        ),
+                           )
+                           )
+                           ),
         tabItem(tabName = "tcgasurvival",
                 fluidRow(
                     column(8,  bsAlert("survivalmessage"),
@@ -838,8 +838,8 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("picture-o")))
                     )
-                )
-        ),
+                           )
+                           ),
         tabItem(tabName = "dea",
                 fluidRow(
                     column(8,  bsAlert("deamessage"),
@@ -849,53 +849,53 @@ body <-  dashboardBody(
                            box(title = "DEA analysis",width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
-                           box(title = "Data",width = NULL,
-                               solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
-                               shinyFilesButton('deafile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
-                                                multiple = FALSE)),
-                           box(title = "Pre-analysis options",width = NULL,
-                               solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                               checkboxInput("deanormalization", "Normalization of genes?", value = FALSE, width = NULL),
-                               useShinyjs(),
-                               selectizeInput('deanormalizationmet',
-                                              "Normalization of genes method",
-                                              choices = c("gcContent","geneLength"),
-                                              multiple = FALSE),
-                               checkboxInput("deafilter", "Quantile filter of genes?", value = FALSE, width = NULL),
-                               selectizeInput('deafilteringmet',
-                                              "DEA test method",
-                                              choices = c("quantile","varFilter","filter1","filter2"),
-                                              multiple = FALSE),
-                               numericInput("deafilteringcut", "Threshold selected as mean for filtering",
-                                            min = 0, max = 1, value = 0.25, step = 0.1)
-                           ),
-                           box(title = "Analysis parameter",width = NULL,
-                               solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                               numericInput("deathrsld", "Log FC threshold",
-                                            min = 0, max = 100, value = 0, step = 0.5),
-                               numericInput("deapvalue", "P-value adj cut-off",
-                                            min = 0, max = 1, value = 0.05, step = 0.001),
-                               selectizeInput('deagroupCol',
-                                              "Group column",
-                                              choices = NULL,  multiple = FALSE),
-                               selectizeInput('deagroup1',
-                                              "Group 1",
-                                              choices = NULL,  multiple = FALSE),
-                               selectizeInput('deagroup2',
-                                              "Group 2",
-                                              choices = NULL,  multiple = FALSE),
-                               selectizeInput('deamethod',
-                                              "DEA test method",
-                                              choices = c("glmLRT","exactTest"),
-                                              multiple = FALSE),
-                               actionButton("deaAnalysis",
-                                            "dea analysis",
-                                            style = "background-color: #000080;
-                                            color: #FFFFFF;
-                                            margin-left: auto;
-                                            margin-right: auto;
-                                            width: 100%",
-                                            icon = icon("flask")))
+                               box(title = "Data",width = NULL,
+                                   solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
+                                   shinyFilesButton('deafile', 'Select SummarizedExperiment', 'Please select SummarizedExperiment object',
+                                                    multiple = FALSE)),
+                               box(title = "Pre-analysis options",width = NULL,
+                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                                   checkboxInput("deanormalization", "Normalization of genes?", value = FALSE, width = NULL),
+                                   useShinyjs(),
+                                   selectizeInput('deanormalizationmet',
+                                                  "Normalization of genes method",
+                                                  choices = c("gcContent","geneLength"),
+                                                  multiple = FALSE),
+                                   checkboxInput("deafilter", "Quantile filter of genes?", value = FALSE, width = NULL),
+                                   selectizeInput('deafilteringmet',
+                                                  "DEA test method",
+                                                  choices = c("quantile","varFilter","filter1","filter2"),
+                                                  multiple = FALSE),
+                                   numericInput("deafilteringcut", "Threshold selected as mean for filtering",
+                                                min = 0, max = 1, value = 0.25, step = 0.1)
+                               ),
+                               box(title = "Analysis parameter",width = NULL,
+                                   solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                                   numericInput("deathrsld", "Log FC threshold",
+                                                min = 0, max = 100, value = 0, step = 0.5),
+                                   numericInput("deapvalue", "P-value adj cut-off",
+                                                min = 0, max = 1, value = 0.05, step = 0.001),
+                                   selectizeInput('deagroupCol',
+                                                  "Group column",
+                                                  choices = NULL,  multiple = FALSE),
+                                   selectizeInput('deagroup1',
+                                                  "Group 1",
+                                                  choices = NULL,  multiple = FALSE),
+                                   selectizeInput('deagroup2',
+                                                  "Group 2",
+                                                  choices = NULL,  multiple = FALSE),
+                                   selectizeInput('deamethod',
+                                                  "DEA test method",
+                                                  choices = c("glmLRT","exactTest"),
+                                                  multiple = FALSE),
+                                   actionButton("deaAnalysis",
+                                                "dea analysis",
+                                                style = "background-color: #000080;
+                                                color: #FFFFFF;
+                                                margin-left: auto;
+                                                margin-right: auto;
+                                                width: 100%",
+                                                icon = icon("flask")))
                            ),
                            box(title = "Pathway graphs",width = NULL,
                                status = "danger",
@@ -916,9 +916,9 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("file-pdf-o"))
                            )
-                    )
-                )
-        ),
+                           )
+                           )
+                           ),
         tabItem(tabName = "starburst",
                 fluidRow(
                     useShinyjs(),
@@ -988,8 +988,8 @@ body <-  dashboardBody(
                                             width: 100%",
                                             icon = icon("picture-o")))
                     )
-                )
-        ),
+                           )
+                           ),
         tabItem(tabName = "elmer",
                 fluidRow(
                     column(8,  bsAlert("elmermessage"),
@@ -1021,18 +1021,18 @@ body <-  dashboardBody(
                                               multiple = FALSE),
                                tags$hr(),
                                bsTooltip("elmermetnacut", " By default, for the DNA methylation data
-                                                            will remove probes with NA values in more than 20% samples and
-                                                            remove the anottation data.",
+                                         will remove probes with NA values in more than 20% samples and
+                                         remove the anottation data.",
                                          "left"),
                                numericInput("elmermetnacut", "DNA methylation: Cut-off NA samples (%)",
                                             min = 0, max = 1, value = 0.2, step = 0.1),
                                actionButton("elmerpreparemee",
                                             "Create mee object",
                                             style = "background-color: #000080;
-                                         color: #FFFFFF;
-                                         margin-left: auto;
-                                         margin-right: auto;
-                                         width: 100%",
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
                                             icon = icon("floppy-o"))),
                            box(title = "Data", width = NULL,
                                status = "danger",
@@ -1085,16 +1085,20 @@ body <-  dashboardBody(
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    sliderInput("elmercores", "Cores", step=1,
                                                min = 1, max = parallel::detectCores(), value = 1),
-                                   shinyDirButton('elmerFolder', 'Save folder', 'Please select a folder',
-                                                  class='shinyDirectories btn-default')
+                                   checkboxInput("elmerhyperdir", "Hypermethylation direction ?", value = TRUE, width = NULL),
+                                   bsTooltip("elmerhyperdir", "Select hypermethylated probes in experiment vs control",
+                                             "left"),
+                                   checkboxInput("elmerhypodir", "Hypomethylation direction ?", value = TRUE, width = NULL),
+                                   bsTooltip("elmerhypodir", "Select hypomethylataded probes in experiment vs control",
+                                             "left")
                                ),
                                actionButton("elmerAnalysisBt",
                                             "Run analysis",
                                             style = "background-color: #000080;
-                                        color: #FFFFFF;
-                                        margin-left: auto;
-                                        margin-right: auto;
-                                        width: 100%",
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
                                             icon = icon("flask"))),
                            box(title = "Plots", width = NULL,
                                status = "danger",
@@ -1150,10 +1154,10 @@ body <-  dashboardBody(
                                actionButton("elmerPlotBt",
                                             "Plot",
                                             style = "background-color: #000080;
-                                                     color: #FFFFFF;
-                                                     margin-left: auto;
-                                                     margin-right: auto;
-                                                     width: 100%",
+                                            color: #FFFFFF;
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 100%",
                                             icon = icon("picture-o"))),
                            box(title = "Results table", width = NULL,
                                status = "danger",
@@ -1166,8 +1170,8 @@ body <-  dashboardBody(
                                               ),
                                               multiple = FALSE))
                     )
-                )
-        ),
+                           )
+                           ),
         tabItem(tabName = "config",
                 fluidRow(
                     column(1),
@@ -1188,8 +1192,8 @@ body <-  dashboardBody(
                            includeHTML("references.html")
                     )))
 
-    )
-)
+                               )
+                )
 
 # @title  Client side
 # @description Client side - Download data from roadmap project

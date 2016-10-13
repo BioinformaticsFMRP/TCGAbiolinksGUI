@@ -2880,7 +2880,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
     #----------------------- END controlling show/hide states -----------------
     observe({
-        shinyDirChoose(input, 'elmerFolder', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
         shinyFileChoose(input, 'elmermeefile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('', 'rda'))
         shinyFileChoose(input, 'elmerresultsfile', roots=get.volumes(input$workingDir), session=session,
@@ -2982,10 +2981,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                      detail = 'This may take a while...', value = 0, {
 
                          exp.elmer <- TCGAprepare_elmer(exp.elmer, platform = "IlluminaHiSeq_RNASeqV2",save = FALSE)
-                         incProgress(1/5, detail = paste0('Expression preparation is done'))
+                         incProgress(1/5, detail = paste0('Gene expression matrix prepared'))
 
                          met.elmer <- TCGAprepare_elmer(met.elmer, platform = "HumanMethylation450",met.na.cut = isolate({input$elmermetnacut}), save = FALSE)
-                         incProgress(1/5, detail = paste0('Methylation preparation is done'))
+                         incProgress(1/5, detail = paste0('DNA Methylation matrix prepared'))
 
                          geneAnnot <- txs()
                          geneAnnot$GENEID <- paste0("ID",geneAnnot$GENEID)
@@ -2998,10 +2997,17 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
                          # Relabel samples in the mee object: subtype1 is control
                          mee@sample$TN[mee@sample$ID %in% substr(samples,1,15)] <- "Control"
-                         save(mee,file = paste0("mee_",column,"_",gsub(" ","-",subtype1),"_",gsub(" ","-",subtype2),".rda"))
+
+                         # Define where to save the mee object
+                         getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
+                         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+                         filename <- file.path(getPath,paste0("mee_",column,"_",
+                                                              gsub("[[:punct:]]| ", ".", subtype1),"_",
+                                                              gsub("[[:punct:]]| ", ".", subtype2),".rda"))
+                         save(mee,file = filename)
                          incProgress(2/5, detail = paste0('Saving is done'))
                          createAlert(session, "elmermessage", "elmerAlert", title = "Mee created", style =  "success",
-                                     content =   paste0("Mee file created: mee_",column,"_",gsub(" ","-",subtype1),"_",gsub(" ","-",subtype2),".rda"), append = TRUE)
+                                     content =   paste0("Mee file created: ", filename), append = TRUE)
                      })
     })
     # Input data
@@ -3089,7 +3095,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }, server = TRUE)
     })
     observeEvent(input$elmerAnalysisBt, {
-        getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), isolate({input$elmerFolder}))
+        getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         mee <- meedata()
         if(is.null(mee)){
             closeAlert(session, "elmerAlert")
@@ -3097,8 +3104,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         content =   "Please upload the mee object for this plot", append = TRUE)
             return(NULL)
         }
-        library(parallel)
-        direction <- c("hyper","hypo")
+        if(isolate({input$elmerhyperdir}) & isolate({input$elmerhypodir})) {
+            direction <- c("hyper","hypo")
+        } else if(isolate({input$elmerhyperdir})) {
+            direction <- c("hyper")
+        } else {
+            direction <- c("hypo")
+        }
 
         for (j in direction){
             withProgress(message = 'ELMER analysis',
