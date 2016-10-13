@@ -1503,30 +1503,34 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         for(i in 1:nrow(groups)) {
             group1 <- groups[i,1]
             group2 <- groups[i,2]
+            group1.col <- gsub("[[:punct:]]| ", ".", group1)
+            group2.col <- gsub("[[:punct:]]| ", ".", group2)
+            statuscol <- paste("status",group2.col,group1.col,sep = ".")
             results <- NULL
             withProgress(message = 'DMR analysis in progress',
                          detail = paste(group1," vs ", group2), value = 0, {
                              message <- "<br>Saving the results also in a csv file:<ul>"
-                             step <- 1000
-                             n <- nrow(se)
-                             for(j in 0:floor(n/step)){
-                                 end <- ifelse(((j + 1) * step) > n, n,((j + 1) * step))
-                                 results <- rbind(results,
-                                                  values(TCGAanalyze_DMR(data = se[((j * step) + 1):end,],
-                                                                         groupCol = isolate({input$dmrgroupCol}),
-                                                                         group1 = group1,
-                                                                         group2 = group2,
-                                                                         plot.filename = FALSE,
-                                                                         save = FALSE,
-                                                                         p.cut = isolate({input$dmrpvalue}),
-                                                                         diffmean.cut = isolate({input$dmrthrsld}),
-                                                                         cores = isolate({input$dmrcores}))))
-                                 incProgress(1/(ceiling(n/step) + 1), detail = paste("Completed ", j + 1, " of ",ceiling(n/step)))
+                             if(!statuscol %in% colnames(values(se))){
+                                 step <- 1000
+                                 n <- nrow(se)
+                                 for(j in 0:floor(n/step)){
+                                     end <- ifelse(((j + 1) * step) > n, n,((j + 1) * step))
+                                     results <- rbind(results,
+                                                      values(TCGAanalyze_DMR(data = se[((j * step) + 1):end,],
+                                                                             groupCol = isolate({input$dmrgroupCol}),
+                                                                             group1 = group1,
+                                                                             group2 = group2,
+                                                                             plot.filename = FALSE,
+                                                                             save = FALSE,
+                                                                             p.cut = isolate({input$dmrpvalue}),
+                                                                             diffmean.cut = isolate({input$dmrthrsld}),
+                                                                             cores = isolate({input$dmrcores}))))
+                                     incProgress(1/(ceiling(n/step) + 1), detail = paste("Completed ", j + 1, " of ",ceiling(n/step)))
+                                 }
+                                 results <- results[,!(colnames(results) %in% colnames(values(se)))]
+                                 values(se) <- cbind(values(se),results)
+                                 incProgress(1/(ceiling(n/step) + 1), detail = "Saving results")
                              }
-                             results <- results[,!(colnames(results) %in% colnames(values(se)))]
-                             values(se) <- cbind(values(se),results)
-                             incProgress(1/(ceiling(n/step) + 1), detail = "Saving results")
-
                              se <- TCGAanalyze_DMR(data = se,
                                                    groupCol = isolate({input$dmrgroupCol}),
                                                    group1 = group1,
@@ -2315,11 +2319,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         })})
 
     observeEvent(input$survivalplotBt , {
-        updateCollapse(session, "collapsesurvivalplot", open = "survival plot")
+        updateCollapse(session, "collapsesurvivalplot", open = "Survival plot")
         output$survivalplot <- renderUI({
             plotOutput("survival.plotting", width = paste0(isolate({input$survivalwidth}), "%"), height = isolate({input$survivalheight}))
         })})
-        observe({
+    observe({
 
         shinyFileChoose(input, 'survivalplotfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'),filetypes=c('', 'csv','rda'))
@@ -2409,7 +2413,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "success",
                     content = out.filename, append = FALSE)
     })
-        observe({
+    observe({
 
         shinyFileChoose(input, 'deafile', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
     })
@@ -2490,7 +2494,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         return(se)
     }
-        observe({
+    observe({
 
         shinyFileChoose(input, 'pathewayexpfile', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
     })
@@ -2712,7 +2716,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         #}
         return(se)
     }
-        observe({
+    observe({
 
         shinyFileChoose(input, 'starburstmetfile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('excel', 'csv'))
@@ -2867,7 +2871,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }
     })
     #----------------------- END controlling show/hide states -----------------
-        observe({
+    observe({
         shinyDirChoose(input, 'elmerFolder', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
         shinyFileChoose(input, 'elmermeefile', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('', 'rda'))
