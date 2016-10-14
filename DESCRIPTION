@@ -27,6 +27,7 @@ Imports:
     stringr (>= 1.1.0),
     SummarizedExperiment,
     ggrepel,
+    data.table,
     shinyFiles (>= 0.6.2),
     ggplot2  (>= 2.1.0),
     pathview,

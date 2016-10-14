@@ -3067,24 +3067,22 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     observe({
         updateSelectizeInput(session, 'schematic.plot.probes', choices = {
-            mee <- meedata()
             results <- elmer.results.data()
             if(!is.null(results) & !is.null(mee)){
                 pair.obj <- fetch.pair(pair=results$pair,
-                                       probeInfo =getProbeInfo(mee),
-                                       geneInfo = getGeneInfo(mee))
+                                       probeInfo =getProbeInfo(results$mee),
+                                       geneInfo = getGeneInfo(results$mee))
                 as.character(pair.obj@pairInfo$Probe)
             }
         }, server = TRUE)
     })
     observe({
         updateSelectizeInput(session, 'schematic.plot.genes', choices = {
-            mee <- meedata()
             results <- elmer.results.data()
             if(!is.null(results) & !is.null(mee)){
                 pair.obj <- fetch.pair(pair=results$pair,
-                                       probeInfo = getProbeInfo(mee),
-                                       geneInfo = getGeneInfo(mee))
+                                       probeInfo = getProbeInfo(results$mee),
+                                       geneInfo = getGeneInfo(results$mee))
 
                 as.character(pair.obj@pairInfo$GeneID)
             }
@@ -3189,7 +3187,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                    label = j,
                                                    percentage = isolate({input$elmergetTFpercentage}))
                                      TF.meth.cor <- get(load(paste0(dir.out,"/getTF.",j,".TFs.with.motif.pvalue.rda")))
-                                     save(TF, enriched.motif, Sig.probes.paired,
+                                     save(mee, TF, enriched.motif, Sig.probes.paired,
                                           pair, nearGenes, Sig.probes, motif.enrichment, TF.meth.cor,
                                           file=paste0(dir.out,"/ELMER_results_",j,".rda"))
                                      done <- c(done,j)
