@@ -1100,7 +1100,7 @@ body <-  dashboardBody(
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    sliderInput("elmercores", "Cores", step=1,
                                                min = 1, max = parallel::detectCores(), value = 1),
-                                   textInput("elmerresultssavefolder", "Name of the results folder:", value = "results_elmer", width = NULL, placeholder = NULL),
+                                   textInput("elmerresultssavefolder", "Name of the results folder:", value = "results_elmer", width = NULL, placeholder = NULL)
                                ),
                                actionButton("elmerAnalysisBt",
                                             "Run analysis",
