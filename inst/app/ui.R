@@ -82,7 +82,10 @@ sidebar <-  dashboardSidebar(
         tags$hr(class="lineIntegrative"),
         #menuItem("Integrative analysis", icon = icon("flask"),
         menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
-        menuItem("ELMER" , tabName = "elmer", icon = icon("flask")),
+        menuItem("ELMER" , icon = icon("flask"),
+                 menuSubItem("Analysis" , tabName = "elmeranalysis", icon = icon("flask")),
+                 menuSubItem("Visualize results" , tabName = "elmerresults", icon = icon("picture-o"))
+        ),
         #),
         #menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
         #menuItem("ELMER analysis", icon = icon("flask"),
@@ -257,6 +260,7 @@ body <-  dashboardBody(
                 fluidRow(
                     column(8, bsAlert("tcgaClinicalmessage"),
                            bsCollapse(id = "collapseTCGAClinical", open = "Clinical data",
+                                      bsCollapsePanel("Description of the data",  includeHTML("clinical_help.html"), style = "default"),
                                       bsCollapsePanel("Clinical data", dataTableOutput('tcgaClinicaltbl'), style = "default")
                            )),
                     column(4,
@@ -990,12 +994,12 @@ body <-  dashboardBody(
                     )
                 )
         ),
-        tabItem(tabName = "elmer",
+        tabItem(tabName = "elmeranalysis",
                 fluidRow(
                     column(8,  bsAlert("elmermessage"),
-                           bsCollapse(id = "collapelmer", open = "Plots",
-                                      bsCollapsePanel("Results table", dataTableOutput('elmerResult'), style = "default"),
-                                      bsCollapsePanel("Plots", uiOutput("elmerPlot"), style = "default"))),
+                           bsCollapse(id = "collapelmer", open = "Enhancer Linking by Methylation/Expression Relationship (ELMER) ",
+                                      bsCollapsePanel("Enhancer Linking by Methylation/Expression Relationship (ELMER) ",  includeHTML("elmer.html"), style = "default"))
+                           ),
                     column(4,
                            box(title = "Create mee", width = NULL,
                                status = "danger",
@@ -1038,11 +1042,8 @@ body <-  dashboardBody(
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
                                shinyFilesButton('elmermeefile', 'Select mee', 'Please select mee object',
-                                                multiple = FALSE),
-                               tags$br(),
-                               tags$br(),
-                               shinyFilesButton('elmerresultsfile', 'Select results', 'Please select results object',
-                                                multiple = FALSE)),
+                                                multiple = FALSE)
+                               ),
                            box(title = "Analysis", width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
@@ -1099,7 +1100,22 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                            icon = icon("flask"))),
+                                            icon = icon("flask")))
+                    )
+                )
+        ),
+        tabItem(tabName = "elmerresults",
+                fluidRow(
+                    column(8,  bsAlert("elmermessage"),
+                           bsCollapse(id = "collapelmer", open = "Plots",
+                                      bsCollapsePanel("Results table", dataTableOutput('elmerResult'), style = "default"),
+                                      bsCollapsePanel("Plots", uiOutput("elmerPlot"), style = "default"))),
+                    column(4,
+                           box(title = "Data", width = NULL,
+                               status = "danger",
+                               solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
+                               shinyFilesButton('elmerresultsfile', 'Select results', 'Please select results object',
+                                                multiple = FALSE)),
                            box(title = "Plots", width = NULL,
                                status = "danger",
                                solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
@@ -1170,8 +1186,8 @@ body <-  dashboardBody(
                                               ),
                                               multiple = FALSE))
                     )
-                )
-        ),
+                           )
+                           ),
         tabItem(tabName = "config",
                 fluidRow(
                     column(1),
