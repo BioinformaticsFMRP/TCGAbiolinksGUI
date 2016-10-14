@@ -3018,9 +3018,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         load(file,envir = globalenv())
+                         mee.results <- mget(load(file))
                          incProgress(1, detail = "Completed")
                      })
+        return(mee.results)
     })
 
     meedata <-  reactive({
@@ -3038,45 +3039,39 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     # Updates based on uploaded data
     observe({
+        results <- elmer.results.data()
         updateSelectizeInput(session, 'scatter.plot.probes', choices = {
-            if(!is.null(elmer.results.data())) as.character(Sig.probes$probe)
+            if(!is.null(results)) as.character(results$Sig.probes$probe)
         }, server = TRUE)
-    })
-    observe({
         updateSelectizeInput(session, 'scatter.plot.tf', choices = {
-            if(!is.null(elmer.results.data())) as.character(rownames(TF.meth.cor))
+            if(!is.null(results)) as.character(rownames(results$TF.meth.cor))
         }, server = TRUE)
-    })
-    observe({
         updateSelectizeInput(session, 'scatter.plot.motif', choices = {
-            if(!is.null(elmer.results.data())) as.character(names(enriched.motif))
+            if(!is.null(results)) as.character(names(results$enriched.motif))
         }, server = TRUE)
+        updateSelectizeInput(session, 'ranking.plot.tf', choices = {
+            if(!is.null(results)) as.character(rownames(results$TF.meth.cor))
+        }, server = TRUE)
+        updateSelectizeInput(session, 'ranking.plot.motif', choices = {
+            if(!is.null(results)) as.character(colnames(results$TF.meth.cor))
+        }, server = TRUE)
+
     })
 
     observeEvent(input$scatter.plot.probes, {
+        results <- elmer.results.data()
         updateSelectizeInput(session, 'scatter.plot.genes', choices = {
-            if(!is.null(elmer.results.data())) as.character(nearGenes[[input$scatter.plot.probes]]$GeneID)
-        }, server = TRUE)
-    })
-
-    observe({
-        updateSelectizeInput(session, 'ranking.plot.tf', choices = {
-            if(!is.null(elmer.results.data())) as.character(rownames(TF.meth.cor))
-        }, server = TRUE)
-    })
-
-    observe({
-        updateSelectizeInput(session, 'ranking.plot.motif', choices = {
-            if(!is.null(elmer.results.data())) as.character(colnames(TF.meth.cor))
+            if(!is.null(results)) as.character(nearGenes[[input$scatter.plot.probes]]$GeneID)
         }, server = TRUE)
     })
 
     observe({
         updateSelectizeInput(session, 'schematic.plot.probes', choices = {
             mee <- meedata()
-            if(!is.null(elmer.results.data()) & !is.null(mee)){
-                pair.obj <- fetch.pair(pair=pair,
-                                       probeInfo = getProbeInfo(mee),
+            results <- elmer.results.data()
+            if(!is.null(results) & !is.null(mee)){
+                pair.obj <- fetch.pair(pair=results$pair,
+                                       probeInfo =getProbeInfo(mee),
                                        geneInfo = getGeneInfo(mee))
                 as.character(pair.obj@pairInfo$Probe)
             }
@@ -3085,8 +3080,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observe({
         updateSelectizeInput(session, 'schematic.plot.genes', choices = {
             mee <- meedata()
-            if(!is.null(elmer.results.data()) & !is.null(mee)){
-                pair.obj <- fetch.pair(pair=pair,
+            results <- elmer.results.data()
+            if(!is.null(results) & !is.null(mee)){
+                pair.obj <- fetch.pair(pair=results$pair,
                                        probeInfo = getProbeInfo(mee),
                                        geneInfo = getGeneInfo(mee))
 
@@ -3111,7 +3107,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         } else {
             direction <- c("hypo")
         }
-
+        done <- c()
         for (j in direction){
             withProgress(message = 'ELMER analysis',
                          detail = paste0('Direction: ',j), value = 0, {
@@ -3196,11 +3192,14 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                      save(TF, enriched.motif, Sig.probes.paired,
                                           pair, nearGenes, Sig.probes, motif.enrichment, TF.meth.cor,
                                           file=paste0(dir.out,"/ELMER_results_",j,".rda"))
+                                     done <- c(done,j)
                                  }
                              }
                              setProgress(value = which(j == direction) * 0.5, message = "Step 5", detail = paste0('Analysis in direction completed: ',j), session = getDefaultReactiveDomain())
                          })
         }
+        createAlert(session, "elmermessage", "elmerAlert", title = "ELMER analysis completed", style =  "success",
+                    content = paste0("ELMER analysis were completed. Results saved in\n",paste0(dir.out,"/ELMER_results_",done,".rda\n")), append = TRUE)
     })
 
     observeEvent(input$elmerPlotBt , {
@@ -3216,7 +3215,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             #     vs DNA methylation at this probe
             if(plot.type == "scatter.plot"){
                 if(is.null(mee)){
-                    createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "success",
+                    createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "danger",
                                 content =   "Please upload the mee object for this plot", append = TRUE)
                     return(NULL)
                 }
