@@ -3068,7 +3068,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observe({
         updateSelectizeInput(session, 'schematic.plot.probes', choices = {
             results <- elmer.results.data()
-            if(!is.null(results) & !is.null(mee)){
+            if(!is.null(results)){
                 pair.obj <- fetch.pair(pair=results$pair,
                                        probeInfo =getProbeInfo(results$mee),
                                        geneInfo = getGeneInfo(results$mee))
@@ -3079,7 +3079,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observe({
         updateSelectizeInput(session, 'schematic.plot.genes', choices = {
             results <- elmer.results.data()
-            if(!is.null(results) & !is.null(mee)){
+            if(!is.null(results)){
                 pair.obj <- fetch.pair(pair=results$pair,
                                        probeInfo = getProbeInfo(results$mee),
                                        geneInfo = getGeneInfo(results$mee))
@@ -3203,7 +3203,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$elmerPlotBt , {
         output$elmer.plot <- renderPlot({
             plot.type <- isolate({input$elmerPlotType})
-            mee <- meedata()
+            mee <- NULL
+            results <- elmer.results.data()
+            if(!is.null(results)) mee <- results$mee
             closeAlert(session, "elmerAlert")
 
             # Three types:
