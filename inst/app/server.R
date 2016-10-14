@@ -3129,8 +3129,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                          dir.out =dir.out,
                                                          diff.dir=j,
                                                          pvalue = isolate({input$elmermetpvalue}))
-                             print(Sig.probes$probe)
-                             if(Sig.probes$probe){
+                             if(all(is.na(Sig.probes$probe)){
                                  createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "success",
                                              content = paste0("No signigicant probes found"), append = TRUE)
                                  return(NULL)
