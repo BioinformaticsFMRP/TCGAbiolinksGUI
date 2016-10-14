@@ -3100,7 +3100,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         mee <- meedata()
         if(is.null(mee)){
             closeAlert(session, "elmerAlert")
-            createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "success",
+            createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "danger",
                         content =   "Please upload the mee object for this plot", append = TRUE)
             return(NULL)
         }
@@ -3249,20 +3249,20 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         if(plot.by == "tf"){
                             if(is.null(isolate({input$scatter.plot.tf}))){
                                 closeAlert(session, "elmerAlert")
-                                createAlert(session, "elmermessage", "elmerAlert", title = "TFs missing", style =  "success",
+                                createAlert(session, "elmermessage", "elmerAlert", title = "TFs missing", style =  "danger",
                                             content = "Please select two TF", append = TRUE)
                                 return(NULL)
                             }
 
                             if(nchar(isolate({input$scatter.plot.tf})) == 0 | length(isolate({input$scatter.plot.tf})) < 2){
                                 closeAlert(session, "elmerAlert")
-                                createAlert(session, "elmermessage", "elmerAlert", title = "TFs missing", style =  "success",
+                                createAlert(session, "elmermessage", "elmerAlert", title = "TFs missing", style =  "danger",
                                             content =   "Please select two TF", append = TRUE)
                                 return(NULL)
                             }
                             if(nchar(isolate({input$scatter.plot.motif})) == 0){
                                 closeAlert(session, "elmerAlert")
-                                createAlert(session, "elmermessage", "elmerAlert", title = "Motif missing", style =  "success",
+                                createAlert(session, "elmermessage", "elmerAlert", title = "Motif missing", style =  "danger",
                                             content =   "Please select a motif", append = TRUE)
                                 return(NULL)
                             }
@@ -3272,13 +3272,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         } else if(plot.by == "pair") {
                             if(nchar(isolate({input$scatter.plot.probes})) == 0){
                                 closeAlert(session, "elmerAlert")
-                                createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "success",
+                                createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "danger",
                                             content =   "Please select a probe", append = TRUE)
                                 return(NULL)
                             }
                             if(nchar(isolate({input$scatter.plot.genes})) == 0){
                                 closeAlert(session, "elmerAlert")
-                                createAlert(session, "elmermessage", "elmerAlert", title = "Gene missing", style =  "success",
+                                createAlert(session, "elmermessage", "elmerAlert", title = "Gene missing", style =  "danger",
                                             content =   "Please select a gene", append = TRUE)
                                 return(NULL)
                             }
@@ -3289,7 +3289,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         } else {
                             # case 3
                             if(nchar(isolate({input$scatter.plot.probes})) == 0){
-                                createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "success",
+                                createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "danger",
                                             content =   "Please select a probe", append = TRUE)
                                 return(NULL)
                             }
@@ -3298,7 +3298,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         }
                     } else if (plot.type == "schematic.plot") {
                         if(is.null(mee)){
-                            createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "success",
+                            createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "danger",
                                         content =   "Please upload the mee object for this plot", append = TRUE)
                             return(NULL)
                         }
@@ -3309,7 +3309,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                geneInfo = getGeneInfo(mee))
                         if(isolate({input$schematic.plot.type}) == "probes"){
                             if(nchar(isolate({input$schematic.plot.probes})) == 0){
-                                createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "success",
+                                createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "danger",
                                             content =   "Please select a probe", append = TRUE)
                                 return(NULL)
                             }
