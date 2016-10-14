@@ -3116,7 +3116,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             withProgress(message = 'ELMER analysis',
                          detail = paste0('Direction: ',j), value = 0, {
                              print(j)
-                             dir.out <- paste0(getPath,"/elmer/",j)
+                             dir.out <- paste0(getPath,"/results_elmer/",j)
                              dir.create(dir.out, recursive = TRUE)
                              #--------------------------------------
                              # STEP 3: Analysis                     |
