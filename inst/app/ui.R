@@ -1037,7 +1037,17 @@ body <-  dashboardBody(
                                          remove the anottation data.",
                                              "left"),
                                    numericInput("elmermetnacut", "DNA methylation: Cut-off NA samples (%)",
-                                                min = 0, max = 1, value = 0.2, step = 0.1)),
+                                                min = 0, max = 1, value = 0.2, step = 0.1),
+                                   textInput("meesavefilename", "Save as:", value = "mee.rda", width = NULL, placeholder = NULL),
+                                   actionButton("elmerpreparemee",
+                                                "Create mee object",
+                                                style = "background-color: #000080;
+                                                color: #FFFFFF;
+                                                margin-left: auto;
+                                                margin-right: auto;
+                                                width: 100%",
+                                                icon = icon("floppy-o"))
+                                   ),
                                    box(title = "Select mee object", width = NULL,
                                        solidHeader = TRUE, collapsible = TRUE,collapsed = TRUE,
                                        shinyFilesButton('elmermeefile', 'Select mee', 'Please select mee object',
