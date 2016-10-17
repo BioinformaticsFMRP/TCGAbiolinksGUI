@@ -852,7 +852,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     #-------------------------END controlling show/hide states -----------------
     observe({
         shinyFileChoose(input, 'maffile', roots=get.volumes(input$workingDir), session=session,
-                        restrictions=system.file(package='base'), filetypes=c('', 'maf',"csv"))
+                        restrictions=system.file(package='base'), filetypes=c('', 'maf',"csv","maf.gz"))
         shinyFileChoose(input, 'mafAnnotation', roots=get.volumes(input$workingDir), session=session,
                         restrictions=system.file(package='base'), filetypes=c('', 'csv','rda'))
         shinyFileChoose(input, 'oncoGenesFiles', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
