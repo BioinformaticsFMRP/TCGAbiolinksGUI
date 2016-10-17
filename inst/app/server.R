@@ -523,7 +523,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                  summarizedExperiment = as.logical(isolate({input$prepareRb})),
                                                  directory = getPath,
                                                  add.gistic2.mut = genes)
-
+                             if(!is.null(genes)) {
+                                 aux <- gsub(".rda","_samples_information.csv",filename)
+                                 write_csv(x = as.data.frame(colData(trash)),path  = aux )
+                                 filename <- c(filename, aux)
+                             }
                          }, error = function(e) {
                              createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
                                          content = "Error while preparing the files", append = FALSE)
@@ -531,7 +535,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                              return(NULL)
                          })
                          createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
-                                     content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = ""),"</ul>"), append = FALSE)
+                                     content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
                      })
 
     })
