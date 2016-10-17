@@ -599,7 +599,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         save.message <- paste0(save.message,"<br> File created: ", gsub("rda","csv",filename))
                     }
                     createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = paste0("Success"), style =  "success",
-                                content = paste0(save.message,"<br>Source of the data:", doi[tumor]), append = TRUE)
+                                content = paste0(save.message,"<br>Source of the data: ", doi[tumor]), append = TRUE)
 
                 } else {
                     createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "Source of the data", style =  "success",
@@ -862,7 +862,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$mafAnnotation)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read_csv2(file); se$X1 <- NULL
+            se <- as.data.frame(read_csv2(file)); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
