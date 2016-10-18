@@ -238,7 +238,7 @@ body <-  dashboardBody(
                                bsTooltip("prepareRb", "The SummarizedExperiment container contains one or more assays, each represented by a matrix-like object of numeric or other mode. The rows typically represent genomic ranges of interest and the columns represent samples.",
                                          "left"),
                                useShinyjs(),
-                               checkboxInput("addGistic", "Add gistic2 and mutation information ?", value = TRUE, width = NULL),
+                               checkboxInput("addGistic", "Add gistic2 and mutation information ?", value = FALSE, width = NULL),
                                bsTooltip("addGistic", "GISTIC2 results from GDAC firehose and Mutation information from MAF will be added to SummarizedExperiment",
                                          "left"),
                                selectizeInput('gisticGenes',

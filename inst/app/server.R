@@ -808,8 +808,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$prepareRb, {
         if(input$prepareRb) {
             shinyjs::show("addGistic")
+            if(isolate({input$addGistic})){
+                shinyjs::show("gisticGenes")
+            }
         } else {
             shinyjs::hide("addGistic")
+            shinyjs::hide("gisticGenes")
         }
     })
 
