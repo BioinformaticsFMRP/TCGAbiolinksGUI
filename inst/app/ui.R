@@ -1131,7 +1131,7 @@ body <-  dashboardBody(
         tabItem(tabName = "elmerresults",
                 fluidRow(
                     column(8,  bsAlert("elmermessage"),
-                           bsCollapse(id = "collapelmer", open = "Plots",
+                           bsCollapse(id = "collapelmerresults", open = "Plots",
                                       bsCollapsePanel("Results table", dataTableOutput('elmerResult'), style = "default"),
                                       bsCollapsePanel("Plots", uiOutput("elmerPlot"), style = "default"))),
                     column(4,

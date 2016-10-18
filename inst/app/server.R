@@ -3136,7 +3136,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$scatter.plot.probes, {
         results <- elmer.results.data()
         updateSelectizeInput(session, 'scatter.plot.genes', choices = {
-            if(!is.null(results)) as.character(nearGenes[[input$scatter.plot.probes]]$GeneID)
+            if(!is.null(results)) as.character(results$nearGenes[[input$scatter.plot.probes]]$GeneID)
         }, server = TRUE)
     })
 
@@ -3337,7 +3337,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         return(NULL)
                     }
                     scatter.plot(mee,byTF=list(TF=isolate({input$scatter.plot.tf}),
-                                               probe=enriched.motif[[isolate({input$scatter.plot.motif})]]), category="TN",
+                                               probe=results$enriched.motif[[isolate({input$scatter.plot.motif})]]), category="TN",
                                  save=FALSE,lm_line=TRUE)
                 } else if(plot.by == "pair") {
                     if(nchar(isolate({input$scatter.plot.probes})) == 0){
@@ -3374,7 +3374,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 }
                 # Two cases
                 # 1 - By probe
-                pair.obj <- fetch.pair(pair=pair,
+                pair.obj <- fetch.pair(pair=results$pair,
                                        probeInfo = getProbeInfo(mee),
                                        geneInfo = getGeneInfo(mee))
                 if(isolate({input$schematic.plot.type}) == "probes"){
@@ -3396,7 +3396,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     schematic.plot(pair=pair.obj, byGene=isolate({input$schematic.plot.genes}),save=FALSE)
                 }
             } else if(plot.type == "motif.enrichment.plot") {
-                motif.enrichment.plot(motif.enrichment=motif.enrichment,
+                motif.enrichment.plot(motif.enrichment=results$motif.enrichment,
                                       #significant=list(OR=1.3,lowerOR=1.3),
                                       save=FALSE)
             } else if(plot.type == "ranking.plot"){
@@ -3407,7 +3407,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 }
                 label <- list(isolate({input$ranking.plot.tf}))
                 names(label) <- isolate({input$ranking.plot.motif})
-                gg <- TF.rank.plot(motif.pvalue=TF.meth.cor,
+                gg <- TF.rank.plot(motif.pvalue=results$TF.meth.cor,
                                    motif=isolate({input$ranking.plot.motif}),
                                    TF.label=label,
                                    save=FALSE)
@@ -3418,24 +3418,25 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         })
     })
     observeEvent(input$elmerPlotBt , {
-        updateCollapse(session, "collapelmer", open = "Plots")
+        updateCollapse(session, "collapelmerresults", open = "Plots")
         output$elmerPlot <- renderUI({
             plotOutput("elmer.plot", width = paste0(isolate({input$elmerwidth}), "%"), height = isolate({input$elmerheight}))
         })})
 
     # Table
     observeEvent(input$elmerTableType , {
-        updateCollapse(session, "collapelmer", open = "Results table")
+        updateCollapse(session, "collapelmerresults", open = "Results table")
         output$elmerResult <- renderDataTable({
-            if(!is.null(elmer.results.data())){
+            results <- elmer.results.data()
+            if(!is.null(results)){
                 if(input$elmerTableType == "tf"){
-                    as.data.frame(TF)
+                    as.data.frame(results$TF)
                 } else if(input$elmerTableType == "sigprobes"){
-                    as.data.frame(Sig.probes)
+                    as.data.frame(results$Sig.probes)
                 } else if(input$elmerTableType == "motif"){
-                    as.data.frame(motif.enrichment)
+                    as.data.frame(results$motif.enrichment)
                 } else if(input$elmerTableType == "pair"){
-                    as.data.frame(pair)
+                    as.data.frame(results$pair)
                 }
             }
         },
