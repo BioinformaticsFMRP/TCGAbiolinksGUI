@@ -2363,7 +2363,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
             if(length(unique(data[,clusterCol])) == 1){
                 createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
-                            content = paste0("Sorry, but I'm expecting at least two groups"), append = FALSE)
+                            content = paste0("Sorry, but I'm expecting at least two groups<br>",
+                                             "Only this group found: ", unique(data[,clusterCol])), append = FALSE)
                 return(NULL)
             }
             #-=-=-=-=-=-=-=-=--==-=-=-=-=-=-=-=-=
@@ -3159,6 +3160,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         }, server = TRUE)
     })
     observeEvent(input$elmerAnalysisBt, {
+        closeAlert(session, "elmerAlert")
         getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         mee <- meedata()
