@@ -291,10 +291,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     #--------------------- START controlling show/hide states ----------------
     observeEvent(input$clinicalIndexed, {
         if(input$clinicalIndexed){
-            shinyjs::show("tcgaClinicalTypeFilter")
             shinyjs::hide("tcgaClinicalFilter")
         } else {
-            shinyjs::hide("tcgaClinicalTypeFilter")
             shinyjs::show("tcgaClinicalFilter")
         }
     })
@@ -1123,6 +1121,15 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observe({
         updateSelectizeInput(session, 'mafAnnotationcols', choices = as.character(colnames(annotation.maf())), server = TRUE)
     })
+    observeEvent(input$tcgaClinicalTypeFilter, {
+        if(isolate({input$tcgaClinicalTypeFilter}) == "biospecimen") {
+            options <- sort(c("protocol","admin","aliquot","analyte","bio_patient","sample", "portion", "slide"))
+        } else {
+            options <- sort(c("drug", "admin", "follow_up", "radiation", "patient", "stage_event", "new_tumor_event"))
+        }
+        updateSelectizeInput(session, 'tcgaClinicalFilter', choices = as.character(options), server = TRUE)
+    })
+
     observe({
         updateSelectizeInput(session, 'tcgaDataCategoryFilter', choices =  getDataCategory(as.logical(input$tcgaDatabase)), server = TRUE)
     })
