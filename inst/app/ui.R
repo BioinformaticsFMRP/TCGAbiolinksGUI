@@ -105,7 +105,7 @@ sidebar <-  dashboardSidebar(
                  #menuSubItem("TCGAbiolinks" , href = "https://doi.org/10.1093/nar/gkv1507", icon = icon("external-link")),
                  #menuSubItem("ELMER" , href = "https://doi.org/10.1186/s13059-015-0668-3", icon = icon("external-link"))
         ), div(id = "greetbox-outer",
-               menuItem("welcome", tabName = "welcome",selected = T)))
+               menuItem("Loading...", tabName = "welcome", icon = icon("spinner"), selected = T)))
 )
 
 body <-  dashboardBody(
@@ -259,7 +259,7 @@ body <-  dashboardBody(
         tabItem(tabName = "tcgaClinical",
                 fluidRow(
                     column(8, bsAlert("tcgaClinicalmessage"),
-                           bsCollapse(id = "collapseTCGAClinical", open = "Clinical data",
+                           bsCollapse(id = "collapseTCGAClinical", open = "Description of the data",
                                       bsCollapsePanel("Description of the data",  includeHTML("clinical_help.html"), style = "default"),
                                       bsCollapsePanel("Clinical data", dataTableOutput('tcgaClinicaltbl'), style = "default")
                            )),
