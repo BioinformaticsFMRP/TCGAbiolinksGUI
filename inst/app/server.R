@@ -634,7 +634,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         )})
 
     observeEvent(input$tcgaClinicalBt, {
-        updateCollapse(session, "collapseTCGAClinical", open = "Clinical data table", close = "Information about clinical data")
+        updateCollapse(session, "collapseTCGAClinical", open = "Clinical data", close = "Description of the data")
         output$tcgaClinicaltbl <- renderDataTable({
             closeAlert(session, "tcgaClinicalAlert")
             project <- isolate({input$tcgatumorClinicalFilter})
@@ -652,7 +652,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                   if(isolate({input$clinicalIndexed})){
                                       tbl <- rbind(tbl, GDCquery_clinic(project = project, type = type))
                                   } else {
-                                      type <- "Clinical"
+                                      if(grepl("clinical", type, ignore.case = TRUE)) type <- "Clinical"
+                                      if(grepl("biospecimen", type, ignore.case = TRUE)) type <- "Biospecimen"
                                       query <- GDCquery(project = project, data.category = type)
 
                                       result = tryCatch({
@@ -662,11 +663,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                       content = "There was a problem to download the data. Please try again later.", append = FALSE)
 
                                       })
-                                      incProgress(1/2, detail = paste("Reading XML files"))
-                                      clinical <- GDCprepare_clinic(query,parser, directory = getPath)
+                                      incProgress(1/2, message = "Reading XML files",detail = paste(" Parsing"))
+                                      clinical <- GDCprepare_clinic(query, parser, directory = getPath)
                                       tbl <- rbind(tbl, clinical)
                                   }
-                                  incProgress(1, detail = "Download completed")
+                                  incProgress(1, detail = "Completed")
                                   return(tbl)
                               }, error = function(e) {
                                   createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "No results found", style =  "warning",
