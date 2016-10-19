@@ -861,7 +861,9 @@ body <-  dashboardBody(
                 fluidRow(
                     column(8,  bsAlert("deamessage"),
                            bsCollapse(id = "collapsedea", open = "DEA plots",
-                                      bsCollapsePanel("Genes info", dataTableOutput('deaSE'), style = "default"))),
+                                      bsCollapsePanel("Genes info", dataTableOutput('deaSE'), style = "default"),
+                                      bsCollapsePanel("Pathview plot", uiOutput("pathviewPlot"), style = "default")
+                                      )),
                     column(4,
                            box(title = "DEA analysis",width = NULL,
                                status = "danger",
@@ -924,6 +926,8 @@ body <-  dashboardBody(
                                               choices = pathways.id,
                                               multiple = FALSE),
                                checkboxInput("kegg.native.checkbt", "Native KEGG?", value = TRUE, width = NULL),
+                               sliderInput("pathwaygraphwidth", "Plot Width", min = 0, max = 1600, value = 1200),
+                               sliderInput("pathwaygraphheight", "Plot Height", min = 0, max = 1200, value = 800),
                                actionButton("pathwaygraphBt",
                                             "Create pathway file",
                                             style = "background-color: #000080;
