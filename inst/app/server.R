@@ -1977,7 +1977,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     observeEvent(input$heatmapPlotBt , {
         output$heatmap.plotting <- renderPlot({
-
+            closeAlert("heatmapAlert")
             # get information from file
             file  <- basename(as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$heatmapresultsfile)$datapath))
             if(length(file) > 0){
