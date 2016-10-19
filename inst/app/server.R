@@ -2638,7 +2638,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
 
     observeEvent(input$pathwaygraphBt , {
+        updateCollapse(session, "collapsedea", open = "Pathview plot")
+        output$pathviewPlot <- renderUI({
+            plotOutput("pathviewImage", height = input$pathwaygraphheigth)
+        })})
 
+    observeEvent(input$pathwaygraphBt , {
         output$pathviewImage <- renderImage({
             getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
             if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
@@ -2651,6 +2656,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             }
             pathway.id <- isolate({input$pathway.id})
             outfile <- file.path(getPath, paste0(pathway.id,extension))
+            print(outfile)
             if(!file.exists(outfile)) return(NULL)
             # Return a list containing the filename
             list(src = outfile,
