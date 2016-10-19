@@ -281,6 +281,59 @@ references:
   issued:
     year: 2013        
     
+- id: ref22
+  title: Comprehensive Pan-Genomic Characterization of Adrenocortical Carcinoma
+  author: 
+  - family: Cancer Genome Atlas Research Network and others
+    given:
+  journal: Cancer Cell
+  URL: "http://dx.doi.org/10.1016/j.ccell.2016.04.002"
+  DOI: "10.1016/j.ccell.2016.04.002"
+  volume: 29
+  pages: 43-49
+  issued:
+    year: 2016 
+
+- id: ref23
+  title: Complex heatmaps reveal patterns and correlations in multidimensional genomic data
+  author: 
+  - family: Gu, Zuguang and Eils, Roland and Schlesner, Matthias
+  given:
+  journal: Bioinformatics
+  URL: "http://dx.doi.org/10.1016/j.ccell.2016.04.002"
+  DOI: "10.1016/j.ccell.2016.04.002"
+  pages: "btw313"
+  issued:
+   year: 2016 
+
+- id: ref24
+  title: "TCGA Workflow: Analyze cancer genomics and epigenomics data using Bioconductor packages"
+  author: 
+  - family:  Silva, TC and Colaprico, A and Olsen, C and D'Angelo, F and Bontempi, G and Ceccarelli, M and Noushmehr, H
+  given:
+  journal: F1000Research
+  URL: "http://dx.doi.org/10.12688/f1000research.8923.1"
+  DOI: "10.12688/f1000research.8923.1"
+  volume: 5
+  number: 1542
+  issued:
+   year: 2016 
+
+- id: ref25
+  title: "TCGAbiolinks: an R/Bioconductor package for integrative analysis of TCGA data"
+  author: 
+  - family:  Colaprico, Antonio and Silva, Tiago C. and Olsen, Catharina and Garofano, Luciano and Cava, Claudia and Garolini, Davide and Sabedot, Thais S. and Malta, Tathiane M. and Pagnotta, Stefano M. and Castiglioni, Isabella and Ceccarelli, Michele and Bontempi, Gianluca and Noushmehr, Houtan
+  given:
+  journal: Nucleic Acids Research
+  URL: "http://dx.doi.org/10.1093/nar/gkv1507"
+  DOI: "10.1093/nar/gkv1507"
+  volume: 44
+  number: 8
+  pages: e71
+  issued:
+   year: 2016 
+    
+    
 ---
 
 ```{r setup, include=FALSE}
@@ -815,7 +868,7 @@ cat(tabl)
 # Cases of study 
 
 ## Case 3
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/3W40ycOtDZY/0.jpg)](http://www.youtube.com/watch?v=3W40ycOtDZY "Case study 3")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/0.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Case study 3")
 
 ## Case 4
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/Ki5UOcs-5mY/0.jpg)](http://www.youtube.com/watch?v=Ki5UOcs-5mY "Case study 4")
