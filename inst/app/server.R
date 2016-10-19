@@ -2640,30 +2640,36 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$pathwaygraphBt , {
         updateCollapse(session, "collapsedea", open = "Pathview plot")
         output$pathviewPlot <- renderUI({
-            plotOutput("pathviewImage", height = input$pathwaygraphheigth)
+                plotOutput("pathviewImage", height = input$pathwaygraphheigth)
         })})
 
     observeEvent(input$pathwaygraphBt , {
         output$pathviewImage <- renderImage({
             getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
             if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
-            kegg.native <- isolate({input$kegg.native.checkbt})
-            if(kegg.native) {
-                extension <- ".pathview.png"
-            } else {
-                extension <- ".pathview.pdf"
-                return(NULL)
-            }
             pathway.id <- isolate({input$pathway.id})
+            extension <- ".pathview.png"
             outfile <- file.path(getPath, paste0(pathway.id,extension))
-            print(outfile)
-            if(!file.exists(outfile)) return(NULL)
+
+            if(!isolate({input$kegg.native.checkbt})){
+                x <- tryCatch({
+                    conv.extension <- ".pathview.pdf"
+                    extension <- "aux.pathview.png"
+                    outfile <- file.path(getPath, paste0(pathway.id,extension))
+                    animation::ani.options('autobrowse'=FALSE)
+                    animation::im.convert(file.path(getPath, paste0(pathway.id,conv.extension)), output = outfile, extra.opts="-density 150")
+                },  error = function(e) {
+                    createAlert(session, "deamessage", "deaAlert", title = "Error", style =  "warning",
+                                content = "I couldn't convert the pdf to png.", append = FALSE)
+                    print(e)
+                })
+            }
             # Return a list containing the filename
             list(src = outfile,
                  contentType = 'image/png',
                  width =  input$pathwaygraphwidth,
                  height = input$pathwaygraphheight,
-                 alt = "This is alternate text")
+                 alt = "File not found")
         }, deleteFile = FALSE)
 
     })
