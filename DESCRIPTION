@@ -17,7 +17,8 @@ Suggests:
     devtools,
     rvest,
     xml2,
-    BiocStyle
+    BiocStyle,
+    animation
 Imports:
     shiny (>= 0.14),
     downloader (>= 0.4),
