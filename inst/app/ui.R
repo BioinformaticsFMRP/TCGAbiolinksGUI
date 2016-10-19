@@ -65,13 +65,13 @@ sidebar <-  dashboardSidebar(
         ),
 
         menuItem("Epigenetic analysis", icon = icon("flask"),
-                 menuSubItem("Differential methylation analysis" , tabName = "dmr", icon = icon("flask")),
+                 menuSubItem("Differential DNA methylation analysis" , tabName = "dmr", icon = icon("flask")),
                  menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
                  menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
                  menuSubItem("Mean DNA methylation plot" , tabName = "meanmet", icon = icon("picture-o"))
         ),
         menuItem("Transcriptomic analysis", icon =  icon("flask"),
-                 menuSubItem("Differential expression analysis" , tabName = "dea", icon = icon("flask")),
+                 menuSubItem("Differential gene expression analysis" , tabName = "dea", icon = icon("flask")),
                  menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
                  menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
                  menuSubItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
