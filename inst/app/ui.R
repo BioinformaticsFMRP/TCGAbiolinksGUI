@@ -65,13 +65,13 @@ sidebar <-  dashboardSidebar(
         ),
 
         menuItem("Epigenetic analysis", icon = icon("flask"),
-                 menuSubItem("Differential DNA methylation analysis" , tabName = "dmr", icon = icon("flask")),
+                 menuSubItem("Differential methylation analysis" , tabName = "dmr", icon = icon("flask")),
                  menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
                  menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
                  menuSubItem("Mean DNA methylation plot" , tabName = "meanmet", icon = icon("picture-o"))
         ),
         menuItem("Transcriptomic analysis", icon =  icon("flask"),
-                 menuSubItem("Differential gene expression analysis" , tabName = "dea", icon = icon("flask")),
+                 menuSubItem("Differential expression analysis" , tabName = "dea", icon = icon("flask")),
                  menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
                  menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
                  menuSubItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
@@ -199,7 +199,7 @@ body <-  dashboardBody(
                                useShinyjs(),
                                h5(strong("Barcode")),
                                inputTextarea('tcgaDownloadBarcode', '', 2, 60),
-                               bsTooltip("tcgaDownloadBarcode", "Barcodes separeted by (;), (,) or (new line). Example: TCGA-02-0047-01A-01D-0186-05,TCGA-06-2559-01A-01D-0788-05", "left"),
+                               bsTooltip("tcgaDownloadBarcode", "Barcodes separeted by (;), (,) or (new line). Example: TCGA-02-0047, TCGA-06-2559", "left"),
                                box(title = "Clinical filters",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                    selectizeInput('tcgaClinicalGenderFilter',
@@ -931,7 +931,9 @@ body <-  dashboardBody(
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                            icon = icon("file-pdf-o"))
+                                            icon = icon("file-pdf-o")),
+                               bsTooltip("pathwaygraphBt", "In the figure, colors represents the values of logFC. Red colors are genes up regulated in group 2 while green are the ones downregulated (for a file DEA_results_col_group1_group2...) ",
+                                         "left")
                            )
                     )
                 )

@@ -2623,15 +2623,19 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                               limit      = list(gene=as.integer(max(abs(genelistDEGs)))))
                          incProgress(1, detail = paste("Done"))
                      })
+        getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
+        if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+
         if(kegg.native) {
             extension <- ".pathview.png"
         } else {
             extension <- ".pathview.pdf"
         }
+        fname <- paste0(pathway.id,extension)
+        TCGAbiolinks:::move(fname,file.path(getPath,fname))
 
         createAlert(session, "deamessage", "deaAlert", title = "Pathway graph created", style =  "success",
-                    content = paste0("Results saved in: ", pathway.id,extension), append = FALSE)
-
+                    content = paste0("Results saved in: ", file.path(getPath,fname)), append = FALSE)
     })
 
     #------------------------------------------------
