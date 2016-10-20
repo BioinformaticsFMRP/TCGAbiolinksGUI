@@ -797,7 +797,8 @@ This sub-menu will help the user to perform the analysis from R/bioconductor ELM
 
 ![ELMER menu: Main window.](elmer.png)
 
-### Create mee box
+### Sub-menu ELMER: analysis
+#### Data: Create mee 
 
 ELMER works with a mee object, that has matched DNA methylation and gene expression data and
 divides the samples into two groups experiment and control.
@@ -812,20 +813,23 @@ divides the samples into two groups experiment and control.
 will remove probes with NA values in more than 20% samples and remove the 
 anottation data.
 
-### Data box
+#### Data: Select mee
+ Select the R object (rda) file with a mee object created in the previous step.
 
-* Select mee: select an R object (rda) file with a mee object
-* Select results: select an R object (rda) file with the results from ELMER analysis.
-
-### Analysis
+#### Analysis
 
 This box has all the option for elmer functions. Please, see ELMER vignette. 
 
-### Plot
+### Sub-menu ELMER: Visualize results
+#### DATA
+
+Select  the R object (rda) file with ELMER results created in the analysis step.
+
+#### Plot
 Select ELMER plot. To have access to all plot it needs that the results and mee object
 are selected. Please, see ELMER vignette. 
 
-### Results table
+#### Results table
 Select which ELMER results in a table.  It needs that the results to be selected.
 
 # Data input summary
