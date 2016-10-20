@@ -640,6 +640,7 @@ Select a summarized Experiment object (rda)
 * Pathway ID: plot results in a pathway graphs. See bioconductor [pathview](http://bioconductor.org/packages/pathview/) [@ref5] package.
 
 ![Pathway graphs output.](pathview.png)
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/MtEVe7_ULlQ/0.jpg)](http://www.youtube.com/watch?v=MtEVe7_ULlQ "Pathview graphs example")
 
 
 ### Sub-menu: Heatmap plot
@@ -871,7 +872,7 @@ cat(tabl)
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/0.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Case study 3")
 
 ## Case 4
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/Ki5UOcs-5mY/0.jpg)](http://www.youtube.com/watch?v=Ki5UOcs-5mY "Case study 4")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/0.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Case study 4")
 
 
 \newpage
