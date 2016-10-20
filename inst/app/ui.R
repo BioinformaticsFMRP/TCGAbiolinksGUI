@@ -1095,7 +1095,7 @@ body <-  dashboardBody(
                                                     min = 1, max = 100, value = 20, step = 1),
                                        numericInput("elmergetpairpercentage", " percentage",
                                                     min = 0, max = 1, value = 0.2, step = 0.01),
-                                       numericInput("elmergetpairpermu", " Number of permuation",
+                                       numericInput("elmergetpairpermu", " Number of permutations",
                                                     min = 0, max = 10000, value = 10000, step = 1000),
                                        numericInput("elmergetpairpvalue", "Pvalue",
                                                     min = 0, max = 1, value = 0.01, step = 0.01),
