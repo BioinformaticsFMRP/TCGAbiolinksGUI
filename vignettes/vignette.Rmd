@@ -480,8 +480,11 @@ LUSC[@ref16], PRAD[@ref19], READ [@ref12],  SKCM [@ref13], STAD [@ref10], THCA [
 
 The user can visualize the table with the information and save it as csv or an R object (rda) file.
 
+\newpage
 #### Sub-menu: Clinical data
+
 Download GDC clinical data
+
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/54NBug9ycwM/0.jpg)](http://www.youtube.com/watch?v=54NBug9ycwM "Downloading clinical example")
 
 
@@ -727,7 +730,6 @@ this sub-menu offer a way to visualize multiple genomic alteration.
 
 ![Oncorpint plot menu: Main window.](oncoprint.png)
 
-#### Video
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/cp1AwT8Ogmg/0.jpg)](http://www.youtube.com/watch?v=cp1AwT8Ogmg "Oncoprint example")
 
 #### Data
@@ -737,7 +739,6 @@ this sub-menu offer a way to visualize multiple genomic alteration.
 should exist.
 * Annotation columns: Which columns of the annotation file should be showed?
 * Annotation position: where the annotation should be added? Top or bottom.
-
 
 #### Gene selection
 
@@ -750,14 +751,6 @@ should exist.
 * Remove empty columns? If a samples has no mutation it will be removed from the plot 
 * Show column names? Show patient barcodes
 * Show barplot annotation on rows? Show right barplot?
-
-
-#### Colors control
-Change the color of the plot
-
-#### Size control
-Change the size of the plot
-
 
 \newpage
 # Integrative analysis
@@ -790,13 +783,6 @@ The possible highlight controls are:
 * Show genes names: show names of significant genes
 * Boxed names: show names inside a box
 * Circle gnees: Circle candidate biologically significant genes
-
-
-### Colors control
-Change the color of the plot
-
-### Size control
-Change the size of the plot
 
 ### Other option
 
