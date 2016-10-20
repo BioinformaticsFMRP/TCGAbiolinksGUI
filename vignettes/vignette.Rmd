@@ -642,6 +642,7 @@ Select a summarized Experiment object (rda)
 * Pathway ID: plot results in a pathway graphs. See bioconductor [pathview](http://bioconductor.org/packages/pathview/) [@ref5] package.
 
 ![Pathway graphs output.](pathview.png)
+
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/MtEVe7_ULlQ/0.jpg)](http://www.youtube.com/watch?v=MtEVe7_ULlQ "Pathview graphs example")
 
 
