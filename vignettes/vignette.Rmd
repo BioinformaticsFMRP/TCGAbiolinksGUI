@@ -482,6 +482,8 @@ The user can visualize the table with the information and save it as csv or an R
 
 #### Sub-menu: Clinical data
 Download GDC clinical data
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/54NBug9ycwM/0.jpg)](http://www.youtube.com/watch?v=54NBug9ycwM "Pathview graphs example")
+
 
 #### Sub-menu: Mutation data
 Download the Mutation Annotation Format (MAF)
