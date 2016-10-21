@@ -364,7 +364,9 @@ body <-  dashboardBody(
                 fluidRow(
                     column(8,  bsAlert("oncomessage"),
                            bsCollapse(id = "collapseOnco", open = "Oncoprint",
-                                      bsCollapsePanel("Oncoprint", uiOutput("oncoPlot"), style = "default")
+                                      bsCollapsePanel("Oncoprint",
+                                                      busyIndicator("Rendering in progress...",wait = 10000),
+                                                      uiOutput("oncoPlot"), style = "default")
                            )),
                     column(4,
                            box(title = "Oncoprint Plot",width = NULL,
@@ -472,7 +474,9 @@ body <-  dashboardBody(
                     column(8,  bsAlert("volcanomessage"),
                            bsCollapse(id = "collapseVolcano", open = "Volcano plot",
                                       #bsCollapsePanel("Probes info", dataTableOutput('probesSE'), style = "default"),
-                                      bsCollapsePanel("Volcano plot", uiOutput("volcanoPlot"), style = "default")),
+                                      bsCollapsePanel("Volcano plot",
+                                                      busyIndicator("Rendering in progress...",wait = 10000),
+                                                      uiOutput("volcanoPlot"), style = "default")),
                            fluidRow(
                                column(width = 10,  offset = 1,
                                       valueBoxOutput("volcanoBoxDown", width = 4),
@@ -608,7 +612,9 @@ body <-  dashboardBody(
                 fluidRow(
                     column(8,  bsAlert("heatmapmessage"),
                            bsCollapse(id = "collapseHeatmap", open = "Heatmap",
-                                      bsCollapsePanel("Heatmap", uiOutput("heatmapPlot"), style = "default"))),
+                                      bsCollapsePanel("Heatmap",
+                                                      busyIndicator("Rendering in progress...",wait = 10000),
+                                                      uiOutput("heatmapPlot"), style = "default"))),
                     column(4,
                            box(title = "Heatmap",width = NULL,
                                status = "danger",
@@ -948,7 +954,9 @@ body <-  dashboardBody(
                     column(8,  bsAlert("starburstmessage"),
                            bsCollapse(id = "collapsestarburst", open = "starburst plots",
                                       bsCollapsePanel("starburst result - probe gene pairs", dataTableOutput('starburstResult'), style = "default"),
-                                      bsCollapsePanel("starburst plots", uiOutput("starburstPlot"), style = "default"))),
+                                      bsCollapsePanel("starburst plots",
+                                                      busyIndicator("Rendering in progress...",wait = 10000),
+                                                      uiOutput("starburstPlot"), style = "default"))),
                     column(4,
                            box(title = "Starburst plot",width = NULL,
                                status = "danger",
