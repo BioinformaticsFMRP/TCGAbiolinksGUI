@@ -59,18 +59,18 @@ busyIndicator <- function(text = "Calculation in progress..", wait=1000) {
         div(class = "busy",
               h4(text),
               h2(HTML('<i class="fa fa-cog fa-spin"></i>'))),
-        tags$script(sprintf(
-            "	setInterval(function(){
-            if ($('html').hasClass('shiny-busy')) {
-            setTimeout(function() {
-            if ($('html').hasClass('shiny-busy')) {
-            $('div.busy').show()
-            }
-            }, %d)
-            } else {
-            $('div.busy').hide()
-            }
-},100)
+              tags$script(sprintf(
+                    "	setInterval(function(){
+                            if ($('html').hasClass('shiny-busy')) {
+                                setTimeout(function() {
+                                    if ($('html').hasClass('shiny-busy')) {
+                                            $('div.busy').show()
+                                    }
+                                }, %d)
+                            } else {
+                                $('div.busy').hide()
+                            }
+                        },100)
             ",wait)
         )
     )
