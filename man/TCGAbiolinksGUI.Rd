@@ -21,6 +21,8 @@ The functions you're likely to need from \pkg{TCGAbiolinksGUI} are
 \code{\link{TCGAbiolinksGUI}}
 }
 \examples{
+\dontrun{
    TCGAbiolinksGUI()
+}
 }
 

@@ -1,7 +1,9 @@
 #' @title TCGAbiolinks GUI
 #' @description Calls UI interface
 #' @examples
+#' \dontrun{
 #'    TCGAbiolinksGUI()
+#' }
 #' @name TCGAbiolinksGUI
 #' @import shiny shinyFiles shinydashboard downloader colourpicker
 #' TCGAbiolinks ggplot2 shinyBS stringr ggrepel pathview ELMER grid
