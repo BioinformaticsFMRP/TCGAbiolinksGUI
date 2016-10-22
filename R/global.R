@@ -5,10 +5,11 @@
 #'    TCGAbiolinksGUI()
 #' }
 #' @name TCGAbiolinksGUI
-#' @import shiny shinyFiles shinydashboard downloader colourpicker
+#' @import shiny shinyFiles shinydashboard downloader
 #' TCGAbiolinks ggplot2 shinyBS stringr ggrepel pathview ELMER grid
 #' clusterProfiler parallel readr data.table
 #' @importFrom SummarizedExperiment SummarizedExperiment values rowRanges colData<- assay colData
+#' @importFrom  colourpicker colourInput
 #' @importFrom shinyjs hide show toggle useShinyjs
 #' @export
 #' @return Open a connection to shiny
@@ -27,17 +28,6 @@ is.mac <- function() {
 
 is.linux <- function() {
     Sys.info()["sysname"] == "Linux"
-}
-
-#' Get object from inside the package
-#' @keywords internal
-#' @export
-#' @return Return object from package
-#' @examples
-#' maf.files <- get.obj("maf.files")
-get.obj <- function(obj){
-    if(is.null(obj)) return(NULL)
-    return(get(obj))
 }
 
 #' busyIndicator
