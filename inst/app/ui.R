@@ -476,7 +476,6 @@ body <-  dashboardBody(
                            bsCollapse(id = "collapseVolcano", open = "Volcano plot",
                                       #bsCollapsePanel("Probes info", dataTableOutput('probesSE'), style = "default"),
                                       bsCollapsePanel("Volcano plot",
-                                                      busyIndicator("Rendering in progress...",wait = 1000 ),
                                                       uiOutput("volcanoPlot"), style = "default")),
                            fluidRow(
                                column(width = 10,  offset = 1,
@@ -956,7 +955,7 @@ body <-  dashboardBody(
                            bsCollapse(id = "collapsestarburst", open = "starburst plots",
                                       bsCollapsePanel("starburst result - probe gene pairs", dataTableOutput('starburstResult'), style = "default"),
                                       bsCollapsePanel("starburst plots",
-                                                      #busyIndicator("Rendering in progress...",wait = 10000),
+
                                                       uiOutput("starburstPlot"), style = "default"))),
                     column(4,
                            box(title = "Starburst plot",width = NULL,
@@ -1251,9 +1250,13 @@ body <-  dashboardBody(
 # @title  Client side
 # @description Client side - Download data from roadmap project
 # @keywords internal
-TCGAbiolinksGUIUI <- dashboardPage(
-    skin = "blue",
-    header,
-    sidebar,
-    body
+shinyUI(
+    bootstrapPage(
+        dashboardPage(
+            skin = "blue",
+            header,
+            sidebar,
+            body),
+        busyIndicator("Working in progress...",wait = 10000 )
+    )
 )
