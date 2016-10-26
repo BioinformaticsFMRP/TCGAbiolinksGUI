@@ -700,7 +700,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     }
                     if (isolate({input$saveClinicalCsv})){
                         if(grepl("biospecimen",type, ignore.case = TRUE))  tbl$portions <- NULL
-                        write_csv(tbl,gsub("rda","csv",filename))
+                        write_csv2(tbl,gsub("rda","csv",filename))
                         save.message <-  paste0(save.message,"File created: ",gsub("rda","csv",filename))
                     }
                     createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "File created", style =  "info",
