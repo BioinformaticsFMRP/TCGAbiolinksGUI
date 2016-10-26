@@ -597,7 +597,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         save.message <- paste0(save.message,"<br> File created: ", filename)
                     }
                     if (isolate({input$saveSubtypeCsv})) {
-                        write.csv2(tbl, file = gsub("rda","csv",filename))
+                        write_csv(tbl, file = gsub("rda","csv",filename))
                         save.message <- paste0(save.message,"<br> File created: ", gsub("rda","csv",filename))
                     }
                     createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = paste0("Success"), style =  "success",
@@ -700,7 +700,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     }
                     if (isolate({input$saveClinicalCsv})){
                         if(grepl("biospecimen",type, ignore.case = TRUE))  tbl$portions <- NULL
-                        write_csv2(tbl,gsub("rda","csv",filename))
+                        write_csv(tbl,gsub("rda","csv",filename))
                         save.message <-  paste0(save.message,"File created: ",gsub("rda","csv",filename))
                     }
                     createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "File created", style =  "info",
@@ -869,7 +869,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$mafAnnotation)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- as.data.frame(read_csv2(file)); se$X1 <- NULL
+            se <- as.data.frame(read_csv(file)); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -932,7 +932,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read_csv2(file);
+            se <- read_csv(file);
             rownames(df) <- df[,1]
             df[,1] <- NULL
         } else if(tools::file_ext(file)=="rda"){
@@ -1259,7 +1259,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         df <- as.data.frame(read_csv2(file)); df$X1 <- NULL
+                         df <- as.data.frame(read_csv(file)); df$X1 <- NULL
                          incProgress(1, detail = "Completed")
                      })
         return(df)
@@ -1358,7 +1358,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                         "meancut",x.cut,
                                         sep = "_"),
                                   ".csv")
-                    write.csv2(data,file =  file.path(getPath, csv))
+                    write_csv(data,file =  file.path(getPath, csv))
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
                                 content = paste0(file.path(getPath, csv)), append = FALSE)
 
@@ -1419,7 +1419,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                  sep="_"),
                                            ".csv")
                     out.filename <- file.path(getPath,out.filename)
-                    write.csv2(data, file = out.filename)
+                    write_csv(data, file = out.filename)
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
                                 content =  paste0(out.filename), append = FALSE)
                 }
@@ -1932,7 +1932,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
         withProgress(message = 'Loading data',
                      detail = 'This may take a while...', value = 0, {
-                         df <- as.data.frame(read_csv2(file)); rownames(df) <- df$X1; df$X1 <- NULL;
+                         df <- as.data.frame(read_csv(file)); rownames(df) <- df$X1; df$X1 <- NULL;
                          incProgress(1, detail = "Completed")
                      })
         return(df)
@@ -2172,7 +2172,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- as.data.frame(read_csv2(file));
+            df <- as.data.frame(read_csv(file));
             rownames(df) <- df[,1]
             df[,1] <- NULL
         } else if(tools::file_ext(file)=="rda"){
@@ -2313,7 +2313,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            df <- as.data.frame(read_csv2(file, col_names = TRUE))
+            df <- as.data.frame(read_csv(file, col_names = TRUE))
             if(ncol(df) == 1) df <- as.data.frame(read_csv(file, col_names = TRUE))
             rownames(df) <- df[,1]
             df[,1] <- NULL
@@ -2490,7 +2490,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         out.filename <- file.path(getPath,out.filename)
-        write.csv2(exp, file = out.filename)
+        write_csv(exp, file = out.filename)
         createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "success",
                     content = out.filename, append = FALSE)
     })
@@ -2593,7 +2593,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$pathewayexpfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- read_csv2(file)
+            se <- read_csv(file)
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -2739,12 +2739,14 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     starburst <-  reactive({
         trigger <- input$starburstPlot
         closeAlert(session,"starburstAlert")
-        if(is.null(result.dea.data())){
+        exp <- isolate({result.dea.data()})
+        met <- isolate({result.dmr.data()})
+        if(is.null(exp)){
             createAlert(session, "starburstmessage", "starburstAlert", title = "Missing data", style =  "danger",
                         content = paste0("Please select the differential expression results"), append = FALSE)
             return(NULL)
         }
-        if(is.null(result.dmr.data())){
+        if(is.null(met)){
             createAlert(session, "starburstmessage", "starburstAlert", title = "Missing data", style =  "danger",
                         content = paste0("Please select the differential DNA methylation results"), append = FALSE)
             return(NULL)
@@ -2753,8 +2755,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         exp.p.cut <- isolate({input$starburstexFDR})
         diffmean.cut <- isolate({input$starburstmetdiff})
         met.p.cut <- isolate({input$starburstmetFDR})
-        exp <- result.dea.data()
-        met <- result.dmr.data()
+
         names <- isolate({input$starburstNames})
         names.fill <- isolate({input$starburstNamesFill})
         colors <- c(isolate({input$sbcolInsignigicant}),
@@ -2808,7 +2809,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                          "met.diffmean", diffmean.cut, "met.p.cut", met.p.cut,
                                          sep = "_"),".csv")
             if(isolate({input$starburstSave})) {
-                write.csv2(result$starburst, file = out.filename)
+                write_csv(result$starburst, file = out.filename)
                 createAlert(session, "starburstmessage", "starburstAlert", title = "Results saved", style =  "success",
                             content = paste0("Results saved in: ", out.filename), append = FALSE)
             }
