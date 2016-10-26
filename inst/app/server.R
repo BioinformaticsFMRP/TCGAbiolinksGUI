@@ -597,7 +597,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                         save.message <- paste0(save.message,"<br> File created: ", filename)
                     }
                     if (isolate({input$saveSubtypeCsv})) {
-                        write_csv(tbl, file = gsub("rda","csv",filename))
+                        write_csv(tbl, path = gsub("rda","csv",filename))
                         save.message <- paste0(save.message,"<br> File created: ", gsub("rda","csv",filename))
                     }
                     createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = paste0("Success"), style =  "success",
@@ -700,7 +700,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     }
                     if (isolate({input$saveClinicalCsv})){
                         if(grepl("biospecimen",type, ignore.case = TRUE))  tbl$portions <- NULL
-                        write_csv(tbl,gsub("rda","csv",filename))
+                        write_csv(tbl,path = gsub("rda","csv",filename))
                         save.message <-  paste0(save.message,"File created: ",gsub("rda","csv",filename))
                     }
                     createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "File created", style =  "info",
@@ -1358,7 +1358,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                         "meancut",x.cut,
                                         sep = "_"),
                                   ".csv")
-                    write_csv(data,file =  file.path(getPath, csv))
+                    write_csv(data,path =  file.path(getPath, csv))
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
                                 content = paste0(file.path(getPath, csv)), append = FALSE)
 
@@ -1419,7 +1419,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                  sep="_"),
                                            ".csv")
                     out.filename <- file.path(getPath,out.filename)
-                    write_csv(data, file = out.filename)
+                    write_csv(data, path = out.filename)
                     createAlert(session, "volcanomessage", "volcanoAlert", title = "File created", style =  "success",
                                 content =  paste0(out.filename), append = FALSE)
                 }
@@ -2490,7 +2490,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
         out.filename <- file.path(getPath,out.filename)
-        write_csv(exp, file = out.filename)
+        write_csv(exp, path = out.filename)
         createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "success",
                     content = out.filename, append = FALSE)
     })
@@ -2809,7 +2809,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                          "met.diffmean", diffmean.cut, "met.p.cut", met.p.cut,
                                          sep = "_"),".csv")
             if(isolate({input$starburstSave})) {
-                write_csv(result$starburst, file = out.filename)
+                write_csv(result$starburst, path = out.filename)
                 createAlert(session, "starburstmessage", "starburstAlert", title = "Results saved", style =  "success",
                             content = paste0("Results saved in: ", out.filename), append = FALSE)
             }
