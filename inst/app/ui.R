@@ -1256,7 +1256,7 @@ shinyUI(
             skin = "blue",
             header,
             sidebar,
-            body),
-        busyIndicator("Working in progress...",wait = 10000 )
+            body)
+        #,busyIndicator("Working in progress...",wait = 10000 )
     )
 )

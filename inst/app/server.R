@@ -2496,7 +2496,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     })
     observe({
 
-        shinyFileChoose(input, 'deafile', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
+        shinyFileChoose(input, 'deafile', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'),filetypes=c('','rda'))
     })
     deadata <- function(){
         inFile <- input$deafile
