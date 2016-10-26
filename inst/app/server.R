@@ -2847,7 +2847,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$starburstexpfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- as.data.frame(read_csv2(file)); se$X1 <- NULL
+            se <- as.data.frame(read_csv(file)); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
@@ -2864,7 +2864,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         if (is.null(inFile)) return(NULL)
         file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$starburstmetfile)$datapath)
         if(tools::file_ext(file)=="csv"){
-            se <- as.data.frame(read_csv2(file)); se$X1 <- NULL
+            se <- as.data.frame(read_csv(file)); se$X1 <- NULL
         } else if(tools::file_ext(file)=="rda"){
             se <- get(load(file))
         }
