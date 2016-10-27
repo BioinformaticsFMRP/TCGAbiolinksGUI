@@ -6,6 +6,7 @@ library(shinyjs)
 library(SummarizedExperiment)
 library(pathview)
 library(reshape2)
+library(shinydashboard)
 
 data(paths.hsa)
 pathways.id <- names(paths.hsa)
