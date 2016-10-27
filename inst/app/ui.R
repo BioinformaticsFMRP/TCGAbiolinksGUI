@@ -266,7 +266,7 @@ body <-  dashboardBody(
                                          "left"),
                                selectizeInput('gisticGenes',
                                               "Genes",
-                                              choices = NULL,
+                                              choices = as.character(sort(TCGAbiolinks:::gene.list)),
                                               multiple = TRUE),
                                textInput("tcgafilename", "File name", value = "TCGA.rda", width = NULL, placeholder = NULL),
                                actionButton("tcgaPrepareBt",
