@@ -1979,7 +1979,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     observeEvent(input$heatmapPlotBt , {
         output$heatmap.plotting <- renderPlot({
-            closeAlert("heatmapAlert")
+            closeAlert(session,"heatmapAlert")
             # get information from file
             file  <- basename(as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$heatmapresultsfile)$datapath))
             if(length(file) > 0){
@@ -2059,7 +2059,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                     genes <- results.data[,"status"] %in% sig.genes
                 } else {
                     sig.genes <- parse.textarea.input(isolate({input$heatmapGenesTextArea}))
-                    genes <- which(results.data$gene %in% sig.genes)
+                    genes <- which(results.data$mRNA %in% sig.genes)
                 }
                 results.data <- results.data[genes,]
                 data <- data[values(data)$gene_id %in% results.data$mRNA ,]
@@ -2471,11 +2471,14 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                 #fdr.cut  = fdr.cut,
                                                 #logFC.cut = logFC.cut,
                                                 method = method)
+
                          exp <- TCGAanalyze_LevelTab(exp,
                                                      typeCond1 = g1,
                                                      typeCond2 = g2,
                                                      TableCond1 = dataFilt[,samples.g1],
                                                      TableCond2 = dataFilt[,samples.g2])
+
+
                          exp$status <- "Insignificant"
                          exp[exp$logFC >= logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Upregulated in ", g2)
                          exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g2)
