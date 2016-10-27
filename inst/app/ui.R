@@ -14,6 +14,28 @@ names(pathways.id) <- unname(paths.hsa)
 pathways.id <- pathways.id[sort(unname(paths.hsa))]
 menu.icon <- "arrow-circle-right"
 
+#' busyIndicator
+#'
+# This is a function to indicate the work is in progress, it was created for the plots
+# that rendering were taking long and withprogress was not working.
+# @param text The text to show
+# @param wait The amount of time to wait before showing the busy indicator. The
+#   default is 1000 which is 1 second.
+#
+# @export
+busyIndicator <- function(text = "Rendering in progress...") {
+    div(
+        id = 'busyModal', class = 'modal', role = 'dialog', 'data-backdrop' = 'static',
+        div(
+            class = 'modal-dialog modal-sm',
+            div(id = 'modal-content-busy',
+                class = 'modal-content',
+                div(class = 'modal-header', h4(class = 'modal-title', text)),
+                div(class = 'modal-body', p(h2(HTML('<i class="fa fa-cog fa-spin"></i>'))))
+            )
+        )
+    )
+}
 
 
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
