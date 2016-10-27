@@ -220,14 +220,14 @@ hr.lineConfig:after {
     color: #51B4FF
 }
 
-div.busy {
+#busyModal {
   position:absolute;
   top: 40%;
-  left: 50%;
+  left: 0%;
   margin-top: -100px;
   margin-left: -50px;
   display:none;
-  background: rgba(230, 230, 230, .8);
+  background: rgba(230, 230, 230, 0);
   text-align: center;
   padding-top: 20px;
   padding-left: 30px;
@@ -235,6 +235,11 @@ div.busy {
   padding-right: 30px;
   border-radius: 5px;
 }
+
+#modal-content-busy{
+    border-radius: 5px;
+}
+
 
 div.info {
   text-align: center;
