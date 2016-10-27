@@ -1592,19 +1592,32 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                  for(j in 0:floor(n/step)){
                                      end <- ifelse(((j + 1) * step) > n, n,((j + 1) * step))
                                      results <- rbind(results,
-                                                      values(TCGAanalyze_DMR(data = se[((j * step) + 1):end,],
-                                                                             groupCol = isolate({input$dmrgroupCol}),
-                                                                             group1 = group1,
-                                                                             group2 = group2,
-                                                                             plot.filename = FALSE,
-                                                                             save = FALSE,
-                                                                             p.cut = isolate({input$dmrpvalue}),
-                                                                             diffmean.cut = isolate({input$dmrthrsld}),
-                                                                             cores = isolate({input$dmrcores}))))
+                                                      tryCatch({
+                                                          values(TCGAanalyze_DMR(data = se[((j * step) + 1):end,],
+                                                                                 groupCol = isolate({input$dmrgroupCol}),
+                                                                                 group1 = group1,
+                                                                                 group2 = group2,
+                                                                                 plot.filename = FALSE,
+                                                                                 save = FALSE,
+                                                                                 calculate.pvalues.probes = isolate({input$dmrPvalues}),
+                                                                                 p.cut = isolate({input$dmrpvalue}),
+                                                                                 diffmean.cut = isolate({input$dmrthrsld}),
+                                                                                 cores = isolate({input$dmrcores})))
+                                                      }, error = function(e) {return(NULL)
+                                                      }))
                                      incProgress(1/(ceiling(n/step) + 1), detail = paste("Completed ", j + 1, " of ",ceiling(n/step)))
                                  }
-                                 results <- results[,!(colnames(results) %in% colnames(values(se)))]
-                                 values(se) <- cbind(values(se),results)
+                                 if(!is.null(results)){
+                                     rownames(results) <- results$probeID
+                                     results <- results[,!(colnames(results) %in% colnames(values(se)))]
+                                 }
+                                 if(isolate({input$dmrPvalues}) == "all"){
+                                     values(se) <- cbind(values(se),results)
+                                 } else {
+                                     se <- se[rownames(se) %in% rownames(results),]
+                                     values(se) <- cbind(values(se),results)
+
+                                 }
                                  incProgress(1/(ceiling(n/step) + 1), detail = "Saving results")
                              }
                              se <- TCGAanalyze_DMR(data = se,
@@ -1612,6 +1625,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                    group1 = group1,
                                                    group2 = group2,
                                                    save = TRUE,
+                                                   calculate.pvalues.probes = isolate({input$dmrPvalues}),
                                                    save.directory = getPath,
                                                    plot.filename = paste0("DMR_volcano_",group1,"_vs_",group2,".pdf"),
                                                    p.cut = isolate({input$dmrpvalue}),
@@ -2668,7 +2682,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observeEvent(input$pathwaygraphBt , {
         updateCollapse(session, "collapsedea", open = "Pathview plot")
         output$pathviewPlot <- renderUI({
-                plotOutput("pathviewImage", height = input$pathwaygraphheigth)
+            plotOutput("pathviewImage", height = input$pathwaygraphheigth)
         })})
 
     observeEvent(input$pathwaygraphBt , {
