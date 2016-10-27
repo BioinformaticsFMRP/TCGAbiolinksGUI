@@ -30,6 +30,7 @@ is.linux <- function() {
     Sys.info()["sysname"] == "Linux"
 }
 
+
 #' busyIndicator
 #'
 #' This is a function to indicate the work is in progress, it was created for the plots
@@ -43,27 +44,16 @@ is.linux <- function() {
 #'   default is 1000 which is 1 second.
 #'
 #' @export
-busyIndicator <- function(text = "Calculation in progress..", wait=1000) {
-    tagList(
-        singleton(tags$head(
-            tags$link(rel="stylesheet", type="text/css",href="TCGAbiolinksGUI.css")
-        )),
-        div(class = "busy",
-              h4(text),
-              h2(HTML('<i class="fa fa-cog fa-spin"></i>'))),
-              tags$script(sprintf(
-                    "	setInterval(function(){
-                            if ($('html').hasClass('shiny-busy')) {
-                                setTimeout(function() {
-                                    if ($('html').hasClass('shiny-busy')) {
-                                            $('div.busy').show()
-                                    }
-                                }, %d)
-                            } else {
-                                $('div.busy').hide()
-                            }
-                        },100)
-            ",wait)
+busyIndicator <- function(text = "Rendering in progress..") {
+    div(
+        id = 'busyModal', class = 'modal', role = 'dialog', 'data-backdrop' = 'static',
+        div(
+            class = 'modal-dialog modal-sm',
+            div(id = 'modal-content-busy',
+                class = 'modal-content',
+                div(class = 'modal-header', h4(class = 'modal-title', text)),
+                div(class = 'modal-body', p(h2(HTML('<i class="fa fa-cog fa-spin"></i>'))))
+            )
         )
     )
 }
