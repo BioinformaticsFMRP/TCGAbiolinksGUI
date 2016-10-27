@@ -242,7 +242,7 @@ body <-  dashboardBody(
                                          "left"),
                                selectizeInput('gisticGenes',
                                               "Genes",
-                                              choices = unique(rownames(TCGAbiolinks:::EAGenes)),
+                                              choices = NULL,
                                               multiple = TRUE),
                                textInput("tcgafilename", "File name", value = "TCGA.rda", width = NULL, placeholder = NULL),
                                actionButton("tcgaPrepareBt",

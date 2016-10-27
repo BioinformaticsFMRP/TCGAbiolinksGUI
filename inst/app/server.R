@@ -8,8 +8,8 @@ library(stringr)
 library(ggrepel)
 library(pathview)
 library(htmlwidgets)
-library(ELMER)
-library(googleVis)
+suppressPackageStartupMessages(library(ELMER))
+suppressPackageStartupMessages(library(googleVis))
 library(readr)
 library(data.table)
 library(grid)
@@ -1121,6 +1121,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         })})
     observe({
         updateSelectizeInput(session, 'mafAnnotationcols', choices = as.character(colnames(annotation.maf())), server = TRUE)
+        updateSelectizeInput(session, 'gisticGenes', choices = as.character(sort(gene.list)), server = TRUE)
+
     })
     observeEvent(input$tcgaClinicalTypeFilter, {
         if(isolate({input$tcgaClinicalTypeFilter}) == "biospecimen") {
