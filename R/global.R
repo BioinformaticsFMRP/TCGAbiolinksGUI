@@ -44,7 +44,7 @@ is.linux <- function() {
 #'   default is 1000 which is 1 second.
 #'
 #' @export
-busyIndicator <- function(text = "Rendering in progress..") {
+busyIndicator <- function(text = "Rendering in progress...") {
     div(
         id = 'busyModal', class = 'modal', role = 'dialog', 'data-backdrop' = 'static',
         div(
