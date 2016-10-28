@@ -23,7 +23,7 @@ menu.icon <- "arrow-circle-right"
 #   default is 1000 which is 1 second.
 #
 # @export
-busyIndicator <- function(text = "Rendering in progress...") {
+busyIndicator <- function(text = "Working in progress...") {
     div(
         id = 'busyModal', class = 'modal', role = 'dialog', 'data-backdrop' = 'static',
         div(
