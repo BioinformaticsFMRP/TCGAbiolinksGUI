@@ -1133,6 +1133,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     observe({
         updateSelectizeInput(session, 'tcgaDataCategoryFilter', choices =  getDataCategory(as.logical(input$tcgaDatabase)), server = TRUE)
+        updateSelectizeInput(session, 'eagenes', choices = unique(rownames(TCGAbiolinks:::EAGenes)), server = TRUE)
+        updateSelectizeInput(session, 'gisticGenes', choices = as.character(sort(TCGAbiolinks:::gene.list)), server = TRUE)
     })
 
     observe({
