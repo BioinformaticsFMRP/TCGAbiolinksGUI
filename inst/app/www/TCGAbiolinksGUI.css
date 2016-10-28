@@ -66,6 +66,20 @@ body {
     border-color: #000000;
     .opacity 0.8
 }
+#downloadData {
+    width: 100%;
+    color: #fff;
+    background-color: navy;
+    border-color: #000000;
+    .opacity 0.8
+}
+#seuploadfile {
+    width: 100%;
+    color: #fff;
+    background-color: navy;
+    border-color: #000000;
+    .opacity 0.8
+}
 
 /*.shinyFiles:hover {
     background-color: navy;

@@ -360,6 +360,7 @@ were created based on different group of analysis. The menus and sub-menus are:
         + Mutation data
         + Clinical data
         + Subtype data
+    + Manage Summarized Experiment
 * Analysis        
     * Clinical analysis
         + Survival plot
@@ -513,6 +514,11 @@ A cvs or R object (rda) file with the clinical information.
 
 ##### Size control
 Change the size of the plot
+
+## Menu: Manage summarized Experiment object
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs /0.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Downloading clinical example")
+
+
 
 \newpage
 ## Menu: Epigenetic analysis
