@@ -440,7 +440,7 @@ Also, if you have used ELMER analysis please cite:
 
 ## Menu: Get GDC Data
 
-#### Sub-menu: Molecular data
+### Sub-menu: Molecular data
 
 In this sub-menu the user can search, download and prepare GDC data.
 
@@ -472,7 +472,8 @@ The data can be prepared into:
 For the Summarized Experiment object subytpe and clinical information  will be added.
 The object will save with the same name from the file name field.
 
-#### Sub-menu: Subtype data
+### Sub-menu: Subtype data
+
 
 The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-wide 
 studies of various diseases. We have added some of the subtypes defined by these
@@ -482,21 +483,21 @@ LUSC[@ref16], PRAD[@ref19], READ [@ref12],  SKCM [@ref13], STAD [@ref10], THCA [
 The user can visualize the table with the information and save it as csv or an R object (rda) file.
 
 \newpage
-#### Sub-menu: Clinical data
+### Sub-menu: Clinical data
 
 Download GDC clinical data
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/54NBug9ycwM/0.jpg)](http://www.youtube.com/watch?v=54NBug9ycwM "Downloading clinical example")
 
 
-#### Sub-menu: Mutation data
+### Sub-menu: Mutation data
 Download the Mutation Annotation Format (MAF)
 
 \newpage
 # Analysis
 ## Menu: Clinical analysis
 
-#### Sub-menu: Survival plot
+### Sub-menu: Survival plot
 From the clinical data download in the TCGA data menu, the user can use it to verify the survival of groups.
 
 ![Survival plot menu: Main window.](survival.png)
@@ -516,14 +517,14 @@ A cvs or R object (rda) file with the clinical information.
 Change the size of the plot
 
 ## Menu: Manage summarized Experiment object
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs /0.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Downloading clinical example")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs/0.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Downloading clinical example")
 
 
 
 \newpage
 ## Menu: Epigenetic analysis
 
-#### Sub-menu: Differential methylation analysis
+### Sub-menu: Differential methylation analysis
 
 The user will be able to perform a Differential methylation Regions (DMR) analysis.
 The output will be a file with the folowing pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv
@@ -547,7 +548,7 @@ Select a summarized Experiment object (rda)
 output g1 vs g2, g1 vs g3 and g2 vs g3.
 
 
-#### Sub-menu: Volcano plot
+### Sub-menu: Volcano plot
 
 In this sub-menu the user will be able to plot the results from Differentially methylated regions (DMR) 
 analysis and differential expression analysis (DEA). 
