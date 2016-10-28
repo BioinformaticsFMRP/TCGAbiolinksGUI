@@ -322,6 +322,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         sample.data <-   read_csv(inFile$datapath,col_names = TRUE)
         rownames(sample.data) <- sample.data$row.names
         sample.data$row.names <- NULL
+        sample.data <- sample.data[match(rownames(sample.data),colnames(data)),]
         colData(data) <- DataFrame(sample.data)
         getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
