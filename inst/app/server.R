@@ -515,7 +515,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         withProgress(message = 'Prepare progress',
                      detail = 'This may take a while...', value = 0, {
                          trash = tryCatch({
-                             genes <- isolate({input$gisticGenes})
+                             genes <- NULL
+                             if(isolate({input$addGistic})) genes <- isolate({input$gisticGenes})
                              trash <- GDCprepare(query, save = TRUE,
                                                  save.filename = filename,
                                                  summarizedExperiment = as.logical(isolate({input$prepareRb})),
