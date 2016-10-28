@@ -1,26 +1,3 @@
 TCGAbiolinksGUI 0.99.0
 ----------------------------------------------------------------
-  FIRST VERSION - MENUS
-
-  * TCGAbiolinksGUI:
-    * TCGA Data
-      + TCGA search
-      + Data summary
-    * Clinical analysis
-      + Profile plot
-      + Survival plot
-    * Epigenetic analysis
-      + Differential methylation analysis
-      + Volcano plot
-      + Heatmap plot
-      + Mean DNA methylation plot
-    * Transcriptomic analysis
-      + Differential expression analysis
-      + Volcano plot
-      + Heatmap plot
-      + Enrichement analysis
-    * Genomic analysis
-      + Oncoprint Plot
-    * Integrative analysis
-      + Starburst plot
-      + ELMER
+  FIRST VERSION. Demo: https://tcgabiolinksgui.shinyapps.io/TCGAbiolinksGUI/
