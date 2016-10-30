@@ -1,6 +1,6 @@
 Package: TCGAbiolinksGUI
 Title: TCGAbiolinksGUI
-Version: 0.99.0
+Version: 0.99.1
 Date: 2016-10-28
 Author: Tiago Chedraoui Silva <tiagochst@gmail.com>,
     Antonio Colaprico  <antonio.colaprico@ulb.ac.be>,
@@ -40,7 +40,7 @@ Imports:
     ELMER (>= 1.2.1),
     clusterProfiler,
     parallel,
-    TCGAbiolinks (>= 2.2.2),
+    TCGAbiolinks (>= 2.2.1),
     shinyjs (>= 0.7),
     colourpicker,
     shinyBS  (>= 0.62)
