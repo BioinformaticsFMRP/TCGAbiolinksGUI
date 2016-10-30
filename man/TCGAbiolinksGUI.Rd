@@ -6,7 +6,10 @@
 \alias{TCGAbiolinksGUI-package}
 \title{TCGAbiolinksGUI}
 \usage{
-TCGAbiolinksGUI()
+TCGAbiolinksGUI(run = TRUE)
+}
+\arguments{
+\item{run}{Used to control the examples.}
 }
 \value{
 Open a connection to shiny
@@ -24,5 +27,6 @@ The functions you're likely to need from \pkg{TCGAbiolinksGUI} are
 \dontrun{
    TCGAbiolinksGUI()
 }
+TCGAbiolinksGUI(run = FALSE)
 }
 
