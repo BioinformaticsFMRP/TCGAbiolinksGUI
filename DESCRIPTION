@@ -43,7 +43,7 @@ Imports:
     TCGAbiolinks (>= 2.2.1),
     shinyjs (>= 0.7),
     colourpicker,
-    shinyBS  (>= 0.62)
+    shinyBS  (>= 0.61)
 VignetteBuilder: knitr
 biocViews: Genetics,
     DNAMethylation,
