@@ -20,6 +20,7 @@ getDataCategory <- function(legacy){
     data.category.hamonirzed <- sort(c("Transcriptome Profiling",
                                        "Copy Number Variation",
                                        "Simple Nucleotide Variation",
+                                       "DNA Methylation",
                                        # "Raw Sequencing Data", # This is controlled
                                        "Biospecimen",
                                        "Clinical"))
@@ -88,13 +89,15 @@ getMafTumors <- function(){
 
 getPlatform <-  function(legacy, data.category){
     platform <- NULL
-    if(!legacy) return(platform) # platform is not used for harmonized
+
+    if(!legacy & data.category != "DNA Methylation" ) return(platform) # platform is not used for harmonized
     if(grepl("Copy number variation",data.category, ignore.case = TRUE)) platform <- "Affymetrix SNP Array 6.0"
     if(data.category == "Protein expression") platform <- "MDA RPPA Core"
     if(data.category == "Gene expression") platform <- c("Illumina HiSeq","HT_HG-U133A","AgilentG4502A_07_2","AgilentG4502A_07_1","HuEx-1_0-st-v2")
     if(data.category == "DNA methylation") platform <- c("Illumina Human Methylation 450","Illumina Human Methylation 27",
                                                          "Illumina DNA Methylation OMA003 CPI","Illumina DNA Methylation OMA002 CPI",
                                                          "Illumina Hi Seq")
+    if(data.category == "DNA Methylation") platform <- c("Illumina Human Methylation 450","Illumina Human Methylation 27")
     return(platform)
 }
 
