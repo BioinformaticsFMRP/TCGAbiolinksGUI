@@ -655,6 +655,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                  save.filename = filename,
                                                  summarizedExperiment = as.logical(isolate({input$prepareRb})),
                                                  directory = getPath,
+                                                 mut.pipeline = isolate({tcgaPrepareMutPipeline}),
                                                  add.gistic2.mut = genes)
                              if(!is.null(genes)) {
                                  aux <- gsub(".rda","_samples_information.csv",filename)
@@ -876,7 +877,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
             withProgress(message = 'Download in progress',
                          detail = 'This may take a while...', value = 0, {
-                             tbl <- GDCquery_Maf(tumor, directory = getPath, save.csv =  isolate({input$saveMafcsv}))
+                             tbl <- GDCquery_Maf(tumor, directory = getPath, save.csv =  isolate({input$saveMafcsv}), pipelines = isolate({input$tcgaMafPipeline}))
                              incProgress(1, detail = "Download completed")
                          })
             if(is.null(tbl)){
@@ -948,10 +949,12 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             shinyjs::show("addGistic")
             if(isolate({input$addGistic})){
                 shinyjs::show("gisticGenes")
+                shinyjs::show("tcgaPrepareMutPipeline")
             }
         } else {
             shinyjs::hide("addGistic")
             shinyjs::hide("gisticGenes")
+            shinyjs::hide("tcgaPrepareMutPipeline")
         }
     })
 
