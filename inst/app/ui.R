@@ -923,7 +923,7 @@ body <-  dashboardBody(
                                    numericInput("survivalPercent", "High/Low  cut-off (%)",
                                                 min = 0, max = 1, value = 0.25, step = 0.1),
                                    selectizeInput('survivalGene',
-                                                  'Gene',
+                                                  'Gene/Probe',
                                                   choices=NULL,
                                                   multiple = FALSE),
                                    selectizeInput('survivalplotgroup',
