@@ -953,6 +953,9 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             if(isolate({input$addGistic})){
                 shinyjs::show("gisticGenes")
                 shinyjs::show("tcgaPrepareMutPipeline")
+            } else {
+                shinyjs::hide("gisticGenes")
+                shinyjs::hide("tcgaPrepareMutPipeline")
             }
         } else {
             shinyjs::hide("addGistic")
