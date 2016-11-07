@@ -2455,9 +2455,40 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observe({
         data <- survivalplotdata()
         updateSelectizeInput(session, 'survivalplotgroup', choices = {
-            if(!is.null(data)) as.character(colnames(data))
+            if(!is.null(data)) {
+                if(class(data) ==  class(data.frame())) choices <- as.character(colnames(data))
+                if(class(data) !=  class(data.frame())) choices <- as.character(colnames(colData(data)))
+                choices
+            }
         }, server = TRUE)
     })
+    observe({
+        data <- survivalplotdata()
+        if(class(data) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+            shinyjs::show("survivalbyGene")
+
+            updateSelectizeInput(session, 'survivalGene', choices = {
+                if(!is.null(data)) rownames(data)
+            }, server = TRUE)
+        } else {
+            updateCheckboxInput(session, "survivalbyGene",value = FALSE)
+            shinyjs::hide("survivalbyGene")
+
+        }
+    })
+
+    observeEvent(input$survivalbyGene , {
+        if(input$survivalbyGene){
+            shinyjs::show("survivalPercent")
+            shinyjs::show("survivalGene")
+            shinyjs::hide("survivalplotgroup")
+        } else {
+            shinyjs::hide("survivalPercent")
+            shinyjs::hide("survivalGene")
+            shinyjs::show("survivalplotgroup")
+        }
+    })
+
 
     observe({
         data <- survivalplotdata()
@@ -2484,17 +2515,20 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                          tools::file_ext(file)), append = FALSE)
             return(NULL)
         }
-        if(class(df)!= class(data.frame())){
-            createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, but I'm expecting a Data frame object, but I got a: ",
-                                         class(df)), append = FALSE)
-            return(NULL)
-        }
+
         cols <- c("days_to_death","days_to_last_follow_up","vital_status")
-        if(!(all(cols %in% colnames(df)))){
-            createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, but I'm expecting columns: ",paste(cols,collapse = ", ")), append = FALSE)
-            return(NULL)
+        if(class(df) ==  class(data.frame())){
+            if(!(all(cols %in% colnames(df)))){
+                createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
+                            content = paste0("Sorry, but I'm expecting columns: ",paste(cols,collapse = ", ")), append = FALSE)
+                return(NULL)
+            }
+        } else {
+            if(!(all(cols %in% colnames(colData(df))))){
+                createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
+                            content = paste0("Sorry, but I'm expecting columns: ", paste(cols,collapse = ", ")), append = FALSE)
+                return(NULL)
+            }
         }
         return(df)
     }
@@ -2516,7 +2550,19 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
             cut.off <- isolate({input$survivalplotLimit})
             print.pvalue <- isolate({input$survivalplotPvalue})
 
-
+            # if Summarized Experiment
+            if(isolate(input$survivalbyGene)){
+                aux <- assay(data)[rownames(data) == isolate({input$survivalGene}),]
+                colData(data)$level.group <- "Mid expression"
+                min.cut <- max(sort(aux)[1:(length(aux) * isolate({input$survivalPercent}))])
+                high.cut <- min(sort(aux, decreasing = T)[1:(length(aux) * isolate({input$survivalPercent}))])
+                colData(data)[aux <= min.cut,"level.group"] <- "Low expression"
+                colData(data)[aux >= high.cut,"level.group"] <- "High expression"
+                clusterCol <- "level.group"
+            }
+            if(class(data) !=  class(data.frame())){
+                data <- colData(data)
+            }
             #---------------------------
             # Input verification
             #---------------------------
