@@ -1723,7 +1723,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         # read the data from the downloaded path
         # prepare it
         se <- isolate({dmrdata()})
-        se <- subset(se,subset = (rowSums(is.na(assay(se))) == 0))
+        # Removes probes with all NA
+        se <- subset(se,subset = (rowSums(!is.na(assay(se))) > 0))
         for(i in 1:nrow(groups)) {
             group1 <- groups[i,1]
             group2 <- groups[i,2]
