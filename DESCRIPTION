@@ -25,7 +25,7 @@ Suggests:
     BiocStyle,
     animation
 Imports:
-    shiny (>= 0.14),
+    shiny (>= 0.14.1),
     downloader (>= 0.4),
     grid,
     googleVis,
