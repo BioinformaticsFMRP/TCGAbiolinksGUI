@@ -658,7 +658,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                  save.filename = filename,
                                                  summarizedExperiment = as.logical(isolate({input$prepareRb})),
                                                  directory = getPath,
-                                                 mut.pipeline = isolate({tcgaPrepareMutPipeline}),
+                                                 mut.pipeline = isolate({input$tcgaPrepareMutPipeline}),
                                                  add.gistic2.mut = genes)
                              if(!is.null(genes)) {
                                  aux <- gsub(".rda","_samples_information.csv",filename)
