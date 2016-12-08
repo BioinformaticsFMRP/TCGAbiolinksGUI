@@ -658,7 +658,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                                                  save.filename = filename,
                                                  summarizedExperiment = as.logical(isolate({input$prepareRb})),
                                                  directory = getPath,
-                                                 mut.pipeline = isolate({tcgaPrepareMutPipeline}),
+                                                 mut.pipeline = isolate({input$tcgaPrepareMutPipeline}),
                                                  add.gistic2.mut = genes)
                              if(!is.null(genes)) {
                                  aux <- gsub(".rda","_samples_information.csv",filename)
@@ -1218,7 +1218,19 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
                 closeAlert(session, "oncoAlert")
             }
 
-
+            if(!is.null(annotation)){
+                if(!"bcr_patient_barcode" %in% colnames(annotation)){
+                createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
+                            content = "bcr_patient_barcode column should be in the annotation", append = TRUE)
+                    return(NULL)
+                }
+                idx <- match(substr(mut$Tumor_Sample_Barcode,1,12),annotation$bcr_patient_barcode)
+                if(all(is.na(idx))){
+                    createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
+                                content = "Annotation samples does not match mutation", append = TRUE)
+                    return(NULL)
+                }
+            }
 
             withProgress(message = 'Creating plot',
                          detail = 'This may take a while...', value = 0, {
