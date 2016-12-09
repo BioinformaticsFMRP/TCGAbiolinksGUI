@@ -1,4 +1,10 @@
 $(function() {
+ $(".dropdown.shutdown").click(
+     function(){
+        Shiny.onInputChange("test",1);
+        close();
+ });
+
   $(document).on({
 
     'shiny:connected': function(event) {

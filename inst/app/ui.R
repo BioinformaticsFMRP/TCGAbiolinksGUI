@@ -37,7 +37,6 @@ busyIndicator <- function(text = "Working in progress...") {
     )
 }
 
-
 table.code <- c('01','02','03','04','05','06','07','08','09','10',
                 '11','12','13','14','20','40','50','60','61')
 names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
@@ -68,7 +67,8 @@ inputTextarea <- function(inputId, value="", nrows, ncols) {
 
 header <- dashboardHeader(
     title = "TCGAbiolinks",
-    titleWidth = 250
+    titleWidth = 250,
+    tags$li(class = "dropdown shutdown",  a(href = "#", icon("glyphicon glyphicon-off", lib = "glyphicon")))
 )
 header$children[[2]]$children <-  tags$a(href='http://bioconductor.org/packages/TCGAbiolinksGUI/',
                                          tags$img(src='logo_no_text.png',height='50',width='220'))

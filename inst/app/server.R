@@ -258,6 +258,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     shinyDirChoose(input, 'workingDir', roots=get.volumes(), session=session, restrictions=system.file(package='base'))
 
     shinyjs::hide("greetbox-outer")
+
+    observe({
+        if(!is.null(input$test)) stopApp()  # stop shiny
+    })
+
     getClinical.info <-  reactive({
         project <- input$tcgaProjectFilter
         baseURL <- "https://gdc-api.nci.nih.gov/cases/?"
