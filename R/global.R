@@ -16,5 +16,5 @@
 #' @export
 #' @return Open a connection to shiny
 TCGAbiolinksGUI <- function(run = TRUE) {
-    if(run) shiny::runApp(system.file("app", package = "TCGAbiolinksGUI"),launch.browser=TRUE)
+    if(run) suppressMessages(shiny::runApp(system.file("app", package = "TCGAbiolinksGUI"),launch.browser=TRUE))
 }

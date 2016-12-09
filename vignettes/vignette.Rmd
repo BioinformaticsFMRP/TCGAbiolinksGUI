@@ -339,7 +339,7 @@ knitr::opts_chunk$set(dpi = 600)
 devtools::load_all(".")
 ```
 
-\newpage
+
 # Introduction
 
 TCGAbiolinksGUI was created to help users without knowledge of programming to search, download and analyze 
@@ -381,7 +381,6 @@ were created based on different group of analysis. The menus and sub-menus are:
 
 After the presentation of each menu, we dedicated a section to show how to execute some of the cases of studies showed in [TCGAbiolinks paper](http://doi.org/10.1093/nar/gkv1507) and [vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html) but using only the TCGAbiolinksGUI.
 
-\newpage
 ## Installation TCGAbiolinksGUI
 
 To install the package from biocondcutor repository, please, use the code below.
@@ -426,10 +425,16 @@ Other related publications to this package:
 
 Also, if you have used ELMER analysis please cite:
 
-*  Yao, L., Shen, H., Laird, P. W., Farnham, P. J., & Berman, B. P. "Inferring regulatory element landscapes and transcription factor networks from cancer methylomes." Genome Biol 16 (2015): 105.
+* Yao, L., Shen, H., Laird, P. W., Farnham, P. J., & Berman, B. P. "Inferring regulatory element landscapes and transcription factor networks from cancer methylomes." Genome Biol 16 (2015): 105.
 * Yao, Lijing, Benjamin P. Berman, and Peggy J. Farnham. "Demystifying the secret mission of enhancers: linking distal regulatory elements to target genes." Critical reviews in biochemistry and molecular biology 50.6 (2015): 550-573.
 
-\newpage
+If you have used  OncoPrint plot and Heatmap Plot please cite:
+
+* Gu, Zuguang, Roland Eils, and Matthias Schlesner. "Complex heatmaps reveal patterns and correlations in multidimensional genomic data." Bioinformatics (2016): btw313
+
+If you have used  Pathway plot please cite:
+
+* Luo, Weijun, Brouwer and Cory (2013). “Pathview: an R/Bioconductor package for pathway-based data integration and visualization.” Bioinformatics, 29(14), pp. 1830-1831.
 
 # GDC Data
 
@@ -477,7 +482,6 @@ LUSC[@ref16], PRAD[@ref19], READ [@ref12],  SKCM [@ref13], STAD [@ref10], THCA [
 
 The user can visualize the table with the information and save it as csv or an R object (rda) file.
 
-\newpage
 ### Sub-menu: Clinical data
 
 Download GDC clinical data
@@ -488,7 +492,7 @@ Download GDC clinical data
 ### Sub-menu: Mutation data
 Download the Mutation Annotation Format (MAF)
 
-\newpage
+
 # Analysis
 ## Menu: Clinical analysis
 
@@ -516,7 +520,6 @@ Change the size of the plot
 
 
 
-\newpage
 ## Menu: Epigenetic analysis
 
 ### Sub-menu: Differential methylation analysis
@@ -609,7 +612,7 @@ This column is selected from the  sample matrix (accessed with colData)
 ##### Size control
 Change the size of the plot
 
-\newpage
+
 ## Menu: Transcriptomic analysis
 In this sub-menu the user will be able to perform an enrichemnt analysis and see
 the biological process, cellular component, molecular function and pathways in which the genes 
@@ -722,7 +725,6 @@ Change the color of the plot
 #### Size control
 Change the size of the plot and the number of bars to plot
 
-\newpage
 ## Menu: Genomic analysis
 
 ### Sub-menu: Oncoprint
@@ -754,7 +756,6 @@ should exist.
 * Show column names? Show patient barcodes
 * Show barplot annotation on rows? Show right barplot?
 
-\newpage
 # Integrative analysis
 
 ## Menu: Starburst plot
@@ -860,7 +861,6 @@ tabl <- "
 cat(tabl) 
 ```
 
-\newpage
 # Cases of study 
 
 ## Case 3
@@ -870,11 +870,10 @@ cat(tabl)
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/0.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Case study 4")
 
 
-\newpage
-# Session info
 
+# Session info
 ```{r sessionInfo, results='asis', echo=FALSE}
-toLatex(sessionInfo())
+sessionInfo()
 ```
-\newpage
+
 # References

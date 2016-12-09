@@ -46,6 +46,7 @@ Imports:
     shinyBS  (>= 0.61)
 VignetteBuilder: knitr
 biocViews: Genetics,
+    GUI,
     DNAMethylation,
     StatisticalMethod,
     DifferentialMethylation,
