@@ -6,7 +6,8 @@ $(function() {
     },
 
     'shiny:disconnected': function(event) {
-      alert('Disconnected! The web socket state is ' + event.socket.readyState);
+      //alert('Disconnected! The web socket state is ' + event.socket.readyState);
+      close();
     },
 
     'shiny:busy': function(event) {
