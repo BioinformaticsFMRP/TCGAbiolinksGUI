@@ -936,8 +936,9 @@ body <-  dashboardBody(
                                              "left"),
                                    useShinyjs(),
                                    sliderInput("survivalplotLimit", "x-axis limit", min = 0, max = 10000, value = 0),
-                                   checkboxInput("survivalplotPvalue", "Add p-value?", value = TRUE, width = NULL)
-
+                                   checkboxInput("survivalplotPvalue", "Add p-value?", value = TRUE, width = NULL),
+                                   checkboxInput("survivalplotRiskTable", "Add risk table?", value = TRUE, width = NULL),
+                                   checkboxInput("survivalplotConfInt", "Add confidence interval?", value = TRUE, width = NULL)
                                ),
                                box(title = "Size control",width = NULL,
                                    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
