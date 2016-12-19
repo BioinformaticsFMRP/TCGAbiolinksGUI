@@ -28,6 +28,8 @@ body {
     font-size: 24px;
     /*color: red*/
 }
+
+
 .skin-blue .main-header .navbar {
     background-color: #000080
 }
@@ -258,3 +260,19 @@ hr.lineConfig:after {
 div.info {
   text-align: center;
 }
+
+
+#loading-content {
+  position: fixed;
+  background: #FFFFFF;
+  z-index: 10000;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding-top: 50px;
+  bottom: 0;
+  font-size: 50px;
+  text-align: center;
+  color: #000000;
+}
+
