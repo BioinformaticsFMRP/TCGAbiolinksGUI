@@ -119,8 +119,11 @@ observeEvent(input$survivalplotBt , {
         legend <- isolate({input$survivalplotLegend})
         main <- isolate({input$survivalplotMain})
         clusterCol <-  isolate({input$survivalplotgroup})
-        cut.off <- isolate({input$survivalplotLimit})
-        print.pvalue <- isolate({input$survivalplotPvalue})
+        xlim <- isolate({input$survivalplotLimit})
+        if(xlim == 0) xlim <- NULL
+        pvalue <- isolate({input$survivalplotPvalue})
+        risk.table <- isolate({input$survivalplotRiskTable})
+        conf.int <- isolate({input$survivalplotConfInt})
 
         # if Summarized Experiment
         if(isolate(input$survivalbyGene)){
@@ -166,10 +169,14 @@ observeEvent(input$survivalplotBt , {
                                               filename = NULL,
                                               legend = legend,
                                               main = main,
-                                              cutoff = cut.off,
-                                              print.value = print.pvalue)
+                                              xlim = xlim,
+                                              pvalue = pvalue,
+                                              risk.table=risk.table,
+                                              conf.int=conf.int)
+
                      })
-    })})
+    })
+})
 observeEvent(input$survivalplotBt , {
     updateCollapse(session, "collapsesurvivalplot", open = "Survival plot")
     output$survivalplot <- renderUI({

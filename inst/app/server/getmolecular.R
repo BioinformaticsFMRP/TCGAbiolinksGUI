@@ -133,9 +133,12 @@ query.result <-  reactive({
         gender.idx <- sapply(gender, function(y) clinical$gender %in% y)
         gender.idx <- apply(gender.idx,1,any)
     }
-    idx <- apply(data.frame(gender.idx,race.idx,vital.status.idx,stage.idx),1,function(x)all(x,na.rm = TRUE))
-    clinical <- clinical[idx,]
-    results <- results[substr(results$cases,1,12) %in% clinical$bcr_patient_barcode,]
+    if(any(!is.na(gender.idx),!is.na(race.idx),!is.na(vital.status.idx),!is.na(stage.idx))){
+        idx <- apply(data.frame(gender.idx,race.idx,vital.status.idx,stage.idx),1,function(x)all(x,na.rm = TRUE))
+        clinical <- clinical[idx,]
+    }
+    cut <- ifelse(grepl("TARGET",query$project),16,12)
+    results <- results[substr(results$cases,1,cut) %in% clinical$bcr_patient_barcode,]
     query$results[[1]] <- results
     list(query,clinical)
 })
@@ -271,18 +274,14 @@ getClinical.info <-  reactive({
                  })
     results <- json$data$hits
     diagnoses <- rbindlist(results$diagnoses, fill = TRUE)
-    diagnoses$submitter_id <- gsub("_diagnosis", "", diagnoses$submitter_id)
-    results$demographic$submitter_id <- gsub("_demographic",
-                                             "", results$demographic$submitter_id)
-    df <- merge(diagnoses, results$demographic, by = "submitter_id",
-                all = TRUE)
+    diagnoses$submitter_id <- results$submitter_id
+    results$demographic$submitter_id <- results$submitter_id
+    df <- merge(diagnoses, results$demographic, by = "submitter_id", all = TRUE)
     df$bcr_patient_barcode <- df$submitter_id
     df$disease <- gsub("TCGA-|TARGET-", "", project)
     setDF(df)
     return(df)
 })
-
-
 
 observe({
     updateSelectizeInput(session, 'tcgaDataTypeFilter', choices =  getDataType(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter), server = TRUE)
