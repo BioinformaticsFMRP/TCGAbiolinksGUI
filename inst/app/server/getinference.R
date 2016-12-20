@@ -52,9 +52,6 @@ networkdata <-  reactive({
                      data <- get(load(file))
                      incProgress(1, detail = "Completed")
                  })
-    if(class(data) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
-        data <- assay(data)
-    }
 
     # Check data input, should it be a data frame/matrix or summarizedExperiment
     if(class(data) != class(as(SummarizedExperiment(),"RangedSummarizedExperiment")) & class(data) != class(data.frame())){
@@ -63,5 +60,10 @@ networkdata <-  reactive({
                                      class(data)), append = FALSE)
         return(NULL)
     }
+
+    if(class(data) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+        data <- assay(data)
+    }
+
     return(data)
 })
