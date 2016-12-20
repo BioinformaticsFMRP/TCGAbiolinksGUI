@@ -281,6 +281,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     source(file.path(server.path, "starburst.R"),  local = TRUE)$value
     source(file.path(server.path, "elmer.R"),  local = TRUE)$value
     source(file.path(server.path, "manageSE.R"),  local = TRUE)$value
+    source(file.path(server.path, "getinference.R"),  local = TRUE)$value
 
     # Configuration tab
     output$wd <- renderPrint({

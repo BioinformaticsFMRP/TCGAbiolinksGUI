@@ -100,7 +100,8 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Differential expression analysis" , tabName = "dea", icon = icon("flask")),
                  menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
                  menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
-                 menuSubItem("Enrichment analysis" , tabName = "ea", icon = icon("flask"))
+                 menuSubItem("Enrichment analysis" , tabName = "ea", icon = icon("flask")),
+                 menuSubItem("Network inference" , tabName = "netinf", icon = icon("flask"))
         ),
         menuItem("Genomic analysis", icon = icon("flask"),
                  menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o"))
@@ -166,7 +167,9 @@ body <-  dashboardBody(
         source(file.path(ui.path, "elmer_analysis.R"),  local = TRUE)$value,
         source(file.path(ui.path, "elmer_results.R"),  local = TRUE)$value,
         source(file.path(ui.path, "config.R"),  local = TRUE)$value,
-        source(file.path(ui.path, "references.R"),  local = TRUE)$value
+        source(file.path(ui.path, "references.R"),  local = TRUE)$value,
+        source(file.path(ui.path, "getinference.R"),  local = TRUE)$value
+
     )
 )
 
