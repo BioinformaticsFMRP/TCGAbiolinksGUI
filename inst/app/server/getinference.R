@@ -14,6 +14,8 @@ observe({
 # Network inference
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 observeEvent(input$networkBt , {
+    # Close in case it is open
+    closeAlert(session, "networkAlert")
     print("Start inference")
 
     data <- networkdata()
