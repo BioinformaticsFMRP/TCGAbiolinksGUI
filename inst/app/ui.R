@@ -13,7 +13,9 @@ pathways.id <- names(paths.hsa)
 names(pathways.id) <- unname(paths.hsa)
 pathways.id <- pathways.id[sort(unname(paths.hsa))]
 menu.icon <- "arrow-circle-right"
-ui.path <- file.path(system.file("app", package = "TCGAbiolinksGUI"),"ui")
+ui.path <- ifelse(system.file("app", package = "TCGAbiolinksGUI") == "",
+                  "ui",
+                  file.path(system.file("app", package = "TCGAbiolinksGUI"),"ui"))
 
 #' busyIndicator
 #'

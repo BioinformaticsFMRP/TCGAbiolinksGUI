@@ -265,8 +265,10 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     observe({
         if(!is.null(input$test)) stopApp()  # stop shiny
     })
+    server.path <- ifelse(system.file("app", package = "TCGAbiolinksGUI") == "",
+                      "server",
+                      file.path(system.file("app", package = "TCGAbiolinksGUI"),"server"))
 
-    server.path <- file.path(system.file("app", package = "TCGAbiolinksGUI"),"server")
     source(file.path(server.path, "getmolecular.R"),  local = TRUE)$value
     source(file.path(server.path, "getsubtype.R"),  local = TRUE)$value
     source(file.path(server.path, "getmutation.R"),  local = TRUE)$value
