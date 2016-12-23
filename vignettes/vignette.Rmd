@@ -381,7 +381,7 @@ were created based on different group of analysis. The menus and sub-menus are:
 
 After the presentation of each menu, we dedicated a section to show how to execute some of the cases of studies showed in [TCGAbiolinks paper](http://doi.org/10.1093/nar/gkv1507) and [vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html) but using only the TCGAbiolinksGUI.
 
-## Installation TCGAbiolinksGUI
+## Install TCGAbiolinksGUI
 
 To install the package from biocondcutor repository, please, use the code below.
 
@@ -390,7 +390,7 @@ source("https://bioconductor.org/biocLite.R")
 biocLite("TCGAbiolinksGUI")
 ```
 
-To install the package from a binary package, please, use the code below.
+To install the development version of the package github, please, use the code below.
 
 ```{r, eval = FALSE}
 # dependencies
@@ -401,7 +401,7 @@ install.packages(c("shiny","readr","googleVis","shinydashboard"))
 devtools::install_github("thomasp85/shinyFiles")
 devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
 devtools::install_github("daattali/shinyjs")
-install.packages("~/TCGAbiolinksGUI_0.99.0_R_x86_64-pc-linux-gnu.tar.gz", repos = NULL, type = "source")
+devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
 ## Quick start
