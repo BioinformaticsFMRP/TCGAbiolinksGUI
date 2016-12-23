@@ -17,8 +17,7 @@ source("https://bioconductor.org/biocLite.R")
 biocLite("TCGAbiolinksGUI")
 ```
 
-To install the package from a binary package, please, use the code below.
-
+To install the package development version from Github, please, use the code below.
 ```R
 # dependencies
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
@@ -28,7 +27,7 @@ install.packages(c("shiny","readr","googleVis","shinydashboard"))
 devtools::install_github("thomasp85/shinyFiles")
 devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
 devtools::install_github("daattali/shinyjs")
-install.packages("~/TCGAbiolinksGUI_0.99.0_R_x86_64-pc-linux-gnu.tar.gz", repos = NULL, type = "source")
+devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
 ## Quick start
