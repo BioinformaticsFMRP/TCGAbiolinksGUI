@@ -342,12 +342,11 @@ devtools::load_all(".")
 
 # Introduction
 
-TCGAbiolinksGUI was created to help users without knowledge of programming to search, download and analyze 
-TCGA data. This package offers an graphical user interface to the R/biocondcutor packages [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/) [@ref2] and [ELMER](http://bioconductor.org/packages/ELMER/) packages [@ref4].
-Also, some other useful packages from bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package [@ref1] has been used for data visualization.
+TCGAbiolinksGUI was created to help users with limited programming knowledge to search, download and analyze 
+TCGA data. This package offers a graphical user interface to the R/Biocondcutor package [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/) [@ref2] and [ELMER](http://bioconductor.org/packages/ELMER/) [@ref4].
+Additional packages from Bioconductor are included, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package [@ref1] to aid in visualizing the data.
 
-In order to present the package we divided this vignette based in the GUI menus that
-were created based on different group of analysis. The menus and sub-menus are:
+This vignette is arranged according to the current GUI menu layout. The menus and sub-menus are:
 
 * TCGA Data
     + Get TCGA data
@@ -379,18 +378,16 @@ were created based on different group of analysis. The menus and sub-menus are:
     + Tutorial/vignettes
     + References
 
-After the presentation of each menu, we dedicated a section to show how to execute some of the cases of studies showed in [TCGAbiolinks paper](http://doi.org/10.1093/nar/gkv1507) and [vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html) but using only the TCGAbiolinksGUI.
-
 ## Install TCGAbiolinksGUI
 
-To install the package from biocondcutor repository, please, use the code below.
+To install the package from the Biocondcutor repository:
 
 ```{r, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
 biocLite("TCGAbiolinksGUI")
 ```
 
-To install the development version of the package github, please, use the code below.
+To install the development version of the package via GitHub:
 
 ```{r, eval = FALSE}
 # dependencies
@@ -419,20 +416,20 @@ Please cite both TCGAbiolinks package and TCGAbiolinksGUI:
 
 * Colaprico A, Silva TC, Olsen C, Garofano L, Cava C, Garolini D, Sabedot T, Malta TM, Pagnotta SM, Castiglioni I, Ceccarelli M, Bontempi G and Noushmehr H. "TCGAbiolinks: an R/Bioconductor package for integrative analysis of TCGA data." Nucleic acids research (2015): gkv1507.
 
-Other related publications to this package:
+Other related publication to this package:
 
 * "TCGA Workflow: Analyze cancer genomics and epigenomics data using Bioconductor packages". F1000Research [10.12688/f1000research.8923.1](http://dx.doi.org/doi:10.12688/f1000research.8923.1) [@ref24]
 
-Also, if you have used ELMER analysis please cite:
+If you used ELMER please cite:
 
 * Yao, L., Shen, H., Laird, P. W., Farnham, P. J., & Berman, B. P. "Inferring regulatory element landscapes and transcription factor networks from cancer methylomes." Genome Biol 16 (2015): 105.
 * Yao, Lijing, Benjamin P. Berman, and Peggy J. Farnham. "Demystifying the secret mission of enhancers: linking distal regulatory elements to target genes." Critical reviews in biochemistry and molecular biology 50.6 (2015): 550-573.
 
-If you have used  OncoPrint plot and Heatmap Plot please cite:
+If you used OncoPrint plot and Heatmap Plot please cite:
 
 * Gu, Zuguang, Roland Eils, and Matthias Schlesner. "Complex heatmaps reveal patterns and correlations in multidimensional genomic data." Bioinformatics (2016): btw313
 
-If you have used  Pathway plot please cite:
+If you used Pathway plot please cite:
 
 * Luo, Weijun, Brouwer and Cory (2013). “Pathview: an R/Bioconductor package for pathway-based data integration and visualization.” Bioinformatics, 29(14), pp. 1830-1831.
 
@@ -448,7 +445,7 @@ In this sub-menu the user can search, download and prepare GDC data.
 
 ##### Advanced seach box
 
-Based on the following filters, it will show a table with results:
+Based on the following filters, it will show a table with the following results:
 
 * Database
 * Project filter
@@ -463,22 +460,20 @@ Based on the following filters, it will show a table with results:
 ##### Download & Prepare box
 
 After the search, the user can download the data and prepare it into an R object.
-The data can be prepared into:
+The data can be prepared into one of two formats:
 
 * [Summarized Experiment](http://www.nature.com/nmeth/journal/v12/n2/abs/nmeth.3252.html) 
 [@ref3]
 * Data Frame
 
-For the Summarized Experiment object subytpe and clinical information  will be added.
-The object will save with the same name from the file name field.
+If the Summarized Experiment object is selected, then the subytpe and clinical information will be added.
+The object will save with the same name as the file name field.
 
 ### Sub-menu: Subtype data
 
-
 The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-wide 
 studies of various diseases. We have added some of the subtypes defined by these
-reports in our package. The BRCA [@ref11], COAD [@ref12], GBM [@ref8], HNSC [@ref14], KICH [@ref15], KIRC[@ref21], KIRP [@ref20], LGG [@ref8], LUAD [@ref9], 
-LUSC[@ref16], PRAD[@ref19], READ [@ref12],  SKCM [@ref13], STAD [@ref10], THCA [@ref18], UCEC [@ref17] tumors have data added. 
+reports in our package. The BRCA [@ref11], COAD [@ref12], GBM [@ref8], HNSC [@ref14], KICH [@ref15], KIRC[@ref21], KIRP [@ref20], LGG [@ref8], LUAD [@ref9], LUSC[@ref16], PRAD[@ref19], READ [@ref12],  SKCM [@ref13], STAD [@ref10], THCA [@ref18], UCEC [@ref17]. In subsequent versions, we will update this list.
 
 The user can visualize the table with the information and save it as csv or an R object (rda) file.
 
@@ -492,12 +487,11 @@ Download GDC clinical data
 ### Sub-menu: Mutation data
 Download the Mutation Annotation Format (MAF)
 
-
 # Analysis
 ## Menu: Clinical analysis
 
 ### Sub-menu: Survival plot
-From the clinical data download in the TCGA data menu, the user can use it to verify the survival of groups.
+From the clinical data download in the TCGA data menu, the user can use it to verify the survival of different groups.
 
 ![Survival plot menu: Main window.](survival.png)
 
@@ -518,17 +512,15 @@ Change the size of the plot
 ## Menu: Manage summarized Experiment object
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs/0.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Downloading clinical example")
 
-
-
 ## Menu: Epigenetic analysis
 
 ### Sub-menu: Differential methylation analysis
 
-The user will be able to perform a Differential methylation Regions (DMR) analysis.
+The user will be able to perform a Differential methylation regions (DMR) analysis.
 The output will be a file with the folowing pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv
-Also, the summarized Experiment will be saved with all the results inside it, the new object will be saved with _result suffix.
+Also, the summarized Experiment will be saved with all the results inside it and the new object will be saved with _result suffix.
 
-Obs: Depending on the number of samples and the number of probes, this analysis can go from minutes to days.
+Obs: Depending on the number of samples and the number of probes of interest, this analysis can last anywhere from minutes to days.  This is also dependent on the type of machine and hardware in which the analysis is running on.
 
 ![Differential methylation analysis menu: Main window.](dmr.png)
 
@@ -544,7 +536,6 @@ Select a summarized Experiment object (rda)
 * Group column: columns with the groups to be used in the analysis
 * Groups: Select at least two groups to the analyis. For example if it has three groups (g1, g2 and g3) the analysis will
 output g1 vs g2, g1 vs g3 and g2 vs g3.
-
 
 ### Sub-menu: Volcano plot
 
@@ -569,9 +560,9 @@ Checkbox option:
 
 * Show names: Show the names of up/down regulated genes or hypo/hyper methylated probes 
 * Boxed names: put names inside a box.
-There is a possibility to highlight some specific genes/probes using the "Highlightining option" suboptions.
+To highlight specific genes/probes consider using the "Highlightining option".
 
-The option "points to highlight" has the possibilities:
+The option "points to highlight" can perform the following functions:
 
 * highlighted - show the names for only the highlighted genes/probes list
 * sinigifcant - show the names for only the up/down regulated genes or hypo/hyper methylated probes 
@@ -585,9 +576,7 @@ Change the size of the plot
 
 ##### Other 
 
-* Save file with results: Create a file with the same pattern as the one in the input, but with the 
-new thersholds.
-
+* Save file with results: Create a file with the same pattern as the one in the input, but with the new thersholds.
 
 ## Sub-menu: Mean DNA methylation plot
 
@@ -596,7 +585,7 @@ In this sub-menu the user will be able to plot the mean DNA methylation by group
 ![Mean DNA methylation plot menu: Main window.](meanmet.png)
 
 ##### Data
-Expected input a R object (rda) file with a summarized Experiment object.
+Expected input is an R object (rda) file with a summarized Experiment object.
 
 ##### Parameters control
 
@@ -612,11 +601,9 @@ This column is selected from the  sample matrix (accessed with colData)
 ##### Size control
 Change the size of the plot
 
-
 ## Menu: Transcriptomic analysis
-In this sub-menu the user will be able to perform an enrichemnt analysis and see
-the biological process, cellular component, molecular function and pathways in which the genes 
-select have a role.
+In this sub-menu the user will be able to perform a gene ontology enrichemnt analysis for the following processes:
+biological, cellular component, molecular function. In additon, a network analysis for the groups of genes will be performed.
 
 ### Sub-menu: Differential expression analysis
 
@@ -652,7 +639,6 @@ Select a summarized Experiment object (rda)
 ![Pathway graphs output.](pathview.png)
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/MtEVe7_ULlQ/0.jpg)](http://www.youtube.com/watch?v=MtEVe7_ULlQ "Pathview graphs example")
-
 
 ### Sub-menu: Heatmap plot
 
@@ -692,12 +678,11 @@ Change the size of the plot and the number of bars to plot
 
 ### Sub-menu: Enrichment analysis
 
-Researchers, in order to better understand the underlying biological processes, often want to retrieve a functional profile of a set of genes that might have an important role. This can be done by performing an enrichment analysis.
+In order to better understand the underlying biological processes, researchers often retrieve a functional profile of a set of genes that might have an important role. This can be done by performing an enrichment analysis.
 
-Given a set of genes that are up-regulated under certain conditions, an enrichment analysis will identify classes of genes or proteins that are over-represented using annotations for that gene set.
+Given a set of genes that are up-regulated under certain conditions, an enrichment analysis will identify classes of genes or proteins that are over or under-represented using gene set annotations.
 
 ![Enrichment analysis  menu: Main window.](ea.png)
-
 
 #### Gene selection
 Input a list of genes by:
@@ -729,8 +714,7 @@ Change the size of the plot and the number of bars to plot
 
 ### Sub-menu: Oncoprint
 
-Using oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package,
-this sub-menu offer a way to visualize multiple genomic alteration.
+Using oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package, this sub-menu offer a way to visualize multiple genomic alteration.
 
 ![Oncorpint plot menu: Main window.](oncoprint.png)
 
@@ -739,16 +723,15 @@ this sub-menu offer a way to visualize multiple genomic alteration.
 #### Data
 
 * Select MAF file: Select a MAF file (.rda) with mutatation annotation information
-* Select annotation file: Select a R object (rda)  with the metadata information. Columns "patient" or "bcr_patient_barcode"
-should exist.
-* Annotation columns: Which columns of the annotation file should be showed?
-* Annotation position: where the annotation should be added? Top or bottom.
+* Select annotation file: Select a R object (rda)  with the metadata information. Columns "patient" or "bcr_patient_barcode" should exist.
+* Annotation columns: Which columns of the annotation file should be visible?
+* Annotation position: Location of the annotation? e.g. Top or bottom.
 
 #### Gene selection
 
-* Selection: The user can select by hand multiple genes from a list
-* Text: the user can write a list of genes separeted by ";" , "," or a new line
-* File: select a file (rda, csv, txt) with a column Gene_symbol or mRNA
+* Selection: The user can select multiple genes from a list
+* Text: The user can write a list of genes separeted by ";" , "," or a new line
+* File: Select a file (rda, csv, txt) with a column Gene_symbol or mRNA
 
 #### Parameters control
 
@@ -763,7 +746,7 @@ should exist.
 ![Starburst plot menu: Main window.](starburst.png)
 
 ### Data 
-Expected input a csv file with the following pattern:
+Expected input is a csv file with the following pattern:
 
 * DEA result: DEA_results_Group_subgruop1_subgroup2_pcut_0.01_logFC.cut_2.csv
 * DMR result: DMR_results_Group_subgruop1_subgroup2_pcut_1e-30_meancut_0.55.csv
@@ -777,8 +760,7 @@ The possible thresholds controls are:
 * Mean DNA methylation difference threshold: Mean DNA methylation difference threshold
 * Methylation FDR cut-off: DNA methylation FDR cut-off (x-axis)
 
-The options  Mean DNA methylation difference threshold and Log FC threshold
-are used to circle relevant genes (genes that respect these thresholds)
+The options Mean DNA methylation difference threshold and Log FC threshold are used to circle genes which pass the cut-offs prevoiusly defined (eg. mean methylation or FDR).
 
 ### Highlight control
 The possible highlight controls are:
@@ -796,15 +778,14 @@ The possible highlight controls are:
 
 
 ## Menu: ELMER
-This sub-menu will help the user to perform the analysis from R/bioconductor ELMER package [@ref4].
+This sub-menu will help the user to perform an integrative analysis between DNA methylation and Gene expression using the R/Bioconductor ELMER package [@ref4].
 
 ![ELMER menu: Main window.](elmer.png)
 
 ### Sub-menu ELMER: analysis
 #### Data: Create mee 
 
-ELMER works with a mee object, that has matched DNA methylation and gene expression data and
-divides the samples into two groups experiment and control.
+ELMER works with a mee object, that has matched DNA methylation and gene expression data and divides the samples into two groups: experiment and control.
 
 * Select DNA methylation object: select a summarized Experiment object with the DNA methylation data
 * Select expression object: select a summarized Experiment object with the gene expression data
@@ -812,28 +793,25 @@ divides the samples into two groups experiment and control.
 * Experiment group: Select the columns with the subgroup 1 (experiment)
 * Control group: Select the columns with the subgroup 2 (control)
 
-* DNA methylation: Cut-off NA samples (%): By default, for the DNA methylation data 
-will remove probes with NA values in more than 20% samples and remove the 
-anottation data.
+* DNA methylation: Cut-off NA samples (%): By default, for the DNA methylation data will remove probes with NA values in more than 20% samples and remove the anottation data.
 
 #### Data: Select mee
  Select the R object (rda) file with a mee object created in the previous step.
 
 #### Analysis
 
-This box has all the option for elmer functions. Please, see ELMER vignette. 
+This box has all the available option for elmer functions. Please see the ELMER vignette. 
 
 ### Sub-menu ELMER: Visualize results
 #### DATA
 
-Select  the R object (rda) file with ELMER results created in the analysis step.
+Select the R object (rda) file with ELMER results created in the analysis step.
 
 #### Plot
-Select ELMER plot. To have access to all plot it needs that the results and mee object
-are selected. Please, see ELMER vignette. 
+Select ELMER plot. To access the plots, both the results and mee object must be selected. Please see ELMER vignette for more details. 
 
 #### Results table
-Select which ELMER results in a table.  It needs that the results to be selected.
+Select the ELMER results from the table. A results object should be selected.
 
 # Data input summary
 ```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
@@ -868,8 +846,6 @@ cat(tabl)
 
 ## Case 4
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/0.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Case study 4")
-
-
 
 # Session info
 ```{r sessionInfo, results='asis', echo=FALSE}
