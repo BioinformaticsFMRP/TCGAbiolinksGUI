@@ -343,7 +343,7 @@ devtools::load_all(".")
 # Introduction
 
 TCGAbiolinksGUI was created to help users with limited programming knowledge to search, download and analyze 
-TCGA data. This package offers a graphical user interface to the R/Biocondcutor package [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/) [@ref2] and [ELMER](http://bioconductor.org/packages/ELMER/) [@ref4].
+TCGA data. This package offers a graphical user interface to the R/Bioconductor package [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/) [@ref2] and [ELMER](http://bioconductor.org/packages/ELMER/) [@ref4].
 Additional packages from Bioconductor are included, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package [@ref1] to aid in visualizing the data.
 
 This vignette is arranged according to the current GUI menu layout. The menus and sub-menus are:
@@ -367,7 +367,7 @@ This vignette is arranged according to the current GUI menu layout. The menus an
         + Differential expression analysis
         + Volcano plot
         + Heatmap plot
-        + Enrichement analysis
+        + Enrichment analysis
     * Genomic analysis
         + Oncoprint Plot
 * Integrative analysis
@@ -466,7 +466,7 @@ The data can be prepared into one of two formats:
 [@ref3]
 * Data Frame
 
-If the Summarized Experiment object is selected, then the subytpe and clinical information will be added.
+If the Summarized Experiment object is selected, then the subtype and clinical information will be added.
 The object will save with the same name as the file name field.
 
 ### Sub-menu: Subtype data
@@ -517,7 +517,7 @@ Change the size of the plot
 ### Sub-menu: Differential methylation analysis
 
 The user will be able to perform a Differential methylation regions (DMR) analysis.
-The output will be a file with the folowing pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv
+The output will be a file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv
 Also, the summarized Experiment will be saved with all the results inside it and the new object will be saved with _result suffix.
 
 Obs: Depending on the number of samples and the number of probes of interest, this analysis can last anywhere from minutes to days.  This is also dependent on the type of machine and hardware in which the analysis is running on.
@@ -531,10 +531,10 @@ Select a summarized Experiment object (rda)
 ##### Parameters control
 
 * Cores: Selects the number of cores to be used in the analysis
-* DNA methylation threshold: minimun difference of DNA methylation levels to be considered as hyper/hypomethylated
-* P-value adj cut-off: minimun adjusted P-value to be considered as siginificant.
+* DNA methylation threshold: minimum difference of DNA methylation levels to be considered as hyper/hypomethylated
+* P-value adj cut-off: minimum adjusted P-value to be considered as significant.
 * Group column: columns with the groups to be used in the analysis
-* Groups: Select at least two groups to the analyis. For example if it has three groups (g1, g2 and g3) the analysis will
+* Groups: Select at least two groups to the analysis. For example if it has three groups (g1, g2 and g3) the analysis will
 output g1 vs g2, g1 vs g3 and g2 vs g3.
 
 ### Sub-menu: Volcano plot
@@ -554,19 +554,19 @@ Expected input a csv file with the following pattern:
 This box will control the x-axis thresholds "Log FC threshold" for expression and "DNA methylation threshold" for DNA methylation and the y-axis thresholds "P-value adj cut-off".
 
 
-##### Highligthing options  options
+##### Highlighthing options  options
 
 Checkbox option:
 
 * Show names: Show the names of up/down regulated genes or hypo/hyper methylated probes 
 * Boxed names: put names inside a box.
-To highlight specific genes/probes consider using the "Highlightining option".
+To highlight specific genes/probes consider using the "Highlighting option".
 
 The option "points to highlight" can perform the following functions:
 
 * highlighted - show the names for only the highlighted genes/probes list
-* sinigifcant - show the names for only the up/down regulated genes or hypo/hyper methylated probes 
-* both - show both gtoups
+* significant - show the names for only the up/down regulated genes or hypo/hyper methylated probes 
+* both - show both groups
 
 ##### Color control
 Change the color of the plot
@@ -576,7 +576,7 @@ Change the size of the plot
 
 ##### Other 
 
-* Save file with results: Create a file with the same pattern as the one in the input, but with the new thersholds.
+* Save file with results: Create a file with the same pattern as the one in the input, but with the new thresholds.
 
 ## Sub-menu: Mean DNA methylation plot
 
@@ -602,8 +602,8 @@ This column is selected from the  sample matrix (accessed with colData)
 Change the size of the plot
 
 ## Menu: Transcriptomic analysis
-In this sub-menu the user will be able to perform a gene ontology enrichemnt analysis for the following processes:
-biological, cellular component, molecular function. In additon, a network analysis for the groups of genes will be performed.
+In this sub-menu the user will be able to perform a gene ontology enrichment analysis for the following processes:
+biological, cellular component, molecular function. In addition, a network analysis for the groups of genes will be performed.
 
 ### Sub-menu: Differential expression analysis
 
@@ -656,7 +656,7 @@ DMR result file should have the following pattern:  DMR_results_groupCol_group1_
 ##### Genes/Probes selection
 
 * By status: Based on the results file the user can select to see hyper/hypo methylated probes
-* Text: the user can write a list of genes separeted by ";" , "," or a new line
+* Text: the user can write a list of genes separated by ";" , "," or a new line
 
 #### Annotation options
 
@@ -688,10 +688,10 @@ Given a set of genes that are up-regulated under certain conditions, an enrichme
 Input a list of genes by:
 
 * Selection: The user can select by hand multiple genes from a list
-* Text: the user can write a list of genes separeted by ";" , "," or a new line
+* Text: the user can write a list of genes separated by ";" , "," or a new line
 * File: select a file (rda, csv, txt) with a column Gene_symbol or mRNA
 
-#### Paramenter control
+#### Parameter control
 
 * Size of the text
 * x upper limit: x-axis upper limit. If 0 no limit is used.
@@ -722,15 +722,15 @@ Using oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/packa
 
 #### Data
 
-* Select MAF file: Select a MAF file (.rda) with mutatation annotation information
-* Select annotation file: Select a R object (rda)  with the metadata information. Columns "patient" or "bcr_patient_barcode" should exist.
+* Select MAF file: Select a MAF file (.rda) with mutation annotation information
+* Select annotation file: Select an R object (rda)  with the metadata information. Columns "patient" or "bcr_patient_barcode" should exist.
 * Annotation columns: Which columns of the annotation file should be visible?
 * Annotation position: Location of the annotation? e.g. Top or bottom.
 
 #### Gene selection
 
 * Selection: The user can select multiple genes from a list
-* Text: The user can write a list of genes separeted by ";" , "," or a new line
+* Text: The user can write a list of genes separated by ";" , "," or a new line
 * File: Select a file (rda, csv, txt) with a column Gene_symbol or mRNA
 
 #### Parameters control
@@ -760,14 +760,14 @@ The possible thresholds controls are:
 * Mean DNA methylation difference threshold: Mean DNA methylation difference threshold
 * Methylation FDR cut-off: DNA methylation FDR cut-off (x-axis)
 
-The options Mean DNA methylation difference threshold and Log FC threshold are used to circle genes which pass the cut-offs prevoiusly defined (eg. mean methylation or FDR).
+The options Mean DNA methylation difference threshold and Log FC threshold are used to circle genes which pass the cut-offs previously defined (eg. mean methylation or FDR).
 
 ### Highlight control
 The possible highlight controls are:
 
 * Show genes names: show names of significant genes
 * Boxed names: show names inside a box
-* Circle gnees: Circle candidate biologically significant genes
+* Circle genes: Circle candidate biologically significant genes
 
 ### Other option
 
@@ -793,7 +793,7 @@ ELMER works with a mee object, that has matched DNA methylation and gene express
 * Experiment group: Select the columns with the subgroup 1 (experiment)
 * Control group: Select the columns with the subgroup 2 (control)
 
-* DNA methylation: Cut-off NA samples (%): By default, for the DNA methylation data will remove probes with NA values in more than 20% samples and remove the anottation data.
+* DNA methylation: Cut-off NA samples (%): By default, for the DNA methylation data will remove probes with NA values in more than 20% samples and remove the annotation data.
 
 #### Data: Select mee
  Select the R object (rda) file with a mee object created in the previous step.
@@ -818,8 +818,8 @@ Select the ELMER results from the table. A results object should be selected.
 tabl <- "  
 | Menu                    | Sub-menu                          | Button             | Data input  |
 |---------------------------------|-----------------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| Clinical analysis       | Profile Plot                      | Select file        | A table with at least two categorial columns  |
-| Clinical analysis       | Survival Plot                     | Select file        | A table with at lest the following columns: days_to_death, days_to_last_followup and one column with a group |
+| Clinical analysis       | Profile Plot                      | Select file        | A table with at least two categorical columns  |
+| Clinical analysis       | Survival Plot                     | Select file        | A table with at least the following columns: days_to_death, days_to_last_followup and one column with a group |
 | Epigenetic analysis     | Differential methylation analysis | Select data (.rda) | A summarizedExperiment object |
 | Epigenetic analysis     | Volcano Plot                      | Select results     | A csv file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv  (Where GroupCol, group1, group2 are the names of the columns selected in the  DMR steps. |
 | Epigenetic analysis     | Heatmap plot                      | Select file        | A summarizedExperiment object  |
@@ -829,8 +829,8 @@ tabl <- "
 | Transcriptomic Analysis | Heatmap plot                      | Select file        | A summarizedExperiment object  |
 | Transcriptomic Analysis | OncoPrint plot                      | Select MAF file        | A MAF file (columns needed: Hugo_Symbol,Tumor_Sample_Barcode,Variant_Type) |   |
 | Transcriptomic Analysis | OncoPrint plot                      | Select Annotation file        | A file with at least the following columns: bcr_patient_barcode  |    |
-|  Integrative analysis   | Starbrust plot                      | DMR result        | A csv file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DMR steps.  |
-|  Integrative analysis   | Starbrust plot                      | DEA result        | A csv file with the following pattern: DEA_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DEA steps.  |
+|  Integrative analysis   | Starburst plot                      | DMR result        | A csv file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DMR steps.  |
+|  Integrative analysis   | Starburst plot                      | DEA result        | A csv file with the following pattern: DEA_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DEA steps.  |
 |  Integrative analysis   | ELMER                      | Create mee > Select DNA methylation object         | An rda file with a sumarized Exepriemnt object |   
 |  Integrative analysis   | ELMER                      | Select results > Select expression object         |  An rda file with the RNAseq data frame |   
 |  Integrative analysis   | ELMER                      | Select mee         | An rda file with a mee object |   
