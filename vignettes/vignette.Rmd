@@ -1,6 +1,6 @@
 ---
 title: "TCGAbiolinks GUI"
-author: "Tiago Chedraoui Silva, Antonio Colaprico, Catharina Olsen, Michele Ceccarelli, Gianluca Bontempi, Benjamin Berman, Houtan Noushmehr"
+author: "Tiago Chedraoui Silva, Antonio Colaprico, Catharina Olsen,  Gianluca Bontempi, Michele Ceccarelli, Benjamin Berman, Houtan Noushmehr"
 date: "`r doc_date()`"
 vignette: >
   %\VignetteIndexEntry{TCGAbiolinksGUI User's Guide}
