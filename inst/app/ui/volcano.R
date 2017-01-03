@@ -33,7 +33,7 @@ tabItem(tabName = "volcano",
                                         min = 0, max = 1, value = 0.05, step = 0.001)
 
                        ),
-                       box(title = "Highligthing options",width = NULL,
+                       box(title = "Highlighting options",width = NULL,
                            solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                            checkboxInput("volcanoNames", "Show names?", value = FALSE, width = NULL),
                            checkboxInput("volcanoNamesFill", "Boxed names?", value = TRUE, width = NULL),

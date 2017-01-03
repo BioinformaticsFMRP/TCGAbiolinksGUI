@@ -86,7 +86,7 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Clinical data" , tabName = "tcgaClinical", icon = icon("database")),
                  menuSubItem("Subtype data" , tabName = "tcgaSubtype", icon = icon("database"))
         ),
-        menuItem("Manage Summarized Experiment" , tabName = "seedit", icon = icon("pencil")),
+        menuItem("Manage SummarizedExperiment" , tabName = "seedit", icon = icon("pencil")),
         tags$hr(class="lineAnalysis"),
         menuItem("Clinical analysis", icon = icon("flask"),
                  menuSubItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o"))
