@@ -250,21 +250,6 @@ get.volumes <- function(directory = NULL){
 #' @keywords internal
 TCGAbiolinksGUIServer <- function(input, output, session) {
 
-    # Directory management
-    # Config
-    # We will create by deafalt a TCGAbiolinksGUI
-    dir.create(paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI"), showWarnings = FALSE)
-    setwd(file.path(Sys.getenv("HOME"), "TCGAbiolinksGUI"))
-    shinyDirChoose(input, 'workingDir',
-                   roots=get.volumes(),
-                   session=session,
-                   restrictions=system.file(package='base'))
-
-    shinyjs::hide("greetbox-outer")
-
-    observe({
-        if(!is.null(input$test)) stopApp()  # stop shiny
-    })
     server.path <- ifelse(system.file("app", package = "TCGAbiolinksGUI") == "",
                       "server",
                       file.path(system.file("app", package = "TCGAbiolinksGUI"),"server"))
@@ -285,6 +270,21 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     source(file.path(server.path, "manageSE.R"),  local = TRUE)$value
     source(file.path(server.path, "getinference.R"),  local = TRUE)$value
 
+    # Directory management
+    # Config
+    # We will create by deafalt a TCGAbiolinksGUI
+    dir.create(paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI"), showWarnings = FALSE)
+    setwd(file.path(Sys.getenv("HOME"), "TCGAbiolinksGUI"))
+    shinyDirChoose(input, 'workingDir',
+                   roots=get.volumes(),
+                   session=session,
+                   restrictions=system.file(package='base'))
+
+    shinyjs::hide("greetbox-outer")
+
+    observe({
+        if(!is.null(input$test)) stopApp()  # stop shiny
+    })
     # Configuration tab
     output$wd <- renderPrint({
         path <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
