@@ -351,7 +351,75 @@ references:
   issued:
    year: 2016 
     
-    
+- id: ref35
+  title: "ARACNE: an algorithm for the reconstruction of gene regulatory networks in a mammalian cellular context"
+  author: 
+  - family: Margolin AA, Nemenman I, Basso K, et al.
+  given:
+  journal: BMC Bioinformatics
+  URL: "http://dx.doi.org/10.1186/1471-2105-7-S1-S7"
+  DOI: "10.1186/1471-2105-7-S1-S7"
+  volume: 7
+  number: "Suppl 1"
+  pages: S7
+  issued:
+   year: 2006     
+   
+- id: ref36
+  title: "Large-scale mapping and validation of Escherichia coli transcriptional regulation from a compendium of expression profiles"
+  author: 
+  - family: Faith, Jeremiah J and Hayete, Boris and Thaden, Joshua T and Mogno, Ilaria and Wierzbowski, Jamey and Cottarel, Guillaume and Kasif, Simon and Collins, James J and Gardner, Timothy S
+  given:
+  journal: "PLoS biol"
+  URL: "http://dx.doi.org/10.1371/journal.pbio.0050008"
+  DOI: "10.1371/journal.pbio.0050008"
+  volume: 5
+  number: "Suppl 1"
+  pages: "e8"
+  issued:
+   year: 2007        
+
+- id: ref37
+  title: "Information-theoretic inference of large transcriptional regulatory networks"
+  author: 
+  - family:  Meyer, Patrick E and Kontos, Kevin and Lafitte, Frederic and Bontempi, Gianluca
+  given:
+  journal: EURASIP journal on bioinformatics and systems biology
+  URL: "http://dx.doi.org/10.1155/2007/79879"
+  DOI: "10.1155/2007/79879"
+  volume: 2007
+  number: 1
+  pages: {1--9}
+  issued:
+   year: 2007 
+   
+- id: ref38
+  title: "Inferring the conservative causal core of gene regulatory networks"
+  author: 
+  - family:  Altay, Gokmen and Emmert-Streib, Frank
+  given:
+  journal: BMC Systems Biology
+  URL: "http://dx.doi.org/10.1186/1752-0509-4-132"
+  DOI: "10.1186/1752-0509-4-132"
+  volume: 2007
+  number: 1
+  pages: {132}
+  issued:
+   year: 2010   
+
+- id: ref39
+  title: "minet: A R/Bioconductor package for inferring large transcriptional networks using mutual information"
+  author: 
+  - family:  Meyer PE, Lafitte F, Bontempi G
+  given:
+  journal:  BMC Bioinformatics
+  URL: "http://dx.doi.org/10.1155/2007/79879"
+  DOI: "10.1155/2007/79879"
+  volume: 2007
+  number: 1
+  pages: {1--9}
+  issued:
+   year: 2007      
 ---
 
 ```{r setup, include=FALSE}
@@ -391,6 +459,7 @@ This vignette is arranged according to the current GUI menu layout. The menus an
         + Volcano plot
         + Heatmap plot
         + Enrichment analysis
+        + Network inference
     * Genomic analysis
         + Oncoprint Plot
 * Integrative analysis
@@ -614,13 +683,13 @@ Change the size of the plot
 
 * Save file with results: Create a file with the same pattern as the one in the input, but with the new thresholds.
 
-## Sub-menu: Mean DNA methylation plot
+### Sub-menu: Mean DNA methylation plot
 
 In this sub-menu the user will be able to plot the mean DNA methylation by groups.
 
 ![Mean DNA methylation plot menu: Main window.](meanmet.png)
 
-### Data
+#### Data
 Expected input is an R object (rda) file with a summarized Experiment object.
 
 #### Parameters control
@@ -750,6 +819,12 @@ Change the color of the plot
 
 #### Size control
 Change the size of the plot and the number of bars to plot
+
+### Sub-menu: Network inference
+
+nference of gene regulatory networks. Starting with the set of differentially expressed genes, we infer gene regulatory networks using the following 
+state-of-the art inference algorithms: ARACNE[@ref35], CLR[@ref36], MRNET[@ref37] and C3NET[@ref38]. These methods are based on mutual inference and use different heuristics 
+to infer the edges in the network. These methods have been made available via Bioconductor/CRAN packages (MINET[@ref39] and c3net[@ref38], respectively).
 
 ## Menu: Genomic analysis
 
