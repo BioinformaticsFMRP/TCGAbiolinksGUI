@@ -403,7 +403,7 @@ devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 
 ## Quick start
 
-The following commands should be used in order to start the graphical user interface.
+The following commands should be used to start the graphical user interface.
 
 ```{r, eval = FALSE}
 library(TCGAbiolinksGUI)
@@ -443,7 +443,7 @@ In this sub-menu the user can search, download and prepare GDC data.
 
 ![GDC search menu: Main window.](tcgasearch.png)
 
-##### Advanced seach box
+##### Advanced search box
 
 Based on the following filters, it will show a table with the following results:
 
@@ -454,7 +454,7 @@ Based on the following filters, it will show a table with the following results:
 * Workflow filter
 * Sample type filter
 * List of barcodes
-* Clinical filtrer: gender, race, vital status, tumor stage
+* Clinical filter: gender, race, vital status, tumor stage
 
 
 ##### Download & Prepare box
@@ -491,7 +491,7 @@ Download the Mutation Annotation Format (MAF)
 ## Menu: Clinical analysis
 
 ### Sub-menu: Survival plot
-From the clinical data download in the TCGA data menu, the user can use it to verify the survival of different groups.
+By accessing the clinical data download in the TCGA data menu, the user can verify the survival of different groups.
 
 ![Survival plot menu: Main window.](survival.png)
 
@@ -503,11 +503,11 @@ A cvs or R object (rda) file with the clinical information.
 * Group column: Select the column that identifies the group of each sample.
 * Legend text: Text of the legend.
 * Title: Title text.
-* x-axis limit: Limits the x-axis, if 0 no cut-off is considered.
+* x-axis limit: Limits the x-axis. If 0, no cut-off is considered.
 * Add p-value: Add p-value to the plot.
 
 ##### Size control
-Change the size of the plot
+Changes the size of the plot
 
 ## Menu: Manage summarized Experiment object
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs/0.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Downloading clinical example")
@@ -520,7 +520,7 @@ The user will be able to perform a Differential methylation regions (DMR) analys
 The output will be a file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv
 Also, the summarized Experiment will be saved with all the results inside it and the new object will be saved with _result suffix.
 
-Obs: Depending on the number of samples and the number of probes of interest, this analysis can last anywhere from minutes to days.  This is also dependent on the type of machine and hardware in which the analysis is running on.
+Obs: Depending on the number of samples and the number of probes of interest, this analysis can last anywhere from minutes to days.  The duration of the analysis also depends on the type of machine and hardware on which the analysis is run.
 
 ![Differential methylation analysis menu: Main window.](dmr.png)
 
@@ -534,13 +534,13 @@ Select a summarized Experiment object (rda)
 * DNA methylation threshold: minimum difference of DNA methylation levels to be considered as hyper/hypomethylated
 * P-value adj cut-off: minimum adjusted P-value to be considered as significant.
 * Group column: columns with the groups to be used in the analysis
-* Groups: Select at least two groups to the analysis. For example if it has three groups (g1, g2 and g3) the analysis will
+* Groups: Select at least two groups for analysis. For example if it has three groups (g1, g2 and g3) the analysis will
 output g1 vs g2, g1 vs g3 and g2 vs g3.
 
 ### Sub-menu: Volcano plot
 
-In this sub-menu the user will be able to plot the results from Differentially methylated regions (DMR) 
-analysis and differential expression analysis (DEA). 
+In this sub-menu the user will be able to plot the results from the Differentially methylated regions (DMR) 
+analysis and the differential expression analysis (DEA). 
 
 ![Volcano plot menu: Main window.](volcano.png)
 
@@ -554,7 +554,7 @@ Expected input a csv file with the following pattern:
 This box will control the x-axis thresholds "Log FC threshold" for expression and "DNA methylation threshold" for DNA methylation and the y-axis thresholds "P-value adj cut-off".
 
 
-##### Highlighthing options  options
+##### Highlighting options
 
 Checkbox option:
 
@@ -603,7 +603,7 @@ Change the size of the plot
 
 ## Menu: Transcriptomic analysis
 In this sub-menu the user will be able to perform a gene ontology enrichment analysis for the following processes:
-biological, cellular component, molecular function. In addition, a network analysis for the groups of genes will be performed.
+biological, cellular component, and molecular function. In addition, a network analysis for the groups of genes will be performed.
 
 ### Sub-menu: Differential expression analysis
 
@@ -656,7 +656,7 @@ DMR result file should have the following pattern:  DMR_results_groupCol_group1_
 ##### Genes/Probes selection
 
 * By status: Based on the results file the user can select to see hyper/hypo methylated probes
-* Text: the user can write a list of genes separated by ";" , "," or a new line
+* Text: The user can write a list of genes separated by ";" , "," or a new line
 
 #### Annotation options
 
@@ -699,9 +699,9 @@ Input a list of genes by:
 
 #### Plot selection
 
-* Plot biological process?
+* Plot Biological Process?
 * Plot Cellular Component?
-* Plot Molecular function?
+* Plot Molecular Function?
 * Plot Pathways?
 
 #### Colors control
@@ -735,8 +735,8 @@ Using oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/packa
 
 #### Parameters control
 
-* Remove empty columns? If a samples has no mutation it will be removed from the plot 
-* Show column names? Show patient barcodes
+* Remove empty columns? If a sample has no mutation, it will be removed from the plot 
+* Show column names? Show patient barcodes?
 * Show barplot annotation on rows? Show right barplot?
 
 # Integrative analysis
@@ -800,7 +800,7 @@ ELMER works with a mee object, that has matched DNA methylation and gene express
 
 #### Analysis
 
-This box has all the available option for elmer functions. Please see the ELMER vignette. 
+This box has all the available options for ELMER functions. Please see the ELMER vignette. 
 
 ### Sub-menu ELMER: Visualize results
 #### DATA
@@ -831,7 +831,7 @@ tabl <- "
 | Transcriptomic Analysis | OncoPrint plot                      | Select Annotation file        | A file with at least the following columns: bcr_patient_barcode  |    |
 |  Integrative analysis   | Starburst plot                      | DMR result        | A csv file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DMR steps.  |
 |  Integrative analysis   | Starburst plot                      | DEA result        | A csv file with the following pattern: DEA_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DEA steps.  |
-|  Integrative analysis   | ELMER                      | Create mee > Select DNA methylation object         | An rda file with a sumarized Exepriemnt object |   
+|  Integrative analysis   | ELMER                      | Create mee > Select DNA methylation object         | An rda file with a summarized Experiment object |   
 |  Integrative analysis   | ELMER                      | Select results > Select expression object         |  An rda file with the RNAseq data frame |   
 |  Integrative analysis   | ELMER                      | Select mee         | An rda file with a mee object |   
 |  Integrative analysis   | ELMER                      | Select results         | An rda file with the results of the ELMER analysis |   
