@@ -15,17 +15,24 @@ output:
     highlight: haddock
 
 references:
-- id: ref4
-  title: Inferring regulatory element landscapes and transcription factor networks from cancer methylomes
+- id: ref1
+  title: "ComplexHeatmap: Making Complex Heatmaps"
   author: 
-  - family: Yao, L., Shen, H., Laird, P. W., Farnham, P. J., & Berman, B. P. 
+  - family: Zuguang Gu
     given:
-  journal: Genome biology
-  DOI: "10.1186/s13059-015-0668-3"
-  URL: "http://doi.org/10.1186/s13059-015-0668-3"
-  volume: 16
-  number: 1
-  pages: 105
+  note: "R package version 1.9.3"
+  URL: "https://github.com/jokergoo/ComplexHeatmap"
+  issued:
+    year: 2016
+
+- id: ref2
+  title: "TCGAbiolinks: An R/Bioconductor package for integrative analysis of TCGA data."
+  author: 
+  - family: Colaprico A, Silva TC, Olsen C, Garofano L, Cava C, Garolini D, Sabedot T, Malta TM, Pagnotta SM, Castiglioni I, Ceccarelli M, Bontempi G and Noushmehr H.
+    given:
+  journal: Nucleic Acids Research
+  URL: "http://doi.org/10.1093/nar/gkv1507"
+  DOI: "10.1093/nar/gkv1507"
   issued:
     year: 2015 
 
@@ -43,27 +50,20 @@ references:
   issued:
     year: 2015
 
-- id: ref2
-  title: "TCGAbiolinks: An R/Bioconductor package for integrative analysis of TCGA data."
+- id: ref4
+  title: Inferring regulatory element landscapes and transcription factor networks from cancer methylomes
   author: 
-  - family: Colaprico A, Silva TC, Olsen C, Garofano L, Cava C, Garolini D, Sabedot T, Malta TM, Pagnotta SM, Castiglioni I, Ceccarelli M, Bontempi G and Noushmehr H.
+  - family: Yao, L., Shen, H., Laird, P. W., Farnham, P. J., & Berman, B. P. 
     given:
-  journal: Nucleic Acids Research
-  URL: "http://doi.org/10.1093/nar/gkv1507"
-  DOI: "10.1093/nar/gkv1507"
+  journal: Genome biology
+  DOI: "10.1186/s13059-015-0668-3"
+  URL: "http://doi.org/10.1186/s13059-015-0668-3"
+  volume: 16
+  number: 1
+  pages: 105
   issued:
     year: 2015 
     
-- id: ref1
-  title: "ComplexHeatmap: Making Complex Heatmaps"
-  author: 
-  - family: Zuguang Gu
-    given:
-  note: "R package version 1.9.3"
-  URL: "https://github.com/jokergoo/ComplexHeatmap"
-  issued:
-    year: 2016
-
 - id: ref5
   title: "Pathview: an R/Bioconductor package for pathway-based data integration and visualization"
   author: 
@@ -78,7 +78,30 @@ references:
   issued:
     year: 2013
 
+- id: ref6
+  title: Evaluation of statistical methods for normalization and differential expression in mRNA-Seq experiments
+  author: 
+  - family:  James H Bullard, Elizabeth Purdom, Kasper D Hansen and Sandrine Dudoit	
+    given:
+  journal: BMC Bioinformatics
+  volume: 11
+  number: 1
+  pages: 94
+  issued:
+    year: 2010 
 
+- id: ref7
+  title: GC-content normalization for RNA-Seq data
+  author: 
+  - family: Risso, D., Schwartz, K., Sherlock, G., & Dudoit, S. 
+    given:
+  journal: BMC Bioinformatics
+  volume: 12
+  number: 1
+  pages: 480
+  issued:
+    year: 2011 
+    
 - id: ref8
   title: Molecular Profiling Reveals Biologically Discrete Subsets and Pathways of Progression in Diffuse Glioma
   author: 
@@ -307,8 +330,8 @@ references:
   - family:  Silva, TC and Colaprico, A and Olsen, C and D'Angelo, F and Bontempi, G and Ceccarelli, M and Noushmehr, H
   given:
   journal: F1000Research
-  URL: "http://dx.doi.org/10.12688/f1000research.8923.1"
-  DOI: "10.12688/f1000research.8923.1"
+  URL: "http://dx.doi.org/10.12688/f1000research.8923.2"
+  DOI: "10.12688/f1000research.8923.2"
   volume: 5
   number: 1542
   issued:
@@ -342,9 +365,9 @@ devtools::load_all(".")
 
 # Introduction
 
-TCGAbiolinksGUI was created to help users with limited programming knowledge to search, download and analyze 
-TCGA data. This package offers a graphical user interface to the R/Bioconductor package [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/) [@ref2] and [ELMER](http://bioconductor.org/packages/ELMER/) [@ref4].
-Additional packages from Bioconductor are included, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package [@ref1] to aid in visualizing the data.
+TCGAbiolinksGUI was created to help users more comfortable with graphical user interfaces to search, download and analyze 
+TCGA data. This package offers a graphical user interface to the R/Bioconductor package [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/) [@ref2].
+Additional packages from Bioconductor are included, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package [@ref1] to aid in visualizing the data, [ELMER](http://bioconductor.org/packages/ELMER/) [@ref4] to identify regulatory enhancers using gene expression + DNA methylation data + motif analysis and [Pathview](http://bioconductor.org/packages/pathview/) [@ref5] for pathway-based data integration and visualization.
 
 This vignette is arranged according to the current GUI menu layout. The menus and sub-menus are:
 
@@ -443,7 +466,7 @@ In this sub-menu the user can search, download and prepare GDC data.
 
 ![GDC search menu: Main window.](tcgasearch.png)
 
-##### Advanced search box
+#### Advanced search box
 
 Based on the following filters, it will show a table with the following results:
 
@@ -457,7 +480,7 @@ Based on the following filters, it will show a table with the following results:
 * Clinical filter: gender, race, vital status, tumor stage
 
 
-##### Download & Prepare box
+#### Download & Prepare box
 
 After the search, the user can download the data and prepare it into an R object.
 The data can be prepared into one of two formats:
@@ -467,7 +490,7 @@ The data can be prepared into one of two formats:
 * Data Frame
 
 If the Summarized Experiment object is selected, then the subtype and clinical information will be added.
-The object will save with the same name as the file name field.
+The object will be saved with the same name as the file name field.
 
 ### Sub-menu: Subtype data
 
@@ -475,7 +498,7 @@ The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-w
 studies of various diseases. We have added some of the subtypes defined by these
 reports in our package. The BRCA [@ref11], COAD [@ref12], GBM [@ref8], HNSC [@ref14], KICH [@ref15], KIRC[@ref21], KIRP [@ref20], LGG [@ref8], LUAD [@ref9], LUSC[@ref16], PRAD[@ref19], READ [@ref12],  SKCM [@ref13], STAD [@ref10], THCA [@ref18], UCEC [@ref17]. In subsequent versions, we will update this list.
 
-The user can visualize the table with the information and save it as csv or an R object (rda) file.
+The user can visualize the table with the information and save it as csv or R object (rda) file.
 
 ### Sub-menu: Clinical data
 
@@ -485,7 +508,17 @@ Download GDC clinical data
 
 
 ### Sub-menu: Mutation data
-Download the Mutation Annotation Format (MAF)
+
+In order to download the Mutation Annotation Format (MAF), we provide the user
+with an interface to the `GDCquery_maf` function. Briefly, it will download the open acess maf files from
+[https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/](https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/).
+Four separate variant calling pipelines are implemented for GDC data harmonization which are described [here](https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/DNA_Seq_Variant_Calling_Pipeline/)
+
+#### Mutatation data search box
+
+The available filters are:
+* Tumor filter: a TCGA tumor, such as Breast invasive Carcinoma (TCGA-BRCA)
+* Variant calling pipelines: Four separate variant calling pipelines are implemented for GDC data harmonization. Options: muse, varscan2, somaticsniper, mutect. 
 
 # Analysis
 ## Menu: Clinical analysis
@@ -495,10 +528,10 @@ Users can access the clinical data download in the TCGA data menu to verify the 
 
 ![Survival plot menu: Main window.](survival.png)
 
-##### Data 
+#### Data 
 A csv or R object (rda) file with the clinical information.
 
-##### Parameters 
+#### Parameters 
 
 * Group column: Select the column that identifies the group of each sample.
 * Legend text: Text of the legend.
@@ -506,10 +539,13 @@ A csv or R object (rda) file with the clinical information.
 * x-axis limit: Limits the x-axis. If 0, no cut-off is considered.
 * Add p-value: Add p-value to the plot.
 
-##### Size control
+#### Size control
 Changes the size of the plot
 
 ## Menu: Manage summarized Experiment object
+
+To facilitate visualization and modification of the SummarizedExperiment object, we created this menu in which it is possible to visualize the three matrices of the object (assay matrix [i.e. gene expresssion values], features matrix [i.e. gene information] and sample information matrix). Also,  it is possible to download the sample information matrix as a csv file, and, after modifying it, to upload  and update the SummarizedExperiment object. This might be useful if for example the user wants to compare two groups not already pre-defined.
+
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs/0.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Downloading clinical example")
 
 ## Menu: Epigenetic analysis
@@ -524,11 +560,11 @@ Obs: Depending on the number of samples and the number of probes of interest, th
 
 ![Differential methylation analysis menu: Main window.](dmr.png)
 
-##### Data
+#### Data
 
 Select a summarized Experiment object (rda)
 
-##### Parameters control
+#### Parameters control
 
 * Cores: Selects the number of cores to be used in the analysis
 * DNA methylation threshold: minimum difference of DNA methylation levels to be considered as hyper/hypomethylated
@@ -544,17 +580,17 @@ analysis and the differential expression analysis (DEA).
 
 ![Volcano plot menu: Main window.](volcano.png)
 
-##### Data 
+#### Data 
 Expected input a csv file with the following pattern:
 
 * For expression: DEA_results_Group_subgruop1_subgroup2_pcut_0.01_logFC.cut_2.csv
 * For DNA methylation: DMR_results_Group_subgruop1_subgroup2_pcut_1e-30_meancut_0.55.csv
 
-##### Volcano options
+#### Volcano options
 This box will control the x-axis thresholds "Log FC threshold" for expression and "DNA methylation threshold" for DNA methylation and the y-axis thresholds "P-value adj cut-off".
 
 
-##### Highlighting options
+#### Highlighting options
 
 Checkbox option:
 
@@ -568,13 +604,13 @@ The option "points to highlight" can perform the following functions:
 * Significant - Shows the names for only the up/down regulated genes or hypo/hyper methylated probes 
 * Both - Shows both groups
 
-##### Color control
+#### Color control
 Change the color of the plot
 
-##### Size control
+#### Size control
 Change the size of the plot
 
-##### Other 
+#### Other 
 
 * Save file with results: Create a file with the same pattern as the one in the input, but with the new thresholds.
 
@@ -584,10 +620,10 @@ In this sub-menu the user will be able to plot the mean DNA methylation by group
 
 ![Mean DNA methylation plot menu: Main window.](meanmet.png)
 
-##### Data
+### Data
 Expected input is an R object (rda) file with a summarized Experiment object.
 
-##### Parameters control
+#### Parameters control
 
 * Groups column: Select the column that will split the data into groups. 
 This column is selected from the  sample matrix (accessed with colData)
@@ -598,7 +634,7 @@ This column is selected from the  sample matrix (accessed with colData)
 * Sort method: Methods to sort the groups in the plot
 * x-axis label angle: Change angle of the text in the x-axis
 
-##### Size control
+#### Size control
 Change the size of the plot
 
 ## Menu: Transcriptomic analysis
@@ -607,22 +643,27 @@ biological, cellular component, and molecular function. In addition, a network a
 
 ### Sub-menu: Differential expression analysis
 
-##### Gene expression object box
+#### Gene expression object box
 
 Select a summarized Experiment object (rda)
 
-##### Normalization of genes
+#### Normalization of genes
 
-* Normalization of genes? Normalize the genes?
+Using the `TCGAanalyze_Normalization` function you can normalize mRNA transcripts and miRNA, using EDASeq package. 
+This function uses Within-lane normalization procedures to adjust for GC-content effect (or other gene-level effects) on read counts: 
+loess robust local regression, global-scaling, and full-quantile normalization [@ref7] and between-lane normalization procedures 
+to adjust for distributional differences between lanes (e.g., sequencing depth): global-scaling and full-quantile normalization [@ref6].
+
+* Normalization of genes? 
 * Normalization of genes method? Options: gcContent, geneLength
 
-##### Quantile filter of genes
+#### Quantile filter of genes
 
 * Quantile filter of genes?
 * DEA test method: quantile, varFilter, filter1, filter2
 * Threshold selected as mean for filtering
 
-##### DEA analysis
+#### DEA analysis
 
 * Log FC threshold: Log2FoldChange  threshold
 * P-value adj cut-off: significant threshold
@@ -631,10 +672,10 @@ Select a summarized Experiment object (rda)
 * Group 2: Group 2 for comparison
 * DEA test method: options glmRT, exactTest
 
-##### Pathway graphs
+#### Pathway graphs
 
 * DEA result: Select csv file create by the analysis.
-* Pathway ID: plot results in a pathway graphs. See bioconductor [pathview](http://bioconductor.org/packages/pathview/) [@ref5] package.
+* Pathway ID: plot results in a pathway graphs. See bioconductor [Pathview](http://bioconductor.org/packages/pathview/) [@ref5] package.
 
 ![Pathway graphs output.](pathview.png)
 
@@ -644,7 +685,7 @@ Select a summarized Experiment object (rda)
 
 ![Heatmap plot menu: Main window.](heatmap.png)
 
-##### Data
+#### Data
 
 * Select R object (rda) file: Should receive a summarized Experiment object
 * Results file: Should receive the output from the DEA or DMR analysis.
@@ -653,7 +694,7 @@ DEA result file should have the following pattern: DEA_result_groupCol_group1_gr
 DMR result file should have the following pattern:  DMR_results_groupCol_group1_group2_pcut_0.05_meancut_0.3.csv
 
 
-##### Genes/Probes selection
+#### Genes/Probes selection
 
 * By status: Based on the results file the user can select to see hyper/hypo methylated probes
 * Text: The user can write a list of genes separated by ";" , "," or a new line
@@ -668,10 +709,10 @@ DMR result file should have the following pattern:  DMR_results_groupCol_group1_
 #### Other options
 
 * Scale data: option "none", "by row","column"
-* Cluster rows ?
-* Cluster columns ?
-* Show row names ?
-* Show col names ?
+* Cluster rows 
+* Cluster columns 
+* Show row names 
+* Show col names 
 
 #### Size control
 Change the size of the plot and the number of bars to plot
@@ -695,14 +736,14 @@ Input a list of genes by:
 
 * Size of the text
 * x upper limit: x-axis upper limit. If 0 no limit is used.
-* Number of bar histogram to show: Maximum number of bars to plot
+* Number of bar histograms to show: Maximum number of bars to plot
 
 #### Plot selection
 
-* Plot Biological Process?
-* Plot Cellular Component?
-* Plot Molecular Function?
-* Plot Pathways?
+* Plot Biological Process
+* Plot Cellular Component
+* Plot Molecular Function
+* Plot Pathways
 
 #### Colors control
 Change the color of the plot
@@ -839,13 +880,13 @@ tabl <- "
 cat(tabl) 
 ```
 
-# Cases of study 
+# Case studies
 
-## Case 3
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/0.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Case study 3")
+## Case: Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/0.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples")
 
-## Case 4
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/0.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Case study 4")
+## Case: Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/0.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples")
 
 # Session info
 ```{r sessionInfo, results='asis', echo=FALSE}
