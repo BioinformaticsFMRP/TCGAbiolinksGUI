@@ -491,12 +491,12 @@ Download the Mutation Annotation Format (MAF)
 ## Menu: Clinical analysis
 
 ### Sub-menu: Survival plot
-By accessing the clinical data download in the TCGA data menu, the user can verify the survival of different groups.
+Users can access the clinical data download in the TCGA data menu to verify the survival of different groups.
 
 ![Survival plot menu: Main window.](survival.png)
 
 ##### Data 
-A cvs or R object (rda) file with the clinical information.
+A csv or R object (rda) file with the clinical information.
 
 ##### Parameters 
 
@@ -520,7 +520,7 @@ The user will be able to perform a Differential methylation regions (DMR) analys
 The output will be a file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv
 Also, the summarized Experiment will be saved with all the results inside it and the new object will be saved with _result suffix.
 
-Obs: Depending on the number of samples and the number of probes of interest, this analysis can last anywhere from minutes to days.  The duration of the analysis also depends on the type of machine and hardware on which the analysis is run.
+Obs: Depending on the number of samples and the number of probes of interest, this analysis can last anywhere from minutes to days.  Duration of the analysis also depends on the type of machine and hardware on which it is run.
 
 ![Differential methylation analysis menu: Main window.](dmr.png)
 
@@ -558,15 +558,15 @@ This box will control the x-axis thresholds "Log FC threshold" for expression an
 
 Checkbox option:
 
-* Show names: Show the names of up/down regulated genes or hypo/hyper methylated probes 
-* Boxed names: put names inside a box.
-To highlight specific genes/probes consider using the "Highlighting option".
+* Show names: Shows the names of up/down regulated genes or hypo/hyper methylated probes 
+* Boxed names: Put names inside a box.
+To highlight specific genes/probes consider using the "Highlighting option."
 
 The option "points to highlight" can perform the following functions:
 
-* highlighted - show the names for only the highlighted genes/probes list
-* significant - show the names for only the up/down regulated genes or hypo/hyper methylated probes 
-* both - show both groups
+* Highlighted - Shows the names for only the highlighted genes/probes list
+* Significant - Shows the names for only the up/down regulated genes or hypo/hyper methylated probes 
+* Both - Shows both groups
 
 ##### Color control
 Change the color of the plot
@@ -678,7 +678,7 @@ Change the size of the plot and the number of bars to plot
 
 ### Sub-menu: Enrichment analysis
 
-In order to better understand the underlying biological processes, researchers often retrieve a functional profile of a set of genes that might have an important role. This can be done by performing an enrichment analysis.
+To better understand the underlying biological processes, researchers often retrieve a functional profile of a set of genes that might have an important role. This can be done by performing an enrichment analysis.
 
 Given a set of genes that are up-regulated under certain conditions, an enrichment analysis will identify classes of genes or proteins that are over or under-represented using gene set annotations.
 
@@ -714,7 +714,7 @@ Change the size of the plot and the number of bars to plot
 
 ### Sub-menu: Oncoprint
 
-Using oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package, this sub-menu offer a way to visualize multiple genomic alteration.
+Using the oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package, this sub-menu offers a way to visualize multiple genomic alterations.
 
 ![Oncorpint plot menu: Main window.](oncoprint.png)
 
@@ -723,9 +723,9 @@ Using oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/packa
 #### Data
 
 * Select MAF file: Select a MAF file (.rda) with mutation annotation information
-* Select annotation file: Select an R object (rda)  with the metadata information. Columns "patient" or "bcr_patient_barcode" should exist.
+* Select annotation file: Select an R object (rda)  with the metadata information. Columns labeled "patient" or "bcr_patient_barcode" should exist.
 * Annotation columns: Which columns of the annotation file should be visible?
-* Annotation position: Location of the annotation? e.g. Top or bottom.
+* Annotation position: Location of the annotation (e.g. Top or bottom).
 
 #### Gene selection
 
@@ -765,7 +765,7 @@ The options Mean DNA methylation difference threshold and Log FC threshold are u
 ### Highlight control
 The possible highlight controls are:
 
-* Show genes names: show names of significant genes
+* Show gene names: show names of significant genes
 * Boxed names: show names inside a box
 * Circle genes: Circle candidate biologically significant genes
 
