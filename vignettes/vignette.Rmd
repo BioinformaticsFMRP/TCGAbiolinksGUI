@@ -829,7 +829,7 @@ Change the size of the plot and the number of bars to plot
 
 ### Sub-menu: Network inference
 
-nference of gene regulatory networks. Starting with the set of differentially expressed genes, we infer gene regulatory networks using the following 
+Inference of gene regulatory networks. Starting with the set of differentially expressed genes, we infer gene regulatory networks using the following 
 state-of-the art inference algorithms: ARACNE[@ref35], CLR[@ref36], MRNET[@ref37] and C3NET[@ref38]. These methods are based on mutual inference and use different heuristics 
 to infer the edges in the network. These methods have been made available via Bioconductor/CRAN packages (MINET[@ref39] and c3net[@ref38], respectively).
 
