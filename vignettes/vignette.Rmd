@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 
 output:
-  BiocStyle::pdf_document:
+  BiocStyle::html_document:
     toc: true
     number_sections: true
     toc_depth: 2
@@ -972,7 +972,7 @@ cat(tabl)
 
 # Session info
 ```{r sessionInfo, results='asis', echo=FALSE}
-toLatex(sessionInfo())
+sessionInfo()
 ```
 
 # References
