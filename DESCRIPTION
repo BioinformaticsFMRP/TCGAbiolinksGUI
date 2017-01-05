@@ -13,7 +13,7 @@ Maintainer: Tiago C. Silva <tiagochst@gmail.com>
 Description: TCGAbiolinksGUI: A Graphical User Interface for integrative analysis of TCGA data.
 License: GPL (>= 3)
 Depends:
-    R (>= 3.4),
+    R (>= 3.3.1),
     shinydashboard (>= 0.5.3)
 Suggests:
     testthat,
