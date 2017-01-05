@@ -10,7 +10,7 @@ Author: Tiago Chedraoui Silva <tiagochst@gmail.com>,
     Benjamin Berman <Benjamin.Berman@cshs.org>,
     Houtan Noushmehr <houtana@gmail.com>
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
-Description: TCGAbiolinksGUI: A Graphical User Interface for integrative analysis of TCGA data.
+Description: TCGAbiolinksGUI: A Graphical User Interface to analyze cancer molecular and clinical data.
 License: GPL (>= 3)
 Depends:
     R (>= 3.3.1),
