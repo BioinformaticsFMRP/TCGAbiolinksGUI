@@ -19,11 +19,13 @@ biocLite("TCGAbiolinksGUI")
 
 To install the package development version from Github, please, use the code below.
 ```R
-# dependencies
-devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
+library(devtools)
 source("https://bioconductor.org/biocLite.R")
-biocLite(c("pathview","clusterProfiler","ELMER"))
+
+# dependencies
 install.packages(c("shiny","readr","googleVis","shinydashboard"))
+biocLite(c("pathview","clusterProfiler","ELMER", "GO.db", "DO.db"))
+devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
 devtools::install_github("thomasp85/shinyFiles")
 devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
 devtools::install_github("daattali/shinyjs")
