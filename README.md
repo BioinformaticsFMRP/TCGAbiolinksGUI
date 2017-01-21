@@ -6,7 +6,7 @@ TCGAbiolinksGUI was created to help users without knowledge of programming to se
 TCGA data. This package offers an graphical user interface to the R/biocondcutor packages [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/)  and [ELMER](http://bioconductor.org/packages/ELMER/) packages.
 Also, some other useful packages from bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/)  package  has been used for data visualization.
 
-[Demo TCGAbiolinksGUI](https://tcgabiolinksgui.shinyapps.io/TCGAbiolinksGUI/)
+[Demo TCGAbiolinksGUI](https://tcgabiolinksgui.shinyapps.io/tcgabiolinks/)
 
 ## Installation TCGAbiolinksGUI
 
@@ -19,11 +19,13 @@ biocLite("TCGAbiolinksGUI")
 
 To install the package development version from Github, please, use the code below.
 ```R
-# dependencies
-devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
+library(devtools)
 source("https://bioconductor.org/biocLite.R")
-biocLite(c("pathview","clusterProfiler","ELMER"))
+
+# dependencies
 install.packages(c("shiny","readr","googleVis","shinydashboard"))
+biocLite(c("pathview","clusterProfiler","ELMER", "GO.db", "DO.db"))
+devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
 devtools::install_github("thomasp85/shinyFiles")
 devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
 devtools::install_github("daattali/shinyjs")
