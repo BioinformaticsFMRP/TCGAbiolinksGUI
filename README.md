@@ -6,7 +6,7 @@ TCGAbiolinksGUI was created to help users without knowledge of programming to se
 TCGA data. This package offers an graphical user interface to the R/biocondcutor packages [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/)  and [ELMER](http://bioconductor.org/packages/ELMER/) packages.
 Also, some other useful packages from bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/)  package  has been used for data visualization.
 
-[Demo TCGAbiolinksGUI](https://tcgabiolinksgui.shinyapps.io/TCGAbiolinksGUI/)
+[Demo TCGAbiolinksGUI](https://tcgabiolinksgui.shinyapps.io/tcgabiolinks/)
 
 ## Installation TCGAbiolinksGUI
 
