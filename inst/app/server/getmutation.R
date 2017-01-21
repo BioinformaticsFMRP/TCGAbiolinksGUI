@@ -4,8 +4,9 @@ getMafTumors <- function(){
     maf <- fread("https://gdc-docs.nci.nih.gov/Data/Release_Notes/Manifests/GDC_open_MAFs_manifest.txt",
                  data.table = FALSE, verbose = FALSE, showProgress = FALSE)
     tumor <- unlist(lapply(maf$filename, function(x){unlist(str_split(x,"\\."))[2]}))
-    disease <-  gsub("TCGA-","",TCGAbiolinks:::getGDCprojects()$project_id)
-    names(disease) <-  TCGAbiolinks:::getGDCprojects()$disease_type
+    proj <- TCGAbiolinks:::getGDCprojects()
+    disease <-  gsub("TCGA-","",proj$project_id)
+    names(disease) <-  paste0(proj$disease_type," (",proj$project_id,")")
     disease <- sort(disease)
     ret <- disease[disease %in% tumor]
     return(ret)
