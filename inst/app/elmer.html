@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ELMER</title>
+    <meta name="description" content="TCGAbiolinksGUI.">
+    <link rel="stylesheet" href="main.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <div class="panel panel-danger">
+        <div class="panel-heading"> <span style="padding-left:10px"><b> Introduction </b>  </span></div>
+        <div class="panel-body">
+            <style type="text/css">
+                .tg {
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border: none;
+                }
+                
+                .tg td {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg th {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    font-weight: normal;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg .tg-s6z2 {
+                    text-align: center
+                }
+
+            </style>
+            <table class="tg">
+                <tr>
+                    <td class="tg-031e"> </td>
+                    <td class="tg-031e"> Recently, many studies suggest that enhancers play a major role as regulators of cell-specific phenotypes leading to alteration in transcriptomes realated to diseases . In order to investigate regulatory enhancers that can be located at long distances upstream or downstream of target genes Bioconductor offer the Enhancer Linking by Methylation/Expression Relationship (ELMER) package. This package is designed to combine DNA methylation and gene expression data from human tissues to infer multi-level cis-regulatory networks. It uses DNA methylation to identify enhancers and correlates their state with expression of nearby genes to identify one or more transcriptional targets. Transcription factor (TF) binding site analysis of enhancers is coupled with expression analysis of all TFs to infer upstream regulators.
+
+</td>
+                </tr>
+             
+            </table>
+        </div>
+    </div>
+   <div class="panel panel-success">
+        <div class="panel-heading"> <span style="padding-left:10px"><b> Input </b> </span></div>
+        <div class="panel-body">
+            <style type="text/css">
+                .tg {
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border: none;
+                }
+                
+                .tg td {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg th {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    font-weight: normal;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg .tg-s6z2 {
+                    text-align: center
+                }
+
+            </style>
+            <table class="tg">
+                <tr>
+                    <th class="tg-031e"> As input ELMER uses a specific R obeject called mee which contains a matrix of DNA methylation
+from HM450K platform for multiple samples; a matrix of gene expression for the same samples; a GRanges object
+containing the information for probes on HM450K such as names and coordinates; a gene annotation which is
+also a GRanges object. 
+            </table>
+        </div>
+    </div>
+
+    <div class="panel panel-warning">
+        <div class="panel-heading"> <span style="padding-left:10px"><b> ELMER steps </b> </span></div>
+        <div class="panel-body">
+            <style type="text/css">
+                .tg {
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border: none;
+                }
+                
+                .tg td {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg th {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    font-weight: normal;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg .tg-s6z2 {
+                    text-align: center
+                }
+
+            </style>
+            <table class="tg">
+                <tr>
+                    <th class="tg-031e"> <span class="label label-warning"> Step 1</span></th>
+                    <th class="tg-031e"> Identify distal enhancer probes on HM450K.
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-warning"> Step 2</span></th>
+                    <th class="tg-031e"> Identify distal enhancer probes with significantly different DNA methyaltion level in control group and experiment group. </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-warning"> Step 3 </span></th>
+                    <th class="tg-031e"> Identify putative target genes for differentially methylated distal enhancer probes.
+ </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-warning"> Step 4 </span></th>
+                    <th class="tg-031e"> Identify enriched motifs for the distal enhancer probes which are significantly differentially methylated and linked to putative target gene.
+</th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-warning"> Step 5 </span></th>
+                    <th class="tg-031e"> Identify regulatory TFs whose expression associate with DNA methylation at motifs. </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+citHeader("To cite TCGAbiolinksGUI in publications use:")
+
+citEntry(entry = "Article",
+         title        = "TCGAbiolinksGUI: A Graphical User Interface to analyze cancer molecular and clinical data."Bioinformatics - Submitted for review",
+         author       = personList(as.person("Tiago Chedraoui Silva"),
+                                   as.person("Antonio Colaprico"),
+                                   as.person("Catharina Olsen"),
+                                   as.person("Gianluca Bontempi"),
+                                   as.person("Michele Ceccarelli"),
+                                   as.person("Ben Berman"),
+                                   as.person("Houtan Noushmehr")
+         ),
+         journal = "Bioinformatics",
+         year         = "2017",
+         textVersion  =
+             paste(" Tiago Chedraoui Silva, Antonio Colaprico, Catharina Olsen, Gianluca Bontempi,",
+                   "Michele Ceccarelli, Ben Berman, Houtan Noushmehr.",
+                   "TCGAbiolinksGUI: A Graphical User Interface to analyze cancer molecular and clinical data.",
+                   "Bioinformatics - Submitted for review")
+)

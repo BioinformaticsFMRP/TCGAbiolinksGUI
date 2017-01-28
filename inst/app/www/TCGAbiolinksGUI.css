@@ -1,0 +1,278 @@
+@import url("//fonts.googleapis.com/css?family=Lobster|Cabin:400,700");
+@import url("//fonts.googleapis.com/css?family=Nunito|Cabin:400,700");
+
+@media only screen and (max-width: 1540px) {
+    body {
+       zoom: 0.9;  /* all browsers */
+       -moz-transform: scale(0.9);  /* Firefox */
+    }
+}
+
+h1 {
+    font-family: 'Lobster', cursive;
+    font-weight: 500;
+    line-height: 1.1;
+    color: #1D3AAD;
+}
+body {
+    background-color: #fff;
+}
+.small-box .icon-large {
+    color: rgba(255, 255, 255, 0.15);
+}
+
+.main-header .logo {
+    /* font-family: 'Lobster', cursive;*/
+    font-family: 'Raleway',sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+    /*color: red*/
+}
+
+
+.skin-blue .main-header .navbar {
+    background-color: #000080
+}
+.skin-blue .main-header .logo {
+    background-color: #000080;
+     font-family: 'Nunito',sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+    /*color: red*/
+}
+.skin-blue .main-header .logo:hover {
+    background-color: #000080;
+    .opacity 0.8
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle:hover {
+    background-color: #000080
+}
+.skin-blue .sidebar-menu>li.active>a,
+.skin-blue .sidebar-menu>li:hover>a {
+    color: #fff;
+    background: #1e282c;
+    border-left-color: red
+}
+.shinyDirectories {
+    width: 100%;
+    color: #fff;
+    background-color: navy;
+    border-color: #000000;
+    .opacity 0.8
+}
+.shinyFiles {
+    width: 100%;
+    color: #fff;
+    background-color: navy;
+    border-color: #000000;
+    .opacity 0.8
+}
+#downloadData {
+    width: 100%;
+    color: #fff;
+    background-color: navy;
+    border-color: #000000;
+    .opacity 0.8
+}
+#seuploadfile {
+    width: 100%;
+    color: #fff;
+    background-color: navy;
+    border-color: #000000;
+    .opacity 0.8
+}
+
+/*.shinyFiles:hover {
+    background-color: navy;
+    border-color: red;
+    .opacity 0.8
+}*/
+/*.shinyFiles:focus{
+    background-color: navy;
+    border-color: red;
+    .opacity 0.8
+}*/
+
+.shiny-progress .progress-text {
+  position: absolute;
+  right: 10px;
+  height: 24px;
+  width: 440px;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid red;
+  color: black;
+  border-color: red;
+  margin: 0px;
+  padding: 2px 3px;
+  opacity: 0.85;
+}
+
+body > .header .logo {
+    font-family: 'Lobster', cursive;
+    font-weight: bold;
+    font-size: 24px;
+}
+pre {
+    background-color: #B0B0B0;
+    color: #ffffff;
+}
+.shiny-progress .bar {
+    background-color: #FF0000;
+    .opacity 1.0;
+}
+.shiny-progress .progress {
+    background-color: navy;
+    .opacity 1.0;
+}
+.shiny-progress-container. {
+    background-color: navy;
+    .opacity 1.0;
+    border-color: red;
+}
+.shiny-progress {
+    background-color: navy;
+    .opacity 1.0;
+}
+.shiny-progress .progress {
+    height: 7px;
+}
+.btn.btn-warning {
+    color: #fff;
+    border-color: #000000;
+}
+
+hr {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+hr.lineDoc {
+    padding: 0;
+    border: 1px solid;
+    color: rgba(144, 156, 255, 0.43);
+    text-align: center;
+    margin-top: 40px;
+}
+hr.lineDoc:after {
+    content:"Help Documents";
+    display: inline-block;
+    position: relative;
+    top: -1.6em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: rgba(255, 255, 255, 0);
+    color: #909CFF;
+}
+hr.lineAnalysis {
+    padding: 0;
+    border: 1px solid;
+    color: rgba(57, 221, 72, 0.23);
+    text-align: center;
+    margin-top: 40px;
+}
+hr.lineAnalysis:after {
+    content:"Analysis";
+    display: inline-block;
+    position: relative;
+    top: -1.6em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: rgba(255, 255, 255, 0);
+    color: #0AC71B;
+}
+
+hr.lineIntegrative {
+    padding: 0;
+    border: 1px solid;
+    color: rgba(246, 255, 144, 0.34);
+    text-align: center;
+    margin-top: 40px;
+}
+hr.lineIntegrative:after {
+    content:"Integrative analysis";
+    display: inline-block;
+    position: relative;
+    top: -1.6em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: rgba(255, 255, 255, 0);
+    color: rgb(246, 255, 144);
+}
+
+hr.lineData  {
+    padding: 0;
+    border: 1px solid;
+    text-align: center;
+    margin-top: 40px;
+    color: rgba(255, 84, 84, 0.36);
+}
+hr.lineData:after {
+    content:"GDC Data";
+    display: inline-block;
+    position: relative;
+    top: -1.6em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: rgba(255, 255, 255, 0);
+    color: #FF5151
+}
+
+hr.lineConfig  {
+    padding: 0;
+    border: 1px solid;
+    text-align: center;
+    margin-top: 40px;
+    color: rgba(84, 158, 255, 0.36);
+}
+hr.lineConfig:after {
+    content:"Configuration";
+    display: inline-block;
+    position: relative;
+    top: -1.6em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: rgba(255, 255, 255, 0);
+    color: #51B4FF
+}
+
+#busyModal {
+  position:absolute;
+  top: 40%;
+  left: 0%;
+  margin-top: -100px;
+  margin-left: -50px;
+  display:none;
+  background: rgba(230, 230, 230, 0);
+  text-align: center;
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-bottom: 40px;
+  padding-right: 30px;
+  border-radius: 5px;
+}
+
+#modal-content-busy{
+    border-radius: 5px;
+}
+
+
+div.info {
+  text-align: center;
+}
+
+
+#loading-content {
+  position: fixed;
+  background: #FFFFFF;
+  z-index: 10000;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding-top: 50px;
+  bottom: 0;
+  font-size: 50px;
+  text-align: center;
+  color: #000000;
+}
+

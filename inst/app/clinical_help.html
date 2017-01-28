@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>TCGAbiolinksGUI</title>
+    <meta name="description" content="TCGAbiolinksGUI.">
+    <link rel="stylesheet" href="main.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <div class="panel panel-danger">
+        <div class="panel-heading"> <span style="padding-left:10px"><b> Biospecimen (patient sample information):</b>  </span></div>
+        <div class="panel-body">
+            <style type="text/css">
+                .tg {
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border: none;
+                }
+                
+                .tg td {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg th {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    font-weight: normal;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg .tg-s6z2 {
+                    text-align: center
+                }
+
+            </style>
+            <table class="tg">
+                <tr>
+                    <td class="tg-031e"> <span class="label label-danger"> biospecimen_aliquot </span></td>
+                    <td class="tg-031e"> A list of sample aliquots that were shipped by the BCR to TCGA characterization centers. An aliquot is sub-division of an analyte.</td>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-danger"> biospecimen_analyte </span></th>
+                    <th class="tg-031e"> A list of patient sample analytes that were isolated from sample portions. Each analyte is sub-divided into aliquots for shipment to the TCGA genome characterization centers. </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-danger"> biospecimen_diagnostic_slides </span></th>
+                    <th class="tg-031e"> A list of diagnostic images available for the patient sample, representing sections of the diagnostic block. </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-danger"> biospecimen_portion </span></th>
+                    <th class="tg-031e"> A list of patient samples subjected to histopathological validation prior to being processed into DNA and RNA analytes. A portion is a sub-division of a sample. </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-danger"> biospecimen_protocol </span></th>
+                    <th class="tg-031e"> The specific protocol used by the BCRs to process a particular sample portion into an analyte. </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-danger"> biospecimen_shipment_portion </span></th>
+                    <th class="tg-031e"> Information regarding sample shipments to TCGA characterization centers. This information is provided by the BCR after shipping the samples. </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-danger"> biospecimen_slide </span></th>
+                    <th class="tg-031e"> A list of histopathological slide images available for the patient sample, representing sections of sample portions.
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="panel panel-success">
+        <div class="panel-heading"> <span style="padding-left:10px"><b> Clinical (patient information):</b> </span></div>
+        <div class="panel-body">
+            <style type="text/css">
+                .tg {
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border: none;
+                }
+                
+                .tg td {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg th {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    font-weight: normal;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg .tg-s6z2 {
+                    text-align: center
+                }
+
+            </style>
+            <table class="tg">
+
+                <tr>
+                    <th class="tg-031e"> <span class="label label-success"> clinical_drug</span></th>
+                    <th class="tg-031e"> Available drug treatment information for the patient regarding the treatment of the tumor event submitted to TCGA. </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-success"> clinical_follow_up</span></th>
+                    <th class="tg-031e"> Available follow-up data for the patient collected at time points after enrollment. Some deceased patients with older enrollment form versions might have follow-up forms completed at the time of enrollment in order to ensure all data elements were captured. (Please see below note regarding follow-up data files.) </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-success"> clinical_nte</span></th>
+                    <th class="tg-031e"> Available new tumor event information for the patient, including recurrences, metastasis, and new primaries. This information is submitted by the Tissue Source Site on the enrollment form or on subsequent follow-up forms.</th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-success"> clinical_follow_up_nte </span></th>
+                    <th class="tg-031e"> Available new tumor event information for the patient, including recurrences, metastasis, and new primaries. This information is derived from subsequent follow-up forms. </th>
+                </tr>
+
+                <tr>
+                    <th class="tg-031e"> <span class="label label-success"> clinical_patient</span></th>
+                    <th class="tg-031e"> Available clinical information for the patient. </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-success"> clinical_radiation</span></th>
+                    <th class="tg-031e"> Available radiation treatment information for the patient regarding the treatment of the tumor event submitted to TCGA. </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+        <div class="panel panel-primary">
+        <div class="panel-heading"> <span style="padding-left:10px"><b> Other useful information:</b> </span></div>
+        <div class="panel-body">
+            <style type="text/css">
+                .tg {
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border: none;
+                }
+                
+                .tg td {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg th {
+                    font-family: Arial, sans-serif;
+                    font-size: 14px;
+                    font-weight: normal;
+                    padding: 10px 5px;
+                    border-style: solid;
+                    border-width: 0px;
+                    overflow: hidden;
+                    word-break: normal;
+                }
+                
+                .tg .tg-s6z2 {
+                    text-align: center
+                }
+
+            </style>
+            <table class="tg">
+                <tr>
+                    <th class="tg-031e"> <span class="label label-primary"> Field descriptions</span></th>
+                    <th class="tg-031e"> Descriptions of the clinical data elements can be obtained at: <a target="_blank" href="https://gdc-docs.nci.nih.gov/Data_Dictionary/viewer/">https://gdc-docs.nci.nih.gov/Data_Dictionary/viewer/</a>. </th>
+                </tr>
+                <tr>
+                    <th class="tg-031e"> <span class="label label-primary"> Indexed vs XML data</span></th>
+                    <th class="tg-031e">  For more information about the difference between indexed data and the XML data, please read <a target="_blank" href="http://bioconductor.org/packages/release/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html#gdcquery_clinic-and-gdcprepare_clinic-working-with-clinical-data."> this section </a> in the TCGAbiolinks vignette. <br>
+ </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+</body>
+
+</html>

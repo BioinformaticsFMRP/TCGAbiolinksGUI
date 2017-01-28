@@ -1,0 +1,28 @@
+Package: TCGAbiolinksGUI
+Title: TCGAbiolinksGUI
+Version: 0.99.20
+Date: 2016-10-28
+Author: Tiago Chedraoui Silva <tiagochst@gmail.com>, Antonio Colaprico
+        <antonio.colaprico@ulb.ac.be>, Catharina Olsen
+        <colsen@ulb.ac.be>, Michele Ceccarelli, Gianluca Bontempi
+        <gbonte@ulb.ac.be>, Benjamin Berman <Benjamin.Berman@cshs.org>,
+        Houtan Noushmehr <houtana@gmail.com>
+Maintainer: Tiago C. Silva <tiagochst@gmail.com>
+Description: TCGAbiolinksGUI: A Graphical User Interface to analyze
+        cancer molecular and clinical data.
+License: GPL (>= 3)
+Depends: R (>= 3.3.1), shinydashboard (>= 0.5.3)
+Suggests: testthat, knitr, roxygen2, devtools, rvest, xml2, BiocStyle,
+        animation
+Imports: shiny (>= 0.14.1), downloader (>= 0.4), grid, googleVis,
+        readr, stringr (>= 1.1.0), SummarizedExperiment, ggrepel,
+        data.table, shinyFiles (>= 0.6.2), ggplot2 (>= 2.1.0),
+        pathview, ELMER (>= 1.2.1), clusterProfiler, parallel,
+        TCGAbiolinks (>= 2.2.4), shinyjs (>= 0.7), colourpicker,
+        shinyBS (>= 0.61)
+VignetteBuilder: knitr
+biocViews: Genetics, GUI, DNAMethylation, StatisticalMethod,
+        DifferentialMethylation, GeneRegulation, GeneExpression,
+        MethylationArray, DifferentialExpression, Pathways, Network,
+        DNASeq
+RoxygenNote: 5.0.1
