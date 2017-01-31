@@ -23,7 +23,8 @@ Suggests:
     rvest,
     xml2,
     BiocStyle,
-    animation
+    animation,
+    pander
 Imports:
     shiny (>= 0.14.1),
     downloader (>= 0.4),

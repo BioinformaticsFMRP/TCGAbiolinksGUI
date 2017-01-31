@@ -974,7 +974,7 @@ cat(tabl)
 
 # Session info
 ```{r sessionInfo, results='asis', echo=FALSE}
-sessionInfo()
+pander::pander(sessionInfo(), compact = FALSE)
 ```
 
 # References
