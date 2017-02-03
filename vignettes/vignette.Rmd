@@ -501,6 +501,7 @@ devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
 A running version of the GUI is found in (shinyapps.io)[https://tcgabiolinksgui.shinyapps.io/tcgabiolinks/]
+
 ## Quick start
 
 The following commands should be used to start the graphical user interface.
