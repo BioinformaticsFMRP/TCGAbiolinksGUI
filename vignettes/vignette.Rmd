@@ -491,13 +491,12 @@ To install the development version of the package via GitHub:
 
 ```{r, eval = FALSE}
 # dependencies
-devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
 source("https://bioconductor.org/biocLite.R")
-biocLite(c("pathview","clusterProfiler","ELMER", "DO.db","GO.db" ))
-install.packages(c("shiny","readr","googleVis","shinydashboard"))
-devtools::install_github("thomasp85/shinyFiles")
-devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
-devtools::install_github("daattali/shinyjs")
+deps <- c("pathview","clusterProfiler","ELMER", "DO.db","GO.db" )
+for(pkg in deps) if(!require(pkg)) biocLite(pkg)
+deps <- c("devtools","shiny","readr","googleVis","shinydashboard","shinyFiles","shinyjs","shinyBS")
+for(pkg in deps) if(!require(pkg)) install.packages(pkg)
+devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
@@ -968,7 +967,7 @@ cat(tabl)
 
 # Case studies
 
-## Case: Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples
+## Case: Integration of DNA methylation and gene expression for TCGA adrenal cortical carcinoma (ACC) samples
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/0.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples")
 
 ## Case: Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples
