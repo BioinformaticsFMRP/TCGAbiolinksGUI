@@ -33,6 +33,12 @@ devtools::install_github("daattali/shinyjs")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
+## Video tutorials
+
+To facilitate the use of this package, we have created some tutorial videos demonstrating the tool.
+Please check this [youtube list](https://www.youtube.com/playlist?list=PLoDzAKMJh15m40f7OqOLAW0nJwkVStJIJ).
+
+
 ## Quick start
 
 The following commands should be used in order to start the graphical user interface.
