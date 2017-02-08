@@ -479,7 +479,8 @@ This vignette is arranged according to the current GUI menu layout. The menus an
 
 ## Install TCGAbiolinksGUI
 
-To install the package from the Biocondcutor repository:
+To install the package from the (Bioconductor repository)[http://bioconductor.org/packages/TCGAbiolinksGUI/] please use the following
+code. To date, the package is only available in the (devel version of Bioconductor)[https://www.bioconductor.org/developers/how-to/useDevel/], but it should be available in the release version until May 2017. 
 
 ```{r, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
@@ -492,7 +493,7 @@ To install the development version of the package via GitHub:
 # dependencies
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
 source("https://bioconductor.org/biocLite.R")
-biocLite(c("pathview","clusterProfiler","ELMER"))
+biocLite(c("pathview","clusterProfiler","ELMER", "DO.db","GO.db" ))
 install.packages(c("shiny","readr","googleVis","shinydashboard"))
 devtools::install_github("thomasp85/shinyFiles")
 devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
