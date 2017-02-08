@@ -511,6 +511,13 @@ library(TCGAbiolinksGUI)
 TCGAbiolinksGUI()
 ```
 
+## Video tutorials
+
+To facilitate the use of this package, we have created some tutorial videos demonstrating the tool.
+Some sections have video tutorials that if clicked will redirect to the video on youtube.
+For the complete list of videos, please check this [youtube list](https://www.youtube.com/playlist?list=PLoDzAKMJh15m40f7OqOLAW0nJwkVStJIJ).
+
+
 ## Citation
 
 Please cite both TCGAbiolinks package and TCGAbiolinksGUI: 
