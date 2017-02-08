@@ -494,7 +494,7 @@ To install the development version of the package via GitHub:
 source("https://bioconductor.org/biocLite.R")
 deps <- c("pathview","clusterProfiler","ELMER", "DO.db","GO.db", "ComplexHeatmap")
 for(pkg in deps)  if (!pkg %in% installed.packages()) biocLite(pkg)
-deps <- c("devtools","shiny","readr","googleVis","shinydashboard","shinyFiles","shinyjs","shinyBS")
+deps <- c("devtools","shape","shiny","readr","googleVis","shinydashboard","shinyFiles","shinyjs","shinyBS")
 for(pkg in deps)  if (!pkg %in% installed.packages())  install.packages(pkg)
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinks")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
