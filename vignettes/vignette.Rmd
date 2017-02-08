@@ -977,7 +977,7 @@ cat(tabl)
 ## Case: Integration of DNA methylation and gene expression for TCGA adrenal cortical carcinoma (ACC) samples
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/0.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples")
 
-## Case: Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples
+## Case: Executing ELMER analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/0.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples")
 
 # Session info
