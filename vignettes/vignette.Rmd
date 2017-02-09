@@ -484,7 +484,7 @@ code. To date, the package is only available in the (devel version of Bioconduct
 
 ```{r, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
-biocLite("TCGAbiolinksGUI")
+biocLite("TCGAbiolinksGUI", dependencies = TRUE)
 ```
 
 To install the development version of the package via GitHub:
