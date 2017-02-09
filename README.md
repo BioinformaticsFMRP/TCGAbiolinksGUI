@@ -15,7 +15,7 @@ To install the package from [Bioconductor devel repository](http://bioconductor.
 ```R
 # for the moment it must be devel version of Bioconductor
 source("https://bioconductor.org/biocLite.R")
-biocLite("TCGAbiolinksGUI")
+biocLite("TCGAbiolinksGUI", dependencies = TRUE)
 ```
 
 To install the package development version from Github, please, use the code below.
