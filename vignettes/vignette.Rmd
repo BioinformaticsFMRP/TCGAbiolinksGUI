@@ -588,21 +588,20 @@ The user can visualize the table with the information and save it as csv or R ob
 
 ### Sub-menu: Clinical data
 
-Download GDC clinical data
-
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/54NBug9ycwM/0.jpg)](http://www.youtube.com/watch?v=54NBug9ycwM "Downloading clinical example")
-
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/54NBug9ycwM/0.jpg)](http://www.youtube.com/watch?v=54NBug9ycwM "Tutorial Video: Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)")
+<center>**Tutorial Video:** Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)<center>
 
 ### Sub-menu: Mutation data
 
 In order to download the Mutation Annotation Format (MAF), we provide the user
 with an interface to the `GDCquery_maf` function. Briefly, it will download the open acess maf files from
 [https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/](https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/).
-Four separate variant calling pipelines are implemented for GDC data harmonization which are described [here](https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/DNA_Seq_Variant_Calling_Pipeline/)
+Four separate variant calling pipelines are implemented for GDC data harmonization which are described [here](https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/DNA_Seq_Variant_Calling_Pipeline/).
 
 #### Mutatation data search box
 
 The available filters are:
+
 * Tumor filter: a TCGA tumor, such as Breast invasive Carcinoma (TCGA-BRCA)
 * Variant calling pipelines: Four separate variant calling pipelines are implemented for GDC data harmonization. Options: muse, varscan2, somaticsniper, mutect. 
 
@@ -632,7 +631,9 @@ Changes the size of the plot
 
 To facilitate visualization and modification of the SummarizedExperiment object, we created this menu in which it is possible to visualize the three matrices of the object (assay matrix [i.e. gene expresssion values], features matrix [i.e. gene information] and sample information matrix). Also,  it is possible to download the sample information matrix as a csv file, and, after modifying it, to upload  and update the SummarizedExperiment object. This might be useful if for example the user wants to compare two groups not already pre-defined.
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs/0.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Downloading clinical example")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs/0.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Tutorial Video: Managing a SummarizedExperiment object - (http://www.youtube.com/watch?v=54NBug9ycwM)")
+<center>**Tutorial Video:** Managing a SummarizedExperiment object - (http://www.youtube.com/watch?v=54NBug9ycwM)<center>
+
 
 ## Menu: Epigenetic analysis
 
@@ -765,7 +766,9 @@ to adjust for distributional differences between lanes (e.g., sequencing depth):
 
 ![Pathway graphs output.](pathview.png)
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/MtEVe7_ULlQ/0.jpg)](http://www.youtube.com/watch?v=MtEVe7_ULlQ "Pathview graphs example")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/MtEVe7_ULlQ/0.jpg)](http://www.youtube.com/watch?v=MtEVe7_ULlQ "Tutorial video:  Visualizing DEA results using pathview graphs - (http://www.youtube.com/watch?v=MtEVe7_ULlQ)")
+<center>**Tutorial Video:** Visualizing DEA results using pathview graphs - (http://www.youtube.com/watch?v=MtEVe7_ULlQ)<center>
+
 
 ### Sub-menu: Heatmap plot
 
@@ -851,7 +854,8 @@ Using the oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/p
 
 ![Oncorpint plot menu: Main window.](oncoprint.png)
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/cp1AwT8Ogmg/0.jpg)](http://www.youtube.com/watch?v=cp1AwT8Ogmg "Oncoprint example")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/cp1AwT8Ogmg/0.jpg)](http://www.youtube.com/watch?v=cp1AwT8Ogmg "Tutorial video: Download Mutation Annotation files (MAF) and visualize through an oncoprint plot - (http://www.youtube.com/watch?v=cp1AwT8Ogmg)")
+<center>**Tutorial Video:** Download Mutation Annotation files (MAF) and visualize through an oncoprint plot - (http://www.youtube.com/watch?v=cp1AwT8Ogmg)<center>
 
 #### Data
 
@@ -907,8 +911,8 @@ The possible highlight controls are:
 * Save result: save results in a csv file
 
 ### Video:
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/_ec6Sij4MBc/0.jpg)](http://www.youtube.com/watch?v=_ec6Sij4MBc "Starburst plot example")
-
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/_ec6Sij4MBc/0.jpg)](http://www.youtube.com/watch?v=_ec6Sij4MBc "Tutorial video: Integrating DMR analysis and DEA results to be visualized into a starburst plot - (http://www.youtube.com/watch?v=_ec6Sij4MBc) ")
+<center>**Tutorial Video:** Integrating DMR analysis and DEA results to be visualized into a starburst plot - (http://www.youtube.com/watch?v=_ec6Sij4MBc)<center>
 
 ## Menu: ELMER
 This sub-menu will help the user to perform an integrative analysis between DNA methylation and Gene expression using the R/Bioconductor ELMER package [@ref4].
@@ -975,10 +979,13 @@ cat(tabl)
 # Case studies
 
 ## Case: Integration of DNA methylation and gene expression for TCGA adrenal cortical carcinoma (ACC) samples
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/0.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/0.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Tutorial video: Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples - (http://www.youtube.com/watch?v=RcXibjFanH4)")
+<center>**Tutorial Video:** Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples - (http://www.youtube.com/watch?v=RcXibjFanH4)<center>
+
 
 ## Case: Executing ELMER analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/0.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/0.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Tutorial video: Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples - (http://www.youtube.com/watch?v=EhGw1aF-2_c)")
+<center>**Tutorial Video:** Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples - (http://www.youtube.com/watch?v=EhGw1aF-2_c)<center>
 
 # Session info
 ```{r sessionInfo, results='asis', echo=FALSE}
