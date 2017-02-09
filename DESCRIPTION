@@ -57,6 +57,7 @@ biocViews: Genetics,
     GeneExpression,
     MethylationArray,
     DifferentialExpression,
+    Sequencing,
     Pathways,
     Network,
     DNASeq
