@@ -3,18 +3,19 @@
 # Introduction
 
 TCGAbiolinksGUI was created to help users without knowledge of programming to search, download and analyze 
-TCGA data. This package offers an graphical user interface to the R/biocondcutor packages [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/)  and [ELMER](http://bioconductor.org/packages/ELMER/) packages.
-Also, some other useful packages from bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/)  package  has been used for data visualization.
+TCGA data. This package offers an graphical user interface to the R/Bioconductor packages [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/)  and [ELMER](http://bioconductor.org/packages/ELMER/) packages.
+Also, some other useful packages from Bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/)  package  has been used for data visualization.
 
 [Demo TCGAbiolinksGUI](https://tcgabiolinksgui.shinyapps.io/tcgabiolinks/)
 
 ## Installation TCGAbiolinksGUI
 
-To install the package from biocondcutor repository, please, use the code below.
+To install the package from [Bioconductor devel repository](http://bioconductor.org/packages/devel/bioc/html/TCGAbiolinksGUI.html), please, use the code below. The package will probably be in the Bioconductor release repository (stable) between April and May. 
 
 ```R
+# for the moment it must be devel version of Bioconductor
 source("https://bioconductor.org/biocLite.R")
-biocLite("TCGAbiolinksGUI")
+biocLite("TCGAbiolinksGUI", dependencies = TRUE)
 ```
 
 To install the package development version from Github, please, use the code below.
@@ -31,6 +32,12 @@ devtools::install_github("ebailey78/shinyBS", ref="shinyBS3")
 devtools::install_github("daattali/shinyjs")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
+
+## Video tutorials
+
+To facilitate the use of this package, we have created some tutorial videos demonstrating the tool.
+Please check this [youtube list](https://www.youtube.com/playlist?list=PLoDzAKMJh15m40f7OqOLAW0nJwkVStJIJ).
+
 
 ## Quick start
 
