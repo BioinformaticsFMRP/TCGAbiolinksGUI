@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Analysis</title>
+
+<script src="analysis_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="analysis_files/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="analysis_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="analysis_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="analysis_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="analysis_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="analysis_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="analysis_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="analysis_files/navigation-1.1/tabsets.js"></script>
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 70px;
+}
+p code {
+  white-space: inherit;
+}
+.panel-heading {
+  text-align: center;
+}
+</style>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+
+<script src="libs/jquery/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap/css/flatly.min.css" rel="stylesheet" />
+<script src="libs/bootstrap/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap/shim/respond.min.js"></script>
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="libs/datatables-binding/datatables.js"></script>
+<link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="libs/nouislider/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="libs/nouislider/jquery.nouislider.min.js"></script>
+<link href="libs/selectize/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="libs/selectize/selectize.min.js"></script>
+<style type="text/css">
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="include/site.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="include/site.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="#" class="navbar-left"><img  src="/home/tiagochst/biomics/vignettes/include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
+      <a class="navbar-brand" href="./">
+          Introduction
+      </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="data.html">GDC Data</a></li>
+        <li><a href="analysis.html">Analysis</a></li>
+        <li><a href="integrative.html">Integrative analysis</a></li>
+        <li><a href="Cases.html">Case studies</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="https://github.com/BioinformaticsFMRP/TCGAbiolinksGUI" title="View Source on Github"><i class="fa fa-github fa-lg"></i>
+            </a>
+        </li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</nav><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Analysis</h1>
+
+</div>
+
+
+<div id="menu-clinical-analysis" class="section level1">
+<h1><span class="header-section-number">1</span> Menu: Clinical analysis</h1>
+<div id="sub-menu-survival-plot" class="section level2">
+<h2><span class="header-section-number">1.1</span> Sub-menu: Survival plot</h2>
+<p>Users can access the clinical data download in the TCGA data menu to verify the survival of different groups.</p>
+<div class="figure">
+<img src="/home/tiagochst/biomics/vignettes/survival.png" alt="Survival plot menu: Main window." />
+<p class="caption">Survival plot menu: Main window.</p>
+</div>
+<div id="data" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> Data</h3>
+<p>A csv or R object (rda) file with the clinical information.</p>
+</div>
+<div id="parameters" class="section level3">
+<h3><span class="header-section-number">1.1.2</span> Parameters</h3>
+<ul>
+<li>Group column: Select the column that identifies the group of each sample.</li>
+<li>Legend text: Text of the legend.</li>
+<li>Title: Title text.</li>
+<li>x-axis limit: Limits the x-axis. If 0, no cut-off is considered.</li>
+<li>Add p-value: Add p-value to the plot.</li>
+</ul>
+</div>
+<div id="size-control" class="section level3">
+<h3><span class="header-section-number">1.1.3</span> Size control</h3>
+<p>Changes the size of the plot</p>
+</div>
+</div>
+</div>
+<div id="menu-manage-summarized-experiment-object" class="section level1">
+<h1><span class="header-section-number">2</span> Menu: Manage summarized Experiment object</h1>
+<p>To facilitate visualization and modification of the SummarizedExperiment object, we created this menu in which it is possible to visualize the three matrices of the object (assay matrix [i.e. gene expresssion values], features matrix [i.e. gene information] and sample information matrix). Also, it is possible to download the sample information matrix as a csv file, and, after modifying it, to upload and update the SummarizedExperiment object. This might be useful if for example the user wants to compare two groups not already pre-defined.</p>
+<center>
+<p><a href="http://www.youtube.com/watch?v=54rP_yZlpQs" title="Tutorial Video: Managing a SummarizedExperiment object - (http://www.youtube.com/watch?v=54NBug9ycwM)"><img src="http://img.youtube.com/vi/54rP_yZlpQs/0.jpg" alt="IMAGE ALT TEXT" /></a></p>
+<strong>Tutorial Video:</strong> Managing a SummarizedExperiment object - (<a href="http://www.youtube.com/watch?v=54NBug9ycwM" class="uri">http://www.youtube.com/watch?v=54NBug9ycwM</a>)
+</center>
+</div>
+<div id="menu-epigenetic-analysis" class="section level1">
+<h1><span class="header-section-number">3</span> Menu: Epigenetic analysis</h1>
+<div id="sub-menu-differential-methylation-analysis" class="section level2">
+<h2><span class="header-section-number">3.1</span> Sub-menu: Differential methylation analysis</h2>
+<p>The user will be able to perform a Differential methylation regions (DMR) analysis. The output will be a file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv Also, the summarized Experiment will be saved with all the results inside it and the new object will be saved with _result suffix.</p>
+<p>Obs: Depending on the number of samples and the number of probes of interest, this analysis can last anywhere from minutes to days. Duration of the analysis also depends on the type of machine and hardware on which it is run.</p>
+<div class="figure">
+<img src="/home/tiagochst/biomics/vignettes/dmr.png" alt="Differential methylation analysis menu: Main window." />
+<p class="caption">Differential methylation analysis menu: Main window.</p>
+</div>
+<div id="data-1" class="section level3">
+<h3><span class="header-section-number">3.1.1</span> Data</h3>
+<p>Select a summarized Experiment object (rda)</p>
+</div>
+<div id="parameters-control" class="section level3">
+<h3><span class="header-section-number">3.1.2</span> Parameters control</h3>
+<ul>
+<li>Cores: Selects the number of cores to be used in the analysis</li>
+<li>DNA methylation threshold: minimum difference of DNA methylation levels to be considered as hyper/hypomethylated</li>
+<li>P-value adj cut-off: minimum adjusted P-value to be considered as significant.</li>
+<li>Group column: columns with the groups to be used in the analysis</li>
+<li>Groups: Select at least two groups for analysis. For example if it has three groups (g1, g2 and g3) the analysis will output g1 vs g2, g1 vs g3 and g2 vs g3.</li>
+</ul>
+</div>
+</div>
+<div id="sub-menu-volcano-plot" class="section level2">
+<h2><span class="header-section-number">3.2</span> Sub-menu: Volcano plot</h2>
+<p>In this sub-menu the user will be able to plot the results from the Differentially methylated regions (DMR) analysis and the differential expression analysis (DEA).</p>
+<div class="figure">
+<img src="/home/tiagochst/biomics/vignettes/volcano.png" alt="Volcano plot menu: Main window." />
+<p class="caption">Volcano plot menu: Main window.</p>
+</div>
+<div id="data-2" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> Data</h3>
+<p>Expected input a csv file with the following pattern:</p>
+<ul>
+<li>For expression: DEA_results_Group_subgruop1_subgroup2_pcut_0.01_logFC.cut_2.csv</li>
+<li>For DNA methylation: DMR_results_Group_subgruop1_subgroup2_pcut_1e-30_meancut_0.55.csv</li>
+</ul>
+</div>
+<div id="volcano-options" class="section level3">
+<h3><span class="header-section-number">3.2.2</span> Volcano options</h3>
+<p>This box will control the x-axis thresholds “Log FC threshold” for expression and “DNA methylation threshold” for DNA methylation and the y-axis thresholds “P-value adj cut-off”.</p>
+</div>
+<div id="highlighting-options" class="section level3">
+<h3><span class="header-section-number">3.2.3</span> Highlighting options</h3>
+<p>Checkbox option:</p>
+<ul>
+<li>Show names: Shows the names of up/down regulated genes or hypo/hyper methylated probes</li>
+<li>Boxed names: Put names inside a box. To highlight specific genes/probes consider using the “Highlighting option.”</li>
+</ul>
+<p>The option “points to highlight” can perform the following functions:</p>
+<ul>
+<li>Highlighted - Shows the names for only the highlighted genes/probes list</li>
+<li>Significant - Shows the names for only the up/down regulated genes or hypo/hyper methylated probes</li>
+<li>Both - Shows both groups</li>
+</ul>
+</div>
+<div id="color-control" class="section level3">
+<h3><span class="header-section-number">3.2.4</span> Color control</h3>
+<p>Change the color of the plot</p>
+</div>
+<div id="size-control-1" class="section level3">
+<h3><span class="header-section-number">3.2.5</span> Size control</h3>
+<p>Change the size of the plot</p>
+</div>
+<div id="other" class="section level3">
+<h3><span class="header-section-number">3.2.6</span> Other</h3>
+<ul>
+<li>Save file with results: Create a file with the same pattern as the one in the input, but with the new thresholds.</li>
+</ul>
+</div>
+</div>
+<div id="sub-menu-mean-dna-methylation-plot" class="section level2">
+<h2><span class="header-section-number">3.3</span> Sub-menu: Mean DNA methylation plot</h2>
+<p>In this sub-menu the user will be able to plot the mean DNA methylation by groups.</p>
+<div class="figure">
+<img src="/home/tiagochst/biomics/vignettes/meanmet.png" alt="Mean DNA methylation plot menu: Main window." />
+<p class="caption">Mean DNA methylation plot menu: Main window.</p>
+</div>
+<div id="data-3" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> Data</h3>
+<p>Expected input is an R object (rda) file with a summarized Experiment object.</p>
+</div>
+<div id="parameters-control-1" class="section level3">
+<h3><span class="header-section-number">3.3.2</span> Parameters control</h3>
+<ul>
+<li><p>Groups column: Select the column that will split the data into groups. This column is selected from the sample matrix (accessed with colData)</p></li>
+<li>Subgroups column: Select the column that will highlight the different subgroups data in the groups.</li>
+<li>Plot jitters: Show jitters</li>
+<li>Select y limits: Set lower/upper limits for y</li>
+<li>Sort method: Methods to sort the groups in the plot</li>
+<li><p>x-axis label angle: Change angle of the text in the x-axis</p></li>
+</ul>
+</div>
+<div id="size-control-2" class="section level3">
+<h3><span class="header-section-number">3.3.3</span> Size control</h3>
+<p>Change the size of the plot</p>
+</div>
+</div>
+</div>
+<div id="menu-transcriptomic-analysis" class="section level1">
+<h1><span class="header-section-number">4</span> Menu: Transcriptomic analysis</h1>
+<p>In this sub-menu the user will be able to perform a gene ontology enrichment analysis for the following processes: biological, cellular component, and molecular function. In addition, a network analysis for the groups of genes will be performed.</p>
+<div id="sub-menu-differential-expression-analysis" class="section level2">
+<h2><span class="header-section-number">4.1</span> Sub-menu: Differential expression analysis</h2>
+<div id="gene-expression-object-box" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Gene expression object box</h3>
+<p>Select a summarized Experiment object (rda)</p>
+</div>
+<div id="normalization-of-genes" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> Normalization of genes</h3>
+<p>Using the <code>TCGAanalyze_Normalization</code> function you can normalize mRNA transcripts and miRNA, using EDASeq package. This function uses Within-lane normalization procedures to adjust for GC-content effect (or other gene-level effects) on read counts: loess robust local regression, global-scaling, and full-quantile normalization <span class="citation">[@ref7]</span> and between-lane normalization procedures to adjust for distributional differences between lanes (e.g., sequencing depth): global-scaling and full-quantile normalization <span class="citation">[@ref6]</span>.</p>
+<ul>
+<li>Normalization of genes?</li>
+<li>Normalization of genes method? Options: gcContent, geneLength</li>
+</ul>
+</div>
+<div id="quantile-filter-of-genes" class="section level3">
+<h3><span class="header-section-number">4.1.3</span> Quantile filter of genes</h3>
+<ul>
+<li>Quantile filter of genes?</li>
+<li>DEA test method: quantile, varFilter, filter1, filter2</li>
+<li>Threshold selected as mean for filtering</li>
+</ul>
+</div>
+<div id="dea-analysis" class="section level3">
+<h3><span class="header-section-number">4.1.4</span> DEA analysis</h3>
+<ul>
+<li>Log FC threshold: Log2FoldChange threshold</li>
+<li>P-value adj cut-off: significant threshold</li>
+<li>Group column: group column in the summarized Experiment object</li>
+<li>Group 1: Group 1 for comparison</li>
+<li>Group 2: Group 2 for comparison</li>
+<li>DEA test method: options glmRT, exactTest</li>
+</ul>
+</div>
+<div id="pathway-graphs" class="section level3">
+<h3><span class="header-section-number">4.1.5</span> Pathway graphs</h3>
+<ul>
+<li>DEA result: Select csv file create by the analysis.</li>
+<li>Pathway ID: plot results in a pathway graphs. See bioconductor <a href="http://bioconductor.org/packages/pathview/">Pathview</a> <span class="citation">[@ref5]</span> package.</li>
+</ul>
+<div class="figure">
+<img src="/home/tiagochst/biomics/vignettes/pathview.png" alt="Pathway graphs output." />
+<p class="caption">Pathway graphs output.</p>
+</div>
+<center>
+<a href="http://www.youtube.com/watch?v=MtEVe7_ULlQ" title="Tutorial video: Visualizing DEA results using pathview graphs - (http://www.youtube.com/watch?v=MtEVe7_ULlQ)"><img src="http://img.youtube.com/vi/MtEVe7_ULlQ/0.jpg" alt="IMAGE ALT TEXT" /></a>
+<center>
+<strong>Tutorial Video:</strong> Visualizing DEA results using pathview graphs - (<a href="http://www.youtube.com/watch?v=MtEVe7_ULlQ" class="uri">http://www.youtube.com/watch?v=MtEVe7_ULlQ</a>)
+</center>
+</div>
+</div>
+<div id="sub-menu-heatmap-plot" class="section level2">
+<h2><span class="header-section-number">4.2</span> Sub-menu: Heatmap plot</h2>
+<div class="figure">
+<img src="/home/tiagochst/biomics/vignettes/heatmap.png" alt="Heatmap plot menu: Main window." />
+<p class="caption">Heatmap plot menu: Main window.</p>
+</div>
+<div id="data-4" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Data</h3>
+<ul>
+<li>Select R object (rda) file: Should receive a summarized Experiment object</li>
+<li>Results file: Should receive the output from the DEA or DMR analysis.</li>
+</ul>
+<p>DEA result file should have the following pattern: DEA_result_groupCol_group1_group2_pcut_0.05_logFC.cut_0.csv DMR result file should have the following pattern: DMR_results_groupCol_group1_group2_pcut_0.05_meancut_0.3.csv</p>
+</div>
+<div id="genesprobes-selection" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Genes/Probes selection</h3>
+<ul>
+<li>By status: Based on the results file the user can select to see hyper/hypo methylated probes</li>
+<li>Text: The user can write a list of genes separated by “;” , “,” or a new line</li>
+</ul>
+</div>
+<div id="annotation-options" class="section level3">
+<h3><span class="header-section-number">4.2.3</span> Annotation options</h3>
+<ul>
+<li>Columns annotation: using the data in the summarized experiment the user can annotate the heatmap.</li>
+<li>Sort by column: The order of the columns can be sorted by one of the selected columns</li>
+<li>Row annotation: Add annotation to rows</li>
+</ul>
+</div>
+<div id="other-options" class="section level3">
+<h3><span class="header-section-number">4.2.4</span> Other options</h3>
+<ul>
+<li>Scale data: option “none”, “by row”,“column”</li>
+<li>Cluster rows</li>
+<li>Cluster columns</li>
+<li>Show row names</li>
+<li>Show col names</li>
+</ul>
+</div>
+<div id="size-control-3" class="section level3">
+<h3><span class="header-section-number">4.2.5</span> Size control</h3>
+<p>Change the size of the plot and the number of bars to plot</p>
+</div>
+<div id="sub-menu-enrichment-analysis" class="section level3">
+<h3><span class="header-section-number">4.2.6</span> Sub-menu: Enrichment analysis</h3>
+<p>To better understand the underlying biological processes, researchers often retrieve a functional profile of a set of genes that might have an important role. This can be done by performing an enrichment analysis.</p>
+<p>Given a set of genes that are up-regulated under certain conditions, an enrichment analysis will identify classes of genes or proteins that are over or under-represented using gene set annotations.</p>
+<div class="figure">
+<img src="/home/tiagochst/biomics/vignettes/ea.png" alt="Enrichment analysis menu: Main window." />
+<p class="caption">Enrichment analysis menu: Main window.</p>
+</div>
+</div>
+<div id="gene-selection" class="section level3">
+<h3><span class="header-section-number">4.2.7</span> Gene selection</h3>
+<p>Input a list of genes by:</p>
+<ul>
+<li>Selection: The user can select by hand multiple genes from a list</li>
+<li>Text: the user can write a list of genes separated by “;” , “,” or a new line</li>
+<li>File: select a file (rda, csv, txt) with a column Gene_symbol or mRNA</li>
+</ul>
+</div>
+<div id="parameter-control" class="section level3">
+<h3><span class="header-section-number">4.2.8</span> Parameter control</h3>
+<ul>
+<li>Size of the text</li>
+<li>x upper limit: x-axis upper limit. If 0 no limit is used.</li>
+<li>Number of bar histograms to show: Maximum number of bars to plot</li>
+</ul>
+</div>
+<div id="plot-selection" class="section level3">
+<h3><span class="header-section-number">4.2.9</span> Plot selection</h3>
+<ul>
+<li>Plot Biological Process</li>
+<li>Plot Cellular Component</li>
+<li>Plot Molecular Function</li>
+<li>Plot Pathways</li>
+</ul>
+</div>
+<div id="colors-control" class="section level3">
+<h3><span class="header-section-number">4.2.10</span> Colors control</h3>
+<p>Change the color of the plot</p>
+</div>
+<div id="size-control-4" class="section level3">
+<h3><span class="header-section-number">4.2.11</span> Size control</h3>
+<p>Change the size of the plot and the number of bars to plot</p>
+</div>
+<div id="sub-menu-network-inference" class="section level3">
+<h3><span class="header-section-number">4.2.12</span> Sub-menu: Network inference</h3>
+<p>Inference of gene regulatory networks. Starting with the set of differentially expressed genes, we infer gene regulatory networks using the following state-of-the art inference algorithms: ARACNE<span class="citation">[@ref35]</span>, CLR<span class="citation">[@ref36]</span>, MRNET<span class="citation">[@ref37]</span> and C3NET<span class="citation">[@ref38]</span>. These methods are based on mutual inference and use different heuristics to infer the edges in the network. These methods have been made available via Bioconductor/CRAN packages (MINET<span class="citation">[@ref39]</span> and c3net<span class="citation">[@ref38]</span>, respectively).</p>
+</div>
+</div>
+</div>
+<div id="menu-genomic-analysis" class="section level1">
+<h1><span class="header-section-number">5</span> Menu: Genomic analysis</h1>
+<div id="sub-menu-oncoprint" class="section level2">
+<h2><span class="header-section-number">5.1</span> Sub-menu: Oncoprint</h2>
+<p>Using the oncoPrint function from the <a href="http://bioconductor.org/packages/ComplexHeatmap/">ComplexHeatmap</a> package, this sub-menu offers a way to visualize multiple genomic alterations.</p>
+<div class="figure">
+<img src="/home/tiagochst/biomics/vignettes/oncoprint.png" alt="Oncoprint plot menu: Main window." />
+<p class="caption">Oncoprint plot menu: Main window.</p>
+</div>
+<center>
+<p><a href="http://www.youtube.com/watch?v=cp1AwT8Ogmg" title="Tutorial video: Download Mutation Annotation files (MAF) and visualize through an oncoprint plot - (http://www.youtube.com/watch?v=cp1AwT8Ogmg)"><img src="http://img.youtube.com/vi/cp1AwT8Ogmg/0.jpg" alt="IMAGE ALT TEXT" /></a></p>
+<strong>Tutorial Video:</strong> Download Mutation Annotation files (MAF) and visualize through an oncoprint plot - (<a href="http://www.youtube.com/watch?v=cp1AwT8Ogmg" class="uri">http://www.youtube.com/watch?v=cp1AwT8Ogmg</a>)
+</center>
+<div id="data-5" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Data</h3>
+<ul>
+<li>Select MAF file: Select a MAF file (.rda) with mutation annotation information</li>
+<li>Select annotation file: Select an R object (rda) with the metadata information. Columns labeled “patient” or “bcr_patient_barcode” should exist.</li>
+<li>Annotation columns: Which columns of the annotation file should be visible?</li>
+<li>Annotation position: Location of the annotation (e.g. Top or bottom).</li>
+</ul>
+</div>
+<div id="gene-selection-1" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Gene selection</h3>
+<ul>
+<li>Selection: The user can select multiple genes from a list</li>
+<li>Text: The user can write a list of genes separated by “;” , “,” or a new line</li>
+<li>File: Select a file (rda, csv, txt) with a column Gene_symbol or mRNA</li>
+</ul>
+</div>
+<div id="parameters-control-2" class="section level3">
+<h3><span class="header-section-number">5.1.3</span> Parameters control</h3>
+<ul>
+<li>Remove empty columns? If a sample has no mutation, it will be removed from the plot</li>
+<li>Show column names? Show patient barcodes?</li>
+<li>Show barplot annotation on rows? Show right barplot?</li>
+</ul>
+</div>
+</div>
+</div>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+    // active menu
+    var href = window.location.pathname;
+    href = href.substr(href.lastIndexOf('/') + 1);
+    if (href === '') href = './';
+    $('a[href="' + href + '"]').parent().addClass('active');
+});
+</script>
+<script>
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+
+</body>
+</html>

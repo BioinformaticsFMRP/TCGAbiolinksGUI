@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>GDC data</title>
+
+<script src="data_files/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="data_files/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="data_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="data_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="data_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="data_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="data_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="data_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="data_files/navigation-1.1/tabsets.js"></script>
+<script src="data_files/htmlwidgets-0.8/htmlwidgets.js"></script>
+<script src="data_files/datatables-binding-0.2/datatables.js"></script>
+<link href="data_files/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="data_files/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="data_files/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 70px;
+}
+p code {
+  white-space: inherit;
+}
+.panel-heading {
+  text-align: center;
+}
+</style>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+
+<script src="libs/jquery/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap/css/flatly.min.css" rel="stylesheet" />
+<script src="libs/bootstrap/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap/shim/respond.min.js"></script>
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="libs/datatables-binding/datatables.js"></script>
+<link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="libs/nouislider/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="libs/nouislider/jquery.nouislider.min.js"></script>
+<link href="libs/selectize/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="libs/selectize/selectize.min.js"></script>
+<style type="text/css">
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="include/site.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="include/site.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="#" class="navbar-left"><img  src="/home/tiagochst/biomics/vignettes/include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
+      <a class="navbar-brand" href="./">
+          Introduction
+      </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="data.html">GDC Data</a></li>
+        <li><a href="analysis.html">Analysis</a></li>
+        <li><a href="integrative.html">Integrative analysis</a></li>
+        <li><a href="Cases.html">Case studies</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="https://github.com/BioinformaticsFMRP/TCGAbiolinksGUI" title="View Source on Github"><i class="fa fa-github fa-lg"></i>
+            </a>
+        </li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</nav><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">GDC data</h1>
+
+</div>
+
+
+<div id="sub-menu-molecular-data" class="section level1">
+<h1><span class="header-section-number">1</span> Sub-menu: Molecular data</h1>
+<p>In this sub-menu the user will be able to search, download and prepare The NCI’s Genomic Data Commons (GDC) data for analysis. The first step is to search for GDC open data access with the Advanced search box. The search results will be summarized in plots in the center of the screen. The second step is to download and prepare the data into a R object to be used in the analysis steps.</p>
+<div class="figure">
+<img src="/home/tiagochst/biomics/vignettes/tcgasearch.png" alt="GDC search menu: Main window." />
+<p class="caption">GDC search menu: Main window.</p>
+</div>
+<div id="useful-information" class="section level2">
+<h2><span class="header-section-number">1.1</span> Useful information</h2>
+<div class="panel panel-info">
+<div class="panel-heading">
+Different sources: Legacy vs Harmonized
+</div>
+<div class="panel-body">
+<p>There are two available sources to download GDC data using TCGAbiolinks: - GDC Legacy Archive : provides access to an unmodified copy of data that was previously stored in <a href="https://cghub.ucsc.edu/">CGHub</a> and in the TCGA Data Portal hosted by the TCGA Data Coordinating Center (DCC), in which uses as references GRCh37 (hg19) and GRCh36 (hg18). - GDC harmonized database: data available was harmonized against GRCh38 (hg38) using GDC Bioinformatics Pipelines which provides methods to the standardization of biospecimen and clinical data.</p>
+</div>
+</div>
+<div class="panel panel-info">
+<div class="panel-heading">
+Understanding the barcode
+</div>
+<div class="panel-body">
+<p>A TCGA barcode is composed of a collection of identifiers. Each specifically identifies a TCGA data element. Refer to the following figure for an illustration of how metadata identifiers comprise a barcode. An aliquot barcode contains the highest number of identifiers.</p>
+<p>Example:</p>
+<ul>
+<li>Aliquot barcode: TCGA-G4-6317-02A-11D-2064-05</li>
+<li>Participant: TCGA-G4-6317</li>
+<li>Sample: TCGA-G4-6317-02</li>
+</ul>
+<p>For more information check <a href="https://wiki.nci.nih.gov/display/TCGA/TCGA+barcode">TCGA wiki</a></p>
+</div>
+</div>
+</div>
+<div id="advanced-search-box" class="section level2">
+<h2><span class="header-section-number">1.2</span> Advanced search box</h2>
+<p>The following filters are available to select the data:</p>
+<ul>
+<li>Database</li>
+<li>Project filter</li>
+<li>Data category filter</li>
+<li>Data type filter</li>
+<li>Workflow filter</li>
+<li>Sample type filter</li>
+<li>Platform filter</li>
+<li>List of barcodes</li>
+<li>Clinical filter: gender, race, vital status, tumor stage.</li>
+</ul>
+<div class="panel panel-warning">
+<div class="panel-heading">
+Repeated cases (barcodes)
+</div>
+<div class="panel-body">
+<p>In the search step, it is important that there are no repeated cases, otherwise the prepare step might no work. If it happens, the search will give you this warning “There are more than one file for the same case.” To solve this problem, you probably need to use more filters to correctly select your data.</p>
+<p>As an example of this problem, if you use only Project (i.e “TCGA-ACC”) and Data category filter (i.e “Copy Number Variantion”), for each sample we have two data types “Copy Number segment”&quot; and “Masked Copy Number segment”.</p>
+</div>
+</div>
+</div>
+<div id="download-prepare-box" class="section level2">
+<h2><span class="header-section-number">1.3</span> Download &amp; Prepare box</h2>
+<p>After the search step, the user can download the data and prepare it into an R object. The data can be prepared into one of two formats:</p>
+<ul>
+<li><a href="http://www.nature.com/nmeth/journal/v12/n2/abs/nmeth.3252.html">SummarizedExperiment</a> <span class="citation">(Huber et al. 2015)</span>: An R object that contains the sample information matrix (clinical and subtype information), the assay matrix (i.e DNA methylation beta-values), the features matrix (i.e information for each probe in the DNA methylation assay mamtrix).</li>
+<li>Data Frame: A simple table with only the assay matrix (i.e Gene expression quantification)</li>
+</ul>
+<p>In case a SummarizedExperiment object was selected the user will be able to add more metadata infromation into the sample information matrix. By checking “Add gistic2 and mutation information” and giving a list of genes, the GUI will download GISTIC2 data from the GDAC firehose and Mutation Annotation Files (MAF) and their information to the object. This might be useful, for example, if the user wants to evaluate the survival of mutant samples vs non-mutant or if he wants to evaluate it on a heatmap, which can be used as labels.</p>
+<p>Finnaly, the object will be saved with the same name as the file name field.</p>
+</div>
+</div>
+<div id="sub-menu-subtype-data" class="section level1">
+<h1><span class="header-section-number">2</span> Sub-menu: Subtype data</h1>
+<p>The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-wide studies of various diseases. We have added some of the subtypes defined by these reports in our package.</p>
+<ul>
+<li>BRCA <span class="citation">(C. G. A. Network and others 2012c)</span></li>
+<li>COAD <span class="citation">(C. G. A. Network and others 2012a)</span></li>
+<li>GBM <span class="citation">(Ceccarelli et al. 2016)</span></li>
+<li>HNSC <span class="citation">(C. G. A. Network and others 2015a)</span></li>
+<li>KICH <span class="citation">(Davis et al. 2014)</span></li>
+<li>KIRC<span class="citation">(C. G. A. R. Network and others 2013a)</span></li>
+<li>KIRP <span class="citation">(Network and others 2016)</span></li>
+<li>LGG <span class="citation">(Ceccarelli et al. 2016)</span></li>
+<li>LUAD <span class="citation">(C. G. A. R. Network and others 2014a)</span></li>
+<li>LUSC<span class="citation">(C. G. A. R. Network and others 2012)</span></li>
+<li>PRAD<span class="citation">(C. G. A. R. Network and others 2015)</span></li>
+<li>READ <span class="citation">(C. G. A. Network and others 2012b)</span></li>
+<li>SKCM <span class="citation">(C. G. A. Network and others 2015b)</span></li>
+<li>STAD <span class="citation">(C. G. A. R. Network and others 2014a)</span></li>
+<li>THCA <span class="citation">(C. G. A. R. Network and others 2014b)</span></li>
+<li>UCEC <span class="citation">(C. G. A. R. Network and others 2013b)</span></li>
+</ul>
+<p>The user can visualize the table with the information and save it as csv or R object (rda) file.</p>
+</div>
+<div id="sub-menu-clinical-data" class="section level1">
+<h1><span class="header-section-number">3</span> Sub-menu: Clinical data</h1>
+<p>TCGAbiolinks has provided a few functions to search, download and parse GDC clinical data.</p>
+<div id="useful-information-1" class="section level2">
+<h2><span class="header-section-number">3.1</span> Useful information</h2>
+<div class="panel panel-info">
+<div class="panel-heading">
+Different sources
+</div>
+<div class="panel-body">
+<p>In GDC database the clinical data can be retrieved from two sources:</p>
+<ul>
+<li>indexed clinical: a refined clinical data that is created using the XML files.</li>
+<li>XML files</li>
+</ul>
+<p>There are two main differences:</p>
+<ul>
+<li>XML has more information: radiation, drugs information, follow-ups, biospecimen, etc. So the indexed one is only a subset of the XML files</li>
+<li>The indexed data contains the updated data with the follow up informaiton. For example: if the patient is alive in the first time clinical data was collect and the in the next follow-up he is dead, the indexed data will show dead. The XML will have two fields, one for the first time saying he is alive (in the clinical part) and the follow-up saying he is dead. You can see this case here:</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="clinical-data-inconsistencies" class="section level2">
+<h2><span class="header-section-number">3.2</span> Clinical data inconsistencies</h2>
+<div class="panel panel-danger">
+<div class="panel-heading">
+Clinical data inconsistencies
+</div>
+<div class="panel-body">
+<p>Some inconsisentecies have been found in the indexed clinical data and are being investigated by the GDC team. These inconsistencies are:</p>
+<ul>
+<li><strong><em>Vital status</em></strong> field is not correctly updated</li>
+<li><strong><em>Tumor Grade</em></strong> field is not being filled</li>
+<li><strong><em>Progression or Recurrence</em></strong> field is not being filled</li>
+</ul>
+</div>
+</div>
+<div id="vital-status-inconsistancie" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> Vital status inconsistancie</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get XML files and parse them</span>
+clin.query &lt;-<span class="st"> </span><span class="kw">GDCquery</span>(<span class="dt">project =</span> <span class="st">&quot;TCGA-READ&quot;</span>, <span class="dt">data.category =</span> <span class="st">&quot;Clinical&quot;</span>, <span class="dt">barcode =</span> <span class="st">&quot;TCGA-F5-6702&quot;</span>)
+<span class="kw">GDCdownload</span>(clin.query)
+clinical.patient &lt;-<span class="st"> </span><span class="kw">GDCprepare_clinic</span>(clin.query, <span class="dt">clinical.info =</span> <span class="st">&quot;patient&quot;</span>)
+clinical.patient.followup &lt;-<span class="st"> </span><span class="kw">GDCprepare_clinic</span>(clin.query, <span class="dt">clinical.info =</span> <span class="st">&quot;follow_up&quot;</span>)
+
+<span class="co"># Get indexed data</span>
+clinical.index &lt;-<span class="st"> </span><span class="kw">GDCquery_clinic</span>(<span class="st">&quot;TCGA-READ&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(clinical.patient,vital_status,days_to_death,days_to_last_followup) %&gt;%<span class="st"> </span>datatable</code></pre></div>
+<div id="htmlwidget-130de47a3b512b45fd46" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-130de47a3b512b45fd46">{"x":{"filter":"none","data":[["1"],["Alive"],[null],[66]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_followup\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(clinical.patient.followup, vital_status,days_to_death,days_to_last_followup) %&gt;%<span class="st"> </span>datatable</code></pre></div>
+<div id="htmlwidget-0ec069c5e27ee3737d9b" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0ec069c5e27ee3737d9b">{"x":{"filter":"none","data":[["1","2"],["Dead","Alive"],[869,null],[null,452]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_followup\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Vital status should be the same in the follow up table </span>
+<span class="kw">filter</span>(clinical.index,submitter_id ==<span class="st"> &quot;TCGA-F5-6702&quot;</span>) %&gt;%<span class="st"> </span><span class="kw">select</span>(vital_status,days_to_death,days_to_last_follow_up) %&gt;%<span class="st"> </span>datatable</code></pre></div>
+<div id="htmlwidget-b1881efa03e0a9611a3b" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b1881efa03e0a9611a3b">{"x":{"filter":"none","data":[["1"],["alive"],[869],[452]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_follow_up\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="progression-or-recurrence-and-grande-inconsistancie" class="section level3">
+<h3><span class="header-section-number">3.2.2</span> Progression or Recurrence and Grande inconsistancie</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get XML files and parse them</span>
+recurrent.samples &lt;-<span class="st"> </span><span class="kw">GDCquery</span>(<span class="dt">project =</span> <span class="st">&quot;TCGA-LIHC&quot;</span>,
+                             <span class="dt">data.category =</span> <span class="st">&quot;Transcriptome Profiling&quot;</span>,
+                             <span class="dt">data.type =</span> <span class="st">&quot;Gene Expression Quantification&quot;</span>, 
+                             <span class="dt">workflow.type =</span> <span class="st">&quot;HTSeq - Counts&quot;</span>,
+                             <span class="dt">sample.type =</span>  <span class="st">&quot;Recurrent Solid Tumor&quot;</span>)$results[[<span class="dv">1</span>]] %&gt;%<span class="st"> </span><span class="kw">select</span>(cases)
+recurrent.patients &lt;-<span class="st"> </span><span class="kw">substr</span>(recurrent.samples$cases,<span class="dv">1</span>,<span class="dv">12</span>)
+clin.query &lt;-<span class="st"> </span><span class="kw">GDCquery</span>(<span class="dt">project =</span> <span class="st">&quot;TCGA-LIHC&quot;</span>, <span class="dt">data.category =</span> <span class="st">&quot;Clinical&quot;</span>, <span class="dt">barcode =</span> recurrent.patients)
+<span class="kw">GDCdownload</span>(clin.query)
+clinical.patient &lt;-<span class="st"> </span><span class="kw">GDCprepare_clinic</span>(clin.query, <span class="dt">clinical.info =</span> <span class="st">&quot;patient&quot;</span>) </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get indexed data</span>
+<span class="kw">GDCquery_clinic</span>(<span class="st">&quot;TCGA-LIHC&quot;</span>) %&gt;%<span class="st"> </span><span class="kw">filter</span>(submitter_id %in%<span class="st"> </span>recurrent.patients) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">select</span>(progression_or_recurrence,days_to_recurrence,tumor_grade) %&gt;%<span class="st"> </span>datatable</code></pre></div>
+<div id="htmlwidget-b40eab8987687ee7ff5a" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b40eab8987687ee7ff5a">{"x":{"filter":"none","data":[["1","2"],["not reported","not reported"],[null,null],["not reported","not reported"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>progression_or_recurrence\u003c/th>\n      <th>days_to_recurrence\u003c/th>\n      <th>tumor_grade\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># XML data</span>
+clinical.patient %&gt;%<span class="st"> </span><span class="kw">select</span>(bcr_patient_barcode,neoplasm_histologic_grade) %&gt;%<span class="st"> </span>datatable</code></pre></div>
+<div id="htmlwidget-e9b20d9c002b29bd13aa" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e9b20d9c002b29bd13aa">{"x":{"filter":"none","data":[["1","2","3","4","5"],["TCGA-ZS-A9CF","TCGA-DD-AACA","TCGA-DD-AACA","TCGA-DD-AACA","TCGA-DD-AACA"],["G2","G3","G3","G3","G3"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>bcr_patient_barcode\u003c/th>\n      <th>neoplasm_histologic_grade\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="tutorial-video" class="section level2">
+<h2><span class="header-section-number">3.3</span> Tutorial Video</h2>
+<center>
+<p><a href="http://www.youtube.com/watch?v=54NBug9ycwM" title="Tutorial Video: Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)"><img src="http://img.youtube.com/vi/54NBug9ycwM/0.jpg" alt="IMAGE ALT TEXT" /></a></p>
+<strong>Tutorial Video:</strong> Fetching GDC clinical data - (<a href="http://www.youtube.com/watch?v=54NBug9ycwM" class="uri">http://www.youtube.com/watch?v=54NBug9ycwM</a>)
+</center>
+</div>
+</div>
+<div id="sub-menu-mutation-data" class="section level1">
+<h1><span class="header-section-number">4</span> Sub-menu: Mutation data</h1>
+<p>In order to download the Mutation Annotation Format (MAF), we provide the user with an interface to the <code>GDCquery_maf</code> function. Briefly, it will download the open acess maf files from <a href="https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/" class="uri">https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/</a>. Four separate variant calling pipelines are implemented for GDC data harmonization which are described <a href="https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/DNA_Seq_Variant_Calling_Pipeline/">here</a>.</p>
+<div id="mutatation-data-search-box" class="section level2">
+<h2><span class="header-section-number">4.1</span> Mutatation data search box</h2>
+<p>The available filters are:</p>
+<ul>
+<li>Tumor filter: a TCGA tumor, such as Breast invasive Carcinoma (TCGA-BRCA)</li>
+<li>Variant calling pipelines: Four separate variant calling pipelines are implemented for GDC data harmonization. Options: muse, varscan2, somaticsniper, mutect.</li>
+</ul>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-Cell">
+<p>Ceccarelli, Michele, FlorisP. Barthel, TathianeM. Malta, ThaisS. Sabedot, SofieR. Salama, BradleyA. Murray, Olena Morozova, et al. 2016. “Molecular Profiling Reveals Biologically Discrete Subsets and Pathways of Progression in Diffuse Glioma.” <em>Cell</em> 164 (3): 550–63. doi:<a href="https://doi.org/http://dx.doi.org/10.1016/j.cell.2015.12.028">http://dx.doi.org/10.1016/j.cell.2015.12.028</a>.</p>
+</div>
+<div id="ref-davis2014somatic">
+<p>Davis, Caleb F, Christopher J Ricketts, Min Wang, Lixing Yang, Andrew D Cherniack, Hui Shen, Christian Buhay, et al. 2014. “The Somatic Genomic Landscape of Chromophobe Renal Cell Carcinoma.” <em>Cancer Cell</em> 26 (3). Elsevier: 319–30.</p>
+</div>
+<div id="ref-huber2015orchestrating">
+<p>Huber, Wolfgang, Vincent J Carey, Robert Gentleman, Simon Anders, Marc Carlson, Benilton S Carvalho, Hector Corrada Bravo, et al. 2015. “Orchestrating High-Throughput Genomic Analysis with Bioconductor.” <em>Nature Methods</em> 12 (2). Nature Publishing Group: 115–21.</p>
+</div>
+<div id="ref-cancer2012comprehensive_lusc">
+<p>Network, Cancer Genome Atlas Research, and others. 2012. “Comprehensive Genomic Characterization of Squamous Cell Lung Cancers.” <em>Nature</em> 489 (7417). Nature Publishing Group: 519–25.</p>
+</div>
+<div id="ref-cancer2013comprehensive">
+<p>———. 2013a. “Comprehensive Molecular Characterization of Clear Cell Renal Cell Carcinoma.” <em>Nature</em> 499 (7456). Nature Publishing Group: 43–49.</p>
+</div>
+<div id="ref-cancer2013integrated">
+<p>———. 2013b. “Integrated Genomic Characterization of Endometrial Carcinoma.” <em>Nature</em> 497 (7447). Nature Research: 67–73.</p>
+</div>
+<div id="ref-cancer2014comprehensive">
+<p>———. 2014a. “Comprehensive Molecular Profiling of Lung Adenocarcinoma.” <em>Nature</em> 511 (7511). Nature Publishing Group: 543–50.</p>
+</div>
+<div id="ref-cancer2014integrated">
+<p>———. 2014b. “Integrated Genomic Characterization of Papillary Thyroid Carcinoma.” <em>Cell</em> 159 (3). Elsevier: 676–90.</p>
+</div>
+<div id="ref-cancer2015molecular_prad">
+<p>———. 2015. “The Molecular Taxonomy of Primary Prostate Cancer.” <em>Cell</em> 163 (4). Elsevier: 1011–25.</p>
+</div>
+<div id="ref-cancer2016comprehensive">
+<p>———. 2016. “Comprehensive Molecular Characterization of Papillary Renal-Cell Carcinoma.” <em>N Engl J Med</em> 2016 (374). Mass Medical Soc: 135–45.</p>
+</div>
+<div id="ref-cancer2012comprehensive_colon">
+<p>Network, Cancer Genome Atlas, and others. 2012a. “Comprehensive Molecular Characterization of Human Colon and Rectal Cancer.” <em>Nature</em> 487 (7407). Nature Publishing Group: 330–37.</p>
+</div>
+<div id="ref-cancer2012comprehensive">
+<p>———. 2012b. “Comprehensive Molecular Characterization of Human Colon and Rectal Cancer.” <em>Nature</em> 487 (7407). Nature Publishing Group: 330–37.</p>
+</div>
+<div id="ref-cancer2012comprehensive_brca">
+<p>———. 2012c. “Comprehensive Molecular Portraits of Human Breast Tumours.” <em>Nature</em> 490 (7418). Nature Publishing Group: 61–70.</p>
+</div>
+<div id="ref-cancer2015comprehensive">
+<p>———. 2015a. “Comprehensive Genomic Characterization of Head and Neck Squamous Cell Carcinomas.” <em>Nature</em> 517 (7536). Nature Publishing Group: 576–82.</p>
+</div>
+<div id="ref-cancer2015genomic_skcm">
+<p>———. 2015b. “Genomic Classification of Cutaneous Melanoma.” <em>Cell</em> 161 (7). Elsevier: 1681–96.</p>
+</div>
+</div>
+</div>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+    // active menu
+    var href = window.location.pathname;
+    href = href.substr(href.lastIndexOf('/') + 1);
+    if (href === '') href = './';
+    $('a[href="' + href + '"]').parent().addClass('active');
+});
+</script>
+<script>
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+
+</body>
+</html>

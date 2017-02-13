@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Introduction</title>
+
+<script src="index_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="index_files/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="index_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="index_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="index_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="index_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="index_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="index_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="index_files/navigation-1.1/tabsets.js"></script>
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 70px;
+}
+p code {
+  white-space: inherit;
+}
+.panel-heading {
+  text-align: center;
+}
+</style>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+
+<script src="libs/jquery/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap/css/flatly.min.css" rel="stylesheet" />
+<script src="libs/bootstrap/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap/shim/respond.min.js"></script>
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="libs/datatables-binding/datatables.js"></script>
+<link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="libs/nouislider/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="libs/nouislider/jquery.nouislider.min.js"></script>
+<link href="libs/selectize/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="libs/selectize/selectize.min.js"></script>
+<style type="text/css">
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="include/site.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="include/site.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="#" class="navbar-left"><img  src="/home/tiagochst/biomics/vignettes/include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
+      <a class="navbar-brand" href="./">
+          Introduction
+      </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="data.html">GDC Data</a></li>
+        <li><a href="analysis.html">Analysis</a></li>
+        <li><a href="integrative.html">Integrative analysis</a></li>
+        <li><a href="Cases.html">Case studies</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="https://github.com/BioinformaticsFMRP/TCGAbiolinksGUI" title="View Source on Github"><i class="fa fa-github fa-lg"></i>
+            </a>
+        </li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</nav><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Introduction</h1>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>TCGAbiolinksGUI was created to help users more comfortable with graphical user interfaces (GUI) to search, download and analyze Cancer data. It offers a graphical user interface to the R/Bioconductor package <a href="http://bioconductor.org/packages/TCGAbiolinks/">TCGAbiolinks</a> <span class="citation">(A. Colaprico et al. 2016)</span>, which is able to access The National Cancer Institute (NCI) Genomic Data Commons (GDC) thorough its<br />
+<a href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api">GDC Application Programming Interface (API)</a>. Additional packages from Bioconductor are included, such as <a href="http://bioconductor.org/packages/ComplexHeatmap/">ComplexHeatmap</a> package <span class="citation">(Gu, Eils, and Schlesner 2016)</span> to aid in visualizing the data, <a href="http://bioconductor.org/packages/ELMER/">ELMER</a> <span class="citation">(Yao et al. 2015)</span> to identify regulatory enhancers using gene expression + DNA methylation data + motif analysis and <a href="http://bioconductor.org/packages/pathview/">Pathview</a> <span class="citation">(Luo and Brouwer 2013)</span> for pathway-based data integration and visualization.</p>
+<p>The GUI was created using <a href="https://shiny.rstudio.com/">Shiny</a>, a Web Application Framework for R, and uses several packages to provide advanced features that can enhance Shiny apps, such as <a href="https://github.com/daattali/shinyjs">shinyjs</a> to add JavaScript actions for the app, <a href="https://github.com/rstudio/shinydashboard">shinydashboard</a> to add dashboards and <a href="https://github.com/thomasp85/shinyFiles">shinyFiles</a> to provide an API for client side access to the server file system. A running version of the GUI is found in (shinyapps.io)[<a href="https://tcgabiolinksgui.shinyapps.io/tcgabiolinks/" class="uri">https://tcgabiolinksgui.shinyapps.io/tcgabiolinks/</a>]</p>
+</div>
+<div id="starting-with-tcgabiolinksgui" class="section level1">
+<h1><span class="header-section-number">2</span> Starting with TCGAbiolinksGUI</h1>
+<div id="installation" class="section level2">
+<h2><span class="header-section-number">2.1</span> Installation</h2>
+<p>To install the package from the (Bioconductor repository)[<a href="http://bioconductor.org/packages/TCGAbiolinksGUI/" class="uri">http://bioconductor.org/packages/TCGAbiolinksGUI/</a>] please use the following code. To date, the package is only available in the (devel version of Bioconductor)[<a href="https://www.bioconductor.org/developers/how-to/useDevel/" class="uri">https://www.bioconductor.org/developers/how-to/useDevel/</a>], but it should be available in the release version until May 2017.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;https://bioconductor.org/biocLite.R&quot;</span>)
+<span class="kw">biocLite</span>(<span class="st">&quot;TCGAbiolinksGUI&quot;</span>, <span class="dt">dependencies =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>To install the development version of the package via GitHub:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;https://bioconductor.org/biocLite.R&quot;</span>)
+deps &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pathview&quot;</span>,<span class="st">&quot;clusterProfiler&quot;</span>,<span class="st">&quot;ELMER&quot;</span>, <span class="st">&quot;DO.db&quot;</span>,<span class="st">&quot;GO.db&quot;</span>, <span class="st">&quot;ComplexHeatmap&quot;</span>,<span class="st">&quot;EDASeq&quot;</span>, <span class="st">&quot;TCGAbiolinks&quot;</span>)
+for(pkg in deps)  if (!pkg %in%<span class="st"> </span><span class="kw">installed.packages</span>()) <span class="kw">biocLite</span>(pkg, <span class="dt">dependencies =</span> <span class="ot">TRUE</span>)
+deps &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;devtools&quot;</span>,<span class="st">&quot;shape&quot;</span>,<span class="st">&quot;shiny&quot;</span>,<span class="st">&quot;readr&quot;</span>,<span class="st">&quot;googleVis&quot;</span>,<span class="st">&quot;shinydashboard&quot;</span>,<span class="st">&quot;shinyFiles&quot;</span>,<span class="st">&quot;shinyjs&quot;</span>,<span class="st">&quot;shinyBS&quot;</span>)
+for(pkg in deps)  if (!pkg %in%<span class="st"> </span><span class="kw">installed.packages</span>())  <span class="kw">install.packages</span>(pkg,<span class="dt">dependencies =</span> <span class="ot">TRUE</span>)
+devtools::<span class="kw">install_github</span>(<span class="st">&quot;BioinformaticsFMRP/TCGAbiolinksGUI&quot;</span>)</code></pre></div>
+</div>
+<div id="quick-start" class="section level2">
+<h2><span class="header-section-number">2.2</span> Quick start</h2>
+<p>The following commands should be used to start the graphical user interface.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(TCGAbiolinksGUI)
+<span class="kw">TCGAbiolinksGUI</span>()</code></pre></div>
+</div>
+<div id="video-tutorials" class="section level2">
+<h2><span class="header-section-number">2.3</span> Video tutorials</h2>
+<p>To facilitate the use of this package, we have created some tutorial videos demonstrating the tool. Some sections have video tutorials that if clicked will redirect to the video on youtube. For the complete list of videos, please check this <a href="https://www.youtube.com/playlist?list=PLoDzAKMJh15m40f7OqOLAW0nJwkVStJIJ">youtube list</a>.</p>
+</div>
+<div id="question-and-issues" class="section level2">
+<h2><span class="header-section-number">2.4</span> Question and issues</h2>
+<p>Please use <a href="https://github.com/BioinformaticsFMRP/TCGAbiolinksGUI/issues">Github issues</a> if you want to file bug reports or feature requests.</p>
+</div>
+<div id="data-input-summary" class="section level2">
+<h2><span class="header-section-number">2.5</span> Data input summary</h2>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="15%" />
+<col width="16%" />
+<col width="52%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Menu</th>
+<th>Sub-menu</th>
+<th>Button</th>
+<th>Data input</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Clinical analysis</td>
+<td>Profile Plot</td>
+<td>Select file</td>
+<td>A table with at least two categorical columns</td>
+</tr>
+<tr class="even">
+<td>Clinical analysis</td>
+<td>Survival Plot</td>
+<td>Select file</td>
+<td>A table with at least the following columns: days_to_death, days_to_last_followup and one column with a group</td>
+</tr>
+<tr class="odd">
+<td>Epigenetic analysis</td>
+<td>Differential methylation analysis</td>
+<td>Select data (.rda)</td>
+<td>A summarizedExperiment object</td>
+</tr>
+<tr class="even">
+<td>Epigenetic analysis</td>
+<td>Volcano Plot</td>
+<td>Select results</td>
+<td>A csv file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DMR steps.</td>
+</tr>
+<tr class="odd">
+<td>Epigenetic analysis</td>
+<td>Heatmap plot</td>
+<td>Select file</td>
+<td>A summarizedExperiment object</td>
+</tr>
+<tr class="even">
+<td>Epigenetic analysis</td>
+<td>Heatmap plot</td>
+<td>Select results</td>
+<td>Same as Epigenetic analysis &gt;Volcano Plot &gt; Select results</td>
+</tr>
+<tr class="odd">
+<td>Epigenetic analysis</td>
+<td>Mean DNA methylation</td>
+<td>Select file</td>
+<td>A summarizedExperiment object</td>
+</tr>
+<tr class="even">
+<td>Transcriptomic Analysis</td>
+<td>Volcano Plot</td>
+<td>Select results</td>
+<td>A csv file with the following pattern: DEA_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DEA steps.</td>
+</tr>
+<tr class="odd">
+<td>Transcriptomic Analysis</td>
+<td>Heatmap plot</td>
+<td>Select file</td>
+<td>A summarizedExperiment object</td>
+</tr>
+<tr class="even">
+<td>Transcriptomic Analysis</td>
+<td>OncoPrint plot</td>
+<td>Select MAF file</td>
+<td>A MAF file (columns needed: Hugo_Symbol,Tumor_Sample_Barcode,Variant_Type)</td>
+</tr>
+<tr class="odd">
+<td>Transcriptomic Analysis</td>
+<td>OncoPrint plot</td>
+<td>Select Annotation file</td>
+<td>A file with at least the following columns: bcr_patient_barcode</td>
+</tr>
+<tr class="even">
+<td>Integrative analysis</td>
+<td>Starburst plot</td>
+<td>DMR result</td>
+<td>A csv file with the following pattern: DMR_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DMR steps.</td>
+</tr>
+<tr class="odd">
+<td>Integrative analysis</td>
+<td>Starburst plot</td>
+<td>DEA result</td>
+<td>A csv file with the following pattern: DEA_results_GroupCol_group1_group2_pcut_1e-30_meancut_0.55.csv (Where GroupCol, group1, group2 are the names of the columns selected in the DEA steps.</td>
+</tr>
+<tr class="even">
+<td>Integrative analysis</td>
+<td>ELMER</td>
+<td>Create mee &gt; Select DNA methylation object</td>
+<td>An rda file with a summarized Experiment object</td>
+</tr>
+<tr class="odd">
+<td>Integrative analysis</td>
+<td>ELMER</td>
+<td>Select results &gt; Select expression object</td>
+<td>An rda file with the RNAseq data frame</td>
+</tr>
+<tr class="even">
+<td>Integrative analysis</td>
+<td>ELMER</td>
+<td>Select mee</td>
+<td>An rda file with a mee object</td>
+</tr>
+<tr class="odd">
+<td>Integrative analysis</td>
+<td>ELMER</td>
+<td>Select results</td>
+<td>An rda file with the results of the ELMER analysis</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="citation" class="section level1">
+<h1><span class="header-section-number">3</span> Citation</h1>
+<p>Please cite both TCGAbiolinks package and TCGAbiolinksGUI:</p>
+<ul>
+<li>Silva TC, Colaprico A, Olsen C, Bontempi G, Ceccarelli M, Berman BP. , and Noushmehr H. “TCGAbiolinksGUI: A Graphical User Interface to analyze cancer molecular and clinical data.”Bioinformatics - Submitted for review.</li>
+<li>Colaprico A, Silva TC, Olsen C, Garofano L, Cava C, Garolini D, Sabedot T, Malta TM, Pagnotta SM, Castiglioni I, Ceccarelli M, Bontempi G and Noushmehr H. “TCGAbiolinks: an R/Bioconductor package for integrative analysis of TCGA data.” Nucleic acids research (2015): gkv1507.</li>
+</ul>
+<p>Other related publications to this package:</p>
+<ul>
+<li>“TCGA Workflow: Analyze cancer genomics and epigenomics data using Bioconductor packages”. F1000Research <a href="http://dx.doi.org/doi:10.12688/f1000research.8923.1">10.12688/f1000research.8923.1</a> <span class="citation">(T. Silva et al. 2016)</span></li>
+</ul>
+<p>If you used ELMER please cite:</p>
+<ul>
+<li>Yao, L., Shen, H., Laird, P. W., Farnham, P. J., &amp; Berman, B. P. “Inferring regulatory element landscapes and transcription factor networks from cancer methylomes.” Genome Biol 16 (2015): 105.</li>
+<li>Yao, Lijing, Benjamin P. Berman, and Peggy J. Farnham. “Demystifying the secret mission of enhancers: linking distal regulatory elements to target genes.” Critical reviews in biochemistry and molecular biology 50.6 (2015): 550-573.</li>
+</ul>
+<p>If you used OncoPrint plot and Heatmap Plot please cite:</p>
+<ul>
+<li>Gu, Zuguang, Roland Eils, and Matthias Schlesner. “Complex heatmaps reveal patterns and correlations in multidimensional genomic data.” Bioinformatics (2016): btw313</li>
+</ul>
+<p>If you used Pathway plot please cite:</p>
+<ul>
+<li>Luo, Weijun, Brouwer and Cory (2013). “Pathview: an R/Bioconductor package for pathway-based data integration and visualization.” Bioinformatics, 29(14), pp. 1830-1831.</li>
+</ul>
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">4</span> Session info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
+<pre><code>## R Under development (unstable) (2017-01-23 r72020)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 16.04.2 LTS
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] TCGAbiolinksGUI_0.99.18 shinydashboard_0.5.3   
+## 
+## loaded via a namespace (and not attached):
+##   [1] R.utils_2.5.0               htmlwidgets_0.8            
+##   [3] RSQLite_1.1-2               AnnotationDbi_1.36.2       
+##   [5] grid_3.4.0                  trimcluster_0.1-2          
+##   [7] BiocParallel_1.8.1          ELMER_1.4.0                
+##   [9] DESeq_1.26.0                munsell_0.4.3              
+##  [11] codetools_0.2-15            preprocessCore_1.36.0      
+##  [13] miniUI_0.1.1                colorspace_1.3-2           
+##  [15] GOSemSim_2.0.4              BiocInstaller_1.24.0       
+##  [17] Biobase_2.34.0              OrganismDbi_1.16.0         
+##  [19] knitr_1.15.9                supraHex_1.12.0            
+##  [21] stats4_3.4.0                robustbase_0.92-7          
+##  [23] DOSE_3.0.10                 pathview_1.14.0            
+##  [25] KEGGgraph_1.32.0            KMsurv_0.1-5               
+##  [27] mnormt_1.5-5                hwriter_1.3.2              
+##  [29] rprojroot_1.2               downloader_0.4             
+##  [31] c3net_1.1.1                 ggthemes_3.3.0             
+##  [33] EDASeq_2.8.0                diptest_0.75-7             
+##  [35] R6_2.2.0                    doParallel_1.0.10          
+##  [37] GenomeInfoDb_1.10.3         illuminaio_0.16.0          
+##  [39] RJSONIO_1.3-0               locfit_1.5-9.1             
+##  [41] flexmix_2.3-13              bitops_1.0-6               
+##  [43] reshape_0.8.6               fgsea_1.1.2                
+##  [45] assertthat_0.1              scales_0.4.1               
+##  [47] nnet_7.3-12                 gtable_0.2.0               
+##  [49] affy_1.52.0                 genefilter_1.56.0          
+##  [51] GlobalOptions_0.0.10        splines_3.4.0              
+##  [53] rtracklayer_1.34.1          lazyeval_0.2.0             
+##  [55] GEOquery_2.40.0             hexbin_1.27.1              
+##  [57] shinyBS_0.62                broom_0.4.1                
+##  [59] yaml_2.1.14                 reshape2_1.4.2             
+##  [61] GenomicFeatures_1.26.2      backports_1.0.5            
+##  [63] httpuv_1.3.3                qvalue_2.6.0               
+##  [65] clusterProfiler_3.2.11      RBGL_1.50.0                
+##  [67] tools_3.4.0                 psych_1.6.12               
+##  [69] nor1mix_1.2-2               ggplot2_2.2.1              
+##  [71] affyio_1.44.0               gplots_3.0.1               
+##  [73] RColorBrewer_1.1-2          BiocGenerics_0.20.0        
+##  [75] siggenes_1.48.0             Rcpp_0.12.9.2              
+##  [77] plyr_1.8.4                  zlibbioc_1.20.0            
+##  [79] RCurl_1.95-4.8              openssl_0.9.6              
+##  [81] GetoptLong_0.1.5            viridis_0.3.4              
+##  [83] bumphunter_1.14.0           zoo_1.7-14                 
+##  [85] S4Vectors_0.12.1            SummarizedExperiment_1.4.0 
+##  [87] ggrepel_0.6.5               cluster_2.0.5              
+##  [89] magrittr_1.5                data.table_1.10.4          
+##  [91] dnet_1.0.11                 DO.db_2.9                  
+##  [93] circlize_0.3.9              colourpicker_0.3           
+##  [95] survminer_0.2.4.999         mvtnorm_1.0-5              
+##  [97] whisker_0.3-2               matrixStats_0.51.0         
+##  [99] aroma.light_3.4.0           shinyjs_0.9.0.9000         
+## [101] mime_0.5                    evaluate_0.10              
+## [103] xtable_1.8-2                minet_3.32.0               
+## [105] XML_3.98-1.5                mclust_5.2.2               
+## [107] IRanges_2.8.1               gridExtra_2.2.1            
+## [109] shape_1.4.2                 compiler_3.4.0             
+## [111] biomaRt_2.30.0              minfi_1.20.2               
+## [113] tibble_1.2                  KernSmooth_2.23-15         
+## [115] R.oo_1.21.0                 htmltools_0.3.5            
+## [117] tidyr_0.6.1                 geneplotter_1.52.0         
+## [119] DBI_0.5-1                   matlab_1.0.2               
+## [121] ComplexHeatmap_1.12.0       MASS_7.3-45                
+## [123] fpc_2.1-10                  ShortRead_1.32.0           
+## [125] Matrix_1.2-8                readr_1.0.0                
+## [127] parmigene_1.0.2             quadprog_1.5-5             
+## [129] R.methodsS3_1.7.1           gdata_2.17.0               
+## [131] parallel_3.4.0              igraph_1.0.1               
+## [133] km.ci_0.5-2                 GenomicRanges_1.26.2       
+## [135] GenomicAlignments_1.10.0    registry_0.3               
+## [137] foreign_0.8-67              xml2_1.1.1                 
+## [139] foreach_1.4.3               annotate_1.52.1            
+## [141] rngtools_1.2.4              pkgmaker_0.22              
+## [143] multtest_2.30.0             beanplot_1.2               
+## [145] XVector_0.14.0              rvest_0.3.2                
+## [147] doRNG_1.6                   stringr_1.1.0              
+## [149] digest_0.6.12               ConsensusClusterPlus_1.38.0
+## [151] graph_1.52.0                Biostrings_2.42.1          
+## [153] rmarkdown_1.3               base64_2.0                 
+## [155] fastmatch_1.1-0             survMisc_0.5.4             
+## [157] TCGAbiolinks_2.3.16         dendextend_1.4.0           
+## [159] edgeR_3.16.5                googleVis_0.6.2            
+## [161] kernlab_0.9-25              shiny_1.0.0                
+## [163] Rsamtools_1.26.1            gtools_3.5.0               
+## [165] modeltools_0.2-21           rjson_0.2.15               
+## [167] nlme_3.1-131                jsonlite_1.2               
+## [169] limma_3.30.11               shinyFiles_0.6.2           
+## [171] lattice_0.20-34             KEGGREST_1.14.0            
+## [173] httr_1.2.1                  DEoptimR_1.0-8             
+## [175] survival_2.40-1             GO.db_3.4.0                
+## [177] png_0.1-7                   prabclus_2.2-6             
+## [179] iterators_1.0.8             Rgraphviz_2.18.0           
+## [181] class_7.3-14                stringi_1.1.2              
+## [183] latticeExtra_0.6-28         caTools_1.17.1             
+## [185] memoise_1.0.0               dplyr_0.5.0                
+## [187] ape_4.0</code></pre>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-TCGAbiolinks">
+<p>Colaprico, Antonio, Tiago C. Silva, Catharina Olsen, Luciano Garofano, Claudia Cava, Davide Garolini, Thais S. Sabedot, et al. 2016. “TCGAbiolinks: An R/Bioconductor Package for Integrative Analysis of Tcga Data.” <em>Nucleic Acids Research</em> 44 (8): e71. doi:<a href="https://doi.org/10.1093/nar/gkv1507">10.1093/nar/gkv1507</a>.</p>
+</div>
+<div id="ref-Gu20052016">
+<p>Gu, Zuguang, Roland Eils, and Matthias Schlesner. 2016. “Complex Heatmaps Reveal Patterns and Correlations in Multidimensional Genomic Data.” <em>Bioinformatics</em>. doi:<a href="https://doi.org/10.1093/bioinformatics/btw313">10.1093/bioinformatics/btw313</a>.</p>
+</div>
+<div id="ref-luo2013pathview">
+<p>Luo, Weijun, and Cory Brouwer. 2013. “Pathview: An R/Bioconductor Package for Pathway-Based Data Integration and Visualization.” <em>Bioinformatics</em> 29 (14). Oxford Univ Press: 1830–1.</p>
+</div>
+<div id="ref-10.12688/f1000research.8923.2">
+<p>Silva, TC, A Colaprico, C Olsen, F D’Angelo, G Bontempi, M Ceccarelli, and H Noushmehr. 2016. “TCGA Workflow: Analyze Cancer Genomics and Epigenomics Data Using Bioconductor Packages [Version 2; Referees: 1 Approved, 1 Approved with Reservations].” <em>F1000Research</em> 5 (1542). doi:<a href="https://doi.org/10.12688/f1000research.8923.2">10.12688/f1000research.8923.2</a>.</p>
+</div>
+<div id="ref-yao2015inferring">
+<p>Yao, L, H Shen, PW Laird, PJ Farnham, and BP Berman. 2015. “Inferring Regulatory Element Landscapes and Transcription Factor Networks from Cancer Methylomes.” <em>Genome Biology</em> 16 (1): 105–5.</p>
+</div>
+</div>
+</div>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+    // active menu
+    var href = window.location.pathname;
+    href = href.substr(href.lastIndexOf('/') + 1);
+    if (href === '') href = './';
+    $('a[href="' + href + '"]').parent().addClass('active');
+});
+</script>
+<script>
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+
+</body>
+</html>
