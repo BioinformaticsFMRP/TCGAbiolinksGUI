@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-# bibliography: bibliography.bib
+bibliography: bibliography.bib
 ---
 
 # Introduction
@@ -115,3 +115,5 @@ library(TCGAbiolinksGUI)
 ```{r}
 sessionInfo()
 ```
+
+# References
