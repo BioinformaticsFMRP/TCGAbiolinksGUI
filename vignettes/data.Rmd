@@ -1,8 +1,6 @@
 ---
-title: "GDC data"
 bibliography: bibliography.bib
 ---
-
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 library(TCGAbiolinks)

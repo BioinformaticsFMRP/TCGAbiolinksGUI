@@ -1,5 +1,4 @@
 ---
-title: "Integrative analysis"
 bibliography: bibliography.bib
 ---
 

@@ -11,6 +11,7 @@
 
 
 
+<title></title>
 
 <script src="data_files/jquery-1.12.4/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -57,6 +58,8 @@ p code {
 <script src="libs/nouislider/jquery.nouislider.min.js"></script>
 <link href="libs/selectize/selectize.bootstrap3.css" rel="stylesheet" />
 <script src="libs/selectize/selectize.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="lib/tocify-1.9.1/jquery.tocify.js"></script>
 <style type="text/css">
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -392,7 +395,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="#" class="navbar-left"><img  src="include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
+      <a href="#" class="navbar-left"><img  src="/home/tiagochst/biomics/vignettes/include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
       <a class="navbar-brand" href="./">
           Introduction
       </a>
@@ -418,7 +421,6 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">GDC data</h1>
 
 </div>
 
@@ -427,7 +429,7 @@ div.tocify {
 <h1><span class="header-section-number">1</span> Sub-menu: Molecular data</h1>
 <p>In this sub-menu the user will be able to search, download and prepare The NCI’s Genomic Data Commons (GDC) data for analysis. The first step is to search for GDC open data access with the Advanced search box. The search results will be summarized in plots in the center of the screen. The second step is to download and prepare the data into a R object to be used in the analysis steps.</p>
 <div class="figure">
-<img src="tcgasearch.png" alt="GDC search menu: Main window." />
+<img src="/home/tiagochst/biomics/vignettes/tcgasearch.png" alt="GDC search menu: Main window." />
 <p class="caption">GDC search menu: Main window.</p>
 </div>
 <div id="useful-information" class="section level2">
@@ -563,15 +565,15 @@ clinical.patient.followup &lt;-<span class="st"> </span><span class="kw">GDCprep
 <span class="co"># Get indexed data</span>
 clinical.index &lt;-<span class="st"> </span><span class="kw">GDCquery_clinic</span>(<span class="st">&quot;TCGA-READ&quot;</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(clinical.patient,vital_status,days_to_death,days_to_last_followup) %&gt;%<span class="st"> </span>datatable</code></pre></div>
-<div id="htmlwidget-130de47a3b512b45fd46" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-130de47a3b512b45fd46">{"x":{"filter":"none","data":[["1"],["Alive"],[null],[66]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_followup\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-cd0cad71e6449a64b102" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cd0cad71e6449a64b102">{"x":{"filter":"none","data":[["1"],["Alive"],[null],[66]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_followup\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(clinical.patient.followup, vital_status,days_to_death,days_to_last_followup) %&gt;%<span class="st"> </span>datatable</code></pre></div>
-<div id="htmlwidget-0ec069c5e27ee3737d9b" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0ec069c5e27ee3737d9b">{"x":{"filter":"none","data":[["1","2"],["Dead","Alive"],[869,null],[null,452]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_followup\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-4f7c12cb76ba5872af04" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4f7c12cb76ba5872af04">{"x":{"filter":"none","data":[["1","2"],["Dead","Alive"],[869,null],[null,452]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_followup\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Vital status should be the same in the follow up table </span>
 <span class="kw">filter</span>(clinical.index,submitter_id ==<span class="st"> &quot;TCGA-F5-6702&quot;</span>) %&gt;%<span class="st"> </span><span class="kw">select</span>(vital_status,days_to_death,days_to_last_follow_up) %&gt;%<span class="st"> </span>datatable</code></pre></div>
-<div id="htmlwidget-b1881efa03e0a9611a3b" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b1881efa03e0a9611a3b">{"x":{"filter":"none","data":[["1"],["alive"],[869],[452]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_follow_up\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f5f694af0c417b247fed" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f5f694af0c417b247fed">{"x":{"filter":"none","data":[["1"],["alive"],[869],[452]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_follow_up\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="progression-or-recurrence-and-grande-inconsistancie" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> Progression or Recurrence and Grande inconsistancie</h3>
@@ -588,12 +590,12 @@ clinical.patient &lt;-<span class="st"> </span><span class="kw">GDCprepare_clini
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get indexed data</span>
 <span class="kw">GDCquery_clinic</span>(<span class="st">&quot;TCGA-LIHC&quot;</span>) %&gt;%<span class="st"> </span><span class="kw">filter</span>(submitter_id %in%<span class="st"> </span>recurrent.patients) %&gt;%<span class="st"> </span>
 <span class="st">    </span><span class="kw">select</span>(progression_or_recurrence,days_to_recurrence,tumor_grade) %&gt;%<span class="st"> </span>datatable</code></pre></div>
-<div id="htmlwidget-b40eab8987687ee7ff5a" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b40eab8987687ee7ff5a">{"x":{"filter":"none","data":[["1","2"],["not reported","not reported"],[null,null],["not reported","not reported"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>progression_or_recurrence\u003c/th>\n      <th>days_to_recurrence\u003c/th>\n      <th>tumor_grade\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-0d581e2b138710821461" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0d581e2b138710821461">{"x":{"filter":"none","data":[["1","2"],["not reported","not reported"],[null,null],["not reported","not reported"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>progression_or_recurrence\u003c/th>\n      <th>days_to_recurrence\u003c/th>\n      <th>tumor_grade\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># XML data</span>
 clinical.patient %&gt;%<span class="st"> </span><span class="kw">select</span>(bcr_patient_barcode,neoplasm_histologic_grade) %&gt;%<span class="st"> </span>datatable</code></pre></div>
-<div id="htmlwidget-e9b20d9c002b29bd13aa" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-e9b20d9c002b29bd13aa">{"x":{"filter":"none","data":[["1","2","3","4","5"],["TCGA-ZS-A9CF","TCGA-DD-AACA","TCGA-DD-AACA","TCGA-DD-AACA","TCGA-DD-AACA"],["G2","G3","G3","G3","G3"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>bcr_patient_barcode\u003c/th>\n      <th>neoplasm_histologic_grade\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-b886f1bb843de8c59d7d" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b886f1bb843de8c59d7d">{"x":{"filter":"none","data":[["1","2","3","4","5"],["TCGA-ZS-A9CF","TCGA-DD-AACA","TCGA-DD-AACA","TCGA-DD-AACA","TCGA-DD-AACA"],["G2","G3","G3","G3","G3"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>bcr_patient_barcode\u003c/th>\n      <th>neoplasm_histologic_grade\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="tutorial-video" class="section level2">
