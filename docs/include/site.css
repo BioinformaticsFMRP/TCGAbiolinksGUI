@@ -25,3 +25,25 @@ body {
 .navbar  {
     background: #000080
 }
+
+h1.title {
+    font-size: 30px;
+}
+
+h1 {
+    font-size: 28px;
+}
+
+h3 {
+    font-size: 22px;
+}
+
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+    color: #e74c3c;
+    background-color: transparent;
+}
+
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
+    color: #e74c3c;
+    background-color: transparent;
+}
