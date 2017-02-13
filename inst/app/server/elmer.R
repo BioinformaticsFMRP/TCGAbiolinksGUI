@@ -447,7 +447,8 @@ observeEvent(input$elmerAnalysisBt, {
                                  TF.meth.cor <- get(load(paste0(dir.out,"/getTF.",j,".TFs.with.motif.pvalue.rda")))
                                  save(mee, TF, enriched.motif, Sig.probes.paired,
                                       pair, nearGenes, Sig.probes, motif.enrichment, TF.meth.cor,
-                                      file=paste0(dir.out,"/ELMER_results_",j,".rda"))
+                                      file=paste0(dir.out,"/ELMER_results_",j,".rda"),
+                                      compress = "xz")
                                  done <- c(done,j)
                              } else {
                                  createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "danger",
