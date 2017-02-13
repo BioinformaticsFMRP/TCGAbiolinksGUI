@@ -103,22 +103,22 @@ The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-w
 studies of various diseases. We have added some of the subtypes defined by these
 reports in our package.  
 
-- BRCA [@cancer2012comprehensive_brca] 
-- COAD [@cancer2012comprehensive_colon] 
-- GBM [@Cell]
-- HNSC [@cancer2015comprehensive]
-- KICH [@davis2014somatic]
-- KIRC[@cancer2013comprehensive] 
-- KIRP [@cancer2016comprehensive] 
-- LGG [@Cell] 
-- LUAD [@cancer2014comprehensive] 
-- LUSC[@cancer2012comprehensive_lusc] 
-- PRAD[@cancer2015molecular_prad] 
-- READ [@cancer2012comprehensive] 
-- SKCM [@cancer2015genomic_skcm] 
-- STAD [@cancer2014comprehensive] 
-- THCA [@cancer2014integrated] 
-- UCEC [@cancer2013integrated]
+- [BRCA](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3465532/)[@cancer2012comprehensive_brca]
+- [COAD](http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html) [@cancer2012comprehensive_colon] 
+- [GBM](http://dx.doi.org/10.1016/j.cell.2015.12.028) [@Cell]
+- [HNSC](http://www.nature.com/nature/journal/v517/n7536/abs/nature14129.html) [@cancer2015comprehensive]
+- [KICH](http://www.sciencedirect.com/science/article/pii/S1535610814003043) [@davis2014somatic]
+- [KIRC](http://www.nature.com/nature/journal/v499/n7456/abs/nature12222.html)[@cancer2013comprehensive] 
+- [KIRP](http://www.nejm.org/doi/full/10.1056/NEJMoa1505917) [@cancer2016comprehensive] 
+- [LGG](http://dx.doi.org/10.1016/j.cell.2015.12.028)[@Cell] 
+- [LUAD](http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html) [@cancer2014comprehensive] 
+- [LUSC](http://www.nature.com/nature/journal/v489/n7417/abs/nature11404.html)[@cancer2012comprehensive_lusc] 
+- [PRAD](http://www.sciencedirect.com/science/article/pii/S0092867415013392)[@cancer2015molecular_prad] 
+- [READ](http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html) [@cancer2012comprehensive] 
+- [SKCM](http://www.sciencedirect.com/science/article/pii/S0092867415006340) [@cancer2015genomic_skcm] 
+- [STAD](http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html) [@cancer2014comprehensive] 
+- [THCA](http://www.sciencedirect.com/science/article/pii/S0092867414012380) [@cancer2014integrated] 
+- [UCEC](http://www.nature.com/nature/journal/v497/n7447/abs/nature12113.html) [@cancer2013integrated]
 
 The user can visualize the table with the information and save it as csv or R object (rda) file.
 
