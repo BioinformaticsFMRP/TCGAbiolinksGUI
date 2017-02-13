@@ -345,7 +345,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="#" class="navbar-left"><img  src="/home/tiagochst/biomics/vignettes/include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
+      <a href="#" class="navbar-left"><img  src="include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
       <a class="navbar-brand" href="./">
           Introduction
       </a>
@@ -379,7 +379,7 @@ div.tocify {
 <div id="menu-starburst-plot" class="section level1">
 <h1><span class="header-section-number">1</span> Menu: Starburst plot</h1>
 <div class="figure">
-<img src="/home/tiagochst/biomics/vignettes/starburst.png" alt="Starburst plot menu: Main window." />
+<img src="starburst.png" alt="Starburst plot menu: Main window." />
 <p class="caption">Starburst plot menu: Main window.</p>
 </div>
 <div id="data" class="section level2">
@@ -426,10 +426,10 @@ div.tocify {
 </div>
 <div id="menu-elmer-enhancer-linking-by-methylationexpression-relationship" class="section level1">
 <h1><span class="header-section-number">2</span> Menu: ELMER (Enhancer Linking by Methylation/Expression Relationship)</h1>
-<p>This sub-menu will help the user to perform an integrative analysis between DNA methylation and Gene expression using the R/Bioconductor ELMER package <span class="citation">[@yao2015inferring]</span>.</p>
+<p>This sub-menu will help the user to perform an integrative analysis between DNA methylation and Gene expression using the R/Bioconductor ELMER package <span class="citation">(L Yao et al. 2015)</span>.</p>
 <div id="introduction" class="section level2">
 <h2><span class="header-section-number">2.1</span> Introduction</h2>
-<p>Recently, many studies suggest that enhancers play a major role as regulators of cell-specific phenotypes leading to alteration in transcriptomes realated to diseases <span class="citation">[@giorgio2015large; @groschel2014single; @sur2012mice; @yao2015demystifying]</span>. In order to investigate regulatory enhancers that can be located at long distances upstream or downstream of target genes Bioconductor offer the <a href="http://bioconductor.org/packages/ELMER/">Enhancer Linking by Methylation/Expression Relationship (ELMER)</a> package. This package is designed to combine DNA methylation and gene expression data from human tissues to infer multi-level cis-regulatory networks. It uses DNA methylation to identify enhancers and correlates their state with expression of nearby genes to identify one or more transcriptional targets. Transcription factor (TF) binding site analysis of enhancers is coupled with expression analysis of all TFs to infer upstream regulators. This package can be easily applied to TCGA public available cancer data sets and custom DNA methylation and gene expression data sets <span class="citation">[@yao2015inferring]</span>.</p>
+<p>Recently, many studies suggest that enhancers play a major role as regulators of cell-specific phenotypes leading to alteration in transcriptomes realated to diseases <span class="citation">(Giorgio et al. 2015; Gröschel et al. 2014; Sur et al. 2012; Lijing Yao, Berman, and Farnham 2015)</span>. In order to investigate regulatory enhancers that can be located at long distances upstream or downstream of target genes Bioconductor offer the <a href="http://bioconductor.org/packages/ELMER/">Enhancer Linking by Methylation/Expression Relationship (ELMER)</a> package. This package is designed to combine DNA methylation and gene expression data from human tissues to infer multi-level cis-regulatory networks. It uses DNA methylation to identify enhancers and correlates their state with expression of nearby genes to identify one or more transcriptional targets. Transcription factor (TF) binding site analysis of enhancers is coupled with expression analysis of all TFs to infer upstream regulators. This package can be easily applied to TCGA public available cancer data sets and custom DNA methylation and gene expression data sets <span class="citation">(L Yao et al. 2015)</span>.</p>
 <p><a href="http://bioconductor.org/packages/ELMER/">ELMER</a> analysis have 5 main steps:</p>
 <ol style="list-style-type: decimal">
 <li><p>Identify distal enhancer probes on HM450K.</p></li>
@@ -457,7 +457,7 @@ div.tocify {
 </ul>
 <p>Also, for RNA expression data it will take the log2(expression + 1) of the expression matrix in order to linearize the relation between DNA methylation and expression.</p>
 <div class="figure">
-<img src="/home/tiagochst/biomics/vignettes/elmer.png" alt="ELMER menu: Main window." />
+<img src="elmer.png" alt="ELMER menu: Main window." />
 <p class="caption">ELMER menu: Main window.</p>
 </div>
 <div id="data-select-mee" class="section level3">
@@ -487,6 +487,23 @@ div.tocify {
 <div id="results-table" class="section level3">
 <h3><span class="header-section-number">2.4.3</span> Results table</h3>
 <p>Select the ELMER results from the table. A results object should be selected.</p>
+<div id="refs" class="references">
+<div id="ref-giorgio2015large">
+<p>Giorgio, Elisa, Daniel Robyr, Malte Spielmann, Enza Ferrero, Eleonora Di Gregorio, Daniele Imperiale, Giovanna Vaula, et al. 2015. “A Large Genomic Deletion Leads to Enhancer Adoption by the Lamin B1 Gene: A Second Path to Autosomal Dominant Leukodystrophy (Adld).” <em>Human Molecular Genetics</em>. Oxford Univ Press, ddv065.</p>
+</div>
+<div id="ref-groschel2014single">
+<p>Gröschel, Stefan, Mathijs A Sanders, Remco Hoogenboezem, Elzo de Wit, Britta AM Bouwman, Claudia Erpelinck, Vincent HJ van der Velden, et al. 2014. “A Single Oncogenic Enhancer Rearrangement Causes Concomitant Evi1 and Gata2 Deregulation in Leukemia.” <em>Cell</em> 157 (2). Elsevier: 369–81.</p>
+</div>
+<div id="ref-sur2012mice">
+<p>Sur, Inderpreet Kaur, Outi Hallikas, Anna Vähärautio, Jian Yan, Mikko Turunen, Martin Enge, Minna Taipale, Auli Karhu, Lauri A Aaltonen, and Jussi Taipale. 2012. “Mice Lacking a Myc Enhancer That Includes Human Snp Rs6983267 Are Resistant to Intestinal Tumors.” <em>Science</em> 338 (6112). American Association for the Advancement of Science: 1360–3.</p>
+</div>
+<div id="ref-yao2015inferring">
+<p>Yao, L, H Shen, PW Laird, PJ Farnham, and BP Berman. 2015. “Inferring Regulatory Element Landscapes and Transcription Factor Networks from Cancer Methylomes.” <em>Genome Biology</em> 16 (1): 105–5.</p>
+</div>
+<div id="ref-yao2015demystifying">
+<p>Yao, Lijing, Benjamin P Berman, and Peggy J Farnham. 2015. “Demystifying the Secret Mission of Enhancers: Linking Distal Regulatory Elements to Target Genes.” <em>Critical Reviews in Biochemistry and Molecular Biology</em> 50 (6). Taylor &amp; Francis: 550–73.</p>
+</div>
+</div>
 </div>
 </div>
 </div>

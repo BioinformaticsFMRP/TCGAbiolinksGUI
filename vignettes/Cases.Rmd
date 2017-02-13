@@ -1,10 +1,10 @@
 ---
 title: "Case studies"
-# bibliography: bibliography.bib
+bibliography: bibliography.bib
 ---
 
 
-## Case: Integration of DNA methylation and gene expression for TCGA adrenal cortical carcinoma (ACC) samples
+# Case: Integration of DNA methylation and gene expression for TCGA adrenal cortical carcinoma (ACC) samples
 
 In this case study, we downloaded DNA methylation and gene expression for TCGA adrenal cortical carcinoma (ACC) samples, executed the Differentially methylated region (DMR) analysis and Differential Expression Analysis  (DEA),  then both results were integrated in to a startburst plot.
 
@@ -14,7 +14,7 @@ In this case study, we downloaded DNA methylation and gene expression for TCGA a
 <center>**Tutorial Video:** Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples - (http://www.youtube.com/watch?v=RcXibjFanH4)
 </center>
 
-## Case: Executing ELMER analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples
+# Case: Executing ELMER analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples
 
 In this case we downloaded DNA methylation and gene expression for TCGA Kidney renal clear cell carcinoma (KIRC) samples. Then, this data is used to execute [ELMER](http://bioconductor.org/packages/ELMER/) analysis.
 

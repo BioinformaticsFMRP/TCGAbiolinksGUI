@@ -1,6 +1,6 @@
 ---
 title: "Analysis"
-# bibliography: bibliography.bib
+bibliography: bibliography.bib
 ---
 
 # Menu: Clinical analysis

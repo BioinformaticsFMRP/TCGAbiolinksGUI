@@ -393,7 +393,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="#" class="navbar-left"><img  src="/home/tiagochst/biomics/vignettes/include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
+      <a href="#" class="navbar-left"><img  src="include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
       <a class="navbar-brand" href="./">
           Introduction
       </a>
@@ -428,7 +428,7 @@ div.tocify {
 <h1><span class="header-section-number">1</span> Sub-menu: Molecular data</h1>
 <p>In this sub-menu the user will be able to search, download and prepare The NCI’s Genomic Data Commons (GDC) data for analysis. The first step is to search for GDC open data access with the Advanced search box. The search results will be summarized in plots in the center of the screen. The second step is to download and prepare the data into a R object to be used in the analysis steps.</p>
 <div class="figure">
-<img src="/home/tiagochst/biomics/vignettes/tcgasearch.png" alt="GDC search menu: Main window." />
+<img src="tcgasearch.png" alt="GDC search menu: Main window." />
 <p class="caption">GDC search menu: Main window.</p>
 </div>
 <div id="useful-information" class="section level2">
@@ -579,7 +579,7 @@ clinical.index &lt;-<span class="st"> </span><span class="kw">GDCquery_clinic</s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get XML files and parse them</span>
 recurrent.samples &lt;-<span class="st"> </span><span class="kw">GDCquery</span>(<span class="dt">project =</span> <span class="st">&quot;TCGA-LIHC&quot;</span>,
                              <span class="dt">data.category =</span> <span class="st">&quot;Transcriptome Profiling&quot;</span>,
-                             <span class="dt">data.type =</span> <span class="st">&quot;Gene Expression Quantification&quot;</span>, 
+                             <span class="dt">data.type =</span> <span class="st">&quot;Gene Expression Quantification&quot;</span>,
                              <span class="dt">workflow.type =</span> <span class="st">&quot;HTSeq - Counts&quot;</span>,
                              <span class="dt">sample.type =</span>  <span class="st">&quot;Recurrent Solid Tumor&quot;</span>)$results[[<span class="dv">1</span>]] %&gt;%<span class="st"> </span><span class="kw">select</span>(cases)
 recurrent.patients &lt;-<span class="st"> </span><span class="kw">substr</span>(recurrent.samples$cases,<span class="dv">1</span>,<span class="dv">12</span>)

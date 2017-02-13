@@ -1,6 +1,6 @@
 ---
 title: "Integrative analysis"
-# bibliography: bibliography.bib
+bibliography: bibliography.bib
 ---
 
 # Menu: Starburst plot
