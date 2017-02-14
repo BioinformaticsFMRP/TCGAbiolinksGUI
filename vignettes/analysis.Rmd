@@ -137,8 +137,8 @@ Select a summarized Experiment object (rda)
 
 Using the `TCGAanalyze_Normalization` function you can normalize mRNA transcripts and miRNA, using EDASeq package. 
 This function uses Within-lane normalization procedures to adjust for GC-content effect (or other gene-level effects) on read counts: 
-loess robust local regression, global-scaling, and full-quantile normalization [@ref7] and between-lane normalization procedures 
-to adjust for distributional differences between lanes (e.g., sequencing depth): global-scaling and full-quantile normalization [@ref6].
+loess robust local regression, global-scaling, and full-quantile normalization [@risso2011gc] and between-lane normalization procedures 
+to adjust for distributional differences between lanes (e.g., sequencing depth): global-scaling and full-quantile normalization [@bullard2010evaluation].
 
 * Normalization of genes? 
 * Normalization of genes method? Options: gcContent, geneLength
@@ -161,7 +161,7 @@ to adjust for distributional differences between lanes (e.g., sequencing depth):
 ### Pathway graphs
 
 * DEA result: Select csv file create by the analysis.
-* Pathway ID: plot results in a pathway graphs. See bioconductor [Pathview](http://bioconductor.org/packages/pathview/) [@ref5] package.
+* Pathway ID: plot results in a pathway graphs. See bioconductor [Pathview](http://bioconductor.org/packages/pathview/) [@luo2013pathview] package.
 
 ![Pathway graphs output.](pathview.png)
 
@@ -244,8 +244,8 @@ Change the size of the plot and the number of bars to plot
 ### Sub-menu: Network inference
 
 Inference of gene regulatory networks. Starting with the set of differentially expressed genes, we infer gene regulatory networks using the following 
-state-of-the art inference algorithms: ARACNE[@ref35], CLR[@ref36], MRNET[@ref37] and C3NET[@ref38]. These methods are based on mutual inference and use different heuristics 
-to infer the edges in the network. These methods have been made available via Bioconductor/CRAN packages (MINET[@ref39] and c3net[@ref38], respectively).
+state-of-the art inference algorithms: ARACNE[@Mar06], CLR[@faith2007large], MRNET[@meyer2007information] and C3NET[@altay2010inferring]. These methods are based on mutual inference and use different heuristics 
+to infer the edges in the network. These methods have been made available via Bioconductor/CRAN packages (MINET[@Meyer2008] and c3net[@altay2010inferring], respectively).
 
 # Menu: Genomic analysis
 

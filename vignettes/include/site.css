@@ -5,9 +5,6 @@ h1 .header-section-number::after {
   content: ".";
 }
 
-@import url("//fonts.googleapis.com/css?family=Lobster|Cabin:400,700");
-@import url("//fonts.googleapis.com/css?family=Nunito|Cabin:400,700");
-
 @media only screen and (max-width: 1540px) {
     body {
        zoom: 0.9;  /* all browsers */
@@ -18,12 +15,6 @@ img {
     margin-top: 0.3cm;
     margin-right: 0.3cm;
 }
-h1 {
-    font-family: 'Lobster', cursive;
-    font-weight: 500;
-    line-height: 1.1;
-    color: #1D3AAD;
-}
 body {
     background-color: #fff;
 }
@@ -31,15 +22,28 @@ body {
     color: rgba(255, 255, 255, 0.15);
 }
 
-.main-header .logo {
-    /* font-family: 'Lobster', cursive;*/
-    font-family: 'Raleway',sans-serif;
-    font-weight: bold;
-    font-size: 24px;
-    /*color: red*/
-}
-
-
 .navbar  {
     background: #000080
+}
+
+h1.title {
+    font-size: 30px;
+}
+
+h1 {
+    font-size: 28px;
+}
+
+h3 {
+    font-size: 22px;
+}
+
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+    color: #e74c3c;
+    background-color: transparent;
+}
+
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
+    color: #e74c3c;
+    background-color: transparent;
 }
