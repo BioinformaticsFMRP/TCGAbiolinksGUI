@@ -1,5 +1,10 @@
 ---
 bibliography: bibliography.bib
+date: "`r BiocStyle::doc_date()`"
+vignette: >
+  %\VignetteIndexEntry{"TCGAbiolinksGUI: Data menu"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
