@@ -1,6 +1,10 @@
 ---
-title: "Introduction"
-# bibliography: bibliography.bib
+bibliography: bibliography.bib
+date: "`r BiocStyle::doc_date()`"
+vignette: >
+  %\VignetteIndexEntry{"TCGAbiolinksGUI: Introduction"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 # Introduction
@@ -115,3 +119,5 @@ library(TCGAbiolinksGUI)
 ```{r}
 sessionInfo()
 ```
+
+# References
