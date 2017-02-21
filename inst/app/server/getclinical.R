@@ -66,6 +66,7 @@ observeEvent(input$tcgaClinicalBt, {
                 }
                 if (isolate({input$saveClinicalCsv})){
                     if(grepl("biospecimen",type, ignore.case = TRUE))  tbl$portions <- NULL
+                    if(grepl("clinical",type, ignore.case = TRUE))   tbl$treatments <- NULL
                     write_csv(tbl,path = gsub("rda","csv",filename))
                     save.message <-  paste0(save.message,"File created: ",gsub("rda","csv",filename))
                 }
