@@ -1,8 +1,9 @@
 tabItem(tabName = "tcgaSearch",
         fluidRow(
             column(8, bsAlert("tcgasearchmessage"),
-                   bsCollapse(id = "collapseTCGA", open = "GDC search results",
-                              bsCollapsePanel("GDC search results", htmlOutput("tcgaview"), style = "default")
+                   bsCollapse(id = "collapseTCGA", open = "GDC search results: Summary",
+                              bsCollapsePanel("GDC search results: Summary", htmlOutput("tcgaview"), style = "default"),
+                              bsCollapsePanel("GDC search results: Results", dataTableOutput('queryresutlstable'), style = "default")
                    )),
             column(4,
                    box(title = "Molecular data search",width = NULL,
