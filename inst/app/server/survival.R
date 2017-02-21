@@ -107,6 +107,12 @@ observeEvent(input$survivalplotgroup , {
         updateTextInput(session, "survivalplotLegend", value = isolate({input$survivalplotgroup}))
     }
 })
+observeEvent(input$survivalGene , {
+    if(isolate({input$survivalGene}) != "") {
+        updateTextInput(session, "survivalplotLegend", value = paste0("Expression of ",isolate({input$survivalGene})))
+    }
+})
+
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 # Plot
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
