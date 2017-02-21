@@ -152,9 +152,35 @@ observeEvent(input$tcgaSearchBt, {
                               ifelse(isolate({input$tcgaDatabase}),"hg19","hg38"),
                               sep = "_"),".rda"))
     updateCollapse(session, "collapseTCGA", open = "GDC search results")
+
+    output$queryresutlstable <- renderDataTable({
+        results <- getResults(query.result()[[1]])
+        if(!is.null(results)) return(as.data.frame(results))
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+    )
+
     output$tcgaview <- renderGvis({
         closeAlert(session,"tcgaAlert")
-        results <- query.result()[[1]]$results[[1]]
+        results <- getResults(query.result()[[1]])
         clinical <- query.result()[[2]]
         if(any(duplicated(results$cases)))
             createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
@@ -382,4 +408,3 @@ observe({
     updateSelectizeInput(session, 'tcgaDataCategoryFilter', choices =  getDataCategory(as.logical(input$tcgaDatabase)), server = TRUE)
     updateSelectizeInput(session, 'gisticGenes', choices = as.character(sort(TCGAbiolinks:::gene.list)), server = TRUE)
 })
-
