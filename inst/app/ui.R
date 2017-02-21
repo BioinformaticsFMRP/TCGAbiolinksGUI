@@ -162,6 +162,7 @@ body <-  dashboardBody(
         source(file.path(ui.path, "volcano.R"),  local = TRUE)$value,
         source(file.path(ui.path, "heatmap.R"),  local = TRUE)$value,
         source(file.path(ui.path, "dmr.R"),  local = TRUE)$value,
+        source(file.path(ui.path, "meanMet.R"),  local = TRUE)$value,
         source(file.path(ui.path, "ea.R"),  local = TRUE)$value,
         source(file.path(ui.path, "survival.R"),  local = TRUE)$value,
         source(file.path(ui.path, "dea.R"),  local = TRUE)$value,
