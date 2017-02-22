@@ -1,7 +1,7 @@
 ---
 title: "TCGAbiolinksGUI: A Graphical User Interface to analyze cancer molecular and clinical data"
 author: "Tiago Chedraoui Silva, Antonio Colaprico, Catharina Olsen,  Gianluca Bontempi, Michele Ceccarelli, Benjamin Berman, Houtan Noushmehr"
-date: "`r doc_date()`"
+date: "`r BiocStyle::doc_date()`"
 vignette: >
   %\VignetteIndexEntry{"TCGAbiolinksGUI: A Graphical User Interface to analyze cancer molecular and clinical data"}
   %\VignetteEngine{knitr::rmarkdown}
