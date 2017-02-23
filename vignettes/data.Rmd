@@ -14,6 +14,12 @@ library(dplyr)
 library(DT)
 ```
 
+# Detailed explanation
+
+For a detailed manual for this section please access this link:
+
+1. [Data menu manual](https://drive.google.com/open?id=0B0-8N2fjttG-WVdJVXVqNUs5bnM)
+
 # Sub-menu: Molecular data
 
 In this sub-menu the user will be able to search, download and prepare The NCI's Genomic Data Commons (GDC)  data for analysis.

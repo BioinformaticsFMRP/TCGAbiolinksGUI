@@ -7,6 +7,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+# Detailed explanation
+
+For a detailed manual for this section please access these links:
+
+1. [Starburst menu manual](https://drive.google.com/open?id=0B0-8N2fjttG-RzU1T1VQU2dQcXM)
+2. [ELMER menu manual](https://drive.google.com/open?id=0B0-8N2fjttG-TDg1czNPUGUwTG8)
+
 # Menu: Starburst plot
 
 ![Starburst plot menu: Main window.](starburst.png)
