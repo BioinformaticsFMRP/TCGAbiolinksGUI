@@ -57,7 +57,8 @@ To run R from the command line:
 ```{bash, eval = FALSE}
 docker run -ti tiagochst/tcgabiolinksgui R
 ```
-To run RStudio Server: 
+
+To run RStudio Server (user: rstudio, password: rstudio): 
 ```{bash, eval = FALSE}
 docker run -p 8787:8787 tiagochst/tcgabiolinksgui
 ```
