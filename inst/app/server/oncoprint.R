@@ -275,8 +275,6 @@ observeEvent(input$oncoprintPlot , {
             createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
                         content = "Please select a file", append = TRUE)
             return(NULL)
-        } else{
-            closeAlert(session, "oncoAlert")
         }
 
         if(!is.null(annotation)){

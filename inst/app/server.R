@@ -15,6 +15,7 @@ suppressPackageStartupMessages({
     library(data.table)
     library(grid)
     options(shiny.maxRequestSize=-1) # Remove limit of upload
+    options(shiny.deprecation.messages=FALSE)
 })
 
 getDataCategory <- function(legacy){
