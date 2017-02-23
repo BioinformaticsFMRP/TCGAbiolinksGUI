@@ -426,7 +426,7 @@ div.tocify {
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <p>TCGAbiolinksGUI was created to help users more comfortable with graphical user interfaces (GUI) to search, download and analyze Cancer data. It offers a graphical user interface to the R/Bioconductor package <a href="http://bioconductor.org/packages/TCGAbiolinks/">TCGAbiolinks</a> <span class="citation">(A. Colaprico et al. 2016)</span>, which is able to access The National Cancer Institute (NCI) Genomic Data Commons (GDC) thorough its<br />
 <a href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api">GDC Application Programming Interface (API)</a>. Additional packages from Bioconductor are included, such as <a href="http://bioconductor.org/packages/ComplexHeatmap/">ComplexHeatmap</a> package <span class="citation">(Gu, Eils, and Schlesner 2016)</span> to aid in visualizing the data, <a href="http://bioconductor.org/packages/ELMER/">ELMER</a> <span class="citation">(Yao et al. 2015)</span> to identify regulatory enhancers using gene expression + DNA methylation data + motif analysis and <a href="http://bioconductor.org/packages/pathview/">Pathview</a> <span class="citation">(Luo and Brouwer 2013)</span> for pathway-based data integration and visualization.</p>
-<p>The GUI was created using <a href="https://shiny.rstudio.com/">Shiny</a>, a Web Application Framework for R, and uses several packages to provide advanced features that can enhance Shiny apps, such as <a href="https://github.com/daattali/shinyjs">shinyjs</a> to add JavaScript actions for the app, <a href="https://github.com/rstudio/shinydashboard">shinydashboard</a> to add dashboards and <a href="https://github.com/thomasp85/shinyFiles">shinyFiles</a> to provide an API for client side access to the server file system. A running version of the GUI is found in (shinyapps.io)[<a href="https://tcgabiolinksgui.shinyapps.io/tcgabiolinks/" class="uri">https://tcgabiolinksgui.shinyapps.io/tcgabiolinks/</a>]</p>
+<p>The GUI was created using <a href="https://shiny.rstudio.com/">Shiny</a>, a Web Application Framework for R, and uses several packages to provide advanced features that can enhance Shiny apps, such as <a href="https://github.com/daattali/shinyjs">shinyjs</a> to add JavaScript actions for the app, <a href="https://github.com/rstudio/shinydashboard">shinydashboard</a> to add dashboards and <a href="https://github.com/thomasp85/shinyFiles">shinyFiles</a> to provide an API for client side access to the server file system. A running version of the GUI is found in (shinyapps.io)[<a href="https://tcgabiolinksgui.shinyapps.io/demo/" class="uri">https://tcgabiolinksgui.shinyapps.io/demo/</a>]</p>
 </div>
 <div id="starting-with-tcgabiolinksgui" class="section level1">
 <h1><span class="header-section-number">2</span> Starting with TCGAbiolinksGUI</h1>
@@ -443,26 +443,37 @@ deps &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&q
 for(pkg in deps)  if (!pkg %in%<span class="st"> </span><span class="kw">installed.packages</span>())  <span class="kw">install.packages</span>(pkg,<span class="dt">dependencies =</span> <span class="ot">TRUE</span>)
 devtools::<span class="kw">install_github</span>(<span class="st">&quot;BioinformaticsFMRP/TCGAbiolinksGUI&quot;</span>)</code></pre></div>
 </div>
+<div id="docker-image" class="section level2">
+<h2><span class="header-section-number">2.2</span> Docker image</h2>
+<p>TCGAbiolinksGUI is available as Docker image, which can be easily run on Mac OS, Windows and Linux systems. The image can be obtained from Docker Hub: <a href="https://hub.docker.com/r/tiagochst/tcgabiolinksgui/" class="uri">https://hub.docker.com/r/tiagochst/tcgabiolinksgui/</a></p>
+<p>Download image:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">docker</span> pull tiagochst/tcgabiolinksgui</code></pre></div>
+<p>To run R from the command line:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">docker</span> run -ti tiagochst/tcgabiolinksgui R</code></pre></div>
+<p>To run RStudio Server:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">docker</span> run -p 8787:8787 tiagochst/tcgabiolinksgui</code></pre></div>
+<p>For more information please check: <a href="https://docs.docker.com/" class="uri">https://docs.docker.com/</a></p>
+</div>
 <div id="quick-start" class="section level2">
-<h2><span class="header-section-number">2.2</span> Quick start</h2>
+<h2><span class="header-section-number">2.3</span> Quick start</h2>
 <p>The following commands should be used to start the graphical user interface.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(TCGAbiolinksGUI)
 <span class="kw">TCGAbiolinksGUI</span>()</code></pre></div>
 </div>
 <div id="video-tutorials" class="section level2">
-<h2><span class="header-section-number">2.3</span> Video tutorials</h2>
+<h2><span class="header-section-number">2.4</span> Video tutorials</h2>
 <p>To facilitate the use of this package, we have created some tutorial videos demonstrating the tool. Some sections have video tutorials that if clicked will redirect to the video on youtube. For the complete list of videos, please check this <a href="https://www.youtube.com/playlist?list=PLoDzAKMJh15m40f7OqOLAW0nJwkVStJIJ">youtube list</a>.</p>
 </div>
 <div id="pdf-tutorials" class="section level2">
-<h2><span class="header-section-number">2.4</span> PDF tutorials</h2>
+<h2><span class="header-section-number">2.5</span> PDF tutorials</h2>
 <p>For each section we created some PDFs with detailing the steps of each section: <a href="https://drive.google.com/drive/folders/0B0-8N2fjttG-Q25ldVVmUTVOTk0?usp=sharing">Link to folder with PDFs</a></p>
 </div>
 <div id="question-and-issues" class="section level2">
-<h2><span class="header-section-number">2.5</span> Question and issues</h2>
+<h2><span class="header-section-number">2.6</span> Question and issues</h2>
 <p>Please use <a href="https://github.com/BioinformaticsFMRP/TCGAbiolinksGUI/issues">Github issues</a> if you want to file bug reports or feature requests.</p>
 </div>
 <div id="data-input-summary" class="section level2">
-<h2><span class="header-section-number">2.6</span> Data input summary</h2>
+<h2><span class="header-section-number">2.7</span> Data input summary</h2>
 <table>
 <colgroup>
 <col width="14%" />
