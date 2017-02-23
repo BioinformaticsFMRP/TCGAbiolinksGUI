@@ -19,7 +19,7 @@ Additional packages from Bioconductor are included, such as [ComplexHeatmap](htt
 The GUI was created using [Shiny](https://shiny.rstudio.com/), a Web Application Framework for R, and uses
 several packages to provide advanced features that can enhance Shiny apps, such as [shinyjs](https://github.com/daattali/shinyjs) to add JavaScript actions for the app,
 [shinydashboard](https://github.com/rstudio/shinydashboard) to add dashboards and [shinyFiles](https://github.com/thomasp85/shinyFiles) to provide an API for client side access to the server file system. 
-A running version of the GUI is found in (shinyapps.io)[https://tcgabiolinksgui.shinyapps.io/tcgabiolinks/]
+A running version of the GUI is found in (shinyapps.io)[https://tcgabiolinksgui.shinyapps.io/demo/]
 
 # Starting with TCGAbiolinksGUI 
 ## Installation 

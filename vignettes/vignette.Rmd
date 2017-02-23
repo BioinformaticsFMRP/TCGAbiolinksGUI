@@ -498,7 +498,7 @@ for(pkg in deps)  if (!pkg %in% installed.packages())  install.packages(pkg,depe
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
-A running version of the GUI is found in (shinyapps.io)[https://tcgabiolinksgui.shinyapps.io/tcgabiolinks/]
+A running version of the GUI is found in (shinyapps.io)[https://tcgabiolinksgui.shinyapps.io/demo/]
 
 ## Quick start
 

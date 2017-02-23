@@ -58,7 +58,6 @@ names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
 
 inputTextarea <- function(inputId, value="", nrows, ncols) {
     tagList(
-        singleton(tags$head(tags$script(src = "textarea.js"))),
         tags$textarea(id = inputId,
                       class = "inputtextarea",
                       rows = nrows,
@@ -118,7 +117,7 @@ sidebar <-  dashboardSidebar(
         menuItem("Configuration", tabName = "config", icon = icon("cogs")),
         tags$hr(class="lineDoc"),
         menuItem("Tutorial/Vignettes", icon = icon("book"),
-                 menuSubItem("TCGAbiolinksGUI Manual" , href = "https://github.com/BioinformaticsFMRP/TCGAbiolinksGUI/blob/TCGAbiolinksGUI/vignettes/vignette.Rmd", icon = icon("external-link")),
+                 menuSubItem("TCGAbiolinksGUI Manual" , href = "http://bioinformaticsfmrp.github.io/TCGAbiolinksGUI/", icon = icon("external-link")),
                  menuSubItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("external-link")),
                  menuSubItem("ELMER Manual" , href = "https://www.bioconductor.org/packages/3.3/bioc/vignettes/ELMER/inst/doc/vignettes.pdf", icon = icon("external-link"))
         ),
@@ -147,7 +146,6 @@ body <-  dashboardBody(
                                                      'tabletools/2.2.4/js/dat',
                                                      'aTables.tableTools.min.js'),
                                         type = 'text/javascript'))),
-        singleton(tags$head(singleton(tags$script(src = 'events.js')))),
         singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css",
                                       href = "TCGAbiolinksGUI.css")))
     ),
