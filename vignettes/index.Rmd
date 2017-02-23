@@ -22,6 +22,7 @@ several packages to provide advanced features that can enhance Shiny apps, such 
 A running version of the GUI is found in (shinyapps.io)[https://tcgabiolinksgui.shinyapps.io/demo/]
 
 # Starting with TCGAbiolinksGUI 
+
 ## Installation 
 
 To install the package from the (Bioconductor repository)[http://bioconductor.org/packages/TCGAbiolinksGUI/] please use the following
@@ -43,6 +44,25 @@ for(pkg in deps)  if (!pkg %in% installed.packages())  install.packages(pkg,depe
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
+## Docker image
+
+TCGAbiolinksGUI is available as Docker image, which can be easily run on Mac OS, Windows and Linux systems. The image can be obtained from Docker Hub: https://hub.docker.com/r/tiagochst/tcgabiolinksgui/
+
+Download image:
+```{bash, eval = FALSE}
+docker pull tiagochst/tcgabiolinksgui
+```
+
+To run R from the command line:
+```{bash, eval = FALSE}
+docker run -ti tiagochst/tcgabiolinksgui R
+```
+To run RStudio Server: 
+```{bash, eval = FALSE}
+docker run -p 8787:8787 tiagochst/tcgabiolinksgui
+```
+
+For more information please check: https://docs.docker.com/
 
 ## Quick start
 
