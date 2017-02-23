@@ -10,6 +10,7 @@
 
 
 
+<meta name="date" content="2017-02-23" />
 
 <title></title>
 
@@ -348,7 +349,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="#" class="navbar-left"><img  src="include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
+      <a href="#" class="navbar-left"><img  src="include/logo.png" height="42" width="250"vspace=10 hspace=10"></a>
       <a class="navbar-brand" href="./">
           Introduction
       </a>
@@ -378,14 +379,22 @@ div.tocify {
 </div>
 
 
+<div id="detailed-explanation" class="section level1">
+<h1><span class="header-section-number">1</span> Detailed explanation</h1>
+<p>For a detailed manual for this section please access these links:</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://drive.google.com/open?id=0B0-8N2fjttG-RzU1T1VQU2dQcXM">Starburst menu manual</a></li>
+<li><a href="https://drive.google.com/open?id=0B0-8N2fjttG-TDg1czNPUGUwTG8">ELMER menu manual</a></li>
+</ol>
+</div>
 <div id="menu-starburst-plot" class="section level1">
-<h1><span class="header-section-number">1</span> Menu: Starburst plot</h1>
+<h1><span class="header-section-number">2</span> Menu: Starburst plot</h1>
 <div class="figure">
-<img src="starburst.png" alt="Starburst plot menu: Main window." />
+<img src="/home/tiagochst/biomics/vignettes/starburst.png" alt="Starburst plot menu: Main window." />
 <p class="caption">Starburst plot menu: Main window.</p>
 </div>
 <div id="data" class="section level2">
-<h2><span class="header-section-number">1.1</span> Data</h2>
+<h2><span class="header-section-number">2.1</span> Data</h2>
 <p>Expected input is a csv file with the following pattern:</p>
 <ul>
 <li>DEA result: DEA_results_Group_subgruop1_subgroup2_pcut_0.01_logFC.cut_2.csv</li>
@@ -393,7 +402,7 @@ div.tocify {
 </ul>
 </div>
 <div id="thresholds-control" class="section level2">
-<h2><span class="header-section-number">1.2</span> Thresholds control</h2>
+<h2><span class="header-section-number">2.2</span> Thresholds control</h2>
 <p>The possible thresholds controls are:</p>
 <ul>
 <li>Log FC threshold: gene expression Log2FC threshold</li>
@@ -404,7 +413,7 @@ div.tocify {
 <p>The options Mean DNA methylation difference threshold and Log FC threshold are used to circle genes which pass the cut-offs previously defined (eg. mean methylation or FDR).</p>
 </div>
 <div id="highlight-control" class="section level2">
-<h2><span class="header-section-number">1.3</span> Highlight control</h2>
+<h2><span class="header-section-number">2.3</span> Highlight control</h2>
 <p>The possible highlight controls are:</p>
 <ul>
 <li>Show gene names: show names of significant genes</li>
@@ -413,13 +422,13 @@ div.tocify {
 </ul>
 </div>
 <div id="other-option" class="section level2">
-<h2><span class="header-section-number">1.4</span> Other option</h2>
+<h2><span class="header-section-number">2.4</span> Other option</h2>
 <ul>
 <li>Save result: save results in a csv file</li>
 </ul>
 </div>
 <div id="tutorial-video" class="section level2">
-<h2><span class="header-section-number">1.5</span> Tutorial video:</h2>
+<h2><span class="header-section-number">2.5</span> Tutorial video:</h2>
 <center>
 <p><a href="http://www.youtube.com/watch?v=_ec6Sij4MBc" title="Tutorial video: Integrating DMR analysis and DEA results to be visualized into a starburst plot - (http://www.youtube.com/watch?v=_ec6Sij4MBc)"><img src="http://img.youtube.com/vi/_ec6Sij4MBc/0.jpg" alt="IMAGE ALT TEXT" /></a></p>
 <strong>Tutorial Video:</strong> Integrating DMR analysis and DEA results to be visualized into a starburst plot - (<a href="http://www.youtube.com/watch?v=_ec6Sij4MBc" class="uri">http://www.youtube.com/watch?v=_ec6Sij4MBc</a>)
@@ -427,10 +436,10 @@ div.tocify {
 </div>
 </div>
 <div id="menu-elmer-enhancer-linking-by-methylationexpression-relationship" class="section level1">
-<h1><span class="header-section-number">2</span> Menu: ELMER (Enhancer Linking by Methylation/Expression Relationship)</h1>
+<h1><span class="header-section-number">3</span> Menu: ELMER (Enhancer Linking by Methylation/Expression Relationship)</h1>
 <p>This sub-menu will help the user to perform an integrative analysis between DNA methylation and Gene expression using the R/Bioconductor ELMER package <span class="citation">(L Yao et al. 2015)</span>.</p>
 <div id="introduction" class="section level2">
-<h2><span class="header-section-number">2.1</span> Introduction</h2>
+<h2><span class="header-section-number">3.1</span> Introduction</h2>
 <p>Recently, many studies suggest that enhancers play a major role as regulators of cell-specific phenotypes leading to alteration in transcriptomes realated to diseases <span class="citation">(Giorgio et al. 2015; Gröschel et al. 2014; Sur et al. 2012; Lijing Yao, Berman, and Farnham 2015)</span>. In order to investigate regulatory enhancers that can be located at long distances upstream or downstream of target genes Bioconductor offer the <a href="http://bioconductor.org/packages/ELMER/">Enhancer Linking by Methylation/Expression Relationship (ELMER)</a> package. This package is designed to combine DNA methylation and gene expression data from human tissues to infer multi-level cis-regulatory networks. It uses DNA methylation to identify enhancers and correlates their state with expression of nearby genes to identify one or more transcriptional targets. Transcription factor (TF) binding site analysis of enhancers is coupled with expression analysis of all TFs to infer upstream regulators. This package can be easily applied to TCGA public available cancer data sets and custom DNA methylation and gene expression data sets <span class="citation">(L Yao et al. 2015)</span>.</p>
 <p><a href="http://bioconductor.org/packages/ELMER/">ELMER</a> analysis have 5 main steps:</p>
 <ol style="list-style-type: decimal">
@@ -442,10 +451,10 @@ div.tocify {
 </ol>
 </div>
 <div id="sub-menu-elmer-analysis" class="section level2">
-<h2><span class="header-section-number">2.2</span> Sub-menu ELMER: analysis</h2>
+<h2><span class="header-section-number">3.2</span> Sub-menu ELMER: analysis</h2>
 </div>
 <div id="data-create-mee" class="section level2">
-<h2><span class="header-section-number">2.3</span> Data: Create mee</h2>
+<h2><span class="header-section-number">3.3</span> Data: Create mee</h2>
 <p>The <a href="http://bioconductor.org/packages/ELMER/">ELMER</a> input is a mee object that contains a DNA methylation matrix, an gene expression matrix, a probe information GRanges, the gene information GRanges and a data frame summarizing the data. It should be highlighted that samples without both the gene expression and DNA methylation data will be removed from the mee object.</p>
 <p>By default the function <em>fetch.mee</em> that is used to create the mee object will separate the samples into two groups, the control group (normal samples) and the experiment group (tumor samples), but the user can relabel the samples to compare different groups.</p>
 <p>The following steps are required:</p>
@@ -459,15 +468,15 @@ div.tocify {
 </ul>
 <p>Also, for RNA expression data it will take the log2(expression + 1) of the expression matrix in order to linearize the relation between DNA methylation and expression.</p>
 <div class="figure">
-<img src="elmer.png" alt="ELMER menu: Main window." />
+<img src="/home/tiagochst/biomics/vignettes/elmer.png" alt="ELMER menu: Main window." />
 <p class="caption">ELMER menu: Main window.</p>
 </div>
 <div id="data-select-mee" class="section level3">
-<h3><span class="header-section-number">2.3.1</span> Data: Select mee</h3>
+<h3><span class="header-section-number">3.3.1</span> Data: Select mee</h3>
 <p>Select the R object (rda) file with a mee object created in the previous step.</p>
 </div>
 <div id="analysis-parameters" class="section level3">
-<h3><span class="header-section-number">2.3.2</span> Analysis parameters</h3>
+<h3><span class="header-section-number">3.3.2</span> Analysis parameters</h3>
 <p>After preparing the data into a mee object, we will execute the five <a href="http://bioconductor.org/packages/ELMER/">ELMER</a> steps for both the hypo (distal enhancer probes hypomethylated in the experiment group) and hyper (distal enhancer probes hypermethylated in the experiment group) direction.</p>
 <p>This box has all the available options for ELMER functions. Please see the <a href="http://bioconductor.org/packages/release/bioc/vignettes/ELMER/inst/doc/vignettes.pdf">ELMER vignette</a>.</p>
 <p>Also, a description of the data used by ELMER (such as the distal enhacer probes) is found in the <a href="https://bioconductor.org/packages/release/data/experiment/vignettes/ELMER.data/inst/doc/vignettes.pdf">ELMER.data</a> vignette.</p>
@@ -477,17 +486,17 @@ div.tocify {
 </div>
 </div>
 <div id="sub-menu-elmer-visualize-results" class="section level2">
-<h2><span class="header-section-number">2.4</span> Sub-menu ELMER: Visualize results</h2>
+<h2><span class="header-section-number">3.4</span> Sub-menu ELMER: Visualize results</h2>
 <div id="data-1" class="section level3">
-<h3><span class="header-section-number">2.4.1</span> Data</h3>
+<h3><span class="header-section-number">3.4.1</span> Data</h3>
 <p>Select the R object (rda) file with ELMER results created in the analysis step (the one with prefix ELMER_results )</p>
 </div>
 <div id="plot" class="section level3">
-<h3><span class="header-section-number">2.4.2</span> Plot</h3>
+<h3><span class="header-section-number">3.4.2</span> Plot</h3>
 <p>Select ELMER plot. To access the plots, both the results and mee object must be selected. Please see <a href="http://bioconductor.org/packages/release/bioc/vignettes/ELMER/inst/doc/vignettes.pdf">ELMER vignette</a> for more details.</p>
 </div>
 <div id="results-table" class="section level3">
-<h3><span class="header-section-number">2.4.3</span> Results table</h3>
+<h3><span class="header-section-number">3.4.3</span> Results table</h3>
 <p>Select the ELMER results from the table. A results object should be selected.</p>
 <div id="refs" class="references">
 <div id="ref-giorgio2015large">

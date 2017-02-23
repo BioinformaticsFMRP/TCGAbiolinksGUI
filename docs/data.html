@@ -10,6 +10,7 @@
 
 
 
+<meta name="date" content="2017-02-23" />
 
 <title></title>
 
@@ -396,7 +397,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="#" class="navbar-left"><img  src="include/symbol.png" height="42" width="40"vspace=10 hspace=10"></a>
+      <a href="#" class="navbar-left"><img  src="include/logo.png" height="42" width="250"vspace=10 hspace=10"></a>
       <a class="navbar-brand" href="./">
           Introduction
       </a>
@@ -426,15 +427,22 @@ div.tocify {
 </div>
 
 
+<div id="detailed-explanation" class="section level1">
+<h1><span class="header-section-number">1</span> Detailed explanation</h1>
+<p>For a detailed manual for this section please access this link:</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://drive.google.com/open?id=0B0-8N2fjttG-WVdJVXVqNUs5bnM">Data menu manual</a></li>
+</ol>
+</div>
 <div id="sub-menu-molecular-data" class="section level1">
-<h1><span class="header-section-number">1</span> Sub-menu: Molecular data</h1>
+<h1><span class="header-section-number">2</span> Sub-menu: Molecular data</h1>
 <p>In this sub-menu the user will be able to search, download and prepare The NCI’s Genomic Data Commons (GDC) data for analysis. The first step is to search for GDC open data access with the Advanced search box. The search results will be summarized in plots in the center of the screen. The second step is to download and prepare the data into a R object to be used in the analysis steps.</p>
 <div class="figure">
-<img src="tcgasearch.png" alt="GDC search menu: Main window." />
+<img src="/home/tiagochst/biomics/vignettes/tcgasearch.png" alt="GDC search menu: Main window." />
 <p class="caption">GDC search menu: Main window.</p>
 </div>
 <div id="useful-information" class="section level2">
-<h2><span class="header-section-number">1.1</span> Useful information</h2>
+<h2><span class="header-section-number">2.1</span> Useful information</h2>
 <div class="panel panel-info">
 <div class="panel-heading">
 Different sources: Legacy vs Harmonized
@@ -460,7 +468,7 @@ Understanding the barcode
 </div>
 </div>
 <div id="advanced-search-box" class="section level2">
-<h2><span class="header-section-number">1.2</span> Advanced search box</h2>
+<h2><span class="header-section-number">2.2</span> Advanced search box</h2>
 <p>The following filters are available to select the data:</p>
 <ul>
 <li>Database</li>
@@ -484,7 +492,7 @@ Repeated cases (barcodes)
 </div>
 </div>
 <div id="download-prepare-box" class="section level2">
-<h2><span class="header-section-number">1.3</span> Download &amp; Prepare box</h2>
+<h2><span class="header-section-number">2.3</span> Download &amp; Prepare box</h2>
 <p>After the search step, the user can download the data and prepare it into an R object. The data can be prepared into one of two formats:</p>
 <ul>
 <li><a href="http://www.nature.com/nmeth/journal/v12/n2/abs/nmeth.3252.html">SummarizedExperiment</a> <span class="citation">(Huber et al. 2015)</span>: An R object that contains the sample information matrix (clinical and subtype information), the assay matrix (i.e DNA methylation beta-values), the features matrix (i.e information for each probe in the DNA methylation assay mamtrix).</li>
@@ -495,33 +503,33 @@ Repeated cases (barcodes)
 </div>
 </div>
 <div id="sub-menu-subtype-data" class="section level1">
-<h1><span class="header-section-number">2</span> Sub-menu: Subtype data</h1>
+<h1><span class="header-section-number">3</span> Sub-menu: Subtype data</h1>
 <p>The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-wide studies of various diseases. We have added some of the subtypes defined by these reports in our package.</p>
 <ul>
-<li>BRCA <span class="citation">(C. G. A. Network and others 2012c)</span></li>
-<li>COAD <span class="citation">(C. G. A. Network and others 2012a)</span></li>
-<li>GBM <span class="citation">(Ceccarelli et al. 2016)</span></li>
-<li>HNSC <span class="citation">(C. G. A. Network and others 2015a)</span></li>
-<li>KICH <span class="citation">(Davis et al. 2014)</span></li>
-<li>KIRC<span class="citation">(C. G. A. R. Network and others 2013a)</span></li>
-<li>KIRP <span class="citation">(Network and others 2016)</span></li>
-<li>LGG <span class="citation">(Ceccarelli et al. 2016)</span></li>
-<li>LUAD <span class="citation">(C. G. A. R. Network and others 2014a)</span></li>
-<li>LUSC<span class="citation">(C. G. A. R. Network and others 2012)</span></li>
-<li>PRAD<span class="citation">(C. G. A. R. Network and others 2015)</span></li>
-<li>READ <span class="citation">(C. G. A. Network and others 2012b)</span></li>
-<li>SKCM <span class="citation">(C. G. A. Network and others 2015b)</span></li>
-<li>STAD <span class="citation">(C. G. A. R. Network and others 2014a)</span></li>
-<li>THCA <span class="citation">(C. G. A. R. Network and others 2014b)</span></li>
-<li>UCEC <span class="citation">(C. G. A. R. Network and others 2013b)</span></li>
+<li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3465532/">BRCA</a><span class="citation">(C. G. A. Network and others 2012c)</span></li>
+<li><a href="http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html">COAD</a> <span class="citation">(C. G. A. Network and others 2012a)</span></li>
+<li><a href="http://dx.doi.org/10.1016/j.cell.2015.12.028">GBM</a> <span class="citation">(Ceccarelli et al. 2016)</span></li>
+<li><a href="http://www.nature.com/nature/journal/v517/n7536/abs/nature14129.html">HNSC</a> <span class="citation">(C. G. A. Network and others 2015a)</span></li>
+<li><a href="http://www.sciencedirect.com/science/article/pii/S1535610814003043">KICH</a> <span class="citation">(Davis et al. 2014)</span></li>
+<li><a href="http://www.nature.com/nature/journal/v499/n7456/abs/nature12222.html">KIRC</a><span class="citation">(C. G. A. R. Network and others 2013a)</span></li>
+<li><a href="http://www.nejm.org/doi/full/10.1056/NEJMoa1505917">KIRP</a> <span class="citation">(Network and others 2016)</span></li>
+<li><a href="http://dx.doi.org/10.1016/j.cell.2015.12.028">LGG</a><span class="citation">(Ceccarelli et al. 2016)</span></li>
+<li><a href="http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html">LUAD</a> <span class="citation">(C. G. A. R. Network and others 2014a)</span></li>
+<li><a href="http://www.nature.com/nature/journal/v489/n7417/abs/nature11404.html">LUSC</a><span class="citation">(C. G. A. R. Network and others 2012)</span></li>
+<li><a href="http://www.sciencedirect.com/science/article/pii/S0092867415013392">PRAD</a><span class="citation">(C. G. A. R. Network and others 2015)</span></li>
+<li><a href="http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html">READ</a> <span class="citation">(C. G. A. Network and others 2012b)</span></li>
+<li><a href="http://www.sciencedirect.com/science/article/pii/S0092867415006340">SKCM</a> <span class="citation">(C. G. A. Network and others 2015b)</span></li>
+<li><a href="http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html">STAD</a> <span class="citation">(C. G. A. R. Network and others 2014a)</span></li>
+<li><a href="http://www.sciencedirect.com/science/article/pii/S0092867414012380">THCA</a> <span class="citation">(C. G. A. R. Network and others 2014b)</span></li>
+<li><a href="http://www.nature.com/nature/journal/v497/n7447/abs/nature12113.html">UCEC</a> <span class="citation">(C. G. A. R. Network and others 2013b)</span></li>
 </ul>
 <p>The user can visualize the table with the information and save it as csv or R object (rda) file.</p>
 </div>
 <div id="sub-menu-clinical-data" class="section level1">
-<h1><span class="header-section-number">3</span> Sub-menu: Clinical data</h1>
+<h1><span class="header-section-number">4</span> Sub-menu: Clinical data</h1>
 <p>TCGAbiolinks has provided a few functions to search, download and parse GDC clinical data.</p>
 <div id="useful-information-1" class="section level2">
-<h2><span class="header-section-number">3.1</span> Useful information</h2>
+<h2><span class="header-section-number">4.1</span> Useful information</h2>
 <div class="panel panel-info">
 <div class="panel-heading">
 Different sources
@@ -541,7 +549,7 @@ Different sources
 </div>
 </div>
 <div id="clinical-data-inconsistencies" class="section level2">
-<h2><span class="header-section-number">3.2</span> Clinical data inconsistencies</h2>
+<h2><span class="header-section-number">4.2</span> Clinical data inconsistencies</h2>
 <div class="panel panel-danger">
 <div class="panel-heading">
 Clinical data inconsistencies
@@ -556,7 +564,7 @@ Clinical data inconsistencies
 </div>
 </div>
 <div id="vital-status-inconsistancie" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> Vital status inconsistancie</h3>
+<h3><span class="header-section-number">4.2.1</span> Vital status inconsistancie</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get XML files and parse them</span>
 clin.query &lt;-<span class="st"> </span><span class="kw">GDCquery</span>(<span class="dt">project =</span> <span class="st">&quot;TCGA-READ&quot;</span>, <span class="dt">data.category =</span> <span class="st">&quot;Clinical&quot;</span>, <span class="dt">barcode =</span> <span class="st">&quot;TCGA-F5-6702&quot;</span>)
 <span class="kw">GDCdownload</span>(clin.query)
@@ -566,18 +574,18 @@ clinical.patient.followup &lt;-<span class="st"> </span><span class="kw">GDCprep
 <span class="co"># Get indexed data</span>
 clinical.index &lt;-<span class="st"> </span><span class="kw">GDCquery_clinic</span>(<span class="st">&quot;TCGA-READ&quot;</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(clinical.patient,vital_status,days_to_death,days_to_last_followup) %&gt;%<span class="st"> </span>datatable</code></pre></div>
-<div id="htmlwidget-cd0cad71e6449a64b102" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-cd0cad71e6449a64b102">{"x":{"filter":"none","data":[["1"],["Alive"],[null],[66]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_followup\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7f3b6f1a943b3561156e" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7f3b6f1a943b3561156e">{"x":{"filter":"none","data":[["1"],["Alive"],[null],[66]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_followup\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":3},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(clinical.patient.followup, vital_status,days_to_death,days_to_last_followup) %&gt;%<span class="st"> </span>datatable</code></pre></div>
-<div id="htmlwidget-4f7c12cb76ba5872af04" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4f7c12cb76ba5872af04">{"x":{"filter":"none","data":[["1","2"],["Dead","Alive"],[869,null],[null,452]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_followup\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-10ac1e428a3bc4466468" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-10ac1e428a3bc4466468">{"x":{"filter":"none","data":[["1","2"],["Dead","Alive"],[869,null],[null,452]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_followup\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Vital status should be the same in the follow up table </span>
 <span class="kw">filter</span>(clinical.index,submitter_id ==<span class="st"> &quot;TCGA-F5-6702&quot;</span>) %&gt;%<span class="st"> </span><span class="kw">select</span>(vital_status,days_to_death,days_to_last_follow_up) %&gt;%<span class="st"> </span>datatable</code></pre></div>
-<div id="htmlwidget-f5f694af0c417b247fed" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f5f694af0c417b247fed">{"x":{"filter":"none","data":[["1"],["alive"],[869],[452]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_follow_up\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-55608c1f7907173939e0" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-55608c1f7907173939e0">{"x":{"filter":"none","data":[["1"],["alive"],[869],[452]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>vital_status\u003c/th>\n      <th>days_to_death\u003c/th>\n      <th>days_to_last_follow_up\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="progression-or-recurrence-and-grande-inconsistancie" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> Progression or Recurrence and Grande inconsistancie</h3>
+<h3><span class="header-section-number">4.2.2</span> Progression or Recurrence and Grande inconsistancie</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get XML files and parse them</span>
 recurrent.samples &lt;-<span class="st"> </span><span class="kw">GDCquery</span>(<span class="dt">project =</span> <span class="st">&quot;TCGA-LIHC&quot;</span>,
                              <span class="dt">data.category =</span> <span class="st">&quot;Transcriptome Profiling&quot;</span>,
@@ -591,16 +599,16 @@ clinical.patient &lt;-<span class="st"> </span><span class="kw">GDCprepare_clini
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get indexed data</span>
 <span class="kw">GDCquery_clinic</span>(<span class="st">&quot;TCGA-LIHC&quot;</span>) %&gt;%<span class="st"> </span><span class="kw">filter</span>(submitter_id %in%<span class="st"> </span>recurrent.patients) %&gt;%<span class="st"> </span>
 <span class="st">    </span><span class="kw">select</span>(progression_or_recurrence,days_to_recurrence,tumor_grade) %&gt;%<span class="st"> </span>datatable</code></pre></div>
-<div id="htmlwidget-0d581e2b138710821461" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0d581e2b138710821461">{"x":{"filter":"none","data":[["1","2"],["not reported","not reported"],[null,null],["not reported","not reported"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>progression_or_recurrence\u003c/th>\n      <th>days_to_recurrence\u003c/th>\n      <th>tumor_grade\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-75a7d712fcd1717fcea0" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-75a7d712fcd1717fcea0">{"x":{"filter":"none","data":[["1","2"],["not reported","not reported"],[null,null],["not reported","not reported"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>progression_or_recurrence\u003c/th>\n      <th>days_to_recurrence\u003c/th>\n      <th>tumor_grade\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># XML data</span>
 clinical.patient %&gt;%<span class="st"> </span><span class="kw">select</span>(bcr_patient_barcode,neoplasm_histologic_grade) %&gt;%<span class="st"> </span>datatable</code></pre></div>
-<div id="htmlwidget-b886f1bb843de8c59d7d" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b886f1bb843de8c59d7d">{"x":{"filter":"none","data":[["1","2","3","4","5"],["TCGA-ZS-A9CF","TCGA-DD-AACA","TCGA-DD-AACA","TCGA-DD-AACA","TCGA-DD-AACA"],["G2","G3","G3","G3","G3"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>bcr_patient_barcode\u003c/th>\n      <th>neoplasm_histologic_grade\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-3e8de590ba038ad32e96" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3e8de590ba038ad32e96">{"x":{"filter":"none","data":[["1","2","3","4","5"],["TCGA-ZS-A9CF","TCGA-DD-AACA","TCGA-DD-AACA","TCGA-DD-AACA","TCGA-DD-AACA"],["G2","G3","G3","G3","G3"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>bcr_patient_barcode\u003c/th>\n      <th>neoplasm_histologic_grade\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="tutorial-video" class="section level2">
-<h2><span class="header-section-number">3.3</span> Tutorial Video</h2>
+<h2><span class="header-section-number">4.3</span> Tutorial Video</h2>
 <center>
 <p><a href="http://www.youtube.com/watch?v=54NBug9ycwM" title="Tutorial Video: Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)"><img src="http://img.youtube.com/vi/54NBug9ycwM/0.jpg" alt="IMAGE ALT TEXT" /></a></p>
 <strong>Tutorial Video:</strong> Fetching GDC clinical data - (<a href="http://www.youtube.com/watch?v=54NBug9ycwM" class="uri">http://www.youtube.com/watch?v=54NBug9ycwM</a>)
@@ -608,10 +616,10 @@ clinical.patient %&gt;%<span class="st"> </span><span class="kw">select</span>(b
 </div>
 </div>
 <div id="sub-menu-mutation-data" class="section level1">
-<h1><span class="header-section-number">4</span> Sub-menu: Mutation data</h1>
+<h1><span class="header-section-number">5</span> Sub-menu: Mutation data</h1>
 <p>In order to download the Mutation Annotation Format (MAF), we provide the user with an interface to the <code>GDCquery_maf</code> function. Briefly, it will download the open acess maf files from <a href="https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/" class="uri">https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/</a>. Four separate variant calling pipelines are implemented for GDC data harmonization which are described <a href="https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/DNA_Seq_Variant_Calling_Pipeline/">here</a>.</p>
 <div id="mutatation-data-search-box" class="section level2">
-<h2><span class="header-section-number">4.1</span> Mutatation data search box</h2>
+<h2><span class="header-section-number">5.1</span> Mutatation data search box</h2>
 <p>The available filters are:</p>
 <ul>
 <li>Tumor filter: a TCGA tumor, such as Breast invasive Carcinoma (TCGA-BRCA)</li>
