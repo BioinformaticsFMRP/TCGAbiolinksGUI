@@ -58,7 +58,6 @@ names(table.code) <- c("Primary solid Tumor","Recurrent Solid Tumor",
 
 inputTextarea <- function(inputId, value="", nrows, ncols) {
     tagList(
-        singleton(tags$head(tags$script(src = "textarea.js"))),
         tags$textarea(id = inputId,
                       class = "inputtextarea",
                       rows = nrows,
@@ -147,7 +146,6 @@ body <-  dashboardBody(
                                                      'tabletools/2.2.4/js/dat',
                                                      'aTables.tableTools.min.js'),
                                         type = 'text/javascript'))),
-        singleton(tags$head(singleton(tags$script(src = 'events.js')))),
         singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css",
                                       href = "TCGAbiolinksGUI.css")))
     ),
