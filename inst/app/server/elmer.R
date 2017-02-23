@@ -365,27 +365,28 @@ observeEvent(input$elmerAnalysisBt, {
                          #--------------------------------------
                          # Step 3.1: Get diff methylated probes |
                          #--------------------------------------
-                         setProgress(value = which(j == direction) * 0.0, message = "Step 1", detail = paste0(j,": get.diff.meth"), session = getDefaultReactiveDomain())
+                         setProgress(value = which(j == direction) * 0.0, message = "Step 1", detail = paste0("Identify distal enhancer probes ", j,"methylaed in experiment group compared to control group"), session = getDefaultReactiveDomain())
                          Sig.probes <- get.diff.meth(mee,
                                                      cores=isolate({input$elmercores}),
                                                      dir.out = dir.out,
                                                      diff.dir=j,
                                                      pvalue = isolate({input$elmermetpvalue}))
                          if(all(is.na(Sig.probes$probe))){
-                             createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "success",
-                                         content = paste0("No signigicant probes found"), append = TRUE)
+                             createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "error",
+                                         content = paste0("No signigicant probes found for ", j ," direction"), append = TRUE)
                              return(NULL)
                          }
                          #-------------------------------------------------------------
                          # Step 3.2: Identify significant probe-gene pairs            |
                          #-------------------------------------------------------------
                          # Collect nearby 20 genes for Sig.probes
-                         setProgress(value = which(j == direction) * 0.1, message = "Step 2", detail = paste0(j,": GetNearGenes"), session = getDefaultReactiveDomain())
+                         setProgress(value = which(j == direction) * 0.1, message = "Step 2", detail = paste0(j,": Get Near Genes for ", length(na.omit(Sig.probes$probe))," probes"), session = getDefaultReactiveDomain())
                          nearGenes <- GetNearGenes(TRange=getProbeInfo(mee, probe=Sig.probes$probe),
                                                    cores=isolate({input$elmercores}),
                                                    geneAnnot=getGeneInfo(mee),
                                                    geneNum = isolate({input$elmergetpairNumGenes}))
 
+                         setProgress(value = which(j == direction) * 0.2, message = "Step 3", detail = paste0(j,": Identify putative target genes for differentially methylated distal enhancer probes ", length(na.omit(Sig.probes$probe))," probes"), session = getDefaultReactiveDomain())
 
                          pair  <- tryCatch({
                              get.pair(mee=mee,
@@ -406,7 +407,6 @@ observeEvent(input$elmerAnalysisBt, {
                              return(NULL)
                          })
 
-                         setProgress(value = which(j == direction) * 0.2, message = "Step 3", detail = paste0(j,": fetch.pair"), session = getDefaultReactiveDomain())
                          Sig.probes.paired <- fetch.pair(pair=pair,
                                                          probeInfo = getProbeInfo(mee),
                                                          geneInfo = getGeneInfo(mee))
@@ -425,7 +425,7 @@ observeEvent(input$elmerAnalysisBt, {
                              #-------------------------------------------------------------
                              # Step 3.3: Motif enrichment analysis on the selected probes |
                              #-------------------------------------------------------------
-                             setProgress(value = which(j == direction) * 0.3, message = "Step 4", detail = paste0(j,": get.enriched.motif"), session = getDefaultReactiveDomain())
+                             setProgress(value = which(j == direction) * 0.3, message = "Step 4", detail = paste0(j,": Identify enriched motifs for the distal enhancer probes which are significantly differentially methylated and linked to putative target gene"), session = getDefaultReactiveDomain())
                              probe <- get.feature.probe()
                              enriched.motif <- get.enriched.motif(probes = Sig.probes.paired,
                                                                   dir.out = dir.out,
@@ -440,7 +440,7 @@ observeEvent(input$elmerAnalysisBt, {
                                  # Step 3.4: Identifying regulatory TFs                        |
                                  #-------------------------------------------------------------
                                  print("get.TFs")
-                                 setProgress(value = which(j == direction) * 0.4, message = "Step 5", detail = paste0(j,": get.TFs"), session = getDefaultReactiveDomain())
+                                 setProgress(value = which(j == direction) * 0.4, message = "Step 5", detail = paste0(j,": Identify regulatory TFs whose expression associate with DNA methylation at motifs."), session = getDefaultReactiveDomain())
 
                                  TF <- get.TFs(mee = mee,
                                                enriched.motif = enriched.motif,
