@@ -85,8 +85,9 @@ tabItem(tabName = "elmeranalysis",
                                             min = 0, max = 1, value = 0.01, step = 0.01),
                                numericInput("elmergetpairportion", "Portion",
                                             min = 0, max = 1, value = 0.3, step = 0.1),
-                               checkboxInput("elmergetpairdiffExp", "Apply t-test", value = FALSE, width = NULL)
-                           ),
+                               checkboxInput("elmergetpairdiffExp", "Test whether putative target gene are differentially expressed ?", value = FALSE, width = NULL),
+                               bsTooltip("elmergetpairdiffExp", "t test will be applied to  test whether putative target gene are differentially expressed between two groups",
+                                         "left")
                            box(title = "Get enriched motif", width = NULL,
                                solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                                numericInput("elmergetenrichedmotifMinIncidence", "Minimum incidence",
