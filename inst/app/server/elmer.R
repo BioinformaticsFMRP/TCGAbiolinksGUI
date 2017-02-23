@@ -368,7 +368,7 @@ observeEvent(input$elmerAnalysisBt, {
                          setProgress(value = which(j == direction) * 0.0, message = "Step 1", detail = paste0(j,": get.diff.meth"), session = getDefaultReactiveDomain())
                          Sig.probes <- get.diff.meth(mee,
                                                      cores=isolate({input$elmercores}),
-                                                     dir.out =dir.out,
+                                                     dir.out = dir.out,
                                                      diff.dir=j,
                                                      pvalue = isolate({input$elmermetpvalue}))
                          if(all(is.na(Sig.probes$probe))){
@@ -389,7 +389,7 @@ observeEvent(input$elmerAnalysisBt, {
 
                          pair  <- tryCatch({
                              get.pair(mee=mee,
-                                      probes=Sig.probes$probe,
+                                      probes=na.omit(Sig.probes$probe),
                                       nearGenes=nearGenes,
                                       permu.dir=paste0(dir.out,"/permu"),
                                       dir.out=dir.out,
@@ -402,7 +402,7 @@ observeEvent(input$elmerAnalysisBt, {
                                       diffExp = isolate({input$elmergetpairdiffExp}))
                          }, error = function(e) {
                              createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "danger",
-                                         content = paste0("Error in get.par function"), append = TRUE)
+                                         content = paste0("Error in get.pair function"), append = TRUE)
                              return(NULL)
                          })
 
@@ -410,10 +410,14 @@ observeEvent(input$elmerAnalysisBt, {
                          Sig.probes.paired <- fetch.pair(pair=pair,
                                                          probeInfo = getProbeInfo(mee),
                                                          geneInfo = getGeneInfo(mee))
-
-                         Sig.probes.paired <- read.csv(paste0(dir.out,"/getPair.",j,".pairs.significant.csv"),
-                                                       stringsAsFactors=FALSE)[,1]
-
+                         if(file.exists(paste0(dir.out,"/getPair.",j,".pairs.significant.csv"))) {
+                             Sig.probes.paired <- read.csv(paste0(dir.out,"/getPair.",j,".pairs.significant.csv"),
+                                                           stringsAsFactors=FALSE)[,1]
+                         } else {
+                             createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "danger",
+                                         content = paste0("No significant pairs were found"), append = TRUE)
+                             return(NULL)
+                         }
                          #-------------------------------------------------------------
                          # Step 3.3: Motif enrichment analysis on the selected probes |
                          #-------------------------------------------------------------
