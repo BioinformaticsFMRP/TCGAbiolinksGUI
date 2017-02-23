@@ -250,7 +250,7 @@ observeEvent(input$oncoprintPlot , {
             return(NULL)
         } else if(all(genes == "")){
             createAlert(session, "oncomessage", "oncoAlert", title = "Errors", style =  "danger",
-                        content = paste0("The limit of the genes is 200 \n You gave me: ",length(genes)), append = TRUE)
+                        content = "From the list given none are mutated", append = TRUE)
             return(NULL)
 
         } else if(length(not.found) > 0){
@@ -275,8 +275,6 @@ observeEvent(input$oncoprintPlot , {
             createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
                         content = "Please select a file", append = TRUE)
             return(NULL)
-        } else{
-            closeAlert(session, "oncoAlert")
         }
 
         if(!is.null(annotation)){

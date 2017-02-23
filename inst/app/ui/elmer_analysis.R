@@ -36,12 +36,11 @@ tabItem(tabName = "elmeranalysis",
                                               choices=NULL,
                                               multiple = FALSE),
                                tags$hr(),
-                               bsTooltip("elmermetnacut", " By default, for the DNA methylation data
-                                         will remove probes with NA values in more than 20% samples and
-                                         remove the anottation data.",
-                                         "left"),
+
                                numericInput("elmermetnacut", "DNA methylation: Cut-off NA samples (%)",
                                             min = 0, max = 1, value = 0.2, step = 0.1),
+                               bsTooltip("elmermetnacut", "By default, for the DNA methylation data will remove probes with NA values in more than 20% samples and remove the anottation data.",
+                                         "left"),
                                textInput("meesavefilename", "Save as:", value = "mee.rda", width = NULL, placeholder = NULL),
                                actionButton("elmerpreparemee",
                                             "Create mee object",
