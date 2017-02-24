@@ -1,12 +1,14 @@
-library(shiny)
-library(shinyFiles)
-library(TCGAbiolinks)
-library(shinyBS)
-library(shinyjs)
-library(SummarizedExperiment)
-library(pathview)
-library(reshape2)
-library(shinydashboard)
+suppressPackageStartupMessages({
+    library(shiny)
+    library(shinyFiles)
+    library(TCGAbiolinks)
+    library(shinyBS)
+    library(shinyjs)
+    library(SummarizedExperiment)
+    library(pathview)
+    library(reshape2)
+    library(shinydashboard)
+})
 
 data(paths.hsa)
 pathways.id <- names(paths.hsa)
@@ -101,6 +103,7 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Differential expression analysis" , tabName = "dea", icon = icon("flask")),
                  menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
                  menuSubItem("Heatmap plot" , tabName = "heatmap", icon = icon("picture-o")),
+                 menuSubItem("Pathway visualization" , tabName = "pathview", icon = icon("picture-o")),
                  menuSubItem("Enrichment analysis" , tabName = "ea", icon = icon("flask")),
                  menuSubItem("Network inference" , tabName = "netinf", icon = icon("flask"))
         ),
@@ -164,6 +167,7 @@ body <-  dashboardBody(
         source(file.path(ui.path, "ea.R"),  local = TRUE)$value,
         source(file.path(ui.path, "survival.R"),  local = TRUE)$value,
         source(file.path(ui.path, "dea.R"),  local = TRUE)$value,
+        source(file.path(ui.path, "pathview.R"),  local = TRUE)$value,
         source(file.path(ui.path, "starburst.R"),  local = TRUE)$value,
         source(file.path(ui.path, "elmer_analysis.R"),  local = TRUE)$value,
         source(file.path(ui.path, "elmer_results.R"),  local = TRUE)$value,
