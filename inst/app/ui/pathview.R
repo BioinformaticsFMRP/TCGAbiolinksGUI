@@ -1,8 +1,8 @@
 tabItem(tabName = "pathview",
         fluidRow(
-            column(8,  bsAlert("deamessage"),
-                   bsCollapse(id = "collapsedea", open = "DEA plots",
-                              bsCollapsePanel("Genes info", dataTableOutput('deaSE'), style = "default")
+            column(8,  bsAlert("pathviewmessage"),
+                   bsCollapse(id = "collapsepathview", open = "Pathview plot",
+                              bsCollapsePanel("Pathview plot", uiOutput("pathviewPlot"), style = "default")
                    )),
             column(4,
                    box(title = "Pathway graphs",width = NULL,

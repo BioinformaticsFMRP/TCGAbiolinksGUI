@@ -109,10 +109,11 @@ observeEvent(input$pathwaygraphBt , {
 })
 
 observeEvent(input$pathwaygraphBt , {
-    updateCollapse(session, "collapsedea", open = "Pathview plot")
+    updateCollapse(session, "collapsepathview", open = "Pathview plot")
     output$pathviewPlot <- renderUI({
         plotOutput("pathviewImage", height = input$pathwaygraphheigth)
-    })})
+    })
+})
 
 observeEvent(input$pathwaygraphBt , {
     output$pathviewImage <- renderImage({
