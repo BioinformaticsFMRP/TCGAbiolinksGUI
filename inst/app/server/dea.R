@@ -43,21 +43,29 @@ observeEvent(input$deaAnalysis , {
     withProgress(message = 'Differential Expression Analysis in progress',
                  detail = 'This may take a while...', value = 0, {
 
-
                      # normalization of genes
                      if(isolate({input$deanormalization})) {
+                         if(all(grepl("ENS",rownames(se)))){
+                             geneInfo <- TCGAbiolinks::geneInfoHT
+                         } else {
+                             geneInfo <- TCGAbiolinks::geneInfo
+                         }
+                         incProgress(1/5, detail = paste0('normalization mRNA transcripts and miRNA using EDASeq package'))
                          exp <- TCGAanalyze_Normalization(tabDF = assay(se),
-                                                          geneInfo = TCGAbiolinks::geneInfo,
+                                                          geneInfo = geneInfo,
                                                           method = isolate({input$deanormalizationmet})
                          )
                      }
                      # quantile filter of genes
                      if(isolate({input$deafilter})) {
+                         incProgress(1/5, detail = paste0('Filtering mRNA transcripts and miRNA'))
+
                          dataFilt <- TCGAanalyze_Filtering(tabDF = exp,
                                                            method = isolate({input$deafilteringmet}),
                                                            qnt.cut =  isolate({input$deafilteringcut}))
                      }
 
+                     incProgress(1/5, detail = paste0('Differentially expression analysis (DEA) using edgeR'))
                      exp <- TCGAanalyze_DEA(mat1 = dataFilt[,samples.g1],
                                             mat2 = dataFilt[,samples.g2],
                                             Cond1type = g1 ,
@@ -66,6 +74,7 @@ observeEvent(input$deaAnalysis , {
                                             #logFC.cut = logFC.cut,
                                             method = method)
 
+                     incProgress(1/5, detail = paste0('Adding information related to DEGs genes from DEA'))
                      exp <- TCGAanalyze_LevelTab(exp,
                                                  typeCond1 = g1,
                                                  typeCond2 = g2,
@@ -81,8 +90,9 @@ observeEvent(input$deaAnalysis , {
                      } else {
                          exp$Gene_symbol <- exp$mRNA
                      }
-
+                     incProgress(1/5, detail = paste0('Saving results'))
                  })
+
     out.filename <- paste0(paste("DEA_results",gsub("_",".",groupCol),
                                  gsub("[[:punct:]]| ", ".",g1), gsub("[[:punct:]]| ", ".",g2),
                                  "pcut",fdr.cut,"logFC.cut",logFC.cut,sep="_"),".csv")
