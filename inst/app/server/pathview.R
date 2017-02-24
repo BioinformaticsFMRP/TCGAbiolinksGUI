@@ -63,7 +63,6 @@ observeEvent(input$pathwaygraphBt , {
     }
 
     # Converting Gene symbol to geneID
-    library(clusterProfiler)
     if(all(grepl("ENS", data$Gene))) {
         fromType <- "ENSEMBL"
     } else {

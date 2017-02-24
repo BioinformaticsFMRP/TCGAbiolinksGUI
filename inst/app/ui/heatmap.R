@@ -68,9 +68,7 @@ tabItem(tabName = "heatmap",
                        box(title = "Text options",width = NULL,
                            solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                            textInput("heatmapMain", label = "Title", value = "Heatmap"),
-                           textInput("heatmapLabel", label = "Values label", value = "Values"),
-
-                           sliderInput("heatmapRownamesSize", "Row names size", min = 1, max = 18, value = 6)
+                           textInput("heatmapLabel", label = "Values label", value = "Values")
                        ),
                        box(title = "Color options",width = NULL,
                            solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
@@ -99,7 +97,8 @@ tabItem(tabName = "heatmap",
                        box(title = "Size control",width = NULL,
                            solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                            sliderInput("heatmapwidth", "Plot Width (%)", min = 0, max = 100, value = 100),
-                           sliderInput("heatmapheight", "Plot Height (px)", min = 0, max = 1200, value = 1000)
+                           sliderInput("heatmapheight", "Plot Height (px)", min = 0, max = 1200, value = 1000),
+                           sliderInput("heatmapRownamesSize", "Row names size", min = 1, max = 18, value = 6)
                        ),
                        actionButton("heatmapPlotBt",
                                     "Heatmap plot",

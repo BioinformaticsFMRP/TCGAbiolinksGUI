@@ -264,7 +264,7 @@ observeEvent(input$heatmapPlotBt , {
                 # Get hypo methylated and hypermethylated probes
                 genes <- results.data[,"status"] %in% sig.genes
                 results.data <- results.data[genes,]
-                data <- data[values(data)$gene_id %in% results.data$mRNA ,]
+                data <- data[rownames(data) %in% results.data$mRNA ,]
             } else if(isolate({input$heatmapGenesInputRb}) == "Selection"){
                 data <- data[rownames(data) %in% isolate({input$heatmagenes}) ]
             } else {

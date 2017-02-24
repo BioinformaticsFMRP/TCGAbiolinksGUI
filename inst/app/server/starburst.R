@@ -162,6 +162,19 @@ result.dea.data <-  reactive({
     } else if(tools::file_ext(file)=="rda"){
         se <- get(load(file))
     }
+    if(all(grepl("ENS", se$Gene_symbol))) {
+        fromType <- "ENSEMBL"
+        # In case we have ENSG
+        eg = as.data.frame(bitr(se$Gene_symbol,
+                                fromType=fromType,
+                                toType="SYMBOL",
+                                OrgDb="org.Hs.eg.db"))
+        eg <- eg[!duplicated(eg[,fromType]),]
+        colnames(se)[grep("Gene_symbol",colnames(se))] <- "Gene"
+        colnames(eg) <- c("Gene","Gene_symbol")
+        se <- merge(se,eg,by = "Gene")
+    }
+
     if(class(se)!= class(data.frame())){
         createAlert(session, "deamessage", "deaAlert", title = "Data input error", style =  "danger",
                     content = paste0("Sorry, but I'm expecting a Data frame object, but I got a: ",
