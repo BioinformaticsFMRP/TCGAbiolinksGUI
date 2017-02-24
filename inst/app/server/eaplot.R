@@ -47,7 +47,7 @@ eaGenesByFile <- function(){
     } else if(tools::file_ext(file)=="txt"){
         df <- read.table(file,header = T)
     } else {
-        createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
+        createAlert(session, "eamessage", "eaAlert", title = "Data input error", style =  "danger",
                     content = paste0("Sorry, but I'm expecting a csv, rda or txt file, but I got a: ",
                                      tools::file_ext(file)), append = FALSE)
         return(NULL)
@@ -62,7 +62,7 @@ eaGenesByFile <- function(){
         } else if("Gene_symbol" %in% colnames(df)){
             genes <- df$Gene_symbol
         } else {
-            createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
+            createAlert(session, "eamessage", "eaAlert", title = "Data input error", style =  "danger",
                         content = paste0("Sorry, but I'm expecting a column called Gene_symbol "), append = FALSE)
             return(NULL)
         }
@@ -129,8 +129,12 @@ observeEvent(input$eaplot , {
                          if(length(grep("NA",ansEA$ResMF)) != ncol(ansEA$ResMF) &  isolate({input$eaPlotMFCB})) ResMF <- ansEA$ResMF
                          if(length(grep("NA",ansEA$ResPat)) != ncol(ansEA$ResPat) &  isolate({input$eaPlotPatCB})) ResPat <- ansEA$ResPat
 
-                         nbPlot <- table(c(is.null(ResMF),is.null(ResBP),is.null(ResCC),is.null(ResPat)))["FALSE"]
-
+                         plots <- table(c(is.null(ResMF),is.null(ResBP),is.null(ResCC),is.null(ResPat)))
+                         if(!"FALSE" %in% names(pltos) > 0){
+                             createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
+                                         content = paste0("Sorry, no relevant results were found"), append = FALSE)
+                         }
+                         nbPlot <- plots["FALSE"]
                          if(nbPlot == 1)  mfrow = c(1,1)
                          if(nbPlot == 2)  mfrow = c(2,1)
                          if(nbPlot > 2)  mfrow = c(2,2)
