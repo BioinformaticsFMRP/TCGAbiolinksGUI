@@ -9,31 +9,47 @@ observe({
         shinyjs::show("heatmapProbesInputRb")
         shinyjs::hide("heatmapGenesInputRb")
         shinyjs::hide("heatmapGenesTextArea")
+        shinyjs::hide("heatmagenes")
         shinyjs::hide("heatmap.upGenesCb")
         shinyjs::hide("heatmap.downGenewsCb")
         if(input$heatmapProbesInputRb == "text"){
             shinyjs::show("heatmapProbesTextArea")
             shinyjs::hide("heatmap.hypoprobesCb")
+            shinyjs::hide("heatmaprobes")
             shinyjs::hide("heatmap.hyperprobesCb")
+        } else if(input$heatmapGenesInputRb == "Selection"){
+            shinyjs::hide("heatmapProbesTextArea")
+            shinyjs::hide("heatmap.hypoprobesCb")
+            shinyjs::hide("heatmap.hyperprobesCb")
+            shinyjs::show("heatmaprobes")
         } else {
             shinyjs::hide("heatmapProbesTextArea")
             shinyjs::show("heatmap.hypoprobesCb")
+            shinyjs::hide("heatmaprobes")
             shinyjs::show("heatmap.hyperprobesCb")
         }
     } else if(input$heatmapTypeInputRb == "exp") {
         shinyjs::show("heatmapGenesInputRb")
         shinyjs::hide("heatmapProbesTextArea")
         shinyjs::hide("heatmap.hypoprobesCb")
+        shinyjs::hide("heatmaprobes")
         shinyjs::hide("heatmap.hyperprobesCb")
         shinyjs::hide("heatmapProbesInputRb")
         if(input$heatmapGenesInputRb == "text"){
             shinyjs::show("heatmapGenesTextArea")
             shinyjs::hide("heatmap.upGenesCb")
             shinyjs::hide("heatmap.downGenewsCb")
+            shinyjs::hide("heatmagenes")
+        } else if(input$heatmapGenesInputRb == "Selection"){
+            shinyjs::hide("heatmapGenesTextArea")
+            shinyjs::hide("heatmap.upGenesCb")
+            shinyjs::hide("heatmap.downGenewsCb")
+            shinyjs::show("heatmagenes")
         } else {
             shinyjs::hide("heatmapGenesTextArea")
             shinyjs::show("heatmap.upGenesCb")
             shinyjs::show("heatmap.downGenewsCb")
+            shinyjs::hide("heatmagenes")
         }
     }
 })
@@ -109,6 +125,8 @@ observe({
     updateSelectizeInput(session, 'rowmetadataheatmap', choices = {
         if(!is.null(data)) as.character(colnames(values(data)))
     }, server = TRUE)
+    updateSelectizeInput(session, 'heatmaprobes', choices = as.character(rownames(data)), server = TRUE)
+    updateSelectizeInput(session, 'heatmagenes', choices = as.character(rownames(data)), server = TRUE)
 })
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
@@ -229,12 +247,14 @@ observeEvent(input$heatmapPlotBt , {
                                 content = paste0("There are no significant probes"),append = FALSE)
                     return(NULL)
                 }
+                data <- data[probes,]
+                results.data <- results.data[probes,]
+            } else if(isolate({input$heatmaprobes}) == "Selection"){
+                data <- data[rownames(data) %in% isolate({input$heatmaprobes}) ]
             } else {
                 sig.probes <- parse.textarea.input(isolate({input$heatmapProbesTextArea}))
-                probes <- which(results.data$probeID %in% sig.probes)
+                data <- data[rownames(data) %in% sig.probes,]
             }
-            data <- data[probes,]
-            results.data <- results.data[probes,]
         } else {
             if(isolate({input$heatmapGenesInputRb}) == "Status"){
                 sig.genes <- ""
@@ -243,12 +263,15 @@ observeEvent(input$heatmapPlotBt , {
                 sig.genes <- paste(sig.genes,"in",group2)
                 # Get hypo methylated and hypermethylated probes
                 genes <- results.data[,"status"] %in% sig.genes
+                results.data <- results.data[genes,]
+                data <- data[rownames(data) %in% results.data$mRNA ,]
+            } else if(isolate({input$heatmapGenesInputRb}) == "Selection"){
+                data <- data[rownames(data) %in% isolate({input$heatmagenes}) ]
             } else {
                 sig.genes <- parse.textarea.input(isolate({input$heatmapGenesTextArea}))
-                genes <- which(results.data$mRNA %in% sig.genes)
+                data <- data[rownames(data) %in% sig.genes]
             }
-            results.data <- results.data[genes,]
-            data <- data[values(data)$gene_id %in% results.data$mRNA ,]
+
         }
         # ---------------- col.metadata
         if(!("barcode" %in% colnames(colData(data)))){
@@ -319,3 +342,5 @@ observeEvent(input$heatmapPlotBt , {
         plotOutput("heatmap.plotting", width = paste0(isolate({input$heatmapwidth}), "%"), height = isolate({input$heatmapheight}))
     })
 })
+
+

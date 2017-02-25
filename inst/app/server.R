@@ -267,6 +267,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     source(file.path(server.path, "meanMet.R"),  local = TRUE)$value
     source(file.path(server.path, "dea.R"),  local = TRUE)$value
     source(file.path(server.path, "pathview.R"),  local = TRUE)$value
+    source(file.path(server.path, "eaplot.R"),  local = TRUE)$value
     source(file.path(server.path, "oncoprint.R"),  local = TRUE)$value
     source(file.path(server.path, "starburst.R"),  local = TRUE)$value
     source(file.path(server.path, "elmer.R"),  local = TRUE)$value

@@ -55,22 +55,27 @@ observeEvent(input$pathwaygraphBt , {
     pathway.id <- isolate({input$pathway.id})
     kegg.native <- isolate({input$kegg.native.checkbt})
 
-    if("mRNA" %in% colnames(data)) {
+    if(all(grepl("\\|", data$mRNA)))  {
         gene <- strsplit(data$mRNA,"\\|")
+        data$Gene <- unlist(lapply(gene,function(x) x[1]))
     } else {
-        gene <- rownames(data)
+        data$Gene <- data$mRNA
     }
-    data$SYMBOL <- unlist(lapply(gene,function(x) x[1]))
 
     # Converting Gene symbol to geneID
-    library(clusterProfiler)
-    eg = as.data.frame(bitr(data$SYMBOL,
-                            fromType="SYMBOL",
+    if(all(grepl("ENS", data$Gene))) {
+        fromType <- "ENSEMBL"
+    } else {
+        fromType <- "SYMBOL"
+    }
+
+    eg = as.data.frame(bitr(data$Gene,
+                            fromType=fromType,
                             toType="ENTREZID",
                             OrgDb="org.Hs.eg.db"))
-    eg <- eg[!duplicated(eg$SYMBOL),]
-
-    data <- merge(data,eg,by="SYMBOL")
+    eg <- eg[!duplicated(eg[,fromType]),]
+    colnames(eg) <- c("Gene","ENTREZID")
+    data <- merge(data,eg,by="Gene")
 
     data <- subset(data, select = c("ENTREZID", "logFC"))
     genelistDEGs <- as.numeric(data$logFC)
@@ -103,10 +108,11 @@ observeEvent(input$pathwaygraphBt , {
 })
 
 observeEvent(input$pathwaygraphBt , {
-    updateCollapse(session, "collapsedea", open = "Pathview plot")
+    updateCollapse(session, "collapsepathview", open = "Pathview plot")
     output$pathviewPlot <- renderUI({
         plotOutput("pathviewImage", height = input$pathwaygraphheigth)
-    })})
+    })
+})
 
 observeEvent(input$pathwaygraphBt , {
     output$pathviewImage <- renderImage({
