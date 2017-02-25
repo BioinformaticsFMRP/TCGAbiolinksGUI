@@ -8,6 +8,7 @@ suppressPackageStartupMessages({
     library(pathview)
     library(reshape2)
     library(shinydashboard)
+    library(clusterProfiler)
 })
 
 data(paths.hsa)
