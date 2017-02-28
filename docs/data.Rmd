@@ -1,0 +1,242 @@
+---
+bibliography: bibliography.bib
+date: "`r BiocStyle::doc_date()`"
+vignette: >
+  %\VignetteIndexEntry{"TCGAbiolinksGUI: Data menu"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(dplyr)
+library(DT)
+```
+
+# Detailed explanation
+
+For a detailed manual for this section please access this link:
+
+1. [Data menu manual](https://drive.google.com/open?id=0B0-8N2fjttG-WVdJVXVqNUs5bnM)
+
+# Sub-menu: Molecular data
+
+In this sub-menu the user will be able to search, download and prepare The NCI's Genomic Data Commons (GDC)  data for analysis.
+The first step is to search for GDC open data access with the Advanced search box. The search results will be summarized in plots in the center of the screen. The second step is to download and prepare the data into a R object 
+to be used in the analysis steps.
+
+![GDC search menu: Main window.](tcgasearch.png)
+
+##  Useful information
+
+<div class="panel panel-info">
+<div class="panel-heading">Different sources: Legacy vs Harmonized</div>
+<div class="panel-body">
+
+
+There are two available sources to download GDC data using TCGAbiolinks:
+- GDC Legacy Archive : provides access to an unmodified copy of data that was previously stored in
+  [CGHub](https://cghub.ucsc.edu/) and in the TCGA Data Portal hosted by the TCGA Data Coordinating Center (DCC), in which uses
+  as references GRCh37 (hg19) and GRCh36 (hg18).
+- GDC harmonized database: data available was harmonized against GRCh38 (hg38) using GDC Bioinformatics Pipelines
+  which provides methods to the standardization of biospecimen and
+  clinical data.
+
+</div>
+</div>
+
+
+<div class="panel panel-info">
+<div class="panel-heading">Understanding the barcode</div>
+<div class="panel-body">
+
+A TCGA barcode is composed of a collection of identifiers. Each specifically identifies a TCGA data element. Refer to the following figure for an illustration of how metadata identifiers comprise a barcode. An aliquot barcode contains the highest number of identifiers.
+
+Example: 
+
+- Aliquot barcode: TCGA-G4-6317-02A-11D-2064-05
+- Participant: TCGA-G4-6317
+- Sample: TCGA-G4-6317-02
+
+For more information check [TCGA wiki](https://wiki.nci.nih.gov/display/TCGA/TCGA+barcode)
+</div>
+</div>
+
+## Advanced search box
+
+
+The following filters are available to select the data:
+
+* Database
+* Project filter
+* Data category filter
+* Data type filter
+* Workflow filter
+* Sample type filter
+* Platform filter
+* List of barcodes
+* Clinical filter: gender, race, vital status, tumor stage.
+
+<div class="panel panel-warning">
+<div class="panel-heading">Repeated cases (barcodes) </div>
+<div class="panel-body">
+
+In the search step, it is important that there are no repeated 
+cases, otherwise the prepare step might no work. If it happens, the search will give you this warning "There are more than one file for the same case." 
+To solve this problem, you  probably need to use more filters to correctly select your data. 
+
+As an example of this problem, if you use only Project (i.e "TCGA-ACC") and Data category filter (i.e "Copy Number Variantion"), for each sample we have two data types "Copy Number segment"" and "Masked Copy Number segment". 
+
+</div>
+</div>
+
+
+## Download & Prepare box
+
+After the search step, the user can download the data and prepare it into an R object.
+The data can be prepared into one of two formats:
+
+* [SummarizedExperiment](http://www.nature.com/nmeth/journal/v12/n2/abs/nmeth.3252.html) 
+[@huber2015orchestrating]: An R object that contains the sample information matrix (clinical and subtype information),
+the assay matrix (i.e DNA methylation beta-values), the features matrix (i.e information for each probe in the DNA methylation assay mamtrix).
+* Data Frame: A simple table with only the assay matrix (i.e Gene expression quantification)
+
+In case a SummarizedExperiment object was selected the user will be able to add more metadata infromation into the  sample information matrix. By checking "Add gistic2 and mutation information" and giving a list of genes,
+the GUI will download GISTIC2 data from the GDAC firehose and Mutation Annotation Files (MAF) and their information
+to the object. This might be useful, for example, if the user wants to evaluate the survival of mutant samples vs non-mutant or if he wants to evaluate it on a heatmap, which can be used as labels.
+
+Finnaly, the object will be saved with the same name as the file name field.
+
+# Sub-menu: Subtype data
+
+The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-wide 
+studies of various diseases. We have added some of the subtypes defined by these
+reports in our package.  
+
+- [BRCA](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3465532/)[@cancer2012comprehensive_brca]
+- [COAD](http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html) [@cancer2012comprehensive_colon] 
+- [GBM](http://dx.doi.org/10.1016/j.cell.2015.12.028) [@Cell]
+- [HNSC](http://www.nature.com/nature/journal/v517/n7536/abs/nature14129.html) [@cancer2015comprehensive]
+- [KICH](http://www.sciencedirect.com/science/article/pii/S1535610814003043) [@davis2014somatic]
+- [KIRC](http://www.nature.com/nature/journal/v499/n7456/abs/nature12222.html)[@cancer2013comprehensive] 
+- [KIRP](http://www.nejm.org/doi/full/10.1056/NEJMoa1505917) [@cancer2016comprehensive] 
+- [LGG](http://dx.doi.org/10.1016/j.cell.2015.12.028)[@Cell] 
+- [LUAD](http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html) [@cancer2014comprehensive] 
+- [LUSC](http://www.nature.com/nature/journal/v489/n7417/abs/nature11404.html)[@cancer2012comprehensive_lusc] 
+- [PRAD](http://www.sciencedirect.com/science/article/pii/S0092867415013392)[@cancer2015molecular_prad] 
+- [READ](http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html) [@cancer2012comprehensive] 
+- [SKCM](http://www.sciencedirect.com/science/article/pii/S0092867415006340) [@cancer2015genomic_skcm] 
+- [STAD](http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html) [@cancer2014comprehensive] 
+- [THCA](http://www.sciencedirect.com/science/article/pii/S0092867414012380) [@cancer2014integrated] 
+- [UCEC](http://www.nature.com/nature/journal/v497/n7447/abs/nature12113.html) [@cancer2013integrated]
+
+The user can visualize the table with the information and save it as csv or R object (rda) file.
+
+# Sub-menu: Clinical data
+
+TCGAbiolinks has provided a few functions to search, download and parse GDC clinical data. 
+
+## Useful information
+
+
+<div class="panel panel-info">
+<div class="panel-heading">Different sources</div>
+<div class="panel-body">
+
+In GDC database the clinical data can be retrieved from two sources:
+
+- indexed clinical: a refined clinical data that is created using the XML files.
+- XML files
+
+There are two main differences:
+
+- XML has more information: radiation, drugs information, follow-ups, biospecimen, etc. So the indexed one is only a subset of the XML files
+- The indexed data contains the updated data with the follow up informaiton. 
+  For example: if the patient is alive in the first time clinical data was collect and the in the next follow-up he is dead, 
+  the indexed data will show dead. The XML will have two fields, one for the first time saying he is alive (in the clinical part) and the follow-up saying he is dead. You can see this case here: 
+
+</div>
+</div>
+
+## Clinical data inconsistencies
+
+<div class="panel panel-danger">
+<div class="panel-heading">Clinical data inconsistencies</div>
+<div class="panel-body">
+
+Some inconsisentecies have been found in the indexed clinical data and are being
+investigated by the GDC team. These inconsistencies are:
+
+- ***Vital status*** field is not correctly updated 
+- ***Tumor Grade*** field is not being filled
+- ***Progression or Recurrence*** field is not being filled
+
+</div>
+</div>
+
+### Vital status inconsistancie
+
+```{r results = 'hide', echo=TRUE, message=FALSE, warning=FALSE}
+# Get XML files and parse them
+clin.query <- GDCquery(project = "TCGA-READ", data.category = "Clinical", barcode = "TCGA-F5-6702")
+GDCdownload(clin.query)
+clinical.patient <- GDCprepare_clinic(clin.query, clinical.info = "patient")
+clinical.patient.followup <- GDCprepare_clinic(clin.query, clinical.info = "follow_up")
+
+# Get indexed data
+clinical.index <- GDCquery_clinic("TCGA-READ")
+```
+```{r  echo = TRUE, message = FALSE, warning = FALSE}
+select(clinical.patient,vital_status,days_to_death,days_to_last_followup) %>% datatable
+select(clinical.patient.followup, vital_status,days_to_death,days_to_last_followup) %>% datatable
+# Vital status should be the same in the follow up table 
+filter(clinical.index,submitter_id == "TCGA-F5-6702") %>% select(vital_status,days_to_death,days_to_last_follow_up) %>% datatable
+```
+
+### Progression or Recurrence and Grande inconsistancie
+
+```{r results = 'hide', echo=TRUE, message=FALSE, warning=FALSE}
+# Get XML files and parse them
+recurrent.samples <- GDCquery(project = "TCGA-LIHC",
+                             data.category = "Transcriptome Profiling",
+                             data.type = "Gene Expression Quantification", 
+                             workflow.type = "HTSeq - Counts",
+                             sample.type = 	"Recurrent Solid Tumor")$results[[1]] %>% select(cases)
+recurrent.patients <- substr(recurrent.samples$cases,1,12)
+clin.query <- GDCquery(project = "TCGA-LIHC", data.category = "Clinical", barcode = recurrent.patients)
+GDCdownload(clin.query)
+clinical.patient <- GDCprepare_clinic(clin.query, clinical.info = "patient") 
+```
+```{r  echo = TRUE, message = FALSE, warning = FALSE}
+# Get indexed data
+GDCquery_clinic("TCGA-LIHC") %>% filter(submitter_id %in% recurrent.patients) %>% 
+    select(progression_or_recurrence,days_to_recurrence,tumor_grade) %>% datatable
+
+# XML data
+clinical.patient %>% select(bcr_patient_barcode,neoplasm_histologic_grade) %>% datatable
+
+```
+
+## Tutorial Video
+<center>
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/54NBug9ycwM/0.jpg)](http://www.youtube.com/watch?v=54NBug9ycwM "Tutorial Video: Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)")
+
+**Tutorial Video:** Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)
+</center>
+
+# Sub-menu: Mutation data
+
+In order to download the Mutation Annotation Format (MAF), we provide the user
+with an interface to the `GDCquery_maf` function. Briefly, it will download the open acess maf files from
+[https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/](https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/).
+Four separate variant calling pipelines are implemented for GDC data harmonization which are described [here](https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/DNA_Seq_Variant_Calling_Pipeline/).
+
+## Mutatation data search box
+
+The available filters are:
+
+* Tumor filter: a TCGA tumor, such as Breast invasive Carcinoma (TCGA-BRCA)
+* Variant calling pipelines: Four separate variant calling pipelines are implemented for GDC data harmonization. Options: muse, varscan2, somaticsniper, mutect. 
+
+# References
