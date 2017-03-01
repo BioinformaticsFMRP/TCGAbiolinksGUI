@@ -4,6 +4,7 @@
 \name{TCGAbiolinksGUI}
 \alias{TCGAbiolinksGUI}
 \alias{TCGAbiolinksGUI-package}
+\alias{TCGAbiolinksGUI}
 \title{TCGAbiolinksGUI}
 \usage{
 TCGAbiolinksGUI(run = TRUE)
@@ -29,4 +30,3 @@ The functions you're likely to need from \pkg{TCGAbiolinksGUI} are
 }
 TCGAbiolinksGUI(run = FALSE)
 }
-
