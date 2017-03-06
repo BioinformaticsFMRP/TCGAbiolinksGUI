@@ -40,19 +40,17 @@ observeEvent(input$networkBt , {
         createAlert(session, "networkmessage", "networkAlert", title = "Analysis completed", style =  "success",
                     content = paste0("File saved in: ",out.filename), append = FALSE)
 
-        vals <- sort(myadj[upper.tri(myadj)],decreasing=TRUE)[1:10]
+        vals <- unique(sort(myadj[upper.tri(myadj)],decreasing=TRUE))[1:10]
 
-        tmp <- NULL
+        tbl <- NULL
         for(i in 1:10){
-            ind <-  which(myadj == vals[i], arr.ind = TRUE)
-            ind <- ind[seq(1,length(ind),2)]
-            tmp <- rbind(tmp, ind)
+            ind <-  which(myadj == vals[i], arr.ind = TRUE)[,2]
+            for(j in 1:(length(ind)/2)) {
+                aux <- data.frame("gene 1" = rownames(myadj)[ind[j]],  "gene 2" = rownames(myadj)[ind[j + 1]], "value" = vals[i])
+                tbl <- rbind(tbl, aux)
+            }
         }
 
-        tbl <- data.frame("gene 1"=rep(NA, nrow(tmp)),"gene 2"=rep(NA, nrow(tmp)),"value"=rep(NA, nrow(tmp)))
-        for(i in 1:nrow(tmp)){
-            tbl[i,] <- c(rownames(myadj)[tmp[i,1]], rownames(myadj)[tmp[i,2]], myadj[tmp[i,1],tmp[i,2]])
-        }
 
         return(tbl)
     },
