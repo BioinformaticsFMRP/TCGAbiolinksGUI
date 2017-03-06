@@ -46,6 +46,7 @@ observeEvent(input$networkBt , {
         for(i in 1:10){
             ind <-  which(myadj == vals[i], arr.ind = TRUE)[,2]
             for(j in 1:(length(ind)/2)) {
+                j <- j * 2 - 1
                 aux <- data.frame("gene 1" = rownames(myadj)[ind[j]],  "gene 2" = rownames(myadj)[ind[j + 1]], "value" = vals[i])
                 tbl <- rbind(tbl, aux)
             }
