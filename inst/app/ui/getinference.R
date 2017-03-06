@@ -1,7 +1,7 @@
 tabItem(tabName = "netinf",
         fluidRow(
           column(8,  bsAlert("networkmessage"),
-              bsCollapse(id = "collapseTCGAnetwork", open = "Details results",
+              bsCollapse(id = "collapseTCGAnetwork", open = "Top-scoring edges",
                               bsCollapsePanel("Top-scoring edges", dataTableOutput('tcgaNetworktbl'), style = "default")
                    )),
             column(4,
