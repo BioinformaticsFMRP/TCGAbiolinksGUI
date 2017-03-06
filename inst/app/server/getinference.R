@@ -44,13 +44,19 @@ observeEvent(input$networkBt , {
 
         tbl <- NULL
         for(i in 1:10){
-            ind <-  which(myadj == vals[i], arr.ind = TRUE)[,2]
-            for(j in 1:(length(ind)/2)) {
-                j <- j * 2 - 1
-                aux <- data.frame("gene 1" = rownames(myadj)[ind[j]],  "gene 2" = rownames(myadj)[ind[j + 1]], "value" = vals[i])
+            ind <-  which(myadj == vals[i], arr.ind = TRUE)
+            for(j in 1:nrow(ind)) {
+                aux <- data.frame("gene 1" = rownames(myadj)[ind[j,1]],  "gene 2" = rownames(myadj)[ind[j,2]], "value" = vals[i])
                 tbl <- rbind(tbl, aux)
             }
         }
+        remove <- NULL
+        for( i in 1:(nrow(tbl)-1)) {
+            for(j in (i+1):nrow(tbl)) {
+            if(tbl[i,1] == tbl[j,2] & tbl[i,2] == tbl[j,1]) remove <- c(remove,j)
+            }
+        }
+        tbl <- tbl[-remove,]
 
 
         return(tbl)
