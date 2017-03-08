@@ -2,7 +2,7 @@
 bibliography: bibliography.bib
 date: "`r BiocStyle::doc_date()`"
 vignette: >
-  %\VignetteIndexEntry{"TCGAbiolinksGUI: Introduction"}
+  %\VignetteIndexEntry{" Introduction"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -37,10 +37,14 @@ To install the development version of the package via GitHub:
 
 ```{r, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
-deps <- c("pathview","clusterProfiler","ELMER", "DO.db","GO.db", "ComplexHeatmap","EDASeq", "TCGAbiolinks")
-for(pkg in deps)  if (!pkg %in% installed.packages()) biocLite(pkg, dependencies = TRUE)
-deps <- c("devtools","shape","shiny","readr","googleVis","shinydashboard","shinyFiles","shinyjs","shinyBS")
-for(pkg in deps)  if (!pkg %in% installed.packages())  install.packages(pkg,dependencies = TRUE)
+deps <- c("pathview","clusterProfiler","ELMER", "DO.db","GO.db",
+          "ComplexHeatmap","EDASeq", "TCGAbiolinks")
+for(pkg in deps)  
+    if (!pkg %in% installed.packages()) biocLite(pkg, dependencies = TRUE)
+deps <- c("devtools","shape","shiny","readr","googleVis",
+          "shinydashboard","shinyFiles","shinyjs","shinyBS")
+for(pkg in deps)  
+    if (!pkg %in% installed.packages())  install.packages(pkg,dependencies = TRUE)
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
