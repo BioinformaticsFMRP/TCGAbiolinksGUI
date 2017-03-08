@@ -18,7 +18,8 @@ library(DT)
 
 For a detailed manual for this section please access this link:
 
-1. [Data menu manual](https://drive.google.com/open?id=0B0-8N2fjttG-WVdJVXVqNUs5bnM)
+1. [Data menu manual](https://drive.google.com/file/d/0B0-8N2fjttG-X1BoNlNnUnpVMWc/view?usp=sharing)
+2. [Manage SummarizedExperiment](https://drive.google.com/file/d/0B0-8N2fjttG-TVVOcTNFRlh3YXM/view?usp=sharing)
 
 # Sub-menu: Molecular data
 
