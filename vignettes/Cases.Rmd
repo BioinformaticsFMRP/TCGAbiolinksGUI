@@ -2,7 +2,7 @@
 bibliography: bibliography.bib
 date: "`r BiocStyle::doc_date()`"
 vignette: >
-  %\VignetteIndexEntry{"TCGAbiolinksGUI: Cases study"}
+  %\VignetteIndexEntry{"5. Cases study"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

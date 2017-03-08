@@ -2,7 +2,7 @@
 bibliography: bibliography.bib
 date: "`r BiocStyle::doc_date()`"
 vignette: >
-  %\VignetteIndexEntry{"TCGAbiolinksGUI: Data menu"}
+  %\VignetteIndexEntry{"2. Data menu"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
