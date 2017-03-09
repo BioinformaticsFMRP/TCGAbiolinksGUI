@@ -11,9 +11,10 @@ vignette: >
 
 For a detailed manual for this section please access these links:
 
-1. [Clinical analysis menu manual](https://drive.google.com/open?id=0B0-8N2fjttG-U1dyZ2g2VEhFXzQ)
-2. [Epigenetics analysis menu manual](https://drive.google.com/open?id=0B0-8N2fjttG-N3k0SWZua1RGTW8)
-3. [Genomic analysis menu manual](https://drive.google.com/open?id=0B0-8N2fjttG-TEx6MjBfY0p4dE0)
+1. [Clinical analysis menu manual](https://drive.google.com/drive/folders/0B0-8N2fjttG-U1dyZ2g2VEhFXzQ?usp=sharing)
+2. [Epigenetics analysis menu manual](https://drive.google.com/drive/folders/0B0-8N2fjttG-N3k0SWZua1RGTW8?usp=sharing)
+3. [Transcriptomic analysis menu manual](https://drive.google.com/drive/folders/0B0-8N2fjttG-cGF3SkFac2lueFk?usp=sharing)
+4. [Genomic analysis menu manual](https://drive.google.com/drive/folders/0B0-8N2fjttG-TEx6MjBfY0p4dE0?usp=sharing)
 
 # Menu: Clinical analysis
 
