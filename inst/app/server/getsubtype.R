@@ -41,6 +41,7 @@ observeEvent(input$tcgaSubtypeBt, {
                      "lusc"="Comprehensive genomic characterization of squamous cell lung cancers<br>doi:10.1038/nature11404",
                      "ovca"= "Integrated genomic analyses of ovarian carcinoma<br>doi:10.1038/nature10166",
                      "pancan"="Multiplatform analysis of 12 cancer types reveals molecular <br>doi:10.1016/j.cell.2014.06.049",
+                     "pcpg"="Comprehensive Molecular Characterization of Pheochromocytoma and Paraganglioma<br>http://dx.doi.org/10.1016/j.ccell.2017.01.001",
                      "prad"="The Molecular Taxonomy of Primary Prostate Cancer<br>doi:10.1016/j.cell.2015.10.025",
                      "skcm"="Genomic Classification of Cutaneous Melanoma<br>doi:10.1016/j.cell.2015.05.044",
                      "stad"="Comprehensive molecular characterization of gastric adenocarcinoma<br>doi:10.1038/nature13480",
