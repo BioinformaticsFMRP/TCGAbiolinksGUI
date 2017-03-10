@@ -1,9 +1,7 @@
 library(shiny)
 
 ui <- navbarPage(
-    title = "Split app code across multiple files",
-    # include the UI for each tab
-    source(file.path("ui", "ui.R"),  local = TRUE)$value,
+    source(file.path("ui", "ui.R"),  local = TRUE)$value
 )
 
 server <- function(input, output, session) {

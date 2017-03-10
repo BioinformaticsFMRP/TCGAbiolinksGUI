@@ -1,8 +1,9 @@
 tabItem(tabName = "tcgaSubtype",
         fluidRow(
             column(8, bsAlert("tcgaSubtypemessage"),
-                   bsCollapse(id = "collapseTCGASubtype", open = "Subtype data",
-                              bsCollapsePanel("Subtype data", dataTableOutput('tcgaSubtypetbl'), style = "default")
+                   bsCollapse(id = "collapseTCGASubtype",
+                              bsCollapsePanel("Subtype data: Summary", plotlyOutput("subtypeview"), style = "default"),
+                              bsCollapsePanel("Subtype data: results", dataTableOutput('tcgaSubtypetbl'), style = "default")
                    )),
             column(4,
                    box(title = "Subtype data search",width = NULL,
@@ -40,6 +41,11 @@ tabItem(tabName = "tcgaSubtype",
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                    icon = icon("search")))
+                                    icon = icon("search")),
+                       selectizeInput('subtypePlotCol',
+                                      'Column to plot',
+                                      NULL,
+                                      multiple = FALSE)
+                       )
             ))
 )

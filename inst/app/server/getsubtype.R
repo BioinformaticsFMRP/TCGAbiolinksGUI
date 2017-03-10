@@ -1,29 +1,10 @@
 # Subtype
 observeEvent(input$tcgaSubtypeBt, {
-    updateCollapse(session, "collapseTCGASubtype", open = "Subtype data")
+    updateCollapse(session, "collapseTCGASubtype", open = "Subtype data: results")
     output$tcgaSubtypetbl <- renderDataTable({
+        tbl <- subtype.result()
         tumor <- isolate({input$tcgasubtypeFilter})
-        tbl <- data.frame()
-
-
-        result = tryCatch({
-            tbl <- rbind(tbl, TCGAquery_subtype(tumor = tumor))
-
-
-        }, error = function(e) {
-            createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "No results found", style =  "warning",
-                        content = "Sorry there are subtypes for your query.", append = FALSE)
-        })
-
-        if(is.null(tbl)){
-            createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "No results found", style =  "warning",
-                        content = "Sorry there are subtypes for your query.", append = FALSE)
-            return()
-        } else if(nrow(tbl) ==0) {
-            createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "No results found", style =  "warning",
-                        content = "Sorry there are subtypes for your query.", append = FALSE)
-            return()
-        } else {
+        if(!is.null(tbl)) {
             closeAlert(session, "tcgaSubtypeAlert")
             doi <- c("acc"="Comprehensive Pan-Genomic Characterization of Adrenocortical Carcinoma<br>doi:10.1016/j.ccell.2016.04.002",
                      "aml"="Genomic and epigenomic landscapes of adult de novo acute<br>doi:10.1056/NEJMoa1301689",
@@ -92,4 +73,50 @@ observeEvent(input$tcgaSubtypeBt, {
                        )
                    )
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )})
+    )
+})
+
+subtype.result <-  reactive({
+    tumor <- isolate({input$tcgasubtypeFilter})
+    tbl <- data.frame()
+
+    result = tryCatch({
+        tbl <- rbind(tbl, TCGAquery_subtype(tumor = tumor))
+
+    }, error = function(e) {
+        createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "No results found", style =  "warning",
+                    content = "Sorry there are subtypes for your query.", append = FALSE)
+    })
+
+    if(is.null(tbl)){
+        createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "No results found", style =  "warning",
+                    content = "Sorry there are subtypes for your query.", append = FALSE)
+        return()
+    } else if(nrow(tbl) ==0) {
+        createAlert(session, "tcgaSubtypemessage", "tcgaSubtypeAlert", title = "No results found", style =  "warning",
+                    content = "Sorry there are subtypes for your query.", append = FALSE)
+        return()
+    }
+    return(tbl)
+})
+
+observeEvent(input$subtypePlotCol, {
+    if(is.null(isolate({input$subtypePlotCol})) || str_length(isolate({input$subtypePlotCol}))==0) {
+        updateCollapse(session, "collapseTCGASubtype", open = "Subtype data: Summary")
+    }
+    output$subtypeview <- renderPlotly({
+        tbl <- subtype.result()
+        if(is.null(tbl)) return(NULL)
+
+        if(is.null(col) || str_length(col)==0) return(NULL)
+        plot_ly() %>%
+            add_pie(data = dplyr::count_(tbl, eval(col)), values = ~n,
+                    name = col, domain = list(x = c(0, 1), y = c(0, 1))) %>%
+            layout(title = "Pie Charts with Subplots", showlegend = F,
+                   xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                   yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+    })
+})
+observe({
+    updateSelectizeInput(session, 'subtypePlotCol', choices =  colnames(subtype.result()), server = TRUE)
+})
