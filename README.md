@@ -8,7 +8,7 @@ Also, some other useful packages from Bioconductor, such as [ComplexHeatmap](htt
 
 A running version of the GUI is found in (shinyapps.io)[https://tcgabiolinksgui.shinyapps.io/demo/]
 
-## Installation TCGAbiolinksGUI
+## Installing TCGAbiolinksGUI
 
 To install the package from [Bioconductor devel repository](http://bioconductor.org/packages/devel/bioc/html/TCGAbiolinksGUI.html), please, use the code below. The package will probably be in the Bioconductor release repository (stable) between April and May. 
 
@@ -27,6 +27,18 @@ deps <- c("devtools","shape","shiny","readr","googleVis","shinydashboard","shiny
 for(pkg in deps)  if (!pkg %in% installed.packages())  install.packages(pkg,dependencies = TRUE)
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
+
+## Docker image
+
+TCGAbiolinksGUI is also available as Docker image (self-contained environments that contain everything needed to run the software), 
+which can be easily run on Mac OS, Windows and Linux systems. 
+
+This [PDF](https://drive.google.com/open?id=0B0-8N2fjttG-QXp5LVlPQnVQejg) show how to install and execute the image.
+
+The image can be obtained from Docker Hub: https://hub.docker.com/r/tiagochst/tcgabiolinksgui/
+
+For more information please check: https://docs.docker.com/ and https://www.bioconductor.org/help/docker/
+
 
 ## Video tutorials
 
