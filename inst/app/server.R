@@ -14,6 +14,7 @@ suppressPackageStartupMessages({
     library(readr)
     library(data.table)
     library(grid)
+    library(dplyr)
     options(shiny.maxRequestSize=-1) # Remove limit of upload
     options(shiny.deprecation.messages=FALSE)
 })
@@ -250,7 +251,7 @@ get.volumes <- function(directory = NULL){
 #' @import pathview ELMER TCGAbiolinks SummarizedExperiment shiny ggrepel UpSetR
 #' @keywords internal
 TCGAbiolinksGUIServer <- function(input, output, session) {
-
+    session$onSessionEnded(stopApp)
     server.path <- ifelse(system.file("app", package = "TCGAbiolinksGUI") == "",
                       "server",
                       file.path(system.file("app", package = "TCGAbiolinksGUI"),"server"))

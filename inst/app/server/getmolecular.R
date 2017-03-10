@@ -198,7 +198,7 @@ observeEvent(input$tcgaSearchBt, {
         experimental_strategy  <- gvisPieChart(as.data.frame(table(results$experimental_strategy )),
                                                options=list( title="Experimental strategy"))
         analysis.workflow_type <- gvisPieChart(as.data.frame(table(paste0(
-            results$analysis$workflow_type,"(", results$analysis$workflow_link, ")"))),
+            results$analysis$analysis_workflow_type,"(", results$analysis$analysis_workflow_link, ")"))),
             options=list( title="Workflow type"))
         data.category <- gvisPieChart(as.data.frame(table(results$data_category)),
                                       options=list( title="Data category"))
