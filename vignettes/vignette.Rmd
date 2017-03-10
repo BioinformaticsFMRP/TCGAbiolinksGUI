@@ -40,7 +40,7 @@ This work has been supported by a grant from Henry Ford Hospital (H.N.) and by t
 ## Installation 
 
 To install the package from the [Bioconductor repository](http://bioconductor.org/packages/TCGAbiolinksGUI/) please use the following
-code. To date, the package is only available in the [devel version of Bioconductor](https://www.bioconductor.org/developers/how-to/useDevel/), but it should be available in the release version until May 2017. 
+code. 
 
 ```{r, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
@@ -62,26 +62,17 @@ for(pkg in deps)
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
+
 ## Docker image
 
-TCGAbiolinksGUI is available as Docker image, which can be easily run on Mac OS, Windows and Linux systems. The image can be obtained from Docker Hub: https://hub.docker.com/r/tiagochst/tcgabiolinksgui/
+TCGAbiolinksGUI is available as Docker image (self-contained environments that contain everything needed to run the software), 
+which can be easily run on Mac OS, Windows and Linux systems. 
 
-Download image:
-```{bash, eval = FALSE}
-docker pull tiagochst/tcgabiolinksgui
-```
+This [PDF](https://drive.google.com/open?id=0B0-8N2fjttG-QXp5LVlPQnVQejg) show how to install and execute the image.
 
-To run R from the command line:
-```{bash, eval = FALSE}
-docker run -ti tiagochst/tcgabiolinksgui R
-```
+The image can be obtained from Docker Hub: https://hub.docker.com/r/tiagochst/tcgabiolinksgui/
 
-To run RStudio Server (user: rstudio, password: rstudio): 
-```{bash, eval = FALSE}
-docker run -p 8787:8787 tiagochst/tcgabiolinksgui
-```
-
-For more information please check: https://docs.docker.com/
+For more information please check: https://docs.docker.com/ and https://www.bioconductor.org/help/docker/
 
 ## Quick start
 

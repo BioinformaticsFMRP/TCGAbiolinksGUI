@@ -10,7 +10,7 @@ A running version of the GUI is found in (shinyapps.io)[https://tcgabiolinksgui.
 
 ## Installing TCGAbiolinksGUI
 
-To install the package from [Bioconductor devel repository](http://bioconductor.org/packages/devel/bioc/html/TCGAbiolinksGUI.html), please, use the code below. The package will probably be in the Bioconductor release repository (stable) between April and May. 
+To install the package from [Bioconductor devel repository](http://bioconductor.org/packages/devel/bioc/html/TCGAbiolinksGUI.html), please, use the code below. 
 
 ```R
 # for the moment it must be devel version of Bioconductor
