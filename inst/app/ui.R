@@ -72,9 +72,8 @@ inputTextarea <- function(inputId, value="", nrows, ncols) {
 
 
 header <- dashboardHeader(
-    title = "TCGAbiolinks",
-    titleWidth = 250,
-    tags$li(class = "dropdown shutdown",  a(href = "#", icon("glyphicon glyphicon-off", lib = "glyphicon")))
+    title = "TCGAbiolinksGUI",
+    titleWidth = 250
 )
 header$children[[2]]$children <-  tags$a(href='http://bioconductor.org/packages/TCGAbiolinksGUI/',
                                          tags$img(src='logo_no_text.png',height='50',width='220'))
@@ -122,8 +121,8 @@ sidebar <-  dashboardSidebar(
         menuItem("Configuration", tabName = "config", icon = icon("cogs")),
         tags$hr(class="lineDoc"),
         menuItem("Tutorial/Vignettes", icon = icon("book"),
-                 menuSubItem("TCGAbiolinksGUI Manual" , href = "http://bioinformaticsfmrp.github.io/TCGAbiolinksGUI/", icon = icon("external-link")),
-                 menuSubItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/tcgaBiolinks.html", icon = icon("external-link")),
+                 menuSubItem("TCGAbiolinksGUI Manual" , href = "http://bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinksGUI/inst/doc/index.html", icon = icon("external-link")),
+                 menuSubItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/index.html", icon = icon("external-link")),
                  menuSubItem("ELMER Manual" , href = "https://www.bioconductor.org/packages/3.3/bioc/vignettes/ELMER/inst/doc/vignettes.pdf", icon = icon("external-link"))
         ),
         menuItem("References", icon = icon("file-text-o"), tabName = "references"

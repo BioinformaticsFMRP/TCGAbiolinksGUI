@@ -11,7 +11,7 @@ tabItem(tabName = "seedit",
                        status = "danger",
                        solidHeader = FALSE, collapsible = FALSE,
                        box(title = "Data",width = NULL,
-                           solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                           solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
                            shinyFilesButton('seeditfile', 'Select Summarized Experiment file', 'Please select summarized experiment object (.rda)', multiple = FALSE)
                        ),
                        box(title = "Update sample matrix",width = NULL,

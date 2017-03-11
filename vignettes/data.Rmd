@@ -2,7 +2,7 @@
 bibliography: bibliography.bib
 date: "`r BiocStyle::doc_date()`"
 vignette: >
-  %\VignetteIndexEntry{"TCGAbiolinksGUI: Data menu"}
+  %\VignetteIndexEntry{"2. Data menu"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,12 +13,11 @@ library(SummarizedExperiment)
 library(dplyr)
 library(DT)
 ```
-
-# Detailed explanation
+# Detailed explanation: Get GDC data menu
 
 For a detailed manual for this section please access this link:
-
-1. [Data menu manual](https://drive.google.com/open?id=0B0-8N2fjttG-WVdJVXVqNUs5bnM)
+    
+    1. [Data menu manual](https://drive.google.com/file/d/0B0-8N2fjttG-X1BoNlNnUnpVMWc/view?usp=sharing)
 
 # Sub-menu: Molecular data
 
@@ -37,11 +36,11 @@ to be used in the analysis steps.
 
 There are two available sources to download GDC data using TCGAbiolinks:
 - GDC Legacy Archive : provides access to an unmodified copy of data that was previously stored in
-  [CGHub](https://cghub.ucsc.edu/) and in the TCGA Data Portal hosted by the TCGA Data Coordinating Center (DCC), in which uses
-  as references GRCh37 (hg19) and GRCh36 (hg18).
+[CGHub](https://cghub.ucsc.edu/) and in the TCGA Data Portal hosted by the TCGA Data Coordinating Center (DCC), in which uses
+as references GRCh37 (hg19) and GRCh36 (hg18).
 - GDC harmonized database: data available was harmonized against GRCh38 (hg38) using GDC Bioinformatics Pipelines
-  which provides methods to the standardization of biospecimen and
-  clinical data.
+which provides methods to the standardization of biospecimen and
+clinical data.
 
 </div>
 </div>
@@ -114,6 +113,7 @@ The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-w
 studies of various diseases. We have added some of the subtypes defined by these
 reports in our package.  
 
+- [ACC](doi:10.1016/j.ccell.2016.04.002)[@zheng2016comprehensive]
 - [BRCA](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3465532/)[@cancer2012comprehensive_brca]
 - [COAD](http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html) [@cancer2012comprehensive_colon] 
 - [GBM](http://dx.doi.org/10.1016/j.cell.2015.12.028) [@Cell]
@@ -124,6 +124,7 @@ reports in our package.
 - [LGG](http://dx.doi.org/10.1016/j.cell.2015.12.028)[@Cell] 
 - [LUAD](http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html) [@cancer2014comprehensive] 
 - [LUSC](http://www.nature.com/nature/journal/v489/n7417/abs/nature11404.html)[@cancer2012comprehensive_lusc] 
+- [PCPG](http://dx.doi.org/10.1016/j.ccell.2017.01.001)[@fishbein2017comprehensive] 
 - [PRAD](http://www.sciencedirect.com/science/article/pii/S0092867415013392)[@cancer2015molecular_prad] 
 - [READ](http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html) [@cancer2012comprehensive] 
 - [SKCM](http://www.sciencedirect.com/science/article/pii/S0092867415006340) [@cancer2015genomic_skcm] 
@@ -153,8 +154,8 @@ There are two main differences:
 
 - XML has more information: radiation, drugs information, follow-ups, biospecimen, etc. So the indexed one is only a subset of the XML files
 - The indexed data contains the updated data with the follow up informaiton. 
-  For example: if the patient is alive in the first time clinical data was collect and the in the next follow-up he is dead, 
-  the indexed data will show dead. The XML will have two fields, one for the first time saying he is alive (in the clinical part) and the follow-up saying he is dead. You can see this case here: 
+For example: if the patient is alive in the first time clinical data was collect and the in the next follow-up he is dead, 
+the indexed data will show dead. The XML will have two fields, one for the first time saying he is alive (in the clinical part) and the follow-up saying he is dead. You can see this case here: 
 
 </div>
 </div>
@@ -199,10 +200,10 @@ filter(clinical.index,submitter_id == "TCGA-F5-6702") %>% select(vital_status,da
 ```{r results = 'hide', echo=TRUE, message=FALSE, warning=FALSE}
 # Get XML files and parse them
 recurrent.samples <- GDCquery(project = "TCGA-LIHC",
-                             data.category = "Transcriptome Profiling",
-                             data.type = "Gene Expression Quantification", 
-                             workflow.type = "HTSeq - Counts",
-                             sample.type = 	"Recurrent Solid Tumor")$results[[1]] %>% select(cases)
+data.category = "Transcriptome Profiling",
+data.type = "Gene Expression Quantification", 
+workflow.type = "HTSeq - Counts",
+sample.type = 	"Recurrent Solid Tumor")$results[[1]] %>% select(cases)
 recurrent.patients <- substr(recurrent.samples$cases,1,12)
 clin.query <- GDCquery(project = "TCGA-LIHC", data.category = "Clinical", barcode = recurrent.patients)
 GDCdownload(clin.query)
@@ -211,7 +212,7 @@ clinical.patient <- GDCprepare_clinic(clin.query, clinical.info = "patient")
 ```{r  echo = TRUE, message = FALSE, warning = FALSE}
 # Get indexed data
 GDCquery_clinic("TCGA-LIHC") %>% filter(submitter_id %in% recurrent.patients) %>% 
-    select(progression_or_recurrence,days_to_recurrence,tumor_grade) %>% datatable
+select(progression_or_recurrence,days_to_recurrence,tumor_grade) %>% datatable
 
 # XML data
 clinical.patient %>% select(bcr_patient_barcode,neoplasm_histologic_grade) %>% datatable
@@ -238,5 +239,20 @@ The available filters are:
 
 * Tumor filter: a TCGA tumor, such as Breast invasive Carcinoma (TCGA-BRCA)
 * Variant calling pipelines: Four separate variant calling pipelines are implemented for GDC data harmonization. Options: muse, varscan2, somaticsniper, mutect. 
+
+# Menu: Manage summarized Experiment object
+
+
+To facilitate visualization and modification of the SummarizedExperiment object, we created this menu in which it is possible to visualize the three matrices of the object (assay matrix [i.e. gene expresssion values], features matrix [i.e. gene information] and sample information matrix). Also,  it is possible to download the sample information matrix as a csv file, and, after modifying it, to upload  and update the SummarizedExperiment object. This might be useful if for example the user wants to compare two groups not already pre-defined.
+
+<center>
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs/0.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Tutorial Video: Managing a SummarizedExperiment object - (http://www.youtube.com/watch?v=54NBug9ycwM)")
+
+**Tutorial Video:** Managing a SummarizedExperiment object - (http://www.youtube.com/watch?v=54NBug9ycwM)
+</center>
+
+# Detailed explanation: Manage SummarizedExperiment menu
+
+For a detailed manual for this section please access this link: [Manage SummarizedExperiment](https://drive.google.com/file/d/0B0-8N2fjttG-TVVOcTNFRlh3YXM/view?usp=sharing)
 
 # References

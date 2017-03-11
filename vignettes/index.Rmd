@@ -2,12 +2,13 @@
 bibliography: bibliography.bib
 date: "`r BiocStyle::doc_date()`"
 vignette: >
-  %\VignetteIndexEntry{"TCGAbiolinksGUI: Introduction"}
+  %\VignetteIndexEntry{"1. Introduction"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 # Introduction
+
 
 TCGAbiolinksGUI was created to help users more comfortable with graphical user interfaces (GUI) to search, download and analyze Cancer data. 
 It offers a graphical user interface to the R/Bioconductor package [TCGAbiolinks](http://bioconductor.org/packages/TCGAbiolinks/) [@TCGAbiolinks], which is able to access The National Cancer Institute (NCI) Genomic Data Commons (GDC) thorough its  
@@ -19,14 +20,16 @@ Additional packages from Bioconductor are included, such as [ComplexHeatmap](htt
 The GUI was created using [Shiny](https://shiny.rstudio.com/), a Web Application Framework for R, and uses
 several packages to provide advanced features that can enhance Shiny apps, such as [shinyjs](https://github.com/daattali/shinyjs) to add JavaScript actions for the app,
 [shinydashboard](https://github.com/rstudio/shinydashboard) to add dashboards and [shinyFiles](https://github.com/thomasp85/shinyFiles) to provide an API for client side access to the server file system. 
-A running version of the GUI is found in (shinyapps.io)[https://tcgabiolinksgui.shinyapps.io/demo/]
+A running version of the GUI is found in [shinyapps.io](https://tcgabiolinksgui.shinyapps.io/demo/)
+
+This work has been supported by a grant from Henry Ford Hospital (H.N.) and by the São Paulo Research Foundation [FAPESP](http://www.fapesp.br/) (2016/01389-7 to T.C.S. & H.N. and 2015/07925-5 to H.N.) the BridgeIRIS project, funded by INNOVIRIS, Region de Bruxelles Capitale, Brussels, Belgium, and by GENomic profiling of Gastrointestinal Inflammatory-Sensitive CANcers (GENGISCAN), Belgian FNRS PDR (T100914F to A.C., C.O. & G.B.). T.C.S. and B.P.B. were supported by the NCI Informatics Technology for Cancer Research program, NIH/NCI grant 1U01CA184826.
 
 # Starting with TCGAbiolinksGUI 
 
 ## Installation 
 
 To install the package from the (Bioconductor repository)[http://bioconductor.org/packages/TCGAbiolinksGUI/] please use the following
-code. To date, the package is only available in the (devel version of Bioconductor)[https://www.bioconductor.org/developers/how-to/useDevel/], but it should be available in the release version until May 2017. 
+code. 
 
 ```{r, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
@@ -50,24 +53,14 @@ devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 
 ## Docker image
 
-TCGAbiolinksGUI is available as Docker image, which can be easily run on Mac OS, Windows and Linux systems. The image can be obtained from Docker Hub: https://hub.docker.com/r/tiagochst/tcgabiolinksgui/
+TCGAbiolinksGUI is available as Docker image (self-contained environments that contain everything needed to run the software), 
+which can be easily run on Mac OS, Windows and Linux systems. 
 
-Download image:
-```{bash, eval = FALSE}
-docker pull tiagochst/tcgabiolinksgui
-```
+This [PDF](https://drive.google.com/open?id=0B0-8N2fjttG-QXp5LVlPQnVQejg) show how to install and execute the image.
 
-To run R from the command line:
-```{bash, eval = FALSE}
-docker run -ti tiagochst/tcgabiolinksgui R
-```
+The image can be obtained from Docker Hub: https://hub.docker.com/r/tiagochst/tcgabiolinksgui/
 
-To run RStudio Server (user: rstudio, password: rstudio): 
-```{bash, eval = FALSE}
-docker run -p 8787:8787 tiagochst/tcgabiolinksgui
-```
-
-For more information please check: https://docs.docker.com/
+For more information please check: https://docs.docker.com/ and https://www.bioconductor.org/help/docker/
 
 ## Quick start
 
