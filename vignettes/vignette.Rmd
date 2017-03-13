@@ -116,7 +116,7 @@ offers a  graphical user interface (GUI) to control your app containers.
 
 ## Online manual
 
-A online version of the manual is available at [bioconductor website](https://bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinksGUI/inst/doc/index.html).
+An online version of the manual is available at [bioconductor website](https://bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinksGUI/inst/doc/index.html).
 
 ## Video tutorials
 
