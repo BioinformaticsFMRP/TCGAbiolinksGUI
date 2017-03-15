@@ -14,7 +14,6 @@ suppressPackageStartupMessages({
     library(readr)
     library(data.table)
     library(grid)
-    library(plotly)
     library(dplyr)
     options(shiny.maxRequestSize=-1) # Remove limit of upload
     options(shiny.deprecation.messages=FALSE)

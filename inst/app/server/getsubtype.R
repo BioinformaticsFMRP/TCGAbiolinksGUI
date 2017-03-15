@@ -101,20 +101,17 @@ subtype.result <-  reactive({
 })
 
 observeEvent(input$subtypePlotCol, {
-    if(is.null(isolate({input$subtypePlotCol})) || str_length(isolate({input$subtypePlotCol}))==0) {
+    col <- isolate({input$subtypePlotCol})
+    if(!is.null(col) & str_length(col) > 1) {
         updateCollapse(session, "collapseTCGASubtype", open = "Subtype data: Summary")
     }
-    output$subtypeview <- renderPlotly({
+    output$subtypeview <- renderGvis({
         tbl <- subtype.result()
         if(is.null(tbl)) return(NULL)
+        if(is.null(col)) return(NULL)
 
-        if(is.null(col) || str_length(col)==0) return(NULL)
-        plot_ly() %>%
-            add_pie(data = dplyr::count_(tbl, eval(col)), values = ~n,
-                    name = col, domain = list(x = c(0, 1), y = c(0, 1))) %>%
-            layout(title = "Pie Charts with Subplots", showlegend = F,
-                   xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-                   yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+        if(str_length(col) < 2) return(NULL)
+        gvisPieChart(dplyr::count_(tbl, eval(col)), options=list(width=200, height=300, title=col))
     })
 })
 observe({
