@@ -30,16 +30,51 @@ devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 
 ## Docker image
 
-TCGAbiolinksGUI is also available as Docker image (self-contained environments that contain everything needed to run the software), 
+TCGAbiolinksGUI is available as Docker image (self-contained environments that contain everything needed to run the software), 
 which can be easily run on Mac OS, Windows and Linux systems. 
-
-This [PDF](https://drive.google.com/open?id=0B0-8N2fjttG-QXp5LVlPQnVQejg) show how to install and execute the image.
 
 The image can be obtained from Docker Hub: https://hub.docker.com/r/tiagochst/tcgabiolinksgui/
 
 For more information please check: https://docs.docker.com/ and https://www.bioconductor.org/help/docker/
 
+### Setting up image using graphical user interface (GUI) 
 
+This [PDF](https://drive.google.com/open?id=0B0-8N2fjttG-QXp5LVlPQnVQejg) 
+shows how to install and execute the image using [kitematic](https://kitematic.com/), which
+offers a  graphical user interface (GUI) to control your app containers.
+
+### Setting up image using command-line 
+
+- Download image: docker pull tiagochst/tcgabiolinksgui
+- To run RStudio Server and shiny-server, but the data is not saved if container is stopped: 
+`sudo docker run --name tcgabiolinksgui -d -P -v /home/$USER/docker:/home/rstudio -p 3333:8787 -p 3334:3838 tiagochst/tcgabiolinksgui`
+1. For more information how data can be saved please read [this wiki](https://github.com/rocker-org/rocker/wiki/How-to-save-data) and see command below 
+
+- To run RStudio Server, shiny-server and save the results in the host machine please use the code below: 
+`sudo docker run --name tcgabiolinksgui -d -P -v /home/$USER/docker:/home/rstudio -p 3333:8787 -p 3334:3838 tiagochst/tcgabiolinksgui`
+ 1. In case rstudio is not accessible please check if the folder created (docker) has the right permission
+ 2. If your system is windows or mac you will need to change  `/home/$USER/docker` 
+ to the correct system path. Examples can be found in this [github page](https://github.com/rocker-org/rocker/wiki/Sharing-files-with-host-machine)
+
+- To stop the image:
+1. Run  `sudo docker stop tcgabiolinksgui` to stop it
+
+- To start the image again (after the first time ran with `docker run` and stopped).
+1. Run  `sudo docker start tcgabiolinksgui` 
+
+### Accessing tools after image is running:
+
+- TCGAbiolinksGUI will be available at <your local IP>:3334/tcgabiolinksgui
+- RStudio will be available at <your local IP>:3333 (***username: rstudio*** , ***password:rstudio***)
+
+## Quick start
+
+The following commands should be used in order to start the graphical user interface.
+
+```R
+library(TCGAbiolinksGUI)
+TCGAbiolinksGUI()
+```
 ## Video tutorials
 
 To facilitate the use of this package, we have created some tutorial videos demonstrating the tool.
@@ -50,15 +85,6 @@ Please check this [youtube list](https://www.youtube.com/playlist?list=PLoDzAKMJ
 For each section we created some PDFs with detailing the steps of each section: 
 [Link to folder with PDFs](https://drive.google.com/drive/folders/0B0-8N2fjttG-Q25ldVVmUTVOTk0?usp=sharing)
 
-
-## Quick start
-
-The following commands should be used in order to start the graphical user interface.
-
-```R
-library(TCGAbiolinksGUI)
-TCGAbiolinksGUI()
-```
 
 ## Citation
 
