@@ -2,7 +2,7 @@ tabItem(tabName = "tcgaSubtype",
         fluidRow(
             column(8, bsAlert("tcgaSubtypemessage"),
                    bsCollapse(id = "collapseTCGASubtype",
-                              bsCollapsePanel("Subtype data: Summary", plotlyOutput("subtypeview"), style = "default"),
+                              bsCollapsePanel("Subtype data: Summary", htmlOutput("subtypeview"), style = "default"),
                               bsCollapsePanel("Subtype data: results", dataTableOutput('tcgaSubtypetbl'), style = "default")
                    )),
             column(4,
