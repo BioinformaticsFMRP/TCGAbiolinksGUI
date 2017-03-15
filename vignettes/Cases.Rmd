@@ -13,7 +13,7 @@ vignette: >
 In this case study, we downloaded DNA methylation and gene expression for TCGA adrenal cortical carcinoma (ACC) samples, executed the Differentially methylated region (DMR) analysis and Differential Expression Analysis  (DEA),  then both results were integrated in to a startburst plot.
 
 <center>
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/0.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Tutorial video: Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples - (http://www.youtube.com/watch?v=RcXibjFanH4)")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/maxresdefault.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Tutorial video: Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples - (http://www.youtube.com/watch?v=RcXibjFanH4)")
 
 <center>**Tutorial Video:** Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples - (http://www.youtube.com/watch?v=RcXibjFanH4)
 </center>
@@ -23,7 +23,7 @@ In this case study, we downloaded DNA methylation and gene expression for TCGA a
 In this case we downloaded DNA methylation and gene expression for TCGA Kidney renal clear cell carcinoma (KIRC) samples. Then, this data is used to execute [ELMER](http://bioconductor.org/packages/ELMER/) analysis.
 
 <center>
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/0.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Tutorial video: Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples - (http://www.youtube.com/watch?v=EhGw1aF-2_c)")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/maxresdefault.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Tutorial video: Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples - (http://www.youtube.com/watch?v=EhGw1aF-2_c)")
 
 **Tutorial Video:** Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples - (http://www.youtube.com/watch?v=EhGw1aF-2_c)
 </center>
