@@ -11,18 +11,31 @@ vignette: >
 
 
 TCGAbiolinksGUI was created to help users more comfortable with graphical user interfaces (GUI) to search, download and analyze Cancer data. 
-It offers a graphical user interface to the R/Bioconductor package [TCGAbiolinks](http://bioconductor.org/packages/TCGAbiolinks/) [@TCGAbiolinks], which is able to access The National Cancer Institute (NCI) Genomic Data Commons (GDC) thorough its  
+It offers a graphical user interface to the R/Bioconductor package 
+[TCGAbiolinks](http://bioconductor.org/packages/TCGAbiolinks/) [@TCGAbiolinks], 
+which is able to access The National Cancer Institute (NCI) Genomic Data Commons (GDC) thorough its  
 [GDC Application Programming Interface (API)](https://gdc.cancer.gov/developers/gdc-application-programming-interface-api).
 Additional packages from Bioconductor are included, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package [@Gu20052016] to aid in visualizing the data, 
-[ELMER](http://bioconductor.org/packages/ELMER/) [@yao2015inferring] to identify regulatory enhancers using gene expression + DNA methylation data + motif analysis and 
+[ELMER](http://bioconductor.org/packages/ELMER/) [@yao2015inferring] to 
+identify regulatory enhancers using gene expression + DNA methylation data + motif analysis and 
 [Pathview](http://bioconductor.org/packages/pathview/) [@luo2013pathview] for pathway-based data integration and visualization.
 
-The GUI was created using [Shiny](https://shiny.rstudio.com/), a Web Application Framework for R, and uses
-several packages to provide advanced features that can enhance Shiny apps, such as [shinyjs](https://github.com/daattali/shinyjs) to add JavaScript actions for the app,
-[shinydashboard](https://github.com/rstudio/shinydashboard) to add dashboards and [shinyFiles](https://github.com/thomasp85/shinyFiles) to provide an API for client side access to the server file system. 
+The GUI was created using [Shiny](https://shiny.rstudio.com/), 
+a Web Application Framework for R, and uses
+several packages to provide advanced features that can enhance Shiny apps, 
+such as [shinyjs](https://github.com/daattali/shinyjs) to add JavaScript actions for the app,
+[shinydashboard](https://github.com/rstudio/shinydashboard) to add dashboards 
+and [shinyFiles](https://github.com/thomasp85/shinyFiles) to provide an API 
+for client side access to the server file system. 
 A running version of the GUI is found in [shinyapps.io](https://tcgabiolinksgui.shinyapps.io/demo/)
 
-This work has been supported by a grant from Henry Ford Hospital (H.N.) and by the São Paulo Research Foundation [FAPESP](http://www.fapesp.br/) (2016/01389-7 to T.C.S. & H.N. and 2015/07925-5 to H.N.) the BridgeIRIS project, funded by INNOVIRIS, Region de Bruxelles Capitale, Brussels, Belgium, and by GENomic profiling of Gastrointestinal Inflammatory-Sensitive CANcers (GENGISCAN), Belgian FNRS PDR (T100914F to A.C., C.O. & G.B.). T.C.S. and B.P.B. were supported by the NCI Informatics Technology for Cancer Research program, NIH/NCI grant 1U01CA184826.
+This work has been supported by a grant from Henry Ford Hospital (H.N.) and by 
+the São Paulo Research Foundation [FAPESP](http://www.fapesp.br/) (2016/01389-7 
+to T.C.S. & H.N. and 2015/07925-5 to H.N.) the BridgeIRIS project, funded by INNOVIRIS, 
+Region de Bruxelles Capitale, Brussels, Belgium, and by GENomic profiling of 
+Gastrointestinal Inflammatory-Sensitive CANcers (GENGISCAN), Belgian FNRS PDR 
+(T100914F to A.C., C.O. & G.B.). T.C.S. and B.P.B. were supported by the NCI 
+Informatics Technology for Cancer Research program, NIH/NCI grant 1U01CA184826.
 
 # Starting with TCGAbiolinksGUI 
 
@@ -70,14 +83,20 @@ offers a  graphical user interface (GUI) to control your app containers.
 
 - Download image: docker pull tiagochst/tcgabiolinksgui
 - To run RStudio Server and shiny-server, but the data is not saved if container is stopped: 
-`sudo docker run -d -P -v /home/$USER/docker:/home/rstudio -p 3333:8787 -p 3334:3838 tiagochst/tcgabiolinksgui`
+`sudo docker run --name tcgabiolinksgui -d -P -v /home/$USER/docker:/home/rstudio -p 3333:8787 -p 3334:3838 tiagochst/tcgabiolinksgui`
 1. For more information how data can be saved please read [this wiki](https://github.com/rocker-org/rocker/wiki/How-to-save-data) and see command below 
 
 - To run RStudio Server, shiny-server and save the results in the host machine please use the code below: 
-`sudo docker run -d -P -v /home/$USER/docker:/home/rstudio -p 3333:8787 -p 3334:3838 tiagochst/tcgabiolinksgui`
+`sudo docker run --name tcgabiolinksgui -d -P -v /home/$USER/docker:/home/rstudio -p 3333:8787 -p 3334:3838 tiagochst/tcgabiolinksgui`
  1. In case rstudio is not accessible please check if the folder created (docker) has the right permission
  2. If your system is windows or mac you will need to change  `/home/$USER/docker` 
  to the correct system path. Examples can be found in this [github page](https://github.com/rocker-org/rocker/wiki/Sharing-files-with-host-machine)
+
+- To stop the image:
+1. Run  `sudo docker stop tcgabiolinksgui` to stop it
+
+- To start the image again (after the first time ran with `docker run` and stopped).
+1. Run  `sudo docker start tcgabiolinksgui` 
 
 ### Accessing tools after image is running:
 
