@@ -46,6 +46,7 @@ Imports:
     TCGAbiolinks (>= 2.2.4),
     shinyjs (>= 0.7),
     colourpicker,
+    maftools,
     shinyBS  (>= 0.61)
 VignetteBuilder: knitr
 biocViews: Genetics,
