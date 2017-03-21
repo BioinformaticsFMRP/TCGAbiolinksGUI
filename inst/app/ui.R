@@ -9,7 +9,6 @@ suppressPackageStartupMessages({
     library(reshape2)
     library(shinydashboard)
     library(clusterProfiler)
-    library(plotly)
 })
 
 data(paths.hsa)

@@ -43,7 +43,6 @@ Imports:
     ELMER (>= 1.2.1),
     clusterProfiler,
     parallel,
-    plotly,
     TCGAbiolinks (>= 2.2.4),
     shinyjs (>= 0.7),
     colourpicker,
