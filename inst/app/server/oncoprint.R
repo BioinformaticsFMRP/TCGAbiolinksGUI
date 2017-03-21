@@ -96,7 +96,7 @@ observe({
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 observe({
     shinyFileChoose(input, 'maffile', roots=get.volumes(input$workingDir), session=session,
-                    restrictions=system.file(package='base'), filetypes=c('', 'maf',"csv","maf.gz"))
+                    restrictions=system.file(package='base'), filetypes=c('', "rda",'maf',"csv","maf.gz"))
     shinyFileChoose(input, 'mafAnnotation', roots=get.volumes(input$workingDir), session=session,
                     restrictions=system.file(package='base'), filetypes=c('', 'csv','rda'))
     shinyFileChoose(input, 'oncoGenesFiles', roots=get.volumes(input$workingDir), session=session, restrictions=system.file(package='base'))
@@ -131,38 +131,28 @@ mut <-  reactive({
     file <- as.character(inFile$datapath)
     withProgress(message = 'Reading MAF file',
                  detail = 'This may take a while...', value = 0, {
-                     ret <- read_tsv(file,
-                                     comment = "#",
-                                     col_types = cols(
-                                         Entrez_Gene_Id = col_integer(),
-                                         Start_Position = col_integer(),
-                                         End_Position = col_integer(),
-                                         t_depth = col_integer(),
-                                         t_ref_count = col_integer(),
-                                         t_alt_count = col_integer(),
-                                         n_depth = col_integer(),
-                                         ALLELE_NUM = col_integer(),
-                                         TRANSCRIPT_STRAND = col_integer(),
-                                         PICK = col_integer(),
-                                         TSL = col_integer(),
-                                         HGVS_OFFSET = col_integer(),
-                                         MINIMISED = col_integer()))
-                     if(ncol(ret) == 1) ret <- read_csv(file,
-                                                        comment = "#",
-                                                        col_types = cols(
-                                                            Entrez_Gene_Id = col_integer(),
-                                                            Start_Position = col_integer(),
-                                                            End_Position = col_integer(),
-                                                            t_depth = col_integer(),
-                                                            t_ref_count = col_integer(),
-                                                            t_alt_count = col_integer(),
-                                                            n_depth = col_integer(),
-                                                            ALLELE_NUM = col_integer(),
-                                                            TRANSCRIPT_STRAND = col_integer(),
-                                                            PICK = col_integer(),
-                                                            TSL = col_integer(),
-                                                            HGVS_OFFSET = col_integer(),
-                                                            MINIMISED = col_integer()))
+                     if(grepl("\\.maf", file)){
+                         ret <- read_tsv(file,
+                                         comment = "#",
+                                         col_types = cols(
+                                             Entrez_Gene_Id = col_integer(),
+                                             Start_Position = col_integer(),
+                                             End_Position = col_integer(),
+                                             t_depth = col_integer(),
+                                             t_ref_count = col_integer(),
+                                             t_alt_count = col_integer(),
+                                             n_depth = col_integer(),
+                                             ALLELE_NUM = col_integer(),
+                                             TRANSCRIPT_STRAND = col_integer(),
+                                             PICK = col_integer(),
+                                             TSL = col_integer(),
+                                             HGVS_OFFSET = col_integer(),
+                                             MINIMISED = col_integer()))
+                     } else   if(grepl("\\.csv", file)){
+                         ret <- read_csv(file)
+                     } else {
+                         ret <-  get(load(file))
+                     }
                      incProgress(1, detail = paste("Done"))
                  })
     return(ret)
