@@ -138,27 +138,27 @@ observe({
 })
 
 
-# mee create
-observe({
-    data.met <- mee.met()
-    updateSelectizeInput(session, 'elmermeetype', choices = {
-        if(!is.null(data.met)) as.character(colnames(colData(data.met)))
-    }, server = TRUE)
-})
-observeEvent(input$elmermeetype, {
-    data.met <- mee.met()
-    updateSelectizeInput(session, 'elmermeesubtype', choices = {
-        if(!is.null(data.met)) as.character(unique(colData(data.met)[,input$elmermeetype]))
-    }, server = TRUE)
-})
-observeEvent(input$elmermeetype, {
-    data.met <- mee.met()
-    updateSelectizeInput(session, 'elmermeesubtype2', choices = {
-        if(!is.null(data.met)) as.character(unique(colData(data.met)[,input$elmermeetype]))
-    }, server = TRUE)
-})
+# mae create
+#observe({
+#    data.met <- elmer.met()
+#    updateSelectizeInput(session, 'elmermeetype', choices = {
+#        if(!is.null(data.met)) as.character(colnames(colData(data.met)))
+#    }, server = TRUE)
+#})
+#observeEvent(input$elmermeetype, {
+#    data.met <- elmer.met()
+#    updateSelectizeInput(session, 'elmermeesubtype', choices = {
+#        if(!is.null(data.met)) as.character(unique(colData(data.met)[,input$elmermeetype]))
+#    }, server = TRUE)
+#})
+#observeEvent(input$elmermeetype, {
+#    data.met <- elmer.met()
+#    updateSelectizeInput(session, 'elmermeesubtype2', choices = {
+#        if(!is.null(data.met)) as.character(unique(colData(data.met)[,input$elmermeetype]))
+#    }, server = TRUE)
+#})
 
-mee.exp <-  reactive({
+elmer.exp <-  reactive({
     inFile <- input$elmerexpfile
     if (is.null(inFile)) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
@@ -168,9 +168,16 @@ mee.exp <-  reactive({
                      exp <- get(load(file))
                      incProgress(1, detail = "Completed")
                  })
+
+    if(!class(exp) %in% c(class(as(SummarizedExperiment(),"RangedSummarizedExperiment")),class(matrix()),class(data.frame()))){
+        createAlert(session, "elmermessage", "elmerAlert", title = "Data input error", style =  "danger",
+                    content = paste0("Sorry, but I'm expecting a Summarized Experiment, a data frame or a Matrix object, but I got a: ",
+                                     class(exp)), append = FALSE)
+        return(NULL)
+    }
     return(exp)
 })
-mee.met <-  reactive({
+elmer.met <-  reactive({
     inFile <- input$elmermetfile
     if (is.null(inFile)) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
@@ -181,9 +188,9 @@ mee.met <-  reactive({
                      incProgress(1, detail = "Completed")
                  })
 
-    if(class(met)!= class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
+    if(!class(met) %in% c(class(as(SummarizedExperiment(),"RangedSummarizedExperiment")),class(matrix()),class(data.frame()))){
         createAlert(session, "elmermessage", "elmerAlert", title = "Data input error", style =  "danger",
-                    content = paste0("Sorry, but I'm expecting a Summarized Experiment object, but I got a: ",
+                    content = paste0("Sorry, but I'm expecting a Summarized Experiment, a data frame or a Matrix object, but I got a: ",
                                      class(met)), append = FALSE)
         return(NULL)
     }
@@ -192,70 +199,100 @@ mee.met <-  reactive({
 })
 
 
-observeEvent(input$elmerpreparemee, {
-    exp.elmer <- mee.exp()
-    met.elmer <- mee.met()
-    column <- isolate({input$elmermeetype})
-    subtype1 <-  isolate({input$elmermeesubtype})
-    subtype2 <-  isolate({input$elmermeesubtype2})
+createMae <-  reactive({
+    input$elmercreatemae
+    exp <- elmer.exp()
+    met <- elmer.met()
 
-    if(is.null(column)){
-        closeAlert(session, "elmerAlert")
-        createAlert(session, "elmermessage", "elmerAlert", title = "Type missing", style =  "danger",
-                    content =   "Please select the column with type", append = TRUE)
+    if(is.null(exp)) {
+        createAlert(session, "elmerinputmessage", "elmerAlert", title = "ERROR", style =  "danger",
+                    content =   "Please select gene expression object", append = TRUE)
         return(NULL)
     }
-    if(is.null(subtype1) | is.null(subtype2)){
-        closeAlert(session, "elmerAlert")
-        createAlert(session, "elmermessage", "elmerAlert", title = "Subtype missing", style =  "danger",
-                    content =   "Please select the two subtypes", append = TRUE)
-        return(NULL)
-    }
-    if(is.null(exp.elmer) | is.null(met.elmer)){
-        closeAlert(session, "elmerAlert")
-        createAlert(session, "elmermessage", "elmerAlert", title = "Subtype missing", style =  "danger",
-                    content =   "Please upload the two summarized Experiment objects", append = TRUE)
+    if(is.null(met)) {
+        createAlert(session, "elmerinputmessage", "elmerAlert", title = "ERROR", style =  "danger",
+                    content =   "Please select DNA methylation object", append = TRUE)
         return(NULL)
     }
 
-
-    # Data: get only samples of subtype1 and subtype2
-    exp.elmer <- subset(exp.elmer, select=(colData(exp.elmer)[,column] %in% c(subtype1,subtype2)))
-    met.elmer <- subset(met.elmer, select=(colData(met.elmer)[,column] %in%  c(subtype1,subtype2)))
-
-    # Get barcodes for subtype1
-    sample.info <-  colData(exp.elmer)
-    samples <- sample.info[sample.info[,column] == isolate({input$elmermeesubtype2}),]$barcode
     withProgress(message = 'Creating mee data',
                  detail = 'This may take a while...', value = 0, {
+                     distal.probes <- get.feature.probe(genome = isolate({input$elmerInputGenome}),
+                                                        met.platform = isolate({input$elmerInputMetPlatform}))
 
-                     exp.elmer <- TCGAprepare_elmer(exp.elmer, platform = "IlluminaHiSeq_RNASeqV2",save = FALSE)
-                     incProgress(1/5, detail = paste0('Gene expression matrix prepared'))
-
-                     met.elmer <- TCGAprepare_elmer(met.elmer, platform = "HumanMethylation450",met.na.cut = isolate({input$elmermetnacut}), save = FALSE)
-                     incProgress(1/5, detail = paste0('DNA Methylation matrix prepared'))
-
-                     geneAnnot <- txs()
-                     geneAnnot$GENEID <- paste0("ID",geneAnnot$GENEID)
-                     geneInfo <- promoters(geneAnnot,upstream = 0, downstream = 0)
-                     probe <- get.feature.probe()
-
-                     # create mee object, use @ to access the matrices inside the object
-                     mee <- fetch.mee(meth = met.elmer, exp = exp.elmer, TCGA = TRUE, probeInfo = probe, geneInfo = geneInfo)
-                     incProgress(1/5, detail = paste0('Mee is done'))
-
-                     # Relabel samples in the mee object: subtype1 is control
-                     mee@sample$TN[mee@sample$ID %in% substr(samples,1,15)] <- "Control"
-
+                     print("Creating MAE")
+                     mae <- createMAE(met = met,
+                                      exp = exp,
+                                      TCGA = isolate({input$elmerInputTCGA}),
+                                      filter.probes = distal.probes,
+                                      save = FALSE,
+                                      met.platform = isolate({input$elmerInputMetPlatform}),
+                                      genome = isolate({input$elmerInputGenome}))
+                     incProgress(1/2, detail = paste0('MAE created. Saving'))
+                     print("Saving MAE")
                      # Define where to save the mee object
                      getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
                      if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
-                     filename <- file.path(getPath,isolate({input$meesavefilename}))
-                     save(mee,file = filename)
-                     incProgress(2/5, detail = paste0('Saving is done'))
-                     createAlert(session, "elmermessage", "elmerAlert", title = "Mee created", style =  "success",
-                                 content =   paste0("Mee file created: ", filename), append = TRUE)
+                     filename <- file.path(getPath,isolate({input$maesavefilename}))
+                     save(mae,file = filename)
+                     incProgress(1/2, detail = paste0('Saving is done'))
+                     createAlert(session, "elmerinputmessage", "elmerAlert", title = "MAE created", style =  "success",
+                                 content =   paste0("MAE file created: ", filename), append = TRUE)
                  })
+    return(mae)
+
+})
+
+observeEvent(input$elmercreatemae, {
+    mae <- createMae()
+    output$elmerMaeSampleMapping <- renderDataTable({
+        return(as.data.frame(sampleMap(mae)))
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+    )
+
+    output$elmerMaeSampleMetada <- renderDataTable({
+        return(as.data.frame(pData(mae)))
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+    )
+
 })
 # Input data
 elmer.results.data <-  reactive({
@@ -638,3 +675,33 @@ observeEvent(input$elmerTableType , {
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
 })
+
+
+# ELMER INPUT
+output$elmerInputSampleMapDownload <- downloadHandler(
+    filename = "elmer_example_sample_mapping.tsv",
+    content = function(con) {
+        met <- elmer.met()
+        if(!is.null(met) ) {
+            pData <- data.frame(primary = paste0("sample",1:ncol(met)), group = rep("To be filled",ncol(met)))
+            write_tsv(pData,con)
+        }
+    }
+)
+
+output$elmerInputpDataDownload <- downloadHandler(
+    filename = "elmer_example_sample_metadata.tsv",
+    content = function(con) {
+        exp <- elmer.exp()
+        met <- elmer.met()
+        if(!is.null(exp) & !is.null(met) ) {
+            assay <- c(rep("DNA methylation", ncol(met)),
+                       rep("Gene expression", ncol(exp)))
+            primary <- rep("SampleX", ncol(met) + ncol(exp))
+            colname <- c(colnames(met),colnames(exp))
+            sampleMap <- data.frame(assay,primary,colname)
+            write_tsv(sampleMap,con)
+        }
+    }
+)
+
