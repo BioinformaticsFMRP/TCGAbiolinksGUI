@@ -114,6 +114,7 @@ sidebar <-  dashboardSidebar(
         tags$hr(class="lineIntegrative"),
         menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
         menuItem("ELMER" , icon = icon("flask"),
+                 menuSubItem("Create input data" , tabName = "elmerinput", icon = icon("flask")),
                  menuSubItem("Analysis" , tabName = "elmeranalysis", icon = icon("flask")),
                  menuSubItem("Visualize results" , tabName = "elmerresults", icon = icon("picture-o"))
         ),
@@ -174,6 +175,7 @@ body <-  dashboardBody(
         source(file.path(ui.path, "starburst.R"),  local = TRUE)$value,
         source(file.path(ui.path, "elmer_analysis.R"),  local = TRUE)$value,
         source(file.path(ui.path, "elmer_results.R"),  local = TRUE)$value,
+        source(file.path(ui.path, "elmer_input.R"),  local = TRUE)$value,
         source(file.path(ui.path, "config.R"),  local = TRUE)$value,
         source(file.path(ui.path, "references.R"),  local = TRUE)$value,
         source(file.path(ui.path, "getinference.R"),  local = TRUE)$value
