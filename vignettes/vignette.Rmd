@@ -396,7 +396,7 @@ clinical.patient %>% select(bcr_patient_barcode,neoplasm_histologic_grade) %>% k
 #### Tutorial Video
 How to fetch GDC clinical data.
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/54NBug9ycwM/0.jpg)](http://www.youtube.com/watch?v=54NBug9ycwM "Tutorial Video: Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/54NBug9ycwM/maxresdefault.jpg)](http://www.youtube.com/watch?v=54NBug9ycwM "Tutorial Video: Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)")
 <center>
 **Tutorial Video:** Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)
 </center>
