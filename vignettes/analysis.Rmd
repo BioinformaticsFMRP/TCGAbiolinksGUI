@@ -41,9 +41,9 @@ Changes the size of the plot
 
 To facilitate visualization and modification of the SummarizedExperiment object, we created this menu in which it is possible to visualize the three matrices of the object (assay matrix [i.e. gene expresssion values], features matrix [i.e. gene information] and sample information matrix). Also,  it is possible to download the sample information matrix as a csv file, and, after modifying it, to upload  and update the SummarizedExperiment object. This might be useful if for example the user wants to compare two groups not already pre-defined.
 
-<center>
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs/maxresdefault.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Tutorial Video: Managing a SummarizedExperiment object - (http://www.youtube.com/watch?v=54NBug9ycwM)")
 
+<center>
 **Tutorial Video:** Managing a SummarizedExperiment object - (http://www.youtube.com/watch?v=54NBug9ycwM)
 </center>
 
@@ -179,7 +179,6 @@ to adjust for distributional differences between lanes (e.g., sequencing depth):
 
 ![Pathway graphs output.](pathview.png)
 
-<center>
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/MtEVe7_ULlQ/maxresdefault.jpg)](http://www.youtube.com/watch?v=MtEVe7_ULlQ "Tutorial video:  Visualizing DEA results using pathview graphs - (http://www.youtube.com/watch?v=MtEVe7_ULlQ)")
 <center>**Tutorial Video:** Visualizing DEA results using pathview graphs - (http://www.youtube.com/watch?v=MtEVe7_ULlQ)
 </center>
@@ -269,9 +268,9 @@ Using the oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/p
 
 ![Oncoprint plot menu: Main window.](oncoprint.png)
 
-<center>
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/cp1AwT8Ogmg/maxresdefault.jpg)](http://www.youtube.com/watch?v=cp1AwT8Ogmg "Tutorial video: Download Mutation Annotation files (MAF) and visualize through an oncoprint plot - (http://www.youtube.com/watch?v=cp1AwT8Ogmg)")
 
+<center>
 **Tutorial Video:** Download Mutation Annotation files (MAF) and visualize through an oncoprint plot - (http://www.youtube.com/watch?v=cp1AwT8Ogmg)
 </center>
 
