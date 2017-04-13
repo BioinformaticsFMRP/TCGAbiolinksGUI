@@ -47,10 +47,10 @@ The possible highlight controls are:
 * Save result: save results in a csv file
 
 ## Tutorial video:
-<center>
+
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/_ec6Sij4MBc/maxresdefault.jpg)](http://www.youtube.com/watch?v=_ec6Sij4MBc "Tutorial video: Integrating DMR analysis and DEA results to be visualized into a starburst plot - (http://www.youtube.com/watch?v=_ec6Sij4MBc) ")
 
-**Tutorial Video:** Integrating DMR analysis and DEA results to be visualized into a starburst plot - (http://www.youtube.com/watch?v=_ec6Sij4MBc)
+<center>**Tutorial Video:** Integrating DMR analysis and DEA results to be visualized into a starburst plot - (http://www.youtube.com/watch?v=_ec6Sij4MBc)
 </center>
 
 # Menu: ELMER (Enhancer Linking by Methylation/Expression Relationship)
