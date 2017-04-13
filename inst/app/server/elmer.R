@@ -140,21 +140,34 @@ observe({
 
 # mae create
 observe({
-    data <- meedata()
+    data <- maedata()
     updateSelectizeInput(session, 'elmermeetype', choices = {
         if(!is.null(data)) as.character(colnames(pData(data)))
     }, server = TRUE)
 })
 observeEvent(input$elmermeetype, {
-    data <- meedata()
+    data <- maedata()
     updateSelectizeInput(session, 'elmermeesubtype', choices = {
         if(!is.null(data)) as.character(unique(pData(data)[,input$elmermeetype]))
     }, server = TRUE)
 })
 observeEvent(input$elmermeetype, {
-    data <- meedata()
+    data <- maedata()
     updateSelectizeInput(session, 'elmermeesubtype2', choices = {
         if(!is.null(data)) as.character(unique(pData(data)[,input$elmermeetype]))
+    }, server = TRUE)
+})
+
+observe({
+    input$elmermeesubtype2
+    input$elmermeesubtype
+    group1 <- if_else(str_length(isolate({input$elmermeesubtype})) > 0,isolate({input$elmermeesubtype}), "group 1")
+    group2 <- if_else(str_length(isolate({input$elmermeesubtype2})) > 0,isolate({input$elmermeesubtype2}), "group 2")
+    choices <- c("hyper","hypo")
+    names(choices) <-  c(paste("Probes hypermethylated in", group1,"compared to", group2),
+                         paste("Probes hypomethylated in", group1,"compared to", group2))
+    updateSelectizeInput(session, 'elmerdirection', choices = {
+          choices
     }, server = TRUE)
 })
 
@@ -308,7 +321,7 @@ elmer.results.data <-  reactive({
     return(mee.results)
 })
 
-meedata <-  reactive({
+maedata <-  reactive({
     inFile <- input$elmermeefile
     if (is.null(inFile)) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
@@ -376,39 +389,49 @@ observeEvent(input$elmerAnalysisBt, {
     closeAlert(session, "elmerAlert")
     getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
     if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
-    mae <- meedata()
+    mae <- maedata()
     if(is.null(mae)){
         closeAlert(session, "elmerAlert")
-        createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "danger",
+        createAlert(session, "elmermessage", "elmerAlert", title = "MAE object missing", style =  "danger",
                     content =   "Please upload the MAE object for this plot", append = TRUE)
         return(NULL)
     }
-    if(isolate({input$elmerhyperdir}) & isolate({input$elmerhypodir})) {
-        direction <- c("hyper","hypo")
-    } else if(isolate({input$elmerhyperdir})) {
-        direction <- c("hyper")
-    } else {
-        direction <- c("hypo")
+
+
+
+    if(isolate({input$elmergetpairpermu}) > nrow(getMet(mae))){
+        closeAlert(session, "elmerAlert")
+        createAlert(session, "elmermessage", "elmerAlert", title = "Permutation number problem", style =  "danger",
+                    content =   "The number of permutation is higher than the number of probes avaiable, please, reduce it", append = TRUE)
+        return(NULL)
     }
+    direction <- isolate({input$elmerdirection})
     done <- c()
+    group1 <- isolate({input$elmermeesubtype})
+    group2 <- isolate({input$elmermeesubtype2})
+    group.col <- isolate({input$elmermeetype})
+    mae <- mae[,pData(mae)[[group.col]] %in% c(group1, group2) ]
     for (j in direction){
         withProgress(message = 'ELMER analysis',
                      detail = paste0('Direction: ',j), value = 0, {
                          print(j)
                          dir.out <- paste0(getPath,"/",isolate({input$elmerresultssavefolder}),"/",j)
-                         dir.create(dir.out, recursive = TRUE)
+                         dir.create(dir.out, recursive = TRUE,showWarnings = FALSE)
                          #--------------------------------------
                          # STEP 3: Analysis                     |
                          #--------------------------------------
                          # Step 3.1: Get diff methylated probes |
                          #--------------------------------------
-                         setProgress(value = which(j == direction) * 0.0, message = "Step 1",
-                                     detail = paste0("Identify distal enhancer probes ", j,"methylaed in experiment group compared to control group"),
+                         setProgress(value = which(j == direction) * 0.0, message = paste("Step 1-", j, "direction"),
+                                     detail = paste("Identify distal enhancer probes", j,"methyladed in", group1, "compared to",group2),
                                      session = getDefaultReactiveDomain())
                          Sig.probes <- get.diff.meth(mae,
-                                                     cores=isolate({input$elmercores}),
+                                                     group.col = group.col,
+                                                     group1 = group1,
+                                                     group2 = group2,
+                                                     cores = isolate({input$elmercores}),
                                                      dir.out = dir.out,
-                                                     diff.dir=j,
+                                                     diff.dir = j,
                                                      pvalue = isolate({input$elmermetpvalue}))
                          if(all(is.na(Sig.probes$probe))){
                              createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "error",
@@ -419,8 +442,8 @@ observeEvent(input$elmerAnalysisBt, {
                          # Step 3.2: Identify significant probe-gene pairs            |
                          #-------------------------------------------------------------
                          # Collect nearby 20 genes for Sig.probes
-                         setProgress(value = which(j == direction) * 0.1, message = "Step 2",
-                                     detail = paste0(j,": Get Near Genes for ", length(na.omit(Sig.probes$probe))," probes"),
+                         setProgress(value = which(j == direction) * 0.1, message = paste("Step 2-", j, "direction"),
+                                     detail = paste0("Get Near Genes for ", length(na.omit(Sig.probes$probe))," probes"),
                                      session = getDefaultReactiveDomain())
 
                          nearGenes <- GetNearGenes(data = mae,
@@ -428,8 +451,8 @@ observeEvent(input$elmerAnalysisBt, {
                                                    cores = isolate({input$elmercores}),
                                                    geneNum = isolate({input$elmergetpairNumGenes}))
 
-                         setProgress(value = which(j == direction) * 0.2, message = "Step 3",
-                                     detail = paste0(j,": Identify putative target genes for differentially methylated distal enhancer probes ", length(na.omit(Sig.probes$probe))," probes"),
+                         setProgress(value = which(j == direction) * 0.2, message = paste("Step 3-", j, "direction"),
+                                     detail = paste0("Identify putative target genes for differentially methylated distal enhancer probes ", length(na.omit(Sig.probes$probe))," probes"),
                                      session = getDefaultReactiveDomain())
 
                          pair  <- tryCatch({
@@ -443,7 +466,7 @@ observeEvent(input$elmerAnalysisBt, {
                                       Pe = isolate({input$elmergetpairpvalue}),
                                       permu.size=isolate({input$elmergetpairpermu}),
                                       percentage =  isolate({input$elmergetpairpercentage}),
-                                      portion = isolate({input$elmergetpairportion}),
+                                      filter.portion = isolate({input$elmergetpairportion}),
                                       diffExp = isolate({input$elmergetpairdiffExp}))
                          }, error = function(e) {
                              createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "danger",
@@ -467,8 +490,8 @@ observeEvent(input$elmerAnalysisBt, {
                              #-------------------------------------------------------------
                              # Step 3.3: Motif enrichment analysis on the selected probes |
                              #-------------------------------------------------------------
-                             setProgress(value = which(j == direction) * 0.3, message = "Step 4",
-                                         detail = paste0(j,": Identify enriched motifs for the distal enhancer probes which are significantly differentially methylated and linked to putative target gene"),
+                             setProgress(value = which(j == direction) * 0.3, message = paste("Step 4-", j, "direction"),
+                                         detail = paste0("Identify enriched motifs for the distal enhancer probes which are significantly differentially methylated and linked to putative target gene"),
                                          session = getDefaultReactiveDomain())
                              distal.probe <- get.feature.probe(genome = metadata(mae)$genome,met.platform = metadata(mae)$met.platform)
                              enriched.motif <- get.enriched.motif(data=mae,
@@ -486,7 +509,8 @@ observeEvent(input$elmerAnalysisBt, {
                                  # Step 3.4: Identifying regulatory TFs                        |
                                  #-------------------------------------------------------------
                                  print("get.TFs")
-                                 setProgress(value = which(j == direction) * 0.4, message = "Step 5", detail = paste0(j,": Identify regulatory TFs whose expression associate with DNA methylation at motifs."), session = getDefaultReactiveDomain())
+                                 setProgress(value = which(j == direction) * 0.4, message = paste("Step 5-", j, "direction"),
+                                             detail = paste0(": Identify regulatory TFs whose expression associate with DNA methylation at motifs."), session = getDefaultReactiveDomain())
 
                                  TF <- get.TFs(data = mae,
                                                enriched.motif = enriched.motif,
@@ -495,7 +519,7 @@ observeEvent(input$elmerAnalysisBt, {
                                                label = j,
                                                percentage = isolate({input$elmergetTFpercentage}))
                                  TF.meth.cor <- get(load(paste0(dir.out,"/getTF.",j,".TFs.with.motif.pvalue.rda")))
-                                 save(mee, TF, enriched.motif, Sig.probes.paired,
+                                 save(mae, TF, enriched.motif, Sig.probes.paired,
                                       pair, nearGenes, Sig.probes, motif.enrichment, TF.meth.cor,
                                       file=paste0(dir.out,"/ELMER_results_",j,".rda"),
                                       compress = "xz")
@@ -515,7 +539,7 @@ observeEvent(input$elmerAnalysisBt, {
                      })
     }
     createAlert(session, "elmermessage", "elmerAlert", title = "ELMER analysis completed", style =  "success",
-                content = paste0("ELMER analysis were completed. Results saved in\n",paste0(dir.out,"/ELMER_results_",done,".rda\n")), append = TRUE)
+                content = paste0("ELMER analysis were completed. Results saved in\n",paste0(dir.out,"/ELMER_results_",done,".rda\n", collapse = "")), append = TRUE)
 })
 
 observeEvent(input$elmerPlotBt , {
