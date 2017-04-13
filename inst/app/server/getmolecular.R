@@ -94,6 +94,8 @@ query.result <-  reactive({
                  })
 
     if(is.null(query)) {
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                    content = "No results for this query", append = FALSE)
         return(NULL)
     }
     not.found <- c()
