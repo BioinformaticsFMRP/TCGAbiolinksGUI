@@ -55,6 +55,8 @@ observeEvent(input$deaAnalysis , {
                                                           geneInfo = geneInfo,
                                                           method = isolate({input$deanormalizationmet})
                          )
+                     } else {
+                         exp <- assay(se)
                      }
                      # quantile filter of genes
                      if(isolate({input$deafilter})) {
@@ -63,6 +65,8 @@ observeEvent(input$deaAnalysis , {
                          dataFilt <- TCGAanalyze_Filtering(tabDF = exp,
                                                            method = isolate({input$deafilteringmet}),
                                                            qnt.cut =  isolate({input$deafilteringcut}))
+                     } else {
+                         dataFilt <- exp
                      }
 
                      incProgress(1/5, detail = paste0('Differentially expression analysis (DEA) using edgeR'))
