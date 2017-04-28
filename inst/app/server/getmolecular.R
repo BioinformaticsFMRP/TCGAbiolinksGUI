@@ -14,7 +14,10 @@ query.result <-  reactive({
     #------------------- STEP 1: Argument-------------------------
     # Set arguments for GDCquery, if value is empty we will set it to FALSE (same as empty)
     tumor <- isolate({input$tcgaProjectFilter})
+    if(str_length(tumor) == 0)  tumor <- NULL
+
     data.category <- isolate({input$tcgaDataCategoryFilter})
+    if(str_length(data.category) == 0)  data.category <- NULL
 
     # Data type
     data.type <- isolate({input$tcgaDataTypeFilter})
@@ -58,14 +61,18 @@ query.result <-  reactive({
     experimental.strategy <- isolate({input$tcgaExpStrategyFilter})
     if(str_length(experimental.strategy) == 0) experimental.strategy <- FALSE
 
+    # Close notifications
+    if (!is.null(id)) {
+        removeNotification(id)
+        id <<- NULL
+    }
+
     if(is.null(tumor)){
-        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Data input error", style =  "danger",
-                    content = "Please select a project", append = FALSE)
+        id <<- showNotification("Input error: Please select a project", type =  "error", duration = NULL)
         return(NULL)
     }
     if(is.null(data.category)){
-        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Data input error", style =  "danger",
-                    content = "Please select a data.category", append = FALSE)
+        id <<- showNotification("Input error: Please select a data.category", type =  "error", duration = NULL)
         return(NULL)
     }
 
@@ -87,17 +94,11 @@ query.result <-  reactive({
                          incProgress(1, detail = "Completed")
                          return(query)
                      }, error = function(e) {
-                         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
-                                     content = "No results for this query", append = FALSE)
+                         id <<- showNotification("Search error: No results for this query", type =  "error", duration = NULL)
                          return(NULL)
                      })
                  })
 
-    if(is.null(query)) {
-        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
-                    content = "No results for this query", append = FALSE)
-        return(NULL)
-    }
     not.found <- c()
     tbl <- data.frame()
     results <- query$results[[1]]
@@ -181,12 +182,11 @@ observeEvent(input$tcgaSearchBt, {
     )
 
     output$tcgaview <- renderGvis({
-        closeAlert(session,"tcgaAlert")
+
         results <- getResults(query.result()[[1]])
         clinical <- query.result()[[2]]
-        if(any(duplicated(results$cases)))
-            createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
-                        content = "There are more than one file for the same case.", append = FALSE)
+        if(any(duplicated(results$cases))) id <<- showNotification("Search: There are more than one file for the same case.", type =  "warning", duration = NULL)
+
         #------------------- STEP 3: Plot-------------------------
         # Plot informations to help the user visualize the data that will
         # be downloaded
@@ -230,7 +230,11 @@ observeEvent(input$tcgaSearchBt, {
 })
 
 observeEvent(input$tcgaPrepareBt,{
-    closeAlert(session,"tcgaAlert")
+    # Close notifications
+    if (!is.null(id)) {
+        removeNotification(id)
+        id <<- NULL
+    }
 
     query <- query.result()[[1]]
     results <- query$results[[1]]
@@ -251,8 +255,7 @@ observeEvent(input$tcgaPrepareBt,{
                              incProgress(1/ceiling(n/step), detail = paste("Completed ", i + 1, " of ",ceiling(n/step)))
                          }
                      }, error = function(e) {
-                         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
-                                     content = "Error while downloading the files", append = FALSE)
+                         id <<- showNotification("Downloead error: Error while downloading the files. Please try again", type =  "warning", duration = NULL)
                          return(NULL)
                      })
                  })
@@ -273,8 +276,7 @@ observeEvent(input$tcgaPrepareBt,{
                              filename <- c(filename, aux)
                          }
                      }, error = function(e) {
-                         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
-                                     content = "Error while preparing the files", append = FALSE)
+                         id <<- showNotification("Error while preparing the files", type =  "error", duration = NULL)
                          print(e)
                          return(NULL)
                      })
@@ -286,6 +288,8 @@ observeEvent(input$tcgaPrepareBt,{
 
 getClinical.info <-  reactive({
     project <- input$tcgaProjectFilter
+    if(is.null(project) || str_length(project) == 0) return(NULL)
+
     baseURL <- "https://gdc-api.nci.nih.gov/cases/?"
     options.pretty <- "pretty=true"
     options.expand <- "expand=diagnoses,demographic"
@@ -364,10 +368,12 @@ observe({
     input$tcgaProjectFilter
     tryCatch({
         clin <- getClinical.info()
-        updateSelectizeInput(session, 'tcgaClinicalGenderFilter', choices =  unique(clin$gender), server = TRUE)
-        updateSelectizeInput(session, 'tcgaClinicalVitalStatusFilter', choices =  unique(clin$vital_status), server = TRUE)
-        updateSelectizeInput(session, 'tcgaClinicalRaceFilter', choices =  unique(clin$race), server = TRUE)
-        updateSelectizeInput(session, 'tcgaClinicalTumorStageFilter', choices =  unique(clin$tumor_stage), server = TRUE)
+        if(!is.null(clin)){
+            updateSelectizeInput(session, 'tcgaClinicalGenderFilter', choices =  unique(clin$gender), server = TRUE)
+            updateSelectizeInput(session, 'tcgaClinicalVitalStatusFilter', choices =  unique(clin$vital_status), server = TRUE)
+            updateSelectizeInput(session, 'tcgaClinicalRaceFilter', choices =  unique(clin$race), server = TRUE)
+            updateSelectizeInput(session, 'tcgaClinicalTumorStageFilter', choices =  unique(clin$tumor_stage), server = TRUE)
+        }
         shinyjs::show("tcgaClinicalGenderFilter")
         shinyjs::show("tcgaClinicalVitalStatusFilter")
         shinyjs::show("tcgaClinicalRaceFilter")
