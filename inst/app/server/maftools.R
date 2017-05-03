@@ -16,7 +16,7 @@ observeEvent(input$maftoolsPlot, {
         shinyjs::show("maftoolsrmNonMutated")
         shinyjs::hide("rainfallPlotps")
     } else  if(isolate({input$maftoolsPlot}) == "titv") {
-        shinyjs::hident("maftoolsTop")
+        shinyjs::hide("maftoolsTop")
         shinyjs::hide("maftoolstsb")
         shinyjs::hide("maftoolsrmNonMutated")
         shinyjs::hide("rainfallPlotps")
