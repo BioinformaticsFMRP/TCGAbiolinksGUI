@@ -119,9 +119,14 @@ observeEvent(input$maftoolsPlotBt , {
                              titv <- titv(maf = mut, plot = FALSE, useSyn = TRUE)
                              plotTiTv(res = titv)
                          } else  if(isolate({input$maftoolsPlot}) == "rainfallPlot") {
+                             if(str_length(isolate({input$maftoolstsb})) == 0) {
+                                 tsb <- NULL
+                             } else {
+                                 tsb <- isolate({input$maftoolstsb})
+                             }
                              rainfallPlot(maf = mut,
                                           detectChangePoints = TRUE,
-                                          tsb =  isolate({input$maftoolstsb}),
+                                          tsb = tsb,
                                           fontSize = 12,
                                           pointSize = isolate({input$rainfallPlotps}) )
                          } else  if(isolate({input$maftoolsPlot}) == "geneCloud") {

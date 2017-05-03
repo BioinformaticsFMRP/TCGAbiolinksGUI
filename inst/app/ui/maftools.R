@@ -30,7 +30,7 @@ tabItem(tabName = "maftools",
                                           "Specify sample name",
                                           choices=NULL,
                                           multiple = FALSE),
-                           numericInput("rainfallPlotps", "Point sizd",
+                           numericInput("rainfallPlotps", "Point size",
                                         min = 0.1, max = 5, value = 0.6, step = 0.1),
                            checkboxInput("maftoolsrmNonMutated", "Remove non mutated", value = TRUE, width = NULL)
                        ),
