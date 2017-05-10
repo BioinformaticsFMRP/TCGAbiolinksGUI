@@ -194,25 +194,25 @@ observeEvent(input$tcgaSearchBt, {
         legacy <- isolate({as.logical(input$tcgaDatabase)})
 
         data.type <- gvisPieChart(as.data.frame(table(results$data_type)),
-                                  options=list( title="Data type"))
+                                  options=list( title="Data type", pieSliceText = "value"))
         tissue.definition <- gvisPieChart(as.data.frame(table(results$tissue.definition)),
-                                          options=list( title="Tissue definition"))
+                                          options=list( title="Tissue definition",pieSliceText = "value"))
         experimental_strategy  <- gvisPieChart(as.data.frame(table(results$experimental_strategy )),
-                                               options=list( title="Experimental strategy"))
+                                               options=list( title="Experimental strategy", pieSliceText = "value"))
         analysis.workflow_type <- gvisPieChart(as.data.frame(table(paste0(
             results$analysis_workflow_type,"(", results$analysis_workflow_link, ")"))),
-            options=list( title="Workflow type"))
+            options=list( title="Workflow type", pieSliceText = "value"))
         data.category <- gvisPieChart(as.data.frame(table(results$data_category)),
-                                      options=list( title="Data category"))
+                                      options=list( title="Data category", pieSliceText = "value"))
 
         gender.plot <- gvisPieChart(as.data.frame(table(clinical$gender)),
-                                    options=list( title = "Gender"))
+                                    options=list( title = "Gender", pieSliceText = "value"))
         race.plot <- gvisPieChart(as.data.frame(table(clinical$race)),
-                                  options=list( title = "Race"))
+                                  options=list( title = "Race", pieSliceText = "value"))
         vital.status.plot <- gvisPieChart(as.data.frame(table(clinical$vital_status)),
-                                          options=list( title="Vital status"))
+                                          options=list( title="Vital status", pieSliceText = "value"))
         tumor.stage.plot <- gvisPieChart(as.data.frame(table(clinical$tumor_stage)),
-                                         options=list( title="Tumor stage"))
+                                         options=list( title="Tumor stage", pieSliceText = "value"))
 
         clinical.plots <- gvisMerge(gvisMerge(tumor.stage.plot,vital.status.plot , horizontal = TRUE),
                                     gvisMerge(race.plot, gender.plot, horizontal = TRUE))
