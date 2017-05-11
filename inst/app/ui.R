@@ -150,7 +150,8 @@ body <-  dashboardBody(
                                                      'aTables.tableTools.min.js'),
                                         type = 'text/javascript'))),
         singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css",
-                                      href = "TCGAbiolinksGUI.css")))
+                                      href = "TCGAbiolinksGUI.css"))),
+        singleton(tags$head(tags$script(src = 'events.js')))
     ),
     tabItems(
         source(file.path(ui.path, "index.R"),  local = TRUE)$value,
