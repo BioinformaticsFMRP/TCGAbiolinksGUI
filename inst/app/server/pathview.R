@@ -55,27 +55,20 @@ observeEvent(input$pathwaygraphBt , {
     pathway.id <- isolate({input$pathway.id})
     kegg.native <- isolate({input$kegg.native.checkbt})
 
-    if(all(grepl("\\|", data$mRNA)))  {
-        gene <- strsplit(data$mRNA,"\\|")
-        data$Gene <- unlist(lapply(gene,function(x) x[1]))
-    } else {
-        data$Gene <- data$mRNA
-    }
-
     # Converting Gene symbol to geneID
-    if(all(grepl("ENS", data$Gene))) {
+    if(all(grepl("ENS", data$Gene_symbol))) {
         fromType <- "ENSEMBL"
     } else {
         fromType <- "SYMBOL"
     }
 
-    eg = as.data.frame(bitr(data$Gene,
+    eg = as.data.frame(bitr(data$Gene_symbol,
                             fromType=fromType,
                             toType="ENTREZID",
                             OrgDb="org.Hs.eg.db"))
     eg <- eg[!duplicated(eg[,fromType]),]
-    colnames(eg) <- c("Gene","ENTREZID")
-    data <- merge(data,eg,by="Gene")
+    colnames(eg) <- c("Gene_symbol","ENTREZID")
+    data <- merge(data,eg,by="Gene_symbol")
 
     data <- subset(data, select = c("ENTREZID", "logFC"))
     genelistDEGs <- as.numeric(data$logFC)

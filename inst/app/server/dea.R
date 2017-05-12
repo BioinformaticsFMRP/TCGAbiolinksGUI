@@ -90,10 +90,9 @@ observeEvent(input$deaAnalysis , {
                      exp[exp$logFC >= logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Upregulated in ", g2)
                      exp[exp$logFC <= -logFC.cut & exp$FDR <= fdr.cut,"status"] <- paste0("Downregulated in ", g2)
                      if(all(grepl("\\|",exp$mRNA))) {
-                         exp$Gene_symbol <- unlist(lapply(strsplit(exp$mRNA,"\\|"),function(x) x[2]))
-                     } else {
-                         exp$Gene_symbol <- exp$mRNA
+                         exp$exp$mRNA <- unlist(lapply(strsplit(exp$mRNA,"\\|"),function(x) x[2]))
                      }
+                     colnames(exp)[grep("mRNA",colnames(exp))] <- "Gene_symbol"
                      incProgress(1/5, detail = paste0('Saving results'))
                  })
 

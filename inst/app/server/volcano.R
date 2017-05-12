@@ -112,10 +112,6 @@ observe({
                 updateSelectizeInput(session, 'volcanoHighlight',
                                      choices = as.character(na.omit(unique(data$Gene_symbol))), server = TRUE)
             }
-            if("mRNA" %in% colnames(data)){
-                updateSelectizeInput(session, 'volcanoHighlight',
-                                     choices = as.character(na.omit(unique(data$mRNA))), server = TRUE)
-            }
         } else {
             updateSelectizeInput(session, 'volcanoHighlight',
                                  choices = as.character(na.omit(unique(data$probeID))), server = TRUE)
@@ -292,8 +288,7 @@ volcano.values <- reactive({
                        "Upregulated",
                        "Downregulated")
             label[2:3] <-  paste(label[2:3], "in", group2)
-            if(isolate({input$volcanoNames})) names <- as.character(data$mRNA)
-            data$Gene_symbol  <- as.character(data$mRNA)
+            if(isolate({input$volcanoNames})) names <- as.character(data$Gene_symbol)
             data$status <- "Insignificant"
             data[data$logFC >= x.cut & data$FDR <= y.cut,"status"] <- paste0("Upregulated in ", group2)
             data[data$logFC <= -x.cut & data$FDR <= y.cut,"status"] <- paste0("Downregulated in ", group2)
