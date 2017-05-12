@@ -172,6 +172,11 @@ to adjust for distributional differences between lanes (e.g., sequencing depth):
 * Group 2: Group 2 for comparison
 * DEA test method: options glmRT, exactTest
 
+After the analysis is completed, the results will be saved into a csv file.
+The **Delta** column shown in the results is: $$\delta = |log{FC}| \times |mean (group 1) - mean (group 2)|$$.
+![Results DEA](dea_results.png)
+
+
 ### Pathway graphs
 
 * DEA result: Select csv file create by the analysis.

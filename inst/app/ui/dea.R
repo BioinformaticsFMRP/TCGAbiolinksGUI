@@ -1,7 +1,7 @@
 tabItem(tabName = "dea",
         fluidRow(
             column(8,  bsAlert("deamessage"),
-                   bsCollapse(id = "collapsedea", open = "DEA plots",
+                   bsCollapse(id = "collapsedea", open = "Genes info",
                               bsCollapsePanel("Genes info", dataTableOutput('deaSE'), style = "default")
                    )),
             column(4,

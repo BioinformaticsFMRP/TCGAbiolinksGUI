@@ -104,6 +104,38 @@ observeEvent(input$deaAnalysis , {
     if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
     out.filename <- file.path(getPath,out.filename)
     write_csv(exp, path = out.filename)
+
+
+    #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
+    # TABLE
+    #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
+
+    output$deaSE <- renderDataTable({
+        exp
+    },
+    options = list(pageLength = 10,
+                   scrollX = TRUE,
+                   jQueryUI = TRUE,
+                   pagingType = "full",
+                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
+                   language.emptyTable = "No results found",
+                   "dom" = 'T<"clear">lfrtip',
+                   "oTableTools" = list(
+                       "sSelectedClass" = "selected",
+                       "sRowSelect" = "os",
+                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
+                       "aButtons" = list(
+                           list("sExtends" = "collection",
+                                "sButtonText" = "Save",
+                                "aButtons" = c("csv","xls")
+                           )
+                       )
+                   )
+    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
+    )
+
+    updateCollapse(session, "collapsedea", open = "Genes info")
+
     createAlert(session, "deamessage", "deaAlert", title = "DEA completed", style =  "success",
                 content = out.filename, append = FALSE)
 })
@@ -157,33 +189,3 @@ observe({
         if(!is.null(deadata())) as.character(colnames(colData(deadata())))
     }, server = TRUE)
 })
-
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
-# TABLE
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
-
-output$deaSE <- renderDataTable({
-    data <- deadata()
-    if(!is.null(data)) as.data.frame(values(data))
-},
-options = list(pageLength = 10,
-               scrollX = TRUE,
-               jQueryUI = TRUE,
-               pagingType = "full",
-               lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-               language.emptyTable = "No results found",
-               "dom" = 'T<"clear">lfrtip',
-               "oTableTools" = list(
-                   "sSelectedClass" = "selected",
-                   "sRowSelect" = "os",
-                   "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                   "aButtons" = list(
-                       list("sExtends" = "collection",
-                            "sButtonText" = "Save",
-                            "aButtons" = c("csv","xls")
-                       )
-                   )
-               )
-), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-)
-
