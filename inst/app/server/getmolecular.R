@@ -219,22 +219,29 @@ observeEvent(input$tcgaSearchBt, {
 
         data.type <- gvisPieChart(as.data.frame(table(results$data_type)),
                                   options=list( title="Data type", pieSliceText = "percentage"))
+
         tissue.definition <- gvisPieChart(as.data.frame(table(results$tissue.definition)),
                                           options=list( title="Tissue definition",pieSliceText = "percentage"))
+
         experimental_strategy  <- gvisPieChart(as.data.frame(table(results$experimental_strategy )),
                                                options=list( title="Experimental strategy", pieSliceText = "percentage"))
+
         analysis.workflow_type <- gvisPieChart(as.data.frame(table(paste0(
             results$analysis_workflow_type,"(", results$analysis_workflow_link, ")"))),
-            options=list( title="Workflow type", pieSliceText = "percentage"))
+            options = list( title="Workflow type", pieSliceText = "percentage"))
+
         data.category <- gvisPieChart(as.data.frame(table(results$data_category)),
                                       options=list( title="Data category", pieSliceText = "percentage"))
 
         gender.plot <- gvisPieChart(as.data.frame(table(clinical$gender)),
                                     options=list( title = "Gender", pieSliceText = "percentage"))
+
         race.plot <- gvisPieChart(as.data.frame(table(clinical$race)),
                                   options=list( title = "Race", pieSliceText = "percentage"))
+
         vital.status.plot <- gvisPieChart(as.data.frame(table(clinical$vital_status)),
                                           options=list( title="Vital status", pieSliceText = "percentage"))
+
         tumor.stage.plot <- gvisPieChart(as.data.frame(table(clinical$tumor_stage)),
                                          options=list( title="Tumor stage", pieSliceText = "percentage"))
 
@@ -246,7 +253,7 @@ observeEvent(input$tcgaSearchBt, {
                 gvisMerge(gvisMerge(nb.samples, file.size, horizontal = TRUE),
                           gvisMerge(tissue.definition, experimental_strategy, horizontal = TRUE)),
                 gvisMerge(data.type, analysis.workflow_type, horizontal = TRUE)
-                )
+            )
         } else {
             data.plots <- gvisMerge(gvisMerge(nb.samples,file.size,, horizontal = TRUE),
                                     gvisMerge(tissue.definition, data.type, horizontal = TRUE))
