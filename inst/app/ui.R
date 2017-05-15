@@ -124,6 +124,7 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/index.html", icon = icon("external-link")),
                  menuSubItem("ELMER Manual" , href = "https://www.bioconductor.org/packages/3.3/bioc/vignettes/ELMER/inst/doc/vignettes.pdf", icon = icon("external-link"))
         ),
+        menuItem("Reporting issues" , href = "https://github.com/BioinformaticsFMRP/TCGAbiolinksGUI/issues", icon = icon("exclamation-circle")),
         menuItem("References", icon = icon("file-text-o"), tabName = "references"
                  #menuSubItem("TCGAbiolinks" , href = "https://doi.org/10.1093/nar/gkv1507", icon = icon("external-link")),
                  #menuSubItem("ELMER" , href = "https://doi.org/10.1186/s13059-015-0668-3", icon = icon("external-link"))
