@@ -262,7 +262,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     source(file.path(server.path, "getmolecular.R"),  local = TRUE)$value
     source(file.path(server.path, "getsubtype.R"),  local = TRUE)$value
     source(file.path(server.path, "getmutation.R"),  local = TRUE)$value
-    source(file.path(server.path, "getmolecular.R"),  local = TRUE)$value
     source(file.path(server.path, "getclinical.R"),  local = TRUE)$value
     source(file.path(server.path, "survival.R"),  local = TRUE)$value
     source(file.path(server.path, "volcano.R"),  local = TRUE)$value

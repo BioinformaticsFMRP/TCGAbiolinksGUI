@@ -305,10 +305,10 @@ observeEvent(input$tcgaPrepareBt,{
         id <<- NULL
     }
 
-    query <- query.result()[[1]]
-    results <- query$results[[1]]
+    query <- isolate({query.result()[[1]]})
+    results <- isolate({query$results[[1]]})
     # Dir to save the files
-    getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
+    getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), isolate({input$workingDir}))
     if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
     filename <- file.path(getPath,isolate({input$tcgafilename}))
     withProgress(message = 'Download in progress',
@@ -323,6 +323,7 @@ observeEvent(input$tcgaPrepareBt,{
                              GDCdownload(query.aux, method = "api",directory = getPath)
                              incProgress(1/ceiling(n/step), detail = paste("Completed ", i + 1, " of ",ceiling(n/step)))
                          }
+                         n
                      }, error = function(e) {
                          id <<- showNotification("Downloead error: Error while downloading the files. Please try again", type =  "warning", duration = NULL)
                          return(NULL)
@@ -339,15 +340,14 @@ observeEvent(input$tcgaPrepareBt,{
                                              directory = getPath,
                                              mut.pipeline = isolate({input$tcgaPrepareMutPipeline}),
                                              add.gistic2.mut = genes)
-                         if(!is.null(genes)) {
+                         if(as.logical(isolate({input$prepareRb}))){
                              aux <- gsub(".rda","_samples_information.csv",filename)
                              write_csv(x = as.data.frame(colData(trash)),path  = aux )
                              filename <- c(filename, aux)
                          }
+                         trash
                      }, error = function(e) {
                          id <<- showNotification("Error while preparing the files", type =  "error", duration = NULL)
-                         print(e)
-                         return(NULL)
                      })
                      createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
                                  content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
@@ -457,7 +457,7 @@ observe({
 
 
 observeEvent(input$prepareRb, {
-    if(input$prepareRb) {
+    if(isolate({input$prepareRb})) { # Summarized Experiment
         shinyjs::show("addGistic")
         if(isolate({input$addGistic})){
             shinyjs::show("gisticGenes")
