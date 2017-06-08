@@ -61,18 +61,14 @@ query.result <-  reactive({
     experimental.strategy <- isolate({input$tcgaExpStrategyFilter})
     if(str_length(experimental.strategy) == 0) experimental.strategy <- FALSE
 
-    # Close notifications
-    if (!is.null(id)) {
-        removeNotification(id)
-        id <<- NULL
-    }
-
     if(is.null(tumor)){
-        id <<- showNotification("Input error: Please select a project", type =  "error", duration = NULL)
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Data input error", style =  "danger",
+                    content = "Please select a project", append = FALSE)
         return(NULL)
     }
     if(is.null(data.category)){
-        id <<- showNotification("Input error: Please select a data.category", type =  "error", duration = NULL)
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Data input error", style =  "danger",
+                    content = "Please select a data.category", append = FALSE)
         return(NULL)
     }
 
@@ -94,11 +90,16 @@ query.result <-  reactive({
                          incProgress(1, detail = "Completed")
                          return(query)
                      }, error = function(e) {
-                         id <<- showNotification("Search error: No results for this query", type =  "error", duration = NULL)
+                         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                                     content = "No results for this query", append = FALSE)
                          return(NULL)
                      })
                  })
-
+    if(is.null(query)) {
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                    content = "No results for this query", append = FALSE)
+        return(NULL)
+    }
     not.found <- c()
     tbl <- data.frame()
     results <- query$results[[1]]
@@ -147,6 +148,7 @@ query.result <-  reactive({
 })
 #----------------------- END controlling show/hide states -----------------
 observeEvent(input$tcgaSearchBt, {
+    closeAlert(session,"tcgaAlert")
     updateTextInput(session, "tcgafilename", label =  "File name",
                     value = paste0(
                         paste(isolate({input$tcgaProjectFilter}),
@@ -182,6 +184,12 @@ observeEvent(input$tcgaSearchBt, {
     )
 
     results <- getResults(query.result()[[1]])
+
+    if(any(duplicated(results$cases)))
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
+                    content = "There are more than one file for the same case.", append = FALSE)
+
+
     if(is.null(getResults(query.result()[[1]]))){
         sink("/dev/null");
         shinyjs::hide("file.size")
@@ -299,12 +307,7 @@ observeEvent(input$tcgaSearchBt, {
 })
 
 observeEvent(input$tcgaPrepareBt,{
-    # Close notifications
-    if (!is.null(id)) {
-        removeNotification(id)
-        id <<- NULL
-    }
-
+    closeAlert(session,"tcgaAlert")
     query <- isolate({query.result()[[1]]})
     results <- isolate({query$results[[1]]})
     # Dir to save the files
@@ -325,7 +328,8 @@ observeEvent(input$tcgaPrepareBt,{
                          }
                          n
                      }, error = function(e) {
-                         id <<- showNotification("Downloead error: Error while downloading the files. Please try again", type =  "warning", duration = NULL)
+                         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                                     content = "Error while downloading the files", append = FALSE)
                          return(NULL)
                      })
                  })
@@ -347,7 +351,8 @@ observeEvent(input$tcgaPrepareBt,{
                          }
                          trash
                      }, error = function(e) {
-                         id <<- showNotification("Error while preparing the files", type =  "error", duration = NULL)
+                         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                                     content = "Error while preparing the files", append = FALSE)
                      })
                      createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
                                  content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),"</ul>"), append = FALSE)

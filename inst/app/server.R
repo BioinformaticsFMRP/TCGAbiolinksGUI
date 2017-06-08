@@ -253,7 +253,7 @@ get.volumes <- function(directory = NULL){
 #' @import pathview ELMER TCGAbiolinks SummarizedExperiment shiny ggrepel UpSetR
 #' @keywords internal
 TCGAbiolinksGUIServer <- function(input, output, session) {
-    id <- NULL
+
     session$onSessionEnded(stopApp)
     server.path <- ifelse(system.file("app", package = "TCGAbiolinksGUI") == "",
                       "server",
