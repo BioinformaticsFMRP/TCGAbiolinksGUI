@@ -7,16 +7,17 @@ suppressPackageStartupMessages({
     library(shinyBS)
     library(stringr)
     library(ggrepel)
+    library(plotly)
     library(pathview)
     library(htmlwidgets)
     library(ELMER)
-    library(googleVis)
     library(readr)
     library(data.table)
     library(grid)
     library(dplyr)
     options(shiny.maxRequestSize=-1) # Remove limit of upload
     options(shiny.deprecation.messages=FALSE)
+    options(warn =-1)
 })
 
 getDataCategory <- function(legacy){

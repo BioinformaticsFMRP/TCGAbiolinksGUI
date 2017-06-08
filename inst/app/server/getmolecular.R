@@ -181,85 +181,121 @@ observeEvent(input$tcgaSearchBt, {
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
 
-    output$tcgaview <- renderGvis({
+    results <- getResults(query.result()[[1]])
+    if(is.null(getResults(query.result()[[1]]))){
+        sink("/dev/null");
+        shinyjs::hide("file.size")
+        shinyjs::hide("nb.samples")
+        shinyjs::hide("race")
+        shinyjs::hide("gender")
+        shinyjs::hide("data.type")
+        shinyjs::hide("tissue.definition")
+        shinyjs::hide("experimental.strategy")
+        shinyjs::hide("analysis.workflow_type")
+        shinyjs::hide("tumor.stage")
+        shinyjs::hide("vital.status")
 
-        results <- getResults(query.result()[[1]])
-        clinical <- query.result()[[2]]
-        if(any(duplicated(results$cases))) id <<- showNotification("Search: There are more than one file for the same case.", type =  "warning", duration = NULL)
+    } else {
+        shinyjs::show("file.size")
+        shinyjs::show("nb.samples")
+        shinyjs::show("race")
+        shinyjs::show("gender")
+        shinyjs::show("data.type")
+        shinyjs::show("tissue.definition")
+        shinyjs::show("experimental.strategy")
+        shinyjs::show("analysis.workflow_type")
+        shinyjs::show("tumor.stage")
+        shinyjs::show("vital.status")
 
-        #------------------- STEP 3: Plot-------------------------
-        # Plot informations to help the user visualize the data that will
-        # be downloaded
-        if(is.null(results)) return(NULL)
-        legacy <- isolate({as.logical(input$tcgaDatabase)})
-        nb.samples <- gvisBarChart(data.frame("Samples" = nrow(results),
-                                              "Project" = unique(results$project),
-                                              "Samples.annotation" = nrow(results)),
-                                   xvar = "Project",
-                                   yvar = c("Samples","Samples.annotation"),
-                                   options=list( title="Number of samples", legend="{position:'none'}",
-                                                 hAxis = "{
-                                                     minValue: 0, textPosition: 'none',
-                                                     gridlines: {
-                                                         color:'transparent'
-                                                     }
-                                                 }"))
-        file.size <- gvisBarChart(data.frame("Size" = sum(results$file_size/(2^30)) ,
-                                             "Project" = unique(results$project),
-                                             "Size.annotation" = paste0(round(sum(results$file_size/(2^30)), digits = 2), " GB")),
-                                  xvar = "Project",
-                                  yvar = c("Size","Size.annotation"),
-                                  options=list( title="Total size of files", legend="{position:'none'}",
-                                                hAxis = "{
-                                                     minValue: 0, textPosition: 'none',
-                                                     gridlines: {
-                                                         color:'transparent'
-                                                     }
-                                                 }"))
+        suppressWarnings({
+            output$nb.samples <- renderPlotly({
+                results <- isolate({getResults(query.result()[[1]])})
+                if(is.null(results)) return(NULL)
+                df <- data.frame("Samples" = nrow(results),
+                                 "Project" = unique(results$project),
+                                 "size" = sum(results$file_size/(2^20)))
+                p <- plot_ly(data = df,
+                             x = ~Project,
+                             y = ~Samples,
+                             name = "Files size (MB)",
+                             type = "bar") %>%
+                    layout(yaxis = list(title = "Number of samples")) %>%
+                    config(displayModeBar = F)
 
-        data.type <- gvisPieChart(as.data.frame(table(results$data_type)),
-                                  options=list( title="Data type", pieSliceText = "percentage"))
 
-        tissue.definition <- gvisPieChart(as.data.frame(table(results$tissue.definition)),
-                                          options=list( title="Tissue definition",pieSliceText = "percentage"))
+            })
+            output$file.size <- renderPlotly({
+                results <- isolate({getResults(query.result()[[1]])})
+                if(is.null(results)) return(NULL)
+                df <- data.frame("Samples" = nrow(results),
+                                 "Project" = unique(results$project),
+                                 "size" = sum(results$file_size/(2^20)))
+                p <- plot_ly(data = df,
+                             x = ~Project,
+                             y = ~size,
+                             hoverinfo = 'text',
+                             text=~paste0(size," (MB)"),
+                             name = "Files size (MB)",
+                             type = "bar") %>%
+                    layout(yaxis = list(title = "Files size (MB)")) %>%
+                    config(displayModeBar = F)
 
-        experimental_strategy  <- gvisPieChart(as.data.frame(table(results$experimental_strategy )),
-                                               options=list( title="Experimental strategy", pieSliceText = "percentage"))
+            })
 
-        analysis.workflow_type <- gvisPieChart(as.data.frame(table(paste0(
-            results$analysis_workflow_type,"(", results$analysis_workflow_link, ")"))),
-            options = list( title="Workflow type", pieSliceText = "percentage"))
+            getPiePlot <- function(var,title, type = "results"){
+                results <- isolate({getResults(query.result()[[1]])})
+                if(is.null(results)) return(plotly_empty())
+                if(type == "results") {
+                    results <- getResults(query.result()[[1]])
+                    df <- as.data.frame(table(results[,var]))
+                } else {
+                    clinical <- query.result()[[2]]
+                    if(is.null(clinical)) return(plotly_empty())
+                    df <- as.data.frame(table(clinical[,var]))
+                }
+                p <- plot_ly(df, labels = ~Var1, values = ~Freq, type = 'pie',
+                             textposition = 'inside',
+                             textinfo = 'label+percent',
+                             insidetextfont = list(color = '#FFFFFF'),
+                             hoverinfo = 'text',
+                             text=~paste0(Var1,"\n",Freq),
+                             marker = list(colors = colors,
+                                           line = list(color = '#FFFFFF', width = 1)),
+                             #The 'pull' attribute can also be used to create space between the sectors
+                             showlegend = FALSE) %>%
+                    layout(title = title,
+                           xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                           yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) %>%
+                    config(displayModeBar = F)
+            }
 
-        data.category <- gvisPieChart(as.data.frame(table(results$data_category)),
-                                      options=list( title="Data category", pieSliceText = "percentage"))
+            output$gender <- renderPlotly({
+                getPiePlot("gender","Gender", "clinical")
+            })
+            output$race <- renderPlotly({
+                getPiePlot("race","Race", "clinical")
+            })
+            output$vital.status <- renderPlotly({
+                getPiePlot("vital_status","Vital status", "clinical")
+            })
 
-        gender.plot <- gvisPieChart(as.data.frame(table(clinical$gender)),
-                                    options=list( title = "Gender", pieSliceText = "percentage"))
+            output$tumor.stage <- renderPlotly({
+                getPiePlot("tumor_stage","Tumor stage", "clinical")
+            })
 
-        race.plot <- gvisPieChart(as.data.frame(table(clinical$race)),
-                                  options=list( title = "Race", pieSliceText = "percentage"))
 
-        vital.status.plot <- gvisPieChart(as.data.frame(table(clinical$vital_status)),
-                                          options=list( title="Vital status", pieSliceText = "percentage"))
+            output$data.type <- renderPlotly({
+                getPiePlot("data_type","Data type")
+            })
+            output$tissue.definition <- renderPlotly({
+                getPiePlot("tissue.definition","Tissue definition")
+            })
+            output$experimental.strategy <- renderPlotly({
+                getPiePlot("experimental_strategy","Experimental strategy")
+            })
+        })
+    }
 
-        tumor.stage.plot <- gvisPieChart(as.data.frame(table(clinical$tumor_stage)),
-                                         options=list( title="Tumor stage", pieSliceText = "percentage"))
-
-        clinical.plots <- gvisMerge(gvisMerge(tumor.stage.plot,vital.status.plot , horizontal = TRUE),
-                                    gvisMerge(race.plot, gender.plot, horizontal = TRUE))
-
-        if(!legacy) {
-            data.plots <- gvisMerge(
-                gvisMerge(gvisMerge(nb.samples, file.size, horizontal = TRUE),
-                          gvisMerge(tissue.definition, experimental_strategy, horizontal = TRUE)),
-                gvisMerge(data.type, analysis.workflow_type, horizontal = TRUE)
-            )
-        } else {
-            data.plots <- gvisMerge(gvisMerge(nb.samples,file.size,, horizontal = TRUE),
-                                    gvisMerge(tissue.definition, data.type, horizontal = TRUE))
-        }
-        gvisMerge(data.plots,clinical.plots)
-    })
 })
 
 observeEvent(input$tcgaPrepareBt,{

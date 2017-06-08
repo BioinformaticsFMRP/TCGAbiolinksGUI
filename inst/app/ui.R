@@ -5,6 +5,7 @@ suppressPackageStartupMessages({
     library(shinyBS)
     library(shinyjs)
     library(SummarizedExperiment)
+    library(plotly)
     library(pathview)
     library(reshape2)
     library(shinydashboard)

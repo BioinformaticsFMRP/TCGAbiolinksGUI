@@ -31,7 +31,7 @@ Imports:
     shiny (>= 0.14.1),
     downloader (>= 0.4),
     grid,
-    googleVis,
+    plotly,
     readr,
     stringr (>= 1.1.0),
     SummarizedExperiment,
