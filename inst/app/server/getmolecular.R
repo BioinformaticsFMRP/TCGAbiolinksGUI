@@ -210,7 +210,7 @@ observeEvent(input$tcgaSearchBt, {
         suppressWarnings({
             output$nb.samples <- renderPlotly({
                 results <- isolate({getResults(query.result()[[1]])})
-                if(is.null(results)) return(NULL)
+                if(is.null(results)) return(plotly_empty())
                 df <- data.frame("Samples" = nrow(results),
                                  "Project" = unique(results$project),
                                  "size" = sum(results$file_size/(2^20)))
@@ -226,7 +226,7 @@ observeEvent(input$tcgaSearchBt, {
             })
             output$file.size <- renderPlotly({
                 results <- isolate({getResults(query.result()[[1]])})
-                if(is.null(results)) return(NULL)
+                if(is.null(results)) return(plotly_empty())
                 df <- data.frame("Samples" = nrow(results),
                                  "Project" = unique(results$project),
                                  "size" = sum(results$file_size/(2^20)))
