@@ -143,6 +143,12 @@ query.result <-  reactive({
     }
     cut <- ifelse(grepl("TARGET",query$project),16,12)
     results <- results[substr(results$cases,1,cut) %in% clinical$bcr_patient_barcode,]
+    if(is.null(results) || nrow(results) == 0) {
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                    content = "No results for this query", append = FALSE)
+        return(NULL)
+    }
+
     query$results[[1]] <- results
     list(query,clinical)
 })
@@ -183,42 +189,21 @@ observeEvent(input$tcgaSearchBt, {
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
 
-    results <- getResults(query.result()[[1]])
+    results <- isolate({getResults(query.result()[[1]])})
 
     if(any(duplicated(results$cases)))
         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
                     content = "There are more than one file for the same case.", append = FALSE)
 
 
-    if(is.null(getResults(query.result()[[1]]))){
-        sink("/dev/null");
-        shinyjs::hide("file.size")
-        shinyjs::hide("nb.samples")
-        shinyjs::hide("race")
-        shinyjs::hide("gender")
-        shinyjs::hide("data.type")
-        shinyjs::hide("tissue.definition")
-        shinyjs::hide("experimental.strategy")
-        shinyjs::hide("analysis.workflow_type")
-        shinyjs::hide("tumor.stage")
-        shinyjs::hide("vital.status")
-
+    if(is.null(results)){
     } else {
-        shinyjs::show("file.size")
-        shinyjs::show("nb.samples")
-        shinyjs::show("race")
-        shinyjs::show("gender")
-        shinyjs::show("data.type")
-        shinyjs::show("tissue.definition")
-        shinyjs::show("experimental.strategy")
-        shinyjs::show("analysis.workflow_type")
-        shinyjs::show("tumor.stage")
-        shinyjs::show("vital.status")
+
 
         suppressWarnings({
             output$nb.samples <- renderPlotly({
-                results <- isolate({getResults(query.result()[[1]])})
-                if(is.null(results)) return(plotly_empty())
+                results <- getResults(query.result()[[1]])
+                if(is.null(results) || nrow(results) == 0) return(plotly_empty())
                 df <- data.frame("Samples" = nrow(results),
                                  "Project" = unique(results$project),
                                  "size" = sum(results$file_size/(2^20)))
@@ -233,8 +218,8 @@ observeEvent(input$tcgaSearchBt, {
 
             })
             output$file.size <- renderPlotly({
-                results <- isolate({getResults(query.result()[[1]])})
-                if(is.null(results)) return(plotly_empty())
+                results <- getResults(query.result()[[1]])
+                if(is.null(results) || nrow(results) == 0) return(plotly_empty())
                 df <- data.frame("Samples" = nrow(results),
                                  "Project" = unique(results$project),
                                  "size" = sum(results$file_size/(2^20)))
@@ -252,13 +237,13 @@ observeEvent(input$tcgaSearchBt, {
 
             getPiePlot <- function(var,title, type = "results"){
                 results <- isolate({getResults(query.result()[[1]])})
-                if(is.null(results)) return(plotly_empty())
+                if(is.null(results) || nrow(results) == 0) return(plotly_empty())
                 if(type == "results") {
                     results <- getResults(query.result()[[1]])
                     df <- as.data.frame(table(results[,var]))
                 } else {
                     clinical <- query.result()[[2]]
-                    if(is.null(clinical)) return(plotly_empty())
+                    if(is.null(clinical) || nrow(clinical) == 0) return(plotly_empty())
                     df <- as.data.frame(table(clinical[,var]))
                 }
                 p <- plot_ly(df, labels = ~Var1, values = ~Freq, type = 'pie',
