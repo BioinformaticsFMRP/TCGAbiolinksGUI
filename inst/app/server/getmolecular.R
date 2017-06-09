@@ -189,41 +189,20 @@ observeEvent(input$tcgaSearchBt, {
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
 
-    results <- getResults(query.result()[[1]])
+    results <- isolate({getResults(query.result()[[1]])})
 
     if(any(duplicated(results$cases)))
         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
                     content = "There are more than one file for the same case.", append = FALSE)
 
 
-    if(is.null(getResults(query.result()[[1]]))){
-        sink("/dev/null");
-        shinyjs::hide("file.size")
-        shinyjs::hide("nb.samples")
-        shinyjs::hide("race")
-        shinyjs::hide("gender")
-        shinyjs::hide("data.type")
-        shinyjs::hide("tissue.definition")
-        shinyjs::hide("experimental.strategy")
-        shinyjs::hide("analysis.workflow_type")
-        shinyjs::hide("tumor.stage")
-        shinyjs::hide("vital.status")
-
+    if(is.null(results)){
     } else {
-        shinyjs::show("file.size")
-        shinyjs::show("nb.samples")
-        shinyjs::show("race")
-        shinyjs::show("gender")
-        shinyjs::show("data.type")
-        shinyjs::show("tissue.definition")
-        shinyjs::show("experimental.strategy")
-        shinyjs::show("analysis.workflow_type")
-        shinyjs::show("tumor.stage")
-        shinyjs::show("vital.status")
+
 
         suppressWarnings({
             output$nb.samples <- renderPlotly({
-                results <- isolate({getResults(query.result()[[1]])})
+                results <- getResults(query.result()[[1]])
                 if(is.null(results) || nrow(results) == 0) return(plotly_empty())
                 df <- data.frame("Samples" = nrow(results),
                                  "Project" = unique(results$project),
@@ -239,7 +218,7 @@ observeEvent(input$tcgaSearchBt, {
 
             })
             output$file.size <- renderPlotly({
-                results <- isolate({getResults(query.result()[[1]])})
+                results <- getResults(query.result()[[1]])
                 if(is.null(results) || nrow(results) == 0) return(plotly_empty())
                 df <- data.frame("Samples" = nrow(results),
                                  "Project" = unique(results$project),
