@@ -192,7 +192,7 @@ shinyUI(
             tags$br(),
             "Loading TCGAbiolinksGUI..."
         ),
-        dashboardPage(
+        dashboardPage(title="TCGAbiolinksGUI",
             skin = "blue",
             header,
             sidebar,

@@ -143,6 +143,12 @@ query.result <-  reactive({
     }
     cut <- ifelse(grepl("TARGET",query$project),16,12)
     results <- results[substr(results$cases,1,cut) %in% clinical$bcr_patient_barcode,]
+    if(is.null(results) || nrow(results) == 0) {
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                    content = "No results for this query", append = FALSE)
+        return(NULL)
+    }
+
     query$results[[1]] <- results
     list(query,clinical)
 })
@@ -218,7 +224,7 @@ observeEvent(input$tcgaSearchBt, {
         suppressWarnings({
             output$nb.samples <- renderPlotly({
                 results <- isolate({getResults(query.result()[[1]])})
-                if(is.null(results)) return(plotly_empty())
+                if(is.null(results) || nrow(results) == 0) return(plotly_empty())
                 df <- data.frame("Samples" = nrow(results),
                                  "Project" = unique(results$project),
                                  "size" = sum(results$file_size/(2^20)))
@@ -234,7 +240,7 @@ observeEvent(input$tcgaSearchBt, {
             })
             output$file.size <- renderPlotly({
                 results <- isolate({getResults(query.result()[[1]])})
-                if(is.null(results)) return(plotly_empty())
+                if(is.null(results) || nrow(results) == 0) return(plotly_empty())
                 df <- data.frame("Samples" = nrow(results),
                                  "Project" = unique(results$project),
                                  "size" = sum(results$file_size/(2^20)))
@@ -252,13 +258,13 @@ observeEvent(input$tcgaSearchBt, {
 
             getPiePlot <- function(var,title, type = "results"){
                 results <- isolate({getResults(query.result()[[1]])})
-                if(is.null(results)) return(plotly_empty())
+                if(is.null(results) || nrow(results) == 0) return(plotly_empty())
                 if(type == "results") {
                     results <- getResults(query.result()[[1]])
                     df <- as.data.frame(table(results[,var]))
                 } else {
                     clinical <- query.result()[[2]]
-                    if(is.null(clinical)) return(plotly_empty())
+                    if(is.null(clinical) || nrow(clinical) == 0) return(plotly_empty())
                     df <- as.data.frame(table(clinical[,var]))
                 }
                 p <- plot_ly(df, labels = ~Var1, values = ~Freq, type = 'pie',

@@ -42,7 +42,7 @@ body {
 }
 .skin-blue .main-header .logo:hover {
     background-color: #000080;
-    .opacity 0.8
+    opacity: 0.8;
 }
 
 .skin-blue .main-header .navbar .sidebar-toggle:hover {
@@ -59,28 +59,28 @@ body {
     color: #fff;
     background-color: navy;
     border-color: #000000;
-    .opacity 0.8
+    opacity: 0.8;
 }
 .shinyFiles {
     width: 100%;
     color: #fff;
     background-color: navy;
     border-color: #000000;
-    .opacity 0.8
+    opacity: 0.8;
 }
 #downloadData {
     width: 100%;
     color: #fff;
     background-color: navy;
     border-color: #000000;
-    .opacity 0.8
+    opacity: 0.8;
 }
 #seuploadfile {
     width: 100%;
     color: #fff;
     background-color: navy;
     border-color: #000000;
-    .opacity 0.8
+    opacity: 0.8;
 }
 
 /*.shinyFiles:hover {
@@ -120,20 +120,20 @@ pre {
 }
 .shiny-progress .bar {
     background-color: #FF0000;
-    .opacity 1.0;
+    opacity: 1.0;
 }
 .shiny-progress .progress {
     background-color: navy;
-    .opacity 1.0;
+    opacity: 1.0;
 }
 .shiny-progress-container. {
     background-color: navy;
-    .opacity 1.0;
+    opacity: 1.0;
     border-color: red;
 }
 .shiny-progress {
     background-color: navy;
-    .opacity 1.0;
+    opacity: 1.0;
 }
 .shiny-progress .progress {
     height: 7px;
