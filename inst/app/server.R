@@ -7,16 +7,17 @@ suppressPackageStartupMessages({
     library(shinyBS)
     library(stringr)
     library(ggrepel)
+    library(plotly)
     library(pathview)
     library(htmlwidgets)
     library(ELMER)
-    library(googleVis)
     library(readr)
     library(data.table)
     library(grid)
     library(dplyr)
     options(shiny.maxRequestSize=-1) # Remove limit of upload
     options(shiny.deprecation.messages=FALSE)
+    options(warn =-1)
 })
 
 getDataCategory <- function(legacy){
@@ -165,7 +166,8 @@ names(tcga.code) <- c('01','02','03','04','05','06','07','08','09','10',
 getTCGAdisease <- function(){
     projects <- TCGAbiolinks:::getGDCprojects()
     disease <-  projects$project_id
-    names(disease) <-  paste0(projects$disease_type, " (",disease,")")
+    idx <- grep("disease_type",colnames(projects))
+    names(disease) <-  paste0(projects[[idx]], " (",disease,")")
     disease <- disease[sort(names(disease))]
     return(disease)
 }
@@ -251,6 +253,7 @@ get.volumes <- function(directory = NULL){
 #' @import pathview ELMER TCGAbiolinks SummarizedExperiment shiny ggrepel UpSetR
 #' @keywords internal
 TCGAbiolinksGUIServer <- function(input, output, session) {
+
     session$onSessionEnded(stopApp)
     server.path <- ifelse(system.file("app", package = "TCGAbiolinksGUI") == "",
                       "server",
@@ -259,7 +262,6 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     source(file.path(server.path, "getmolecular.R"),  local = TRUE)$value
     source(file.path(server.path, "getsubtype.R"),  local = TRUE)$value
     source(file.path(server.path, "getmutation.R"),  local = TRUE)$value
-    source(file.path(server.path, "getmolecular.R"),  local = TRUE)$value
     source(file.path(server.path, "getclinical.R"),  local = TRUE)$value
     source(file.path(server.path, "survival.R"),  local = TRUE)$value
     source(file.path(server.path, "volcano.R"),  local = TRUE)$value

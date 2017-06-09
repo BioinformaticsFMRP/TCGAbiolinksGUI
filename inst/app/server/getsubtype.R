@@ -105,13 +105,29 @@ observeEvent(input$subtypePlotCol, {
     if(!is.null(col) & str_length(col) > 1) {
         updateCollapse(session, "collapseTCGASubtype", open = "Subtype data: Summary")
     }
-    output$subtypeview <- renderGvis({
+    output$subtypeview <- renderPlotly({
         tbl <- subtype.result()
-        if(is.null(tbl)) return(NULL)
-        if(is.null(col)) return(NULL)
+        if(is.null(tbl)) return(plotly_empty())
+        if(is.null(col)) return(plotly_empty())
 
-        if(str_length(col) < 2) return(NULL)
-        gvisPieChart(dplyr::count_(tbl, eval(col)), options=list(width=200, height=300, title=col))
+        if(str_length(col) < 2) return(plotly_empty())
+        df <- as.data.frame(dplyr::count_(tbl, eval(col)))
+        colnames(df) <- c("Var1","Freq")
+        df$Var1 <- as.character(df$Var1)
+        df$Var1[is.na(df$Var1)] <- "No value"
+        save(df,file = "test.rda")
+        p <- plot_ly(df, labels = ~Var1, values = ~Freq, type = 'pie',
+                     textposition = 'inside',
+                     textinfo = 'label+percent',
+                     insidetextfont = list(color = '#FFFFFF'),
+                     hoverinfo = 'text',
+                     text=~paste0(Var1,"\n",Freq),
+                     marker = list(colors = colors,
+                                   line = list(color = '#FFFFFF', width = 1)),
+                     showlegend = FALSE) %>%
+            layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                   yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) %>%
+            config(displayModeBar = F)
     })
 })
 observe({

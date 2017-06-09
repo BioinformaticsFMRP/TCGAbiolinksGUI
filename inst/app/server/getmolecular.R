@@ -14,7 +14,10 @@ query.result <-  reactive({
     #------------------- STEP 1: Argument-------------------------
     # Set arguments for GDCquery, if value is empty we will set it to FALSE (same as empty)
     tumor <- isolate({input$tcgaProjectFilter})
+    if(str_length(tumor) == 0)  tumor <- NULL
+
     data.category <- isolate({input$tcgaDataCategoryFilter})
+    if(str_length(data.category) == 0)  data.category <- NULL
 
     # Data type
     data.type <- isolate({input$tcgaDataTypeFilter})
@@ -92,8 +95,9 @@ query.result <-  reactive({
                          return(NULL)
                      })
                  })
-
     if(is.null(query)) {
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                    content = "No results for this query", append = FALSE)
         return(NULL)
     }
     not.found <- c()
@@ -144,6 +148,7 @@ query.result <-  reactive({
 })
 #----------------------- END controlling show/hide states -----------------
 observeEvent(input$tcgaSearchBt, {
+    closeAlert(session,"tcgaAlert")
     updateTextInput(session, "tcgafilename", label =  "File name",
                     value = paste0(
                         paste(isolate({input$tcgaProjectFilter}),
@@ -178,62 +183,135 @@ observeEvent(input$tcgaSearchBt, {
     ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
     )
 
-    output$tcgaview <- renderGvis({
-        closeAlert(session,"tcgaAlert")
-        results <- getResults(query.result()[[1]])
-        clinical <- query.result()[[2]]
-        if(any(duplicated(results$cases)))
-            createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
-                        content = "There are more than one file for the same case.", append = FALSE)
-        #------------------- STEP 3: Plot-------------------------
-        # Plot informations to help the user visualize the data that will
-        # be downloaded
-        if(is.null(results)) return(NULL)
-        legacy <- isolate({as.logical(input$tcgaDatabase)})
+    results <- getResults(query.result()[[1]])
 
-        data.type <- gvisPieChart(as.data.frame(table(results$data_type)),
-                                  options=list( title="Data type"))
-        tissue.definition <- gvisPieChart(as.data.frame(table(results$tissue.definition)),
-                                          options=list( title="Tissue definition"))
-        experimental_strategy  <- gvisPieChart(as.data.frame(table(results$experimental_strategy )),
-                                               options=list( title="Experimental strategy"))
-        analysis.workflow_type <- gvisPieChart(as.data.frame(table(paste0(
-            results$analysis_workflow_type,"(", results$analysis_workflow_link, ")"))),
-            options=list( title="Workflow type"))
-        data.category <- gvisPieChart(as.data.frame(table(results$data_category)),
-                                      options=list( title="Data category"))
+    if(any(duplicated(results$cases)))
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
+                    content = "There are more than one file for the same case.", append = FALSE)
 
-        gender.plot <- gvisPieChart(as.data.frame(table(clinical$gender)),
-                                    options=list( title = "Gender"))
-        race.plot <- gvisPieChart(as.data.frame(table(clinical$race)),
-                                  options=list( title = "Race"))
-        vital.status.plot <- gvisPieChart(as.data.frame(table(clinical$vital_status)),
-                                          options=list( title="Vital status"))
-        tumor.stage.plot <- gvisPieChart(as.data.frame(table(clinical$tumor_stage)),
-                                         options=list( title="Tumor stage"))
 
-        clinical.plots <- gvisMerge(gvisMerge(tumor.stage.plot,vital.status.plot , horizontal = TRUE),
-                                    gvisMerge(race.plot, gender.plot, horizontal = TRUE))
+    if(is.null(getResults(query.result()[[1]]))){
+        sink("/dev/null");
+        shinyjs::hide("file.size")
+        shinyjs::hide("nb.samples")
+        shinyjs::hide("race")
+        shinyjs::hide("gender")
+        shinyjs::hide("data.type")
+        shinyjs::hide("tissue.definition")
+        shinyjs::hide("experimental.strategy")
+        shinyjs::hide("analysis.workflow_type")
+        shinyjs::hide("tumor.stage")
+        shinyjs::hide("vital.status")
 
-        if(!legacy) {
-            data.plots <- gvisMerge(gvisMerge(tissue.definition, data.type, horizontal = TRUE),
-                                    gvisMerge(experimental_strategy, analysis.workflow_type, horizontal = TRUE))
+    } else {
+        shinyjs::show("file.size")
+        shinyjs::show("nb.samples")
+        shinyjs::show("race")
+        shinyjs::show("gender")
+        shinyjs::show("data.type")
+        shinyjs::show("tissue.definition")
+        shinyjs::show("experimental.strategy")
+        shinyjs::show("analysis.workflow_type")
+        shinyjs::show("tumor.stage")
+        shinyjs::show("vital.status")
 
-        } else {
-            data.plots <- gvisMerge(gvisMerge(tissue.definition, data.type, horizontal = TRUE),
-                                    experimental_strategy)
-        }
-        gvisMerge(data.plots,clinical.plots)
-    })
+        suppressWarnings({
+            output$nb.samples <- renderPlotly({
+                results <- isolate({getResults(query.result()[[1]])})
+                if(is.null(results)) return(plotly_empty())
+                df <- data.frame("Samples" = nrow(results),
+                                 "Project" = unique(results$project),
+                                 "size" = sum(results$file_size/(2^20)))
+                p <- plot_ly(data = df,
+                             x = ~Project,
+                             y = ~Samples,
+                             name = "Files size (MB)",
+                             type = "bar") %>%
+                    layout(yaxis = list(title = "Number of samples")) %>%
+                    config(displayModeBar = F)
+
+
+            })
+            output$file.size <- renderPlotly({
+                results <- isolate({getResults(query.result()[[1]])})
+                if(is.null(results)) return(plotly_empty())
+                df <- data.frame("Samples" = nrow(results),
+                                 "Project" = unique(results$project),
+                                 "size" = sum(results$file_size/(2^20)))
+                p <- plot_ly(data = df,
+                             x = ~Project,
+                             y = ~size,
+                             hoverinfo = 'text',
+                             text=~paste0(size," (MB)"),
+                             name = "Files size (MB)",
+                             type = "bar") %>%
+                    layout(yaxis = list(title = "Files size (MB)")) %>%
+                    config(displayModeBar = F)
+
+            })
+
+            getPiePlot <- function(var,title, type = "results"){
+                results <- isolate({getResults(query.result()[[1]])})
+                if(is.null(results)) return(plotly_empty())
+                if(type == "results") {
+                    results <- getResults(query.result()[[1]])
+                    df <- as.data.frame(table(results[,var]))
+                } else {
+                    clinical <- query.result()[[2]]
+                    if(is.null(clinical)) return(plotly_empty())
+                    df <- as.data.frame(table(clinical[,var]))
+                }
+                p <- plot_ly(df, labels = ~Var1, values = ~Freq, type = 'pie',
+                             textposition = 'inside',
+                             textinfo = 'label+percent',
+                             insidetextfont = list(color = '#FFFFFF'),
+                             hoverinfo = 'text',
+                             text=~paste0(Var1,"\n",Freq),
+                             marker = list(colors = colors,
+                                           line = list(color = '#FFFFFF', width = 1)),
+                             #The 'pull' attribute can also be used to create space between the sectors
+                             showlegend = FALSE) %>%
+                    layout(title = title,
+                           xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                           yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) %>%
+                    config(displayModeBar = F)
+            }
+
+            output$gender <- renderPlotly({
+                getPiePlot("gender","Gender", "clinical")
+            })
+            output$race <- renderPlotly({
+                getPiePlot("race","Race", "clinical")
+            })
+            output$vital.status <- renderPlotly({
+                getPiePlot("vital_status","Vital status", "clinical")
+            })
+
+            output$tumor.stage <- renderPlotly({
+                getPiePlot("tumor_stage","Tumor stage", "clinical")
+            })
+
+
+            output$data.type <- renderPlotly({
+                getPiePlot("data_type","Data type")
+            })
+            output$tissue.definition <- renderPlotly({
+                getPiePlot("tissue.definition","Tissue definition")
+            })
+            output$experimental.strategy <- renderPlotly({
+                getPiePlot("experimental_strategy","Experimental strategy")
+            })
+        })
+    }
+
 })
 
 observeEvent(input$tcgaPrepareBt,{
     closeAlert(session,"tcgaAlert")
-
-    query <- query.result()[[1]]
-    results <- query$results[[1]]
+    query <- isolate({query.result()[[1]]})
+    results <- isolate({query$results[[1]]})
     # Dir to save the files
-    getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
+    getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), isolate({input$workingDir}))
     if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
     filename <- file.path(getPath,isolate({input$tcgafilename}))
     withProgress(message = 'Download in progress',
@@ -248,6 +326,7 @@ observeEvent(input$tcgaPrepareBt,{
                              GDCdownload(query.aux, method = "api",directory = getPath)
                              incProgress(1/ceiling(n/step), detail = paste("Completed ", i + 1, " of ",ceiling(n/step)))
                          }
+                         n
                      }, error = function(e) {
                          createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
                                      content = "Error while downloading the files", append = FALSE)
@@ -265,16 +344,15 @@ observeEvent(input$tcgaPrepareBt,{
                                              directory = getPath,
                                              mut.pipeline = isolate({input$tcgaPrepareMutPipeline}),
                                              add.gistic2.mut = genes)
-                         if(!is.null(genes)) {
+                         if(as.logical(isolate({input$prepareRb}))){
                              aux <- gsub(".rda","_samples_information.csv",filename)
                              write_csv(x = as.data.frame(colData(trash)),path  = aux )
                              filename <- c(filename, aux)
                          }
+                         trash
                      }, error = function(e) {
                          createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
                                      content = "Error while preparing the files", append = FALSE)
-                         print(e)
-                         return(NULL)
                      })
                      createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
                                  content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
@@ -284,6 +362,8 @@ observeEvent(input$tcgaPrepareBt,{
 
 getClinical.info <-  reactive({
     project <- input$tcgaProjectFilter
+    if(is.null(project) || str_length(project) == 0) return(NULL)
+
     baseURL <- "https://gdc-api.nci.nih.gov/cases/?"
     options.pretty <- "pretty=true"
     options.expand <- "expand=diagnoses,demographic"
@@ -362,10 +442,12 @@ observe({
     input$tcgaProjectFilter
     tryCatch({
         clin <- getClinical.info()
-        updateSelectizeInput(session, 'tcgaClinicalGenderFilter', choices =  unique(clin$gender), server = TRUE)
-        updateSelectizeInput(session, 'tcgaClinicalVitalStatusFilter', choices =  unique(clin$vital_status), server = TRUE)
-        updateSelectizeInput(session, 'tcgaClinicalRaceFilter', choices =  unique(clin$race), server = TRUE)
-        updateSelectizeInput(session, 'tcgaClinicalTumorStageFilter', choices =  unique(clin$tumor_stage), server = TRUE)
+        if(!is.null(clin)){
+            updateSelectizeInput(session, 'tcgaClinicalGenderFilter', choices =  unique(clin$gender), server = TRUE)
+            updateSelectizeInput(session, 'tcgaClinicalVitalStatusFilter', choices =  unique(clin$vital_status), server = TRUE)
+            updateSelectizeInput(session, 'tcgaClinicalRaceFilter', choices =  unique(clin$race), server = TRUE)
+            updateSelectizeInput(session, 'tcgaClinicalTumorStageFilter', choices =  unique(clin$tumor_stage), server = TRUE)
+        }
         shinyjs::show("tcgaClinicalGenderFilter")
         shinyjs::show("tcgaClinicalVitalStatusFilter")
         shinyjs::show("tcgaClinicalRaceFilter")
@@ -380,7 +462,7 @@ observe({
 
 
 observeEvent(input$prepareRb, {
-    if(input$prepareRb) {
+    if(isolate({input$prepareRb})) { # Summarized Experiment
         shinyjs::show("addGistic")
         if(isolate({input$addGistic})){
             shinyjs::show("gisticGenes")

@@ -7,7 +7,7 @@ Author: Tiago Chedraoui Silva <tiagochst@gmail.com>,
     Catharina Olsen <colsen@ulb.ac.be>,
     Michele Ceccarelli,
     Gianluca Bontempi <gbonte@ulb.ac.be>,
-    Benjamin Berman <Benjamin.Berman@cshs.org>,
+    Benjamin P. Berman <Benjamin.Berman@cshs.org>,
     Houtan Noushmehr <houtana@gmail.com>
 Maintainer: Tiago C. Silva <tiagochst@gmail.com>
 Description: 
@@ -31,7 +31,7 @@ Imports:
     shiny (>= 0.14.1),
     downloader (>= 0.4),
     grid,
-    googleVis,
+    plotly,
     readr,
     stringr (>= 1.1.0),
     SummarizedExperiment,
@@ -43,7 +43,6 @@ Imports:
     ELMER (>= 1.2.1),
     clusterProfiler,
     parallel,
-    plotly,
     TCGAbiolinks (>= 2.2.4),
     shinyjs (>= 0.7),
     colourpicker,

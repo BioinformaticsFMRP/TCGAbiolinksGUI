@@ -5,11 +5,11 @@ suppressPackageStartupMessages({
     library(shinyBS)
     library(shinyjs)
     library(SummarizedExperiment)
+    library(plotly)
     library(pathview)
     library(reshape2)
     library(shinydashboard)
     library(clusterProfiler)
-    library(plotly)
 })
 
 data(paths.hsa)
@@ -125,6 +125,7 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("TCGAbiolinks Manual" , href = "https://www.bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinks/inst/doc/index.html", icon = icon("external-link")),
                  menuSubItem("ELMER Manual" , href = "https://www.bioconductor.org/packages/3.3/bioc/vignettes/ELMER/inst/doc/vignettes.pdf", icon = icon("external-link"))
         ),
+        menuItem("Need help ?" , href = "https://github.com/BioinformaticsFMRP/TCGAbiolinksGUI/issues", icon = icon("question-circle")),
         menuItem("References", icon = icon("file-text-o"), tabName = "references"
                  #menuSubItem("TCGAbiolinks" , href = "https://doi.org/10.1093/nar/gkv1507", icon = icon("external-link")),
                  #menuSubItem("ELMER" , href = "https://doi.org/10.1186/s13059-015-0668-3", icon = icon("external-link"))
@@ -151,7 +152,8 @@ body <-  dashboardBody(
                                                      'aTables.tableTools.min.js'),
                                         type = 'text/javascript'))),
         singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css",
-                                      href = "TCGAbiolinksGUI.css")))
+                                      href = "TCGAbiolinksGUI.css"))),
+        singleton(tags$head(tags$script(src = 'events.js')))
     ),
     tabItems(
         source(file.path(ui.path, "index.R"),  local = TRUE)$value,

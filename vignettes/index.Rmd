@@ -27,7 +27,7 @@ such as [shinyjs](https://github.com/daattali/shinyjs) to add JavaScript actions
 [shinydashboard](https://github.com/rstudio/shinydashboard) to add dashboards 
 and [shinyFiles](https://github.com/thomasp85/shinyFiles) to provide an API 
 for client side access to the server file system. 
-A running version of the GUI is found in [shinyapps.io](https://tcgabiolinksgui.shinyapps.io/demo/)
+A running version of the GUI is found in [http://tcgabiolinks.fmrp.usp.br:3838/](http://tcgabiolinks.fmrp.usp.br:3838/)
 
 This work has been supported by a grant from Henry Ford Hospital (H.N.) and by 
 the São Paulo Research Foundation [FAPESP](http://www.fapesp.br/) (2016/01389-7 

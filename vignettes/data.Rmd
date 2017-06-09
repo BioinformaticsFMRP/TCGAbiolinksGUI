@@ -17,7 +17,7 @@ library(DT)
 
 For a detailed manual for this section please access this link:
     
-    1. [Data menu manual](https://drive.google.com/file/d/0B0-8N2fjttG-X1BoNlNnUnpVMWc/view?usp=sharing)
+   1. [Data menu manual](https://drive.google.com/file/d/0B0-8N2fjttG-X1BoNlNnUnpVMWc/view?usp=sharing)
 
 # Sub-menu: Molecular data
 
@@ -220,9 +220,9 @@ clinical.patient %>% select(bcr_patient_barcode,neoplasm_histologic_grade) %>% d
 ```
 
 ## Tutorial Video
-<center>
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/54NBug9ycwM/maxresdefault.jpg)](http://www.youtube.com/watch?v=54NBug9ycwM "Tutorial Video: Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)")
 
+<center>
 **Tutorial Video:** Fetching GDC clinical data - (http://www.youtube.com/watch?v=54NBug9ycwM)
 </center>
 
@@ -245,9 +245,9 @@ The available filters are:
 
 To facilitate visualization and modification of the SummarizedExperiment object, we created this menu in which it is possible to visualize the three matrices of the object (assay matrix [i.e. gene expresssion values], features matrix [i.e. gene information] and sample information matrix). Also,  it is possible to download the sample information matrix as a csv file, and, after modifying it, to upload  and update the SummarizedExperiment object. This might be useful if for example the user wants to compare two groups not already pre-defined.
 
-<center>
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs/maxresdefault.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Tutorial Video: Managing a SummarizedExperiment object - (http://www.youtube.com/watch?v=54NBug9ycwM)")
 
+<center>
 **Tutorial Video:** Managing a SummarizedExperiment object - (http://www.youtube.com/watch?v=54NBug9ycwM)
 </center>
 
