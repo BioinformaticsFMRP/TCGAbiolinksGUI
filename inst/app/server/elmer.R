@@ -187,6 +187,15 @@ elmer.exp <-  reactive({
                     content = paste0("Sorry, but I'm expecting a Summarized Experiment, a data frame or a Matrix object, but I got a: ",
                                      class(exp)), append = FALSE)
         return(NULL)
+    } else {
+        if(!all(grepl("ENG", rownames(exp)))){
+            if("ensembl_gene_id" %in% names(values(exp))) rownames(exp) <- rowRanges(exp)$ensembl_gene_id
+        } else {
+            createAlert(session, "elmermessage", "elmerAlert", title = "Data input error", style =  "danger",
+                        content = "Sorry, but I'm expecting a Summarized Experiment, a data frame or a Matrix object with EMSEMBL GENE ID as row names",
+                        append = FALSE)
+            return(NULL)
+        }
     }
     return(exp)
 })
@@ -423,7 +432,7 @@ observeEvent(input$elmerAnalysisBt, {
                          # Step 3.1: Get diff methylated probes |
                          #--------------------------------------
                          setProgress(value = which(j == direction) * 0.0, message = paste("Step 1-", j, "direction"),
-                                     detail = paste("Identify distal enhancer probes", j,"methyladed in", group1, "compared to",group2),
+                                     detail = paste("Identify distal probes", j,"methyladed in", group1, "compared to",group2),
                                      session = getDefaultReactiveDomain())
                          Sig.probes <- get.diff.meth(mae,
                                                      group.col = group.col,
@@ -449,7 +458,7 @@ observeEvent(input$elmerAnalysisBt, {
                          nearGenes <- GetNearGenes(data = mae,
                                                    probes = Sig.probes$probe,
                                                    cores = isolate({input$elmercores}),
-                                                   geneNum = isolate({input$elmergetpairNumGenes}))
+                                                   numFlankingGenes = isolate({input$elmergetpairNumGenes}))
 
                          setProgress(value = which(j == direction) * 0.2, message = paste("Step 3-", j, "direction"),
                                      detail = paste0("Identify putative target genes for differentially methylated distal enhancer probes ", length(na.omit(Sig.probes$probe))," probes"),
@@ -457,20 +466,24 @@ observeEvent(input$elmerAnalysisBt, {
 
                          pair  <- tryCatch({
                              get.pair(data = mae,
-                                      nearGenes=nearGenes,
-                                      permu.dir=paste0(dir.out,"/permu"),
-                                      dir.out=dir.out,
-                                      cores=isolate({input$elmercores}),
-                                      label= j,
-                                      calculate.Pe = TRUE,
+                                      nearGenes = nearGenes,
+                                      permu.dir = paste0(dir.out,"/permu"),
+                                      dir.out = dir.out,
+                                      cores = isolate({input$elmercores}),
+                                      label = j,
+                                      group.col = group.col,
+                                      group1 = group1,
+                                      group2 = group2,
                                       Pe = isolate({input$elmergetpairpvalue}),
+                                      save = TRUE,
+                                      pvalue = isolate({input$elmergetpairpvalue}),
                                       permu.size=isolate({input$elmergetpairpermu}),
-                                      percentage =  isolate({input$elmergetpairpercentage}),
+                                      minSubgroupFrac = isolate({input$elmergetpairpercentage}),
                                       filter.portion = isolate({input$elmergetpairportion}),
                                       diffExp = isolate({input$elmergetpairdiffExp}))
                          }, error = function(e) {
                              createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "danger",
-                                         content = paste0("Error in get.pair function"), append = TRUE)
+                                         content = paste0("Error in get.pair function",e), append = TRUE)
                              return(NULL)
                          })
 
@@ -515,6 +528,9 @@ observeEvent(input$elmerAnalysisBt, {
                                  TF <- get.TFs(data = mae,
                                                enriched.motif = enriched.motif,
                                                dir.out = dir.out,
+                                               group.col = group.col,
+                                               group1 = group1,
+                                               group2 = group2,
                                                cores = isolate({input$elmercores}),
                                                label = j,
                                                percentage = isolate({input$elmergetTFpercentage}))
