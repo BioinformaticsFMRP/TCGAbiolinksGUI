@@ -454,7 +454,6 @@ observeEvent(input$elmerAnalysisBt, {
                          setProgress(value = which(j == direction) * 0.1, message = paste("Step 2-", j, "direction"),
                                      detail = paste0("Get Near Genes for ", length(na.omit(Sig.probes$probe))," probes"),
                                      session = getDefaultReactiveDomain())
-
                          nearGenes <- GetNearGenes(data = mae,
                                                    probes = Sig.probes$probe,
                                                    cores = isolate({input$elmercores}),
