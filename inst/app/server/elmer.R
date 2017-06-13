@@ -121,7 +121,7 @@ observeEvent(input$schematic.plot.type, {
 })
 #----------------------- END controlling show/hide states -----------------
 observe({
-    shinyFileChoose(input, 'elmermeefile', roots=get.volumes(input$workingDir), session=session,
+    shinyFileChoose(input, 'elmermaefile', roots=get.volumes(input$workingDir), session=session,
                     restrictions=system.file(package='base'), filetypes=c('', 'rda'))
     shinyFileChoose(input, 'elmerresultsfile', roots=get.volumes(input$workingDir), session=session,
                     restrictions=system.file(package='base'), filetypes=c('', 'rda'))
@@ -129,11 +129,11 @@ observe({
                     restrictions=system.file(package='base'), filetypes=c('', 'rda'))
     shinyFileChoose(input, 'elmerexpfile', roots=get.volumes(input$workingDir), session=session,
                     restrictions=system.file(package='base'), filetypes=c('', 'rda'))
-    updateTextInput(session, "meesavefilename",
-                    value = paste0("mee",
-                                   paste(input$elmermeetype,
-                                         gsub("[[:punct:]]| ","_",input$elmermeesubtype),
-                                         gsub("[[:punct:]]| ","_",input$elmermeesubtype2),
+    updateTextInput(session, "maesavefilename",
+                    value = paste0("mae",
+                                   paste(input$elmermaetype,
+                                         gsub("[[:punct:]]| ","_",input$elmermaesubtype),
+                                         gsub("[[:punct:]]| ","_",input$elmermaesubtype2),
                                          sep = "_"),".rda"))
 })
 
@@ -141,28 +141,28 @@ observe({
 # mae create
 observe({
     data <- maedata()
-    updateSelectizeInput(session, 'elmermeetype', choices = {
+    updateSelectizeInput(session, 'elmermaetype', choices = {
         if(!is.null(data)) as.character(colnames(pData(data)))
     }, server = TRUE)
 })
-observeEvent(input$elmermeetype, {
+observeEvent(input$elmermaetype, {
     data <- maedata()
-    updateSelectizeInput(session, 'elmermeesubtype', choices = {
-        if(!is.null(data)) as.character(unique(pData(data)[,input$elmermeetype]))
+    updateSelectizeInput(session, 'elmermaesubtype', choices = {
+        if(!is.null(data)) as.character(unique(pData(data)[,input$elmermaetype]))
     }, server = TRUE)
 })
-observeEvent(input$elmermeetype, {
+observeEvent(input$elmermaetype, {
     data <- maedata()
-    updateSelectizeInput(session, 'elmermeesubtype2', choices = {
-        if(!is.null(data)) as.character(unique(pData(data)[,input$elmermeetype]))
+    updateSelectizeInput(session, 'elmermaesubtype2', choices = {
+        if(!is.null(data)) as.character(unique(pData(data)[,input$elmermaetype]))
     }, server = TRUE)
 })
 
 observe({
-    input$elmermeesubtype2
-    input$elmermeesubtype
-    group1 <- if_else(str_length(isolate({input$elmermeesubtype})) > 0,isolate({input$elmermeesubtype}), "group 1")
-    group2 <- if_else(str_length(isolate({input$elmermeesubtype2})) > 0,isolate({input$elmermeesubtype2}), "group 2")
+    input$elmermaesubtype2
+    input$elmermaesubtype
+    group1 <- if_else(str_length(isolate({input$elmermaesubtype})) > 0,isolate({input$elmermaesubtype}), "group 1")
+    group2 <- if_else(str_length(isolate({input$elmermaesubtype2})) > 0,isolate({input$elmermaesubtype2}), "group 2")
     choices <- c("hyper","hypo")
     names(choices) <-  c(paste("Probes hypermethylated in", group1,"compared to", group2),
                          paste("Probes hypomethylated in", group1,"compared to", group2))
@@ -237,7 +237,7 @@ createMae <-  reactive({
         return(NULL)
     }
 
-    withProgress(message = 'Creating mee data',
+    withProgress(message = 'Creating mae data',
                  detail = 'This may take a while...', value = 0, {
                      distal.probes <- get.feature.probe(genome = isolate({input$elmerInputGenome}),
                                                         met.platform = isolate({input$elmerInputMetPlatform}))
@@ -252,7 +252,7 @@ createMae <-  reactive({
                                       genome = isolate({input$elmerInputGenome}))
                      incProgress(1/2, detail = paste0('MAE created. Saving'))
                      print("Saving MAE")
-                     # Define where to save the mee object
+                     # Define where to save the mae object
                      getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
                      if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
                      filename <- file.path(getPath,isolate({input$maesavefilename}))
@@ -324,23 +324,23 @@ elmer.results.data <-  reactive({
 
     withProgress(message = 'Loading data',
                  detail = 'This may take a while...', value = 0, {
-                     mee.results <- mget(load(file))
+                     mae.results <- mget(load(file))
                      incProgress(1, detail = "Completed")
                  })
-    return(mee.results)
+    return(mae.results)
 })
 
 maedata <-  reactive({
-    inFile <- input$elmermeefile
+    inFile <- input$elmermaefile
     if (is.null(inFile)) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
 
     withProgress(message = 'Loading data',
                  detail = 'This may take a while...', value = 0, {
-                     mee <- get(load(file))
+                     mae <- get(load(file))
                      incProgress(1, detail = "Completed")
                  })
-    return(mee)
+    return(mae)
 })
 
 # Updates based on uploaded data
@@ -413,9 +413,9 @@ observeEvent(input$elmerAnalysisBt, {
     }
     direction <- isolate({input$elmerdirection})
     done <- c()
-    group1 <- isolate({input$elmermeesubtype})
-    group2 <- isolate({input$elmermeesubtype2})
-    group.col <- isolate({input$elmermeetype})
+    group1 <- isolate({input$elmermaesubtype})
+    group2 <- isolate({input$elmermaesubtype2})
+    group.col <- isolate({input$elmermaetype})
     mae <- mae[,pData(mae)[[group.col]] %in% c(group1, group2) ]
     for (j in direction){
         withProgress(message = 'ELMER analysis',
@@ -614,7 +614,7 @@ observeEvent(input$elmerPlotBt , {
                 }
 
                 # case 2
-                scatter.plot(mee,byPair=list(probe=isolate({input$scatter.plot.probes}),gene=c(isolate({input$scatter.plot.genes}))),
+                scatter.plot(mae,byPair=list(probe=isolate({input$scatter.plot.probes}),gene=c(isolate({input$scatter.plot.genes}))),
                              category="TN", save=FALSE,lm_line=TRUE)
             } else {
                 # case 3
@@ -623,13 +623,13 @@ observeEvent(input$elmerPlotBt , {
                                 content =   "Please select a probe", append = TRUE)
                     return(NULL)
                 }
-                scatter.plot(mee,byProbe=list(probe=isolate({input$scatter.plot.probes}),geneNum=isolate({input$scatter.plot.nb.genes})),
+                scatter.plot(mae,byProbe=list(probe=isolate({input$scatter.plot.probes}),numFlankingGenes=isolate({input$scatter.plot.nb.genes})),
                              category=results$group.col, dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
             }
         } else if (plot.type == "schematic.plot") {
-            if(is.null(mee)){
-                createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Mee object missing", style =  "danger",
-                            content =   "Please upload the mee object for this plot", append = TRUE)
+            if(is.null(mae)){
+                createAlert(session, "elmermessageresults", "elmerAlertResults", title = "mae object missing", style =  "danger",
+                            content =   "Please upload the mae object for this plot", append = TRUE)
                 return(NULL)
             }
             # Two cases
@@ -641,7 +641,7 @@ observeEvent(input$elmerPlotBt , {
                     return(NULL)
                 }
 
-                schematic.plot(pair=pair.obj, byProbe=isolate({input$schematic.plot.probes}),save=FALSE)
+                schematic.plot(data = mae, pair=results$pair, byProbe=isolate({input$schematic.plot.probes}),save=FALSE)
             } else if(isolate({input$schematic.plot.type}) == "genes"){
                 if(nchar(isolate({input$schematic.plot.genes})) == 0){
                     createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Gene missing", style =  "success",
@@ -650,7 +650,7 @@ observeEvent(input$elmerPlotBt , {
                 }
 
                 # 2 - By genes
-                schematic.plot(pair=pair.obj, byGene=isolate({input$schematic.plot.genes}),save=FALSE)
+                schematic.plot(data = mae, pair=results$pair, byGene=isolate({input$schematic.plot.genes}),save=FALSE)
             }
         } else if(plot.type == "motif.enrichment.plot") {
             motif.enrichment.plot(motif.enrichment=results$motif.enrichment,
