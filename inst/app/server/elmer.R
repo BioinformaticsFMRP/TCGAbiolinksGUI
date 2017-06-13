@@ -374,23 +374,20 @@ observeEvent(input$scatter.plot.probes, {
 observe({
     updateSelectizeInput(session, 'schematic.plot.probes', choices = {
         results <- elmer.results.data()
+        pair <- results$pair
         if(!is.null(results)){
-            pair.obj <- fetch.pair(pair=results$pair,
-                                   probeInfo =getProbeInfo(results$mee),
-                                   geneInfo = getGeneInfo(results$mee))
-            as.character(pair.obj@pairInfo$Probe)
+            as.character(pair$Probe)
         }
     }, server = TRUE)
 })
 observe({
     updateSelectizeInput(session, 'schematic.plot.genes', choices = {
         results <- elmer.results.data()
+        pair <- results$pair
         if(!is.null(results)){
-            pair.obj <- fetch.pair(pair=results$pair,
-                                   probeInfo = getProbeInfo(results$mee),
-                                   geneInfo = getGeneInfo(results$mee))
-
-            as.character(pair.obj@pairInfo$GeneID)
+            genes <-  as.character(pair$GeneID)
+            names(genes) <- as.character(paste0(pair$GeneID,"(", pair$Symbol,")"))
+            genes
         }
     }, server = TRUE)
 })
@@ -536,6 +533,7 @@ observeEvent(input$elmerAnalysisBt, {
                                  TF.meth.cor <- get(load(paste0(dir.out,"/getTF.",j,".TFs.with.motif.pvalue.rda")))
                                  save(mae, TF, enriched.motif, Sig.probes.paired,
                                       pair, nearGenes, Sig.probes, motif.enrichment, TF.meth.cor,
+                                      group.col, group1, group2,
                                       file=paste0(dir.out,"/ELMER_results_",j,".rda"),
                                       compress = "xz")
                                  done <- c(done,j)
@@ -560,10 +558,10 @@ observeEvent(input$elmerAnalysisBt, {
 observeEvent(input$elmerPlotBt , {
     output$elmer.plot <- renderPlot({
         plot.type <- isolate({input$elmerPlotType})
-        mee <- NULL
+        mae <- NULL
         results <- elmer.results.data()
-        if(!is.null(results)) mee <- results$mee
-        closeAlert(session, "elmerAlert")
+        if(!is.null(results)) mae <- results$mae
+        closeAlert(session, "elmerAlertResults")
 
         # Three types:
         # 1 - TF expression vs average DNA methylation
@@ -571,46 +569,46 @@ observeEvent(input$elmerPlotBt , {
         # 3 - Generate scatter plots for one probes’ nearby 20 gene expression
         #     vs DNA methylation at this probe
         if(plot.type == "scatter.plot"){
-            if(is.null(mee)){
-                createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "danger",
-                            content =   "Please upload the mee object for this plot", append = TRUE)
+            if(is.null(mae)){
+                createAlert(session, "elmermessageresults", "elmerAlertResults", title = "MAE object missing", style =  "danger",
+                            content = "Please upload the mae object for this plot", append = TRUE)
                 return(NULL)
             }
             # case 1
             plot.by <- isolate({input$scatter.plot.type})
             if(plot.by == "tf"){
                 if(is.null(isolate({input$scatter.plot.tf}))){
-                    closeAlert(session, "elmerAlert")
-                    createAlert(session, "elmermessage", "elmerAlert", title = "TFs missing", style =  "danger",
+                    closeAlert(session, "elmermessageresults")
+                    createAlert(session, "elmermessage", "elmerAlertResults", title = "TFs missing", style =  "danger",
                                 content = "Please select two TF", append = TRUE)
                     return(NULL)
                 }
 
                 if(nchar(isolate({input$scatter.plot.tf})) == 0 | length(isolate({input$scatter.plot.tf})) < 2){
-                    closeAlert(session, "elmerAlert")
-                    createAlert(session, "elmermessage", "elmerAlert", title = "TFs missing", style =  "danger",
+                    closeAlert(session, "elmerAlertResults")
+                    createAlert(session, "elmermessageresults", "elmerAlertResults", title = "TFs missing", style =  "danger",
                                 content =   "Please select two TF", append = TRUE)
                     return(NULL)
                 }
                 if(nchar(isolate({input$scatter.plot.motif})) == 0){
-                    closeAlert(session, "elmerAlert")
-                    createAlert(session, "elmermessage", "elmerAlert", title = "Motif missing", style =  "danger",
+                    closeAlert(session, "elmerAlertResults")
+                    createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Motif missing", style =  "danger",
                                 content =   "Please select a motif", append = TRUE)
                     return(NULL)
                 }
-                scatter.plot(mee,byTF=list(TF=isolate({input$scatter.plot.tf}),
+                scatter.plot(mae,byTF=list(TF=isolate({input$scatter.plot.tf}),
                                            probe=results$enriched.motif[[isolate({input$scatter.plot.motif})]]), category="TN",
                              save=FALSE,lm_line=TRUE)
             } else if(plot.by == "pair") {
                 if(nchar(isolate({input$scatter.plot.probes})) == 0){
-                    closeAlert(session, "elmerAlert")
-                    createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "danger",
+                    closeAlert(session, "elmerAlertResults")
+                    createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Probe missing", style =  "danger",
                                 content =   "Please select a probe", append = TRUE)
                     return(NULL)
                 }
                 if(nchar(isolate({input$scatter.plot.genes})) == 0){
-                    closeAlert(session, "elmerAlert")
-                    createAlert(session, "elmermessage", "elmerAlert", title = "Gene missing", style =  "danger",
+                    closeAlert(session, "elmerAlertResults")
+                    createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Gene missing", style =  "danger",
                                 content =   "Please select a gene", append = TRUE)
                     return(NULL)
                 }
@@ -621,27 +619,24 @@ observeEvent(input$elmerPlotBt , {
             } else {
                 # case 3
                 if(nchar(isolate({input$scatter.plot.probes})) == 0){
-                    createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "danger",
+                    createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Probe missing", style =  "danger",
                                 content =   "Please select a probe", append = TRUE)
                     return(NULL)
                 }
                 scatter.plot(mee,byProbe=list(probe=isolate({input$scatter.plot.probes}),geneNum=isolate({input$scatter.plot.nb.genes})),
-                             category="TN", dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
+                             category=results$group.col, dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
             }
         } else if (plot.type == "schematic.plot") {
             if(is.null(mee)){
-                createAlert(session, "elmermessage", "elmerAlert", title = "Mee object missing", style =  "danger",
+                createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Mee object missing", style =  "danger",
                             content =   "Please upload the mee object for this plot", append = TRUE)
                 return(NULL)
             }
             # Two cases
             # 1 - By probe
-            pair.obj <- fetch.pair(pair=results$pair,
-                                   probeInfo = getProbeInfo(mee),
-                                   geneInfo = getGeneInfo(mee))
             if(isolate({input$schematic.plot.type}) == "probes"){
                 if(nchar(isolate({input$schematic.plot.probes})) == 0){
-                    createAlert(session, "elmermessage", "elmerAlert", title = "Probe missing", style =  "danger",
+                    createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Probe missing", style =  "danger",
                                 content =   "Please select a probe", append = TRUE)
                     return(NULL)
                 }
@@ -649,7 +644,7 @@ observeEvent(input$elmerPlotBt , {
                 schematic.plot(pair=pair.obj, byProbe=isolate({input$schematic.plot.probes}),save=FALSE)
             } else if(isolate({input$schematic.plot.type}) == "genes"){
                 if(nchar(isolate({input$schematic.plot.genes})) == 0){
-                    createAlert(session, "elmermessage", "elmerAlert", title = "Gene missing", style =  "success",
+                    createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Gene missing", style =  "success",
                                 content =   "Please select a gene", append = TRUE)
                     return(NULL)
                 }
@@ -663,7 +658,7 @@ observeEvent(input$elmerPlotBt , {
                                   save=FALSE)
         } else if(plot.type == "ranking.plot"){
             if(nchar(isolate({input$ranking.plot.motif})) == 0){
-                createAlert(session, "elmermessage", "elmerAlert", title = "Motif missing", style =  "success",
+                createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Motif missing", style =  "success",
                             content =   "Please select a motif", append = TRUE)
                 return(NULL)
             }

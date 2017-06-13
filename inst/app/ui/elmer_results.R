@@ -1,6 +1,6 @@
 tabItem(tabName = "elmerresults",
         fluidRow(
-            column(8,  bsAlert("elmermessage"),
+            column(8,  bsAlert("elmermessageresults"),
                    bsCollapse(id = "collapelmerresults", open = "Plots",
                               bsCollapsePanel("Results table", dataTableOutput('elmerResult'), style = "default"),
                               bsCollapsePanel("Plots", uiOutput("elmerPlot"), style = "default"))),
