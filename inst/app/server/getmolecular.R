@@ -112,6 +112,9 @@ query.result <-  reactive({
 
     clinical <- getClinical.info()
 
+    # filter clinical for samples
+    clinical <- subset(clinical, clinical$submitter_id %in% substr(results$cases,1,12))
+
     stage <- isolate({input$tcgaClinicalTumorStageFilter})
     stage.idx <- NA
     if(!is.null(stage) & all(str_length(stage) > 0)){

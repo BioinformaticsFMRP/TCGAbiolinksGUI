@@ -2,6 +2,7 @@ suppressPackageStartupMessages({
     library(shiny)
     library(shinyFiles)
     library(SummarizedExperiment)
+    library(MultiAssayExperiment)
     library(TCGAbiolinks)
     library(ggplot2)
     library(shinyBS)
