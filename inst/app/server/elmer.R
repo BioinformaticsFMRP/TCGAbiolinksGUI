@@ -532,7 +532,7 @@ observeEvent(input$elmerAnalysisBt, {
                                                group2 = group2,
                                                cores = isolate({input$elmercores}),
                                                label = j,
-                                               percentage = isolate({input$elmergetTFpercentage}))
+                                               minSubgroupFrac = isolate({input$elmergetTFpercentage}))
                                  TF.meth.cor <- get(load(paste0(dir.out,"/getTF.",j,".TFs.with.motif.pvalue.rda")))
                                  save(mae, TF, enriched.motif, Sig.probes.paired,
                                       pair, nearGenes, Sig.probes, motif.enrichment, TF.meth.cor,
