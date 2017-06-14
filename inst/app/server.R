@@ -15,6 +15,7 @@ suppressPackageStartupMessages({
     library(readr)
     library(data.table)
     library(grid)
+    library(maftools)
     library(dplyr)
     options(shiny.maxRequestSize=-1) # Remove limit of upload
     options(shiny.deprecation.messages=FALSE)
@@ -273,6 +274,7 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     source(file.path(server.path, "pathview.R"),  local = TRUE)$value
     source(file.path(server.path, "eaplot.R"),  local = TRUE)$value
     source(file.path(server.path, "oncoprint.R"),  local = TRUE)$value
+    source(file.path(server.path, "maftools.R"),  local = TRUE)$value
     source(file.path(server.path, "starburst.R"),  local = TRUE)$value
     source(file.path(server.path, "elmer.R"),  local = TRUE)$value
     source(file.path(server.path, "manageSE.R"),  local = TRUE)$value

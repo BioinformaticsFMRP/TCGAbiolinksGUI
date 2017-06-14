@@ -1,7 +1,7 @@
 Package: TCGAbiolinksGUI
 Title: "TCGAbiolinksGUI: A Graphical User Interface to analyze cancer molecular and clinical data"
-Version: 1.1.1
-Date: 2017-06-13
+Version: 1.1.0
+Date: 2016-10-28
 Author: Tiago Chedraoui Silva <tiagochst@gmail.com>,
     Antonio Colaprico  <antonio.colaprico@ulb.ac.be>,
     Catharina Olsen <colsen@ulb.ac.be>,
@@ -33,6 +33,7 @@ Imports:
     grid,
     plotly,
     readr,
+    maftools,
     stringr (>= 1.1.0),
     SummarizedExperiment,
     ggrepel,
@@ -40,10 +41,10 @@ Imports:
     shinyFiles (>= 0.6.2),
     ggplot2  (>= 2.1.0),
     pathview,
-    ELMER (>= 1.2.1),
+    ELMER (>= 2.0.0),
     clusterProfiler,
     parallel,
-    TCGAbiolinks (>= 2.2.4),
+    TCGAbiolinks (>= 2.5.4),
     shinyjs (>= 0.7),
     colourpicker,
     shinyBS  (>= 0.61)
