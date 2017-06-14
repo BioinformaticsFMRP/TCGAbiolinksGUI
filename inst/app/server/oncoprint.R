@@ -19,7 +19,7 @@ observeEvent(input$mafAnnotation, {
 
 # The used added a file, now we can show the genes
 observeEvent(input$maffile, {
-    if(!is.null(mut())){
+    if(!is.null(mut.oncoprint())){
         shinyjs::show("oncoInputRb")
         shinyjs::show("oncoGenes")
     }
@@ -83,7 +83,7 @@ observeEvent(input$oncoInformation, {
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 # After user uploaded he MAF file we will add the choices availble
 observe({
-    updateSelectizeInput(session, 'oncoGenes', choices = unique(as.character(mut()$Hugo_Symbol)), server = TRUE)
+    updateSelectizeInput(session, 'oncoGenes', choices = unique(as.character(mut.oncoprint()$Hugo_Symbol)), server = TRUE)
 })
 
 observe({
@@ -123,15 +123,15 @@ annotation.maf <- reactive({
     }
     return(se)
 })
-mut <-  reactive({
-    #inFile <- input$maffile
-    #if (is.null(inFile)) return(NULL)
-    inFile <- parseFilePaths(get.volumes(isolate({input$workingDir})), input$maffile)
+mut.oncoprint <-  reactive({
+    inFile <- input$maffile
+    if (is.null(inFile)) return(NULL)
+    inFile <- parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)
     if (nrow(inFile) == 0) return(NULL)
     file <- as.character(inFile$datapath)
     withProgress(message = 'Reading MAF file',
                  detail = 'This may take a while...', value = 0, {
-                     if(grepl("\\.maf", file)){
+                     if(grepl("\\.maf\\.gz", file)){
                          ret <- read_tsv(file,
                                          comment = "#",
                                          col_types = cols(
@@ -201,7 +201,7 @@ genesByFile <- function(){
 observeEvent(input$oncoprintPlot , {
     closeAlert(session,"oncoAlert")
     output$oncoploting <- renderPlot({
-        mut <- isolate({mut()})
+        mut <- isolate({mut.oncoprint()})
         annotation <- isolate({annotation.maf()})
         cols <- isolate({input$mafAnnotationcols})
         rm.empty.cols <- isolate({input$oncoRmCols})
