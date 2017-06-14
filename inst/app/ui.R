@@ -109,7 +109,8 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Network inference" , tabName = "netinf", icon = icon("flask"))
         ),
         menuItem("Genomic analysis", icon = icon("flask"),
-                 menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o"))
+                 menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o")),
+                 menuSubItem("Maftools plot" , tabName = "maftools", icon = icon("picture-o"))
         ),
         tags$hr(class="lineIntegrative"),
         menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
@@ -171,6 +172,7 @@ body <-  dashboardBody(
         source(file.path(ui.path, "ea.R"),  local = TRUE)$value,
         source(file.path(ui.path, "survival.R"),  local = TRUE)$value,
         source(file.path(ui.path, "dea.R"),  local = TRUE)$value,
+        source(file.path(ui.path, "maftools.R"),  local = TRUE)$value,
         source(file.path(ui.path, "pathview.R"),  local = TRUE)$value,
         source(file.path(ui.path, "starburst.R"),  local = TRUE)$value,
         source(file.path(ui.path, "elmer_analysis.R"),  local = TRUE)$value,
