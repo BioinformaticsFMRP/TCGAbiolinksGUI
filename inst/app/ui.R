@@ -81,6 +81,14 @@ header$children[[2]]$children <-  tags$a(href='http://bioconductor.org/packages/
 sidebar <-  dashboardSidebar(
     width = 250,
     sidebarMenu(
+        tags$div("GDC Data",
+                 style= "
+                 font-size: 1.5em;
+                 margin-top: 6px;
+                 padding: 0 1.25em;
+                 text-align: center;
+                 background: rgba(255, 255, 255, 0);
+                 color: #FF5151"),
         tags$hr(class="lineData"),
         menuItem("Get GDC data", icon = icon("database"),
                  menuSubItem("Molecular data" , tabName = "tcgaSearch", icon = icon("database")),
@@ -89,6 +97,13 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Subtype data" , tabName = "tcgaSubtype", icon = icon("database"))
         ),
         menuItem("Manage SummarizedExperiment" , tabName = "seedit", icon = icon("pencil")),
+        tags$div("Analysis",
+                 style = "margin-top: 6px;
+                          font-size: 1.5em;
+                          padding: 0 1.25em;
+                          text-align: center;
+                          background: rgba(255, 255, 255, 0);
+                          color: #0AC71B"),
         tags$hr(class="lineAnalysis"),
         menuItem("Clinical analysis", icon = icon("flask"),
                  menuSubItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o"))
@@ -112,6 +127,13 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o")),
                  menuSubItem("Maftools plot" , tabName = "maftools", icon = icon("picture-o"))
         ),
+        tags$div("Integrative analysis",
+                 style = "margin-top: 6px;
+                          font-size: 1.5em;
+                          padding: 0 1.25em;
+                          text-align: center;
+                          background: rgba(255, 255, 255, 0);
+                          color: rgb(246, 255, 144);"),
         tags$hr(class="lineIntegrative"),
         menuItem("Starburst plot" , tabName = "starburst", icon = icon("picture-o")),
         menuItem("ELMER" , icon = icon("flask"),
@@ -119,8 +141,22 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Analysis" , tabName = "elmeranalysis", icon = icon("flask")),
                  menuSubItem("Visualize results" , tabName = "elmerresults", icon = icon("picture-o"))
         ),
+        tags$div("Configuration",
+                 style = "margin-top: 6px;
+                          font-size: 1.5em;
+                          padding: 0 1.25em;
+                          text-align: center;
+                          background: rgba(255, 255, 255, 0);
+                          color: #51B4FF"),
         tags$hr(class="lineConfig"),
         menuItem("Configuration", tabName = "config", icon = icon("cogs")),
+        tags$div("Help Documents",
+                 style= "margin-top: 6px;
+                         font-size: 1.5em;
+                         padding: 0 1.25em;
+                         text-align: center;
+                         background: rgba(255, 255, 255, 0);
+                        color: #909CFF"),
         tags$hr(class="lineDoc"),
         menuItem("Tutorial/Vignettes", icon = icon("book"),
                  menuSubItem("TCGAbiolinksGUI Manual" , href = "http://bioconductor.org/packages/devel/bioc/vignettes/TCGAbiolinksGUI/inst/doc/index.html", icon = icon("external-link")),
@@ -197,10 +233,10 @@ shinyUI(
             "Loading TCGAbiolinksGUI..."
         ),
         dashboardPage(title="TCGAbiolinksGUI",
-            skin = "blue",
-            header,
-            sidebar,
-            body),
+                      skin = "blue",
+                      header,
+                      sidebar,
+                      body),
         busyIndicator() # Add rendering in progress...
     )
 )

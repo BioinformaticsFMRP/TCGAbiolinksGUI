@@ -152,34 +152,14 @@ hr.lineDoc {
     border: 1px solid;
     color: rgba(144, 156, 255, 0.43);
     text-align: center;
-    margin-top: 40px;
-}
-hr.lineDoc:after {
-    content:"Help Documents";
-    display: inline-block;
-    position: relative;
-    top: -1.6em;
-    font-size: 1.5em;
-    padding: 0 0.25em;
-    background: rgba(255, 255, 255, 0);
-    color: #909CFF;
+    margin-top: 4px;
 }
 hr.lineAnalysis {
     padding: 0;
     border: 1px solid;
     color: rgba(57, 221, 72, 0.23);
     text-align: center;
-    margin-top: 40px;
-}
-hr.lineAnalysis:after {
-    content:"Analysis";
-    display: inline-block;
-    position: relative;
-    top: -1.6em;
-    font-size: 1.5em;
-    padding: 0 0.25em;
-    background: rgba(255, 255, 255, 0);
-    color: #0AC71B;
+    margin-top: 4px;
 }
 
 hr.lineIntegrative {
@@ -187,53 +167,23 @@ hr.lineIntegrative {
     border: 1px solid;
     color: rgba(246, 255, 144, 0.34);
     text-align: center;
-    margin-top: 40px;
-}
-hr.lineIntegrative:after {
-    content:"Integrative analysis";
-    display: inline-block;
-    position: relative;
-    top: -1.6em;
-    font-size: 1.5em;
-    padding: 0 0.25em;
-    background: rgba(255, 255, 255, 0);
-    color: rgb(246, 255, 144);
+    margin-top: 4px;
 }
 
 hr.lineData  {
+    margin-top: 4px;
     padding: 0;
     border: 1px solid;
     text-align: center;
-    margin-top: 40px;
     color: rgba(255, 84, 84, 0.36);
-}
-hr.lineData:after {
-    content:"GDC Data";
-    display: inline-block;
-    position: relative;
-    top: -1.6em;
-    font-size: 1.5em;
-    padding: 0 0.25em;
-    background: rgba(255, 255, 255, 0);
-    color: #FF5151
 }
 
 hr.lineConfig  {
     padding: 0;
     border: 1px solid;
     text-align: center;
-    margin-top: 40px;
     color: rgba(84, 158, 255, 0.36);
-}
-hr.lineConfig:after {
-    content:"Configuration";
-    display: inline-block;
-    position: relative;
-    top: -1.6em;
-    font-size: 1.5em;
-    padding: 0 0.25em;
-    background: rgba(255, 255, 255, 0);
-    color: #51B4FF
+    margin-top: 4px;
 }
 
 #busyModal {
