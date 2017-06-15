@@ -317,7 +317,7 @@ observeEvent(input$tcgaPrepareBt,{
                          n
                      }, error = function(e) {
                          createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
-                                     content = "Error while downloading the files", append = FALSE)
+                                     content = paste0("Error while downloading the files\n",e), append = FALSE)
                          return(NULL)
                      })
                  })
@@ -340,7 +340,7 @@ observeEvent(input$tcgaPrepareBt,{
                          trash
                      }, error = function(e) {
                          createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
-                                     content = "Error while preparing the files", append = FALSE)
+                                     content = paste0("Error while preparing the files\n",e), append = FALSE)
                      })
                      createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Prepare completed", style =  "success",
                                  content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
