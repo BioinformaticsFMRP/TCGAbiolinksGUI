@@ -326,23 +326,13 @@ observeEvent(input$tcgaPrepareBt,{
                      trash = tryCatch({
                          genes <- NULL
                          if(isolate({input$addGistic})) genes <- isolate({input$gisticGenes})
-                         n <- nrow(results)
-                         step <- 20
-                         data <- NULL
-                         for(i in 0:ceiling(n/step - 1)){
-                             query.aux <- query
-                             end <- ifelse(((i + 1) * step) > n, n,((i + 1) * step))
-                             query.aux$results[[1]] <- query.aux$results[[1]][((i * step) + 1):end,]
-                             trash <- GDCprepare(query.aux,
-                                                 save = FALSE,
-                                                 summarizedExperiment = as.logical(isolate({input$prepareRb})),
-                                                 directory = getPath,
-                                                 mut.pipeline = isolate({input$tcgaPrepareMutPipeline}),
-                                                 add.gistic2.mut = genes)
-                             incProgress(1/ceiling(n/step), detail = paste("Completed ", i + 1, " of ",ceiling(n/step)))
-                             if(is.null(data)) data <- trash else  data <- SummarizedExperiment::cbind(data,trash)
-                         }
-                         save(data,file = filename)
+                         data <- GDCprepare(query,
+                                            save = TRUE,
+                                            save.filename = filename,
+                                            summarizedExperiment = as.logical(isolate({input$prepareRb})),
+                                            directory = getPath,
+                                            mut.pipeline = isolate({input$tcgaPrepareMutPipeline}),
+                                            add.gistic2.mut = genes)
                          if(as.logical(isolate({input$prepareRb}))){
                              aux <- gsub(".rda","_samples_information.csv",filename)
                              write_csv(x = as.data.frame(colData(data)),path  = aux )
