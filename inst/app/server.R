@@ -26,16 +26,11 @@ getDataCategory <- function(legacy){
     data.category.hamonirzed <- sort(c("Transcriptome Profiling",
                                        "Copy Number Variation",
                                        "Simple Nucleotide Variation",
-                                       "DNA Methylation",
-                                       # "Raw Sequencing Data", # This is controlled
-                                       "Biospecimen",
-                                       "Clinical"))
+                                       "DNA Methylation"))
 
     data.category.legacy <- sort(c("Copy number variation",
                                    "Simple Nucleotide Variation",
                                    "Raw Sequencing Data",
-                                   "Biospecimen",
-                                   "Clinical",
                                    "Protein expression",
                                    "Gene expression",
                                    "DNA methylation",

@@ -77,7 +77,7 @@ observeEvent(input$tcgaSubtypeBt, {
 })
 
 subtype.result <-  reactive({
-    tumor <- isolate({input$tcgasubtypeFilter})
+    tumor <- input$tcgasubtypeFilter
     tbl <- data.frame()
 
     result = tryCatch({

@@ -11,12 +11,11 @@ $(function() {
     },
 
     'shiny:busy': function(event) {
-       console.log('Busy ' + new Date());
+    //    console.log(event)
       //$('#busyModal').modal('show');
     },
 
     'shiny:idle': function(event) {
-      console.log('Idle ' + new Date());
       //$('#busyModal').modal('hide');
     },
 
