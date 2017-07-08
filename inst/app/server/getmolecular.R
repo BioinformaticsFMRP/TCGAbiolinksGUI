@@ -109,49 +109,51 @@ query.result <-  reactive({
     # In this step we will download indexed clinical data
     # Get the barcodes that repects user inputs
     # And select only the results that respects it
+    if(!isolate({input$tcgaMolecularFilterClinical})){
+        clinical <- NULL
+    } else {
+        clinical <- getClinical.info()
 
-    clinical <- getClinical.info()
+        # filter clinical for samples
+        clinical <- subset(clinical, clinical$submitter_id %in% substr(results$cases,1,unique(str_length(clinical$submitter_id))))
 
-    # filter clinical for samples
-    clinical <- subset(clinical, clinical$submitter_id %in% substr(results$cases,1,12))
+        stage <- isolate({input$tcgaClinicalTumorStageFilter})
+        stage.idx <- NA
+        if(!is.null(stage) & all(str_length(stage) > 0)){
+            stage.idx <- sapply(stage, function(y) clinical$tumor_stage %in% y)
+            stage.idx <- apply(stage.idx,1,any)
+        }
 
-    stage <- isolate({input$tcgaClinicalTumorStageFilter})
-    stage.idx <- NA
-    if(!is.null(stage) & all(str_length(stage) > 0)){
-        stage.idx <- sapply(stage, function(y) clinical$tumor_stage %in% y)
-        stage.idx <- apply(stage.idx,1,any)
+        vital.status <- isolate({input$tcgaClinicalVitalStatusFilter})
+        vital.status.idx <- NA
+        if(!is.null(vital.status) & all(str_length(vital.status) > 0)){
+            vital.status.idx <- sapply(vital.status, function(y) clinical$vital_status %in% y)
+            vital.status.idx <- apply(vital.status.idx,1,any)
+        }
+        race <- isolate({input$tcgaClinicalRaceFilter})
+        race.idx <- NA
+        if(!is.null(race) & all(str_length(race) > 0)){
+            race.idx <- sapply(race, function(y) clinical$race %in% y)
+            race.idx <- apply(race.idx,1,any)
+        }
+        gender <- isolate({input$tcgaClinicalGenderFilter})
+        gender.idx <- NA
+        if(!is.null(gender) & all(str_length(gender) > 0)){
+            gender.idx <- sapply(gender, function(y) clinical$gender %in% y)
+            gender.idx <- apply(gender.idx,1,any)
+        }
+        if(any(!is.na(gender.idx),!is.na(race.idx),!is.na(vital.status.idx),!is.na(stage.idx))){
+            idx <- apply(data.frame(gender.idx,race.idx,vital.status.idx,stage.idx),1,function(x)all(x,na.rm = TRUE))
+            clinical <- clinical[idx,]
+        }
+        cut <- ifelse(grepl("TARGET",query$project),16,12)
+        results <- results[substr(results$cases,1,cut) %in% clinical$bcr_patient_barcode,]
+        if(is.null(results) || nrow(results) == 0) {
+            createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
+                        content = "No results for this query", append = FALSE)
+            return(NULL)
+        }
     }
-
-    vital.status <- isolate({input$tcgaClinicalVitalStatusFilter})
-    vital.status.idx <- NA
-    if(!is.null(vital.status) & all(str_length(vital.status) > 0)){
-        vital.status.idx <- sapply(vital.status, function(y) clinical$vital_status %in% y)
-        vital.status.idx <- apply(vital.status.idx,1,any)
-    }
-    race <- isolate({input$tcgaClinicalRaceFilter})
-    race.idx <- NA
-    if(!is.null(race) & all(str_length(race) > 0)){
-        race.idx <- sapply(race, function(y) clinical$race %in% y)
-        race.idx <- apply(race.idx,1,any)
-    }
-    gender <- isolate({input$tcgaClinicalGenderFilter})
-    gender.idx <- NA
-    if(!is.null(gender) & all(str_length(gender) > 0)){
-        gender.idx <- sapply(gender, function(y) clinical$gender %in% y)
-        gender.idx <- apply(gender.idx,1,any)
-    }
-    if(any(!is.na(gender.idx),!is.na(race.idx),!is.na(vital.status.idx),!is.na(stage.idx))){
-        idx <- apply(data.frame(gender.idx,race.idx,vital.status.idx,stage.idx),1,function(x)all(x,na.rm = TRUE))
-        clinical <- clinical[idx,]
-    }
-    cut <- ifelse(grepl("TARGET",query$project),16,12)
-    results <- results[substr(results$cases,1,cut) %in% clinical$bcr_patient_barcode,]
-    if(is.null(results) || nrow(results) == 0) {
-        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
-                    content = "No results for this query", append = FALSE)
-        return(NULL)
-    }
-
     query$results[[1]] <- results
     list(query,clinical)
 })
