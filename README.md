@@ -21,10 +21,12 @@ biocLite("TCGAbiolinksGUI", dependencies = TRUE)
 To install the package development version from Github, please, use the code below.
 ```R
 source("https://bioconductor.org/biocLite.R")
-deps <- c("pathview","clusterProfiler","ELMER", "DO.db","GO.db", "ComplexHeatmap","EDASeq", "TCGAbiolinks")
+deps <- c("pathview","clusterProfiler", "DO.db","GO.db", "ComplexHeatmap","EDASeq", "TCGAbiolinks")
 for(pkg in deps)  if (!pkg %in% installed.packages()) biocLite(pkg, dependencies = TRUE)
 deps <- c("devtools","shape","shiny","readr","googleVis","shinydashboard","shinyFiles","shinyjs","shinyBS")
 for(pkg in deps)  if (!pkg %in% installed.packages())  install.packages(pkg,dependencies = TRUE)
+devtools::install_github("tiagochst/ELMER.data")
+devtools::install_github("tiagochst/ELMER")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
