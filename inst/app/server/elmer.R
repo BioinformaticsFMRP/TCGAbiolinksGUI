@@ -470,7 +470,7 @@ observeEvent(input$elmerAnalysisBt, {
                                       group.col = group.col,
                                       group1 = group1,
                                       group2 = group2,
-                                      Pe = isolate({input$elmergetpairpvalue}),
+                                      Pe = isolate({input$elmergetpairpevalue}),
                                       save = TRUE,
                                       pvalue = isolate({input$elmergetpairpvalue}),
                                       permu.size=isolate({input$elmergetpairpermu}),
@@ -662,14 +662,19 @@ observeEvent(input$elmerPlotBt , {
                             content =   "Please select a motif", append = TRUE)
                 return(NULL)
             }
-            label <- list(isolate({input$ranking.plot.tf}))
-            names(label) <- isolate({input$ranking.plot.motif})
-            gg <- TF.rank.plot(motif.pvalue=results$TF.meth.cor,
-                               motif=isolate({input$ranking.plot.motif}),
-                               TF.label=label,
-                               save=FALSE)
+            label <- isolate({input$ranking.plot.tf})
+            if(is.null(label)) {
+                label <- createMotifRelevantTfs("family")[isolate({input$ranking.plot.motif})]
+            } else {
+                label <- list(unlist(label, unlist(createMotifRelevantTfs("family")[isolate({input$ranking.plot.motif})])))
+                names(label) <- isolate({input$ranking.plot.motif})
+            }
+            gg <- TF.rank.plot(motif.pvalue = results$TF.meth.cor,
+                               motif = isolate({input$ranking.plot.motif}),
+                               TF.label = label,
+                               save = FALSE)
             # names were not fitting in the plot. Reducing the size
-            pushViewport(viewport(height=0.8,width=0.8))
+            pushViewport(viewport(height = 0.8, width = 0.8))
             grid.draw(gg[[1]])
         }
     })
