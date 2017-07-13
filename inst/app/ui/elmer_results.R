@@ -75,10 +75,10 @@ tabItem(tabName = "elmerresults",
                        box(title = "Results table", width = NULL,
                            solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                            selectizeInput("elmerTableType", "Table to show:",
-                                          c("TF"="tf",
-                                            "Enriched motifs"="motif",
+                                          c("Signigicant probes"="sigprobes",
                                             "Pair probe/gene"="pair",
-                                            "Signigicant probes"="sigprobes"
+                                            "Enriched motifs"="motif",
+                                            "Regulatory TFs"="tf"
                                           ),
                                           multiple = FALSE))
                    )
