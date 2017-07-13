@@ -670,7 +670,7 @@ observeEvent(input$elmerPlotBt , {
             if(is.null(label)) {
                 label <- createMotifRelevantTfs("family")[isolate({input$ranking.plot.motif})]
             } else {
-                label <- list(unlist(label, unlist(createMotifRelevantTfs("family")[isolate({input$ranking.plot.motif})])))
+                label <- list(c(label, unlist(createMotifRelevantTfs("family")[isolate({input$ranking.plot.motif})])))
                 names(label) <- isolate({input$ranking.plot.motif})
             }
             gg <- TF.rank.plot(motif.pvalue = results$TF.meth.cor,
