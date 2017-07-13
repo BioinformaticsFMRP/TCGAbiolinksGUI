@@ -347,19 +347,19 @@ maedata <-  reactive({
 observe({
     results <- elmer.results.data()
     updateSelectizeInput(session, 'scatter.plot.probes', choices = {
-        if(!is.null(results)) as.character(results$Sig.probes$probe)
+        if(!is.null(results)) sort(as.character(results$Sig.probes$probe))
     }, server = TRUE)
     updateSelectizeInput(session, 'scatter.plot.tf', choices = {
-        if(!is.null(results)) as.character(rownames(results$TF.meth.cor))
+        if(!is.null(results)) sort(as.character(rownames(results$TF.meth.cor)))
     }, server = TRUE)
     updateSelectizeInput(session, 'scatter.plot.motif', choices = {
-        if(!is.null(results)) as.character(names(results$enriched.motif))
+        if(!is.null(results)) sort(as.character(names(results$enriched.motif)))
     }, server = TRUE)
     updateSelectizeInput(session, 'ranking.plot.tf', choices = {
-        if(!is.null(results)) as.character(rownames(results$TF.meth.cor))
+        if(!is.null(results)) sort(as.character(rownames(results$TF.meth.cor)))
     }, server = TRUE)
     updateSelectizeInput(session, 'ranking.plot.motif', choices = {
-        if(!is.null(results)) as.character(colnames(results$TF.meth.cor))
+        if(!is.null(results)) sort(as.character(colnames(results$TF.meth.cor)))
     }, server = TRUE)
 
 })
@@ -597,8 +597,10 @@ observeEvent(input$elmerPlotBt , {
                     return(NULL)
                 }
                 scatter.plot(mae,byTF=list(TF=isolate({input$scatter.plot.tf}),
-                                           probe=results$enriched.motif[[isolate({input$scatter.plot.motif})]]), category="TN",
-                             save=FALSE,lm_line=TRUE)
+                                           probe=results$enriched.motif[[isolate({input$scatter.plot.motif})]]),
+                             category = results$group.col,
+                             save = FALSE,
+                             lm_line = TRUE)
             } else if(plot.by == "pair") {
                 if(nchar(isolate({input$scatter.plot.probes})) == 0){
                     closeAlert(session, "elmerAlertResults")
@@ -615,7 +617,7 @@ observeEvent(input$elmerPlotBt , {
 
                 # case 2
                 scatter.plot(mae,byPair=list(probe=isolate({input$scatter.plot.probes}),gene=c(isolate({input$scatter.plot.genes}))),
-                             category="TN", save=FALSE,lm_line=TRUE)
+                             category=results$group.col, save=FALSE,lm_line=TRUE)
             } else {
                 # case 3
                 if(nchar(isolate({input$scatter.plot.probes})) == 0){
@@ -623,8 +625,10 @@ observeEvent(input$elmerPlotBt , {
                                 content =   "Please select a probe", append = TRUE)
                     return(NULL)
                 }
-                scatter.plot(mae,byProbe=list(probe=isolate({input$scatter.plot.probes}),numFlankingGenes=isolate({input$scatter.plot.nb.genes})),
-                             category=results$group.col, dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
+                scatter.plot(mae,byProbe=list(probe=isolate({input$scatter.plot.probes}),
+                                              numFlankingGenes=isolate({input$scatter.plot.nb.genes})),
+                             category = results$group.col,
+                             dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
             }
         } else if (plot.type == "schematic.plot") {
             if(is.null(mae)){
