@@ -110,3 +110,12 @@ If you have used  Pathway plot please cite:
 
 * Luo, Weijun, Brouwer and Cory (2013). “Pathview: an R/Bioconductor package for pathway-based data integration and visualization.” Bioinformatics, 29(14), pp. 1830-1831.
 
+# Increasing loaded DLL
+
+If you receive this error message:  `maximal number of DLLs reached...`
+You will need to increase the maimun number of DLL R can load.  R_MAX_NUM_DLLS
+In MACOS just mofify the file `/Library/Frameworks/R.framework/Resources/etc/Renviron`
+and add `R_MAX_NUM_DLLS=110` in the end.
+
+For other OS check https://stat.ethz.ch/R-manual/R-patched/library/base/html/Startup.html.
+
