@@ -71,6 +71,8 @@ observeEvent(input$elmerPlotType, {
         shinyjs::show("schematic.plot.type")
         shinyjs::hide("ranking.plot.motif")
         shinyjs::hide("ranking.plot.tf")
+        shinyjs::hide("motif.enrichment.plot.or")
+        shinyjs::hide("motif.enrichment.plot.loweror")
         type <- isolate({input$schematic.plot.type})
         if(type =="genes"){
             shinyjs::hide("schematic.plot.probes")
@@ -91,6 +93,8 @@ observeEvent(input$elmerPlotType, {
         shinyjs::hide("schematic.plot.probes")
         shinyjs::show("ranking.plot.motif")
         shinyjs::show("ranking.plot.tf")
+        shinyjs::hide("motif.enrichment.plot.or")
+        shinyjs::hide("motif.enrichment.plot.loweror")
     } else if(type =="motif.enrichment.plot"){
         shinyjs::hide("scatter.plot.type")
         shinyjs::hide("scatter.plot.tf")
@@ -103,6 +107,8 @@ observeEvent(input$elmerPlotType, {
         shinyjs::hide("schematic.plot.probes")
         shinyjs::hide("ranking.plot.motif")
         shinyjs::hide("ranking.plot.tf")
+        shinyjs::show("motif.enrichment.plot.or")
+        shinyjs::show("motif.enrichment.plot.loweror")
     }
 })
 
@@ -658,7 +664,8 @@ observeEvent(input$elmerPlotBt , {
             }
         } else if(plot.type == "motif.enrichment.plot") {
             motif.enrichment.plot(motif.enrichment=results$motif.enrichment,
-                                  #significant=list(OR=1.3,lowerOR=1.3),
+                                  significant=list(OR = isolate({input$motif.enrichment.plot.or}),
+                                                   lowerOR = isolate({input$motif.enrichment.plot.loweror})),
                                   save=FALSE)
         } else if(plot.type == "ranking.plot"){
             if(nchar(isolate({input$ranking.plot.motif})) == 0){
