@@ -87,7 +87,7 @@ observeEvent(input$dmrAnalysis , {
                                  incProgress(1/(ceiling(n/step) + 1), detail = paste("Completed ", j + 1, " of ",ceiling(n/step)))
                              }
                              if(!is.null(results)){
-                                 rownames(results) <- results$probeID
+                                 rownames(results) <- results[,grep("probeID|Composite.Element.REF",colnames(results))]
                                  results <- results[,!(colnames(results) %in% colnames(values(se)))]
                              }
                              if(isolate({input$dmrPvalues}) == "all"){
