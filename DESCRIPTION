@@ -19,6 +19,8 @@ Depends:
     shinydashboard (>= 0.5.3)
 Suggests:
     testthat,
+    DT,
+    dplyr,
     knitr,
     roxygen2,
     devtools,
