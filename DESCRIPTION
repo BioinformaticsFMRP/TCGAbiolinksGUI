@@ -19,6 +19,8 @@ Depends:
     shinydashboard (>= 0.5.3)
 Suggests:
     testthat,
+    DT,
+    dplyr,
     knitr,
     roxygen2,
     devtools,
@@ -26,9 +28,7 @@ Suggests:
     xml2,
     BiocStyle,
     animation,
-    pander,
-    DT,
-    dplyr
+    pander
 Imports:
     shiny (>= 0.14.1),
     downloader (>= 0.4),
