@@ -28,9 +28,7 @@ Suggests:
     xml2,
     BiocStyle,
     animation,
-    pander,
-    DT,
-    dplyr
+    pander
 Imports:
     shiny (>= 0.14.1),
     downloader (>= 0.4),
