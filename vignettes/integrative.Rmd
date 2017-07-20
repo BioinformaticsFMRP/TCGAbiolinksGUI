@@ -180,3 +180,5 @@ Select ELMER plot. To access the plots, both the results and mee object must be 
 
 ### Results table
 Select the ELMER results from the table. A results object should be selected.
+
+# References
