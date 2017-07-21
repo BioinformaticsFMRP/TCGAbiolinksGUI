@@ -41,6 +41,8 @@ observeEvent(input$elmerPlotType, {
         shinyjs::hide("schematic.plot.probes")
         shinyjs::hide("ranking.plot.motif")
         shinyjs::hide("ranking.plot.tf")
+        shinyjs::hide("motif.enrichment.plot.or")
+        shinyjs::hide("motif.enrichment.plot.loweror")
         scatter.type <- isolate({input$scatter.plot.type})
         if(scatter.type == "tf"){
             shinyjs::show("scatter.plot.tf")
