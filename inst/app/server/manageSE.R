@@ -49,10 +49,10 @@ observeEvent(input$seeditSEbt, {
     if (is.null(inFile))
         return(NULL)
     sample.data <-   read_csv(inFile$datapath,col_names = TRUE)
+    sample.data <- DataFrame(sample.data[match(sample.data$row.names,colnames(data)),])
     rownames(sample.data) <- sample.data$row.names
     sample.data$row.names <- NULL
-    sample.data <- sample.data[match(rownames(sample.data),colnames(data)),]
-    colData(data) <- DataFrame(sample.data)
+    colData(data) <- sample.data
     getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
     if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
     filename <- file.path(getPath,isolate({input$seeditfilename}))
