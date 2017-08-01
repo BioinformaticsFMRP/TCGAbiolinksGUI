@@ -1,6 +1,6 @@
 ---
 title: "TCGAbiolinks GUI"
-author: "Tiago Chedraoui Silva, Antonio Colaprico , Catharina Olsen, Michele Ceccarelli, Gianluca Bontempi, Benjamin Berman, Houtan Noushmehr"
+author: "Tiago Chedraoui Silva, Antonio Colaprico , Catharina Olsen, Michele Ceccarelli, Gianluca Bontempi, Benjamin P Berman, Houtan Noushmehr"
 date: "`r BiocStyle::doc_date()`"
 vignette: >
   %\VignetteIndexEntry{TCGAbiolinksGUI User's Guide}
@@ -103,11 +103,11 @@ offers a  graphical user interface (GUI) to control your app containers.
 
 - To run RStudio Server, shiny-server and save the results in the host machine please use the code below: 
 `sudo docker run -d -P -v /home/$USER/docker:/home/rstudio -p 3333:8787 -p 3334:3838 tiagochst/tcgabiolinksgui`
- 1. In case rstudio is not accessible please check if the folder created (docker) has the right permission
- 2. If your system is windows or mac you will need to change  `/home/$USER/docker` 
- to the correct system path. Examples can be found in this [github page](https://github.com/rocker-org/rocker/wiki/Sharing-files-with-host-machine)
+ 1. In case Rstudio is not accessible please check if the folder created (docker) has the right permission
+ 2. If your system is windows or macOS you will need to change  `/home/$USER/docker` 
+ to the correct system path. Examples can be found at this [GitHub page](https://github.com/rocker-org/rocker/wiki/Sharing-files-with-host-machine)
 
-### Accessing tools after image is running:
+### Accessin the tools after the image is running:
 
 - TCGAbiolinksGUI will be available at <your local IP>:3334/tcgabiolinksgui
 - RStudio will be available at <your local IP>:3333 (***username: rstudio*** , ***password:rstudio***)
@@ -195,8 +195,8 @@ For a detailed manual for this section please access this link:
 
 ### Sub-menu: Molecular data
 
-In this sub-menu the user will be able to search, download and prepare The NCI's Genomic Data Commons (GDC)  data for analysis.
-The first step is to search for GDC open data access with the Advanced search box. The search results will be summarized in plots in the center of the screen. The second step is to download and prepare the data into a R object 
+In this sub-menu, the user will be able to search, download and prepare The NCI's Genomic Data Commons (GDC)  data for analysis.
+The first step is to search for GDC open data access with the Advanced search box. The search results will be summarized in plots in the center of the screen. The second step is to download and prepare the data into an R object 
 to be used in the analysis steps.
 
 ![GDC search menu: Main window.](tcgasearch.png)
@@ -209,7 +209,7 @@ to be used in the analysis steps.
 
 
 There are two available sources to download GDC data using TCGAbiolinks:
-- GDC Legacy Archive : provides access to an unmodified copy of data that was previously stored in
+- GDC Legacy Archive: provides access to an unmodified copy of data that was previously stored in
   [CGHub](https://cghub.ucsc.edu/) and in the TCGA Data Portal hosted by the TCGA Data Coordinating Center (DCC), in which uses
   as references GRCh37 (hg19) and GRCh36 (hg18).
 - GDC harmonized database: data available was harmonized against GRCh38 (hg38) using GDC Bioinformatics Pipelines
@@ -256,10 +256,10 @@ The following filters are available to select the data:
 <div class="panel-body">
 
 In the search step, it is important that there are no repeated 
-cases, otherwise the prepare step might no work. If it happens, the search will give you this warning "There are more than one file for the same case." 
+cases, otherwise, the prepare step might not work. If it happens, the search will give you this warning "There are more than one file for the same case." 
 To solve this problem, you  probably need to use more filters to correctly select your data. 
 
-As an example of this problem, if you use only Project (i.e "TCGA-ACC") and Data category filter (i.e "Copy Number Variantion"), for each sample we have two data types "Copy Number segment"" and "Masked Copy Number segment". 
+As an example of this problem, if you use only Project (i.e "TCGA-ACC") and Data category filter (i.e "Copy Number Variation"), for each sample we have two data types "Copy Number segment" and "Masked Copy Number segment". 
 
 </div>
 </div>
@@ -272,14 +272,14 @@ The data can be prepared into one of two formats:
 
 * [SummarizedExperiment](http://www.nature.com/nmeth/journal/v12/n2/abs/nmeth.3252.html) 
 [@huber2015orchestrating]: An R object that contains the sample information matrix (clinical and subtype information),
-the assay matrix (i.e DNA methylation beta-values), the features matrix (i.e information for each probe in the DNA methylation assay mamtrix).
+the assay matrix (i.e DNA methylation beta-values), the features matrix (i.e information for each probe in the DNA methylation assay matrix).
 * Data Frame: A simple table with only the assay matrix (i.e Gene expression quantification)
 
-In case a SummarizedExperiment object was selected the user will be able to add more metadata infromation into the  sample information matrix. By checking "Add gistic2 and mutation information" and giving a list of genes,
-the GUI will download GISTIC2 data from the GDAC firehose and Mutation Annotation Files (MAF) and their information
+In case a SummarizedExperiment object was selected the user will be able to add more metadata information into the  sample information matrix. By checking "Add gistic2 and mutation information" and giving a list of genes,
+the GUI will download GISTIC2 data from the GDAC Firehose and Mutation Annotation Files (MAF) and their information
 to the object. This might be useful, for example, if the user wants to evaluate the survival of mutant samples vs non-mutant or if he wants to evaluate it on a heatmap, which can be used as labels.
 
-Finnaly, the object will be saved with the same name as the file name field.
+Finally, the object will be saved with the same name as the file name field.
 
 ### Sub-menu: Subtype data
 
@@ -325,7 +325,7 @@ In GDC database the clinical data can be retrieved from two sources:
 There are two main differences:
 
 - XML has more information: radiation, drugs information, follow-ups, biospecimen, etc. So the indexed one is only a subset of the XML files
-- The indexed data contains the updated data with the follow up informaiton. 
+- The indexed data contains the updated data with the follow-up information. 
   For example: if the patient is alive in the first time clinical data was collect and the in the next follow-up he is dead, 
   the indexed data will show dead. The XML will have two fields, one for the first time saying he is alive (in the clinical part) and the follow-up saying he is dead. You can see this case here: 
 
@@ -338,7 +338,7 @@ There are two main differences:
 <div class="panel-heading">Clinical data inconsistencies</div>
 <div class="panel-body">
 
-Some inconsisentecies have been found in the indexed clinical data and are being
+Some inconsistencies have been found in the indexed clinical data and are being
 investigated by the GDC team. These inconsistencies are:
 
 - ***Vital status*** field is not correctly updated 
@@ -348,7 +348,7 @@ investigated by the GDC team. These inconsistencies are:
 </div>
 </div>
 
-##### Vital status inconsistancie
+##### Vital status inconsistencies
 
 ```{r results = 'hide', echo=TRUE, message=FALSE, warning=FALSE}
 # Get XML files and parse them
@@ -368,7 +368,7 @@ filter(clinical.index,submitter_id == "TCGA-F5-6702") %>%
     select(vital_status,days_to_death,days_to_last_follow_up) %>% kable
 ```
 
-##### Progression or Recurrence and Grande inconsistancie
+##### Progression or Recurrence and Grade inconsistancie
 
 ```{r results = 'hide', echo=TRUE, message=FALSE, warning=FALSE}
 # Get XML files and parse them
@@ -404,11 +404,11 @@ How to fetch GDC clinical data.
 ### Sub-menu: Mutation data
 
 In order to download the Mutation Annotation Format (MAF), we provide the user
-with an interface to the `GDCquery_maf` function. Briefly, it will download the open acess maf files from
+with an interface to the `GDCquery_maf` function. Briefly, it will download the open access MAF files from
 [https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/](https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/).
 Four separate variant calling pipelines are implemented for GDC data harmonization which are described [here](https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/DNA_Seq_Variant_Calling_Pipeline/).
 
-#### Mutatation data search box
+#### Mutation data search box
 
 The available filters are:
 
@@ -419,7 +419,7 @@ The available filters are:
 ## Menu: Manage summarized Experiment object
 
 
-To facilitate visualization and modification of the SummarizedExperiment object, we created this menu in which it is possible to visualize the three matrices of the object (assay matrix [i.e. gene expresssion values], features matrix [i.e. gene information] and sample information matrix). Also,  it is possible to download the sample information matrix as a csv file, and, after modifying it, to upload  and update the SummarizedExperiment object. This might be useful if for example the user wants to compare two groups not already pre-defined.
+To facilitate visualization and modification of the SummarizedExperiment object, we created this menu in which it is possible to visualize the three matrices of the object (assay matrix [i.e. gene expression values], features matrix [i.e. gene information] and sample information matrix). Also,  it is possible to download the sample information matrix as a csv file, and, after modifying it, to upload  and update the SummarizedExperiment object. This might be useful if, for example, the user wants to compare two groups not already pre-defined.
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/54rP_yZlpQs/maxresdefault.jpg)](http://www.youtube.com/watch?v=54rP_yZlpQs  "Tutorial Video: Managing a SummarizedExperiment object - (http://www.youtube.com/watch?v=54NBug9ycwM)")
 
@@ -432,7 +432,7 @@ To facilitate visualization and modification of the SummarizedExperiment object,
 For a detailed manual for this section please access this link: [Manage SummarizedExperiment](https://drive.google.com/file/d/0B0-8N2fjttG-TVVOcTNFRlh3YXM/view?usp=sharing)
 
 \newpage
-# Analaysis menus
+# Analysis menus
 ## Detailed explanation
 
 For a detailed manual for this section please access these links:
@@ -457,7 +457,7 @@ A csv or R object (rda) file with the clinical information.
 * Group column: Select the column that identifies the group of each sample.
 * Legend text: Text of the legend.
 * Title: Title text.
-* x-axis limit: Limits the x-axis. If 0, no cut-off is considered.
+* X-axis limit: Limits the X-axis. If 0, no cut-off is considered.
 * Add p-value: Add p-value to the plot.
 
 #### Size control
@@ -486,12 +486,12 @@ Select a summarized Experiment object (rda)
 * DNA methylation threshold: minimum difference of DNA methylation levels to be considered as hyper/hypomethylated
 * P-value adj cut-off: minimum adjusted P-value to be considered as significant.
 * Group column: columns with the groups to be used in the analysis
-* Groups: Select at least two groups for analysis. For example if it has three groups (g1, g2 and g3) the analysis will
+* Groups: Select at least two groups for analysis. For example, if it has three groups (g1, g2 and g3) the analysis will
 output g1 vs g2, g1 vs g3 and g2 vs g3.
 
 ### Sub-menu: Volcano plot
 
-In this sub-menu the user will be able to plot the results from the Differentially methylated regions (DMR) 
+In this sub-menu, the user will be able to plot the results from the Differentially methylated regions (DMR) 
 analysis and the differential expression analysis (DEA). 
 
 ![Volcano plot menu: Main window.](volcano.png)
@@ -503,7 +503,7 @@ Expected input a csv file with the following pattern:
 * For DNA methylation: DMR_results_Group_subgruop1_subgroup2_pcut_1e-30_meancut_0.55.csv
 
 #### Volcano options
-This box will control the x-axis thresholds "Log FC threshold" for expression and "DNA methylation threshold" for DNA methylation and the y-axis thresholds "P-value adj cut-off".
+This box will control the X-axis thresholds "Log FC threshold" for expression and "DNA methylation threshold" for DNA methylation and the y-axis thresholds "P-value adj cut-off".
 
 
 #### Highlighting options
@@ -548,13 +548,13 @@ This column is selected from the  sample matrix (accessed with colData)
 * Plot jitters: Show jitters
 * Select y limits: Set lower/upper limits for y
 * Sort method: Methods to sort the groups in the plot
-* x-axis label angle: Change angle of the text in the x-axis
+* X-axis label angle: Change the angle of the text in the X-axis
 
 #### Size control
 Change the size of the plot
 
 ## Menu: Transcriptomic analysis
-In this sub-menu the user will be able to perform a gene ontology enrichment analysis for the following processes:
+In this sub-menu, the user will be able to perform a gene ontology enrichment analysis for the following processes:
 biological, cellular component, and molecular function. In addition, a network analysis for the groups of genes will be performed.
 
 ### Sub-menu: Differential expression analysis
@@ -590,8 +590,8 @@ to adjust for distributional differences between lanes (e.g., sequencing depth):
 
 #### Pathway graphs
 
-* DEA result: Select csv file create by the analysis.
-* Pathway ID: plot results in a pathway graphs. See bioconductor [Pathview](http://bioconductor.org/packages/pathview/) [@luo2013pathview] package.
+* DEA result: Select csv file created by the analysis.
+* Pathway ID: plot results in a pathway graphs. See Bioconductor [Pathview](http://bioconductor.org/packages/pathview/) [@luo2013pathview] package.
 
 ![Pathway graphs output.](pathview.png)
 
@@ -616,7 +616,7 @@ DMR result file should have the following pattern:  DMR_results_groupCol_group1_
 #### Genes/Probes selection
 
 * By status: Based on the results file the user can select to see hyper/hypo methylated probes
-* Text: The user can write a list of genes separated by ";" , "," or a new line
+* Text: The user can write a list of genes separated by ";", "," or a new line
 
 #### Annotation options
 
@@ -648,13 +648,13 @@ Given a set of genes that are up-regulated under certain conditions, an enrichme
 Input a list of genes by:
 
 * Selection: The user can select by hand multiple genes from a list
-* Text: the user can write a list of genes separated by ";" , "," or a new line
+* Text: the user can write a list of genes separated by ";", "," or a new line
 * File: select a file (rda, csv, txt) with a column Gene_symbol or mRNA
 
 #### Parameter control
 
 * Size of the text
-* x upper limit: x-axis upper limit. If 0 no limit is used.
+* x upper limit: X-axis upper limit. If 0 no limit is used.
 * Number of bar histograms to show: Maximum number of bars to plot
 
 #### Plot selection
@@ -700,7 +700,7 @@ Using the oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/p
 #### Gene selection
 
 * Selection: The user can select multiple genes from a list
-* Text: The user can write a list of genes separated by ";" , "," or a new line
+* Text: The user can write a list of genes separated by ";", "," or a new line
 * File: Select a file (rda, csv, txt) with a column Gene_symbol or mRNA
 
 #### Parameters control
@@ -735,7 +735,7 @@ The possible thresholds controls are:
 * Log FC threshold: gene expression Log2FC threshold
 * Expression FDR cut-off: gene expression  FDR cut-off (y-axis)
 * Mean DNA methylation difference threshold: Mean DNA methylation difference threshold
-* Methylation FDR cut-off: DNA methylation FDR cut-off (x-axis)
+* Methylation FDR cut-off: DNA methylation FDR cut-off (X-axis)
 
 The options Mean DNA methylation difference threshold and Log FC threshold are used to circle genes which pass the cut-offs previously defined (eg. mean methylation or FDR).
 
@@ -765,15 +765,15 @@ This sub-menu will help the user to perform an integrative analysis between DNA 
 
 Recently, many studies suggest that enhancers play a major role as
 regulators of cell-specific phenotypes leading to alteration in
-transcriptomes realated to diseases
+transcriptomes related to diseases
 [@giorgio2015large; @groschel2014single; @sur2012mice; @yao2015demystifying].
 In order to investigate regulatory enhancers that can be located at long
-distances upstream or downstream of target genes Bioconductor offer the
+distances upstream or downstream of target genes, Bioconductor offers the
 [Enhancer Linking by Methylation/Expression Relationship
 (ELMER)](http://bioconductor.org/packages/ELMER/) package. This package
 is designed to combine DNA methylation and gene expression data from
 human tissues to infer multi-level cis-regulatory networks. It uses DNA
-methylation to identify enhancers and correlates their state with
+methylation to identify enhancers and correlates their state with the
 expression of nearby genes to identify one or more transcriptional
 targets. Transcription factor (TF) binding site analysis of enhancers is
 coupled with expression analysis of all TFs to infer upstream
@@ -781,13 +781,13 @@ regulators. This package can be easily applied to TCGA public available
 cancer data sets and custom DNA methylation and gene expression data
 sets [@yao2015inferring].
 
-[ELMER](http://bioconductor.org/packages/ELMER/) analysis have 5 main
+[ELMER](http://bioconductor.org/packages/ELMER/) analysis has 5 main
 steps:
 
 1.  Identify distal enhancer probes on HM450K.
 
 2.  Identify distal enhancer probes with significantly different DNA
-    methyaltion level in control group and experiment group.
+    methylation level in control group and experiment group.
 
 3.  Identify putative target genes for differentially methylated distal
     enhancer probes.
@@ -804,7 +804,7 @@ steps:
 ### Data: Create mee 
 
 The [ELMER](http://bioconductor.org/packages/ELMER/) input is a
-mee object that contains a DNA methylation matrix, an gene expression
+mee object that contains a DNA methylation matrix, a gene expression
 matrix, a probe information GRanges, the gene information GRanges and a
 data frame summarizing the data. It should be highlighted that samples
 without both the gene expression and DNA methylation data will be
@@ -845,13 +845,13 @@ After preparing the data into a mee object, we will execute the five
 
 This box has all the available options for ELMER functions. Please see the [ELMER vignette](http://bioconductor.org/packages/release/bioc/vignettes/ELMER/inst/doc/vignettes.pdf). 
 
-Also, a description of the data used by ELMER (such as the distal enhacer probes) is found in the
+Also, a description of the data used by ELMER (such as the distal enhancer probes) is found in the
 [ELMER.data](https://bioconductor.org/packages/release/data/experiment/vignettes/ELMER.data/inst/doc/vignettes.pdf)
 vignette.
 
 ELMER Identifies the enriched motifs for the distal enhancer probes
 which are significantly differentially methylated and linked to putative
-target gene, it will plot the Odds Ratio (x axis) for the each motifs
+target gene, it will plot the Odds Ratio (x axis) for the each motif
 found.
 These motifs by default have a minimum incidence of 10 probes 
 (that means at least 10 probes were associated with the motif)
@@ -868,7 +868,7 @@ $(-log(P value))$ between TF expression and DNA methylation of the
 motif. We can see in Figure below that the top three TFs that are
 associated with a motif found.
 
-In case, it identifies regulatory transcription factors (TFs), a object with the prefix ELMER_results will be created
+In case, it identifies regulatory transcription factors (TFs), an object with the prefix ELMER_results will be created
 with the necessary data to visualize the results.
 
 ### Sub-menu ELMER: Visualize results
@@ -888,7 +888,7 @@ Select the ELMER results from the table. A results object should be selected.
 ## Case of study
 ### Case: Integration of DNA methylation and gene expression for TCGA adrenal cortical carcinoma (ACC) samples
 
-In this case study, we downloaded DNA methylation and gene expression for TCGA adrenal cortical carcinoma (ACC) samples, executed the Differentially methylated region (DMR) analysis and Differential Expression Analysis  (DEA),  then both results were integrated in to a startburst plot.
+In this case study, we downloaded DNA methylation and gene expression for TCGA adrenal cortical carcinoma (ACC) samples, executed the Differentially methylated region (DMR) analysis and Differential Expression Analysis  (DEA),  then both results were integrated into a starburst plot.
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/RcXibjFanH4/maxresdefault.jpg)](http://www.youtube.com/watch?v=RcXibjFanH4 "Tutorial video: Integration of methylation and expression for TCGA adrenal cortical carcinoma (ACC) samples - (http://www.youtube.com/watch?v=RcXibjFanH4)")
 
@@ -897,7 +897,7 @@ In this case study, we downloaded DNA methylation and gene expression for TCGA a
 
 ###  Case: Executing ELMER analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples
 
-In this case we downloaded DNA methylation and gene expression for TCGA Kidney renal clear cell carcinoma (KIRC) samples. Then, this data is used to execute [ELMER](http://bioconductor.org/packages/ELMER/) analysis.
+In this case, we downloaded DNA methylation and gene expression for TCGA Kidney renal clear cell carcinoma (KIRC) samples. Then, this data is used to execute [ELMER](http://bioconductor.org/packages/ELMER/) analysis.
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/EhGw1aF-2_c/maxresdefault.jpg)](http://www.youtube.com/watch?v=EhGw1aF-2_c "Tutorial video: Executing Elmer analysis on TCGA Kidney renal clear cell carcinoma (KIRC) samples - (http://www.youtube.com/watch?v=EhGw1aF-2_c)")
 
