@@ -41,7 +41,7 @@ Informatics Technology for Cancer Research program, NIH/NCI grant 1U01CA184826.
 
 ## Installation 
 
-To install the package from the (Bioconductor repository)[http://bioconductor.org/packages/TCGAbiolinksGUI/] please use the following
+To install the package from the [Bioconductor repository](http://bioconductor.org/packages/TCGAbiolinksGUI/) please use the following
 code. 
 
 ```{r, eval = FALSE}
