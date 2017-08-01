@@ -61,7 +61,7 @@ This sub-menu will help the user to perform an integrative analysis between DNA 
 
 Recently, many studies suggest that enhancers play a major role as
 regulators of cell-specific phenotypes leading to alteration in
-transcriptomes realated to diseases
+transcriptomes related to diseases
 [@giorgio2015large; @groschel2014single; @sur2012mice; @yao2015demystifying].
 In order to investigate regulatory enhancers that can be located at long
 distances upstream or downstream of target genes Bioconductor offer the
@@ -69,7 +69,7 @@ distances upstream or downstream of target genes Bioconductor offer the
 (ELMER)](http://bioconductor.org/packages/ELMER/) package. This package
 is designed to combine DNA methylation and gene expression data from
 human tissues to infer multi-level cis-regulatory networks. It uses DNA
-methylation to identify enhancers and correlates their state with
+methylation to identify enhancers and correlates their state with the
 expression of nearby genes to identify one or more transcriptional
 targets. Transcription factor (TF) binding site analysis of enhancers is
 coupled with expression analysis of all TFs to infer upstream
@@ -77,19 +77,19 @@ regulators. This package can be easily applied to TCGA public available
 cancer data sets and custom DNA methylation and gene expression data
 sets [@yao2015inferring].
 
-[ELMER](http://bioconductor.org/packages/ELMER/) analysis have 5 main
+[ELMER](http://bioconductor.org/packages/ELMER/) analysis has 5 main
 steps:
 
 1.  Identify distal enhancer probes on HM450K.
 
 2.  Identify distal enhancer probes with significantly different DNA
-    methyaltion level in control group and experiment group.
+    methylation level in control group and experiment group.
 
 3.  Identify putative target genes for differentially methylated distal
     enhancer probes.
 
 4.  Identify enriched motifs for the distal enhancer probes which are
-    significantly differentially methylated and linked to putative
+    significantly differentially methylated and linked to a putative
     target gene.
 
 5.  Identify regulatory TFs whose expression associate with DNA
@@ -100,7 +100,7 @@ steps:
 ## Data: Create mee 
 
 The [ELMER](http://bioconductor.org/packages/ELMER/) input is a
-mee object that contains a DNA methylation matrix, an gene expression
+mee object that contains a DNA methylation matrix, a gene expression
 matrix, a probe information GRanges, the gene information GRanges and a
 data frame summarizing the data. It should be highlighted that samples
 without both the gene expression and DNA methylation data will be
@@ -121,7 +121,7 @@ The following steps are required:
 * Select DNA methylation: Cut-off NA samples (%): By default, for the DNA methylation data will remove probes with NA values in more than 20% samples and remove the annotation data.
 
 Also, for RNA expression data it will
-take the log2(expression + 1) of the expression matrix in order to
+take the $log_2(expression + 1)$ of the expression matrix in order to
 linearize the relation between DNA methylation and expression.
 
 
@@ -141,13 +141,13 @@ After preparing the data into a mee object, we will execute the five
 
 This box has all the available options for ELMER functions. Please see the [ELMER vignette](http://bioconductor.org/packages/release/bioc/vignettes/ELMER/inst/doc/vignettes.pdf). 
 
-Also, a description of the data used by ELMER (such as the distal enhacer probes) is found in the
+Also, a description of the data used by ELMER (such as the distal enhancer probes) is found in the
 [ELMER.data](https://bioconductor.org/packages/release/data/experiment/vignettes/ELMER.data/inst/doc/vignettes.pdf)
 vignette.
 
 ELMER Identifies the enriched motifs for the distal enhancer probes
-which are significantly differentially methylated and linked to putative
-target gene, it will plot the Odds Ratio (x axis) for the each motifs
+which are significantly differentially methylated and linked to a putative
+target gene, it will plot the Odds Ratio (x axis) for each motif
 found.
 These motifs by default have a minimum incidence of 10 probes 
 (that means at least 10 probes were associated with the motif)
@@ -164,7 +164,7 @@ $(-log(P value))$ between TF expression and DNA methylation of the
 motif. We can see in Figure below that the top three TFs that are
 associated with a motif found.
 
-In case, it identifies regulatory transcription factors (TFs), a object with the prefix ELMER_results will be created
+In case, it identifies regulatory transcription factors (TFs), an object with the prefix ELMER_results will be created
 with the necessary data to visualize the results.
 
 ## Sub-menu ELMER: Visualize results

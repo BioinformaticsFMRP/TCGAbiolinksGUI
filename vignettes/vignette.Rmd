@@ -21,7 +21,7 @@ bibliography: bibliography.bib
 # Introduction
 
 TCGAbiolinksGUI was created to help users more comfortable with graphical user interfaces (GUI) to search, download and analyze Cancer data. 
-It offers a graphical user interface to the R/Bioconductor package [TCGAbiolinks](http://bioconductor.org/packages/TCGAbiolinks/) [@TCGAbiolinks], which is able to access The National Cancer Institute (NCI) Genomic Data Commons (GDC) thorough its  
+It offers a graphical user interface to the R/Bioconductor package [TCGAbiolinks](http://bioconductor.org/packages/TCGAbiolinks/) [@TCGAbiolinks], which is able to access The National Cancer Institute (NCI) Genomic Data Commons (GDC) through its  
 [GDC Application Programming Interface (API)](https://gdc.cancer.gov/developers/gdc-application-programming-interface-api).
 Additional packages from Bioconductor are included, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package [@Gu20052016] to aid in visualizing the data, 
 [ELMER](http://bioconductor.org/packages/ELMER/) [@yao2015inferring] to identify regulatory enhancers using gene expression + DNA methylation data + motif analysis and 
