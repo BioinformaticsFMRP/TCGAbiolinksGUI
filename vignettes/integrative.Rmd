@@ -19,7 +19,7 @@ For a detailed manual for this section please access these links:
 ![Starburst plot menu: Main window.](starburst.png)
 
 ## Data 
-Expected input is a csv file with the following pattern:
+Expected input is a CSV file with the following pattern:
 
 * DEA result: DEA_results_Group_subgruop1_subgroup2_pcut_0.01_logFC.cut_2.csv
 * DMR result: DMR_results_Group_subgruop1_subgroup2_pcut_1e-30_meancut_0.55.csv
@@ -44,7 +44,7 @@ The possible highlight controls are:
 
 ## Other option
 
-* Save result: save results in a csv file
+* Save result: save results in a CSV file
 
 ## Tutorial video:
 
