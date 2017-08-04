@@ -150,19 +150,19 @@ observe({
 observe({
     data <- maedata()
     updateSelectizeInput(session, 'elmermaetype', choices = {
-        if(!is.null(data)) as.character(colnames(pData(data)))
+        if(!is.null(data)) as.character(colnames(colData(data)))
     }, server = TRUE)
 })
 observeEvent(input$elmermaetype, {
     data <- maedata()
     updateSelectizeInput(session, 'elmermaesubtype', choices = {
-        if(!is.null(data)) as.character(unique(pData(data)[,input$elmermaetype]))
+        if(!is.null(data)) as.character(unique(colData(data)[,input$elmermaetype]))
     }, server = TRUE)
 })
 observeEvent(input$elmermaetype, {
     data <- maedata()
     updateSelectizeInput(session, 'elmermaesubtype2', choices = {
-        if(!is.null(data)) as.character(unique(pData(data)[,input$elmermaetype]))
+        if(!is.null(data)) as.character(unique(colData(data)[,input$elmermaetype]))
     }, server = TRUE)
 })
 
@@ -300,7 +300,7 @@ observeEvent(input$elmercreatemae, {
     )
 
     output$elmerMaeSampleMetada <- renderDataTable({
-        return(as.data.frame(pData(mae)))
+        return(as.data.frame(colData(mae)))
     },
     options = list(pageLength = 10,
                    scrollX = TRUE,
@@ -424,7 +424,7 @@ observeEvent(input$elmerAnalysisBt, {
     group1 <- isolate({input$elmermaesubtype})
     group2 <- isolate({input$elmermaesubtype2})
     group.col <- isolate({input$elmermaetype})
-    mae <- mae[,pData(mae)[[group.col]] %in% c(group1, group2) ]
+    mae <- mae[,colData(mae)[[group.col]] %in% c(group1, group2) ]
     for (j in direction){
         withProgress(message = 'ELMER analysis',
                      detail = paste0('Direction: ',j), value = 0, {
@@ -744,13 +744,13 @@ output$elmerInputSampleMapDownload <- downloadHandler(
     content = function(con) {
         met <- elmer.met()
         if(!is.null(met) ) {
-            pData <- data.frame(primary = paste0("sample",1:ncol(met)), group = rep("To be filled",ncol(met)))
-            write_tsv(pData,con)
+            colData <- data.frame(primary = paste0("sample",1:ncol(met)), group = rep("To be filled",ncol(met)))
+            write_tsv(colData,con)
         }
     }
 )
 
-output$elmerInputpDataDownload <- downloadHandler(
+output$elmerInputcolDataDownload <- downloadHandler(
     filename = "elmer_example_sample_metadata.tsv",
     content = function(con) {
         exp <- elmer.exp()
