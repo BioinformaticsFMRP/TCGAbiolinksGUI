@@ -2,31 +2,47 @@
 bibliography: bibliography.bib
 date: "`r BiocStyle::doc_date()`"
 vignette: >
-  %\VignetteIndexEntry{"TCGAbiolinksGUI: Introduction"}
+  %\VignetteIndexEntry{"1. Introduction"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 # Introduction
 
+
 TCGAbiolinksGUI was created to help users more comfortable with graphical user interfaces (GUI) to search, download and analyze Cancer data. 
-It offers a graphical user interface to the R/Bioconductor package [TCGAbiolinks](http://bioconductor.org/packages/TCGAbiolinks/) [@TCGAbiolinks], which is able to access The National Cancer Institute (NCI) Genomic Data Commons (GDC) thorough its  
+It offers a graphical user interface to the R/Bioconductor package 
+[TCGAbiolinks](http://bioconductor.org/packages/TCGAbiolinks/) [@TCGAbiolinks], 
+which is able to access The National Cancer Institute (NCI) Genomic Data Commons (GDC) through its  
 [GDC Application Programming Interface (API)](https://gdc.cancer.gov/developers/gdc-application-programming-interface-api).
 Additional packages from Bioconductor are included, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/) package [@Gu20052016] to aid in visualizing the data, 
-[ELMER](http://bioconductor.org/packages/ELMER/) [@yao2015inferring] to identify regulatory enhancers using gene expression + DNA methylation data + motif analysis and 
+[ELMER](http://bioconductor.org/packages/ELMER/) [@yao2015inferring] to 
+identify regulatory enhancers using gene expression + DNA methylation data + motif analysis and 
 [Pathview](http://bioconductor.org/packages/pathview/) [@luo2013pathview] for pathway-based data integration and visualization.
 
-The GUI was created using [Shiny](https://shiny.rstudio.com/), a Web Application Framework for R, and uses
-several packages to provide advanced features that can enhance Shiny apps, such as [shinyjs](https://github.com/daattali/shinyjs) to add JavaScript actions for the app,
-[shinydashboard](https://github.com/rstudio/shinydashboard) to add dashboards and [shinyFiles](https://github.com/thomasp85/shinyFiles) to provide an API for client side access to the server file system. 
-A running version of the GUI is found in (shinyapps.io)[https://tcgabiolinksgui.shinyapps.io/demo/]
+The GUI was created using [Shiny](https://shiny.rstudio.com/), 
+a Web Application Framework for R, and uses
+several packages to provide advanced features that can enhance Shiny apps, 
+such as [shinyjs](https://github.com/daattali/shinyjs) to add JavaScript actions for the app,
+[shinydashboard](https://github.com/rstudio/shinydashboard) to add dashboards 
+and [shinyFiles](https://github.com/thomasp85/shinyFiles) to provide an API 
+for client side access to the server file system. 
+A running version of the GUI is found in [http://tcgabiolinks.fmrp.usp.br:3838/](http://tcgabiolinks.fmrp.usp.br:3838/)
+
+This work has been supported by a grant from Henry Ford Hospital (H.N.) and by 
+the São Paulo Research Foundation [FAPESP](http://www.fapesp.br/) (2016/01389-7 
+to T.C.S. & H.N. and 2015/07925-5 to H.N.) the BridgeIRIS project, funded by INNOVIRIS, 
+Region de Bruxelles Capitale, Brussels, Belgium, and by GENomic profiling of 
+Gastrointestinal Inflammatory-Sensitive CANcers (GENGISCAN), Belgian FNRS PDR 
+(T100914F to A.C., C.O. & G.B.). T.C.S. and B.P.B. were supported by the NCI 
+Informatics Technology for Cancer Research program, NIH/NCI grant 1U01CA184826.
 
 # Starting with TCGAbiolinksGUI 
 
 ## Installation 
 
-To install the package from the (Bioconductor repository)[http://bioconductor.org/packages/TCGAbiolinksGUI/] please use the following
-code. To date, the package is only available in the (devel version of Bioconductor)[https://www.bioconductor.org/developers/how-to/useDevel/], but it should be available in the release version until May 2017. 
+To install the package from the [Bioconductor repository](http://bioconductor.org/packages/TCGAbiolinksGUI/) please use the following
+code. 
 
 ```{r, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
@@ -37,33 +53,57 @@ To install the development version of the package via GitHub:
 
 ```{r, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
-deps <- c("pathview","clusterProfiler","ELMER", "DO.db","GO.db", "ComplexHeatmap","EDASeq", "TCGAbiolinks")
-for(pkg in deps)  if (!pkg %in% installed.packages()) biocLite(pkg, dependencies = TRUE)
-deps <- c("devtools","shape","shiny","readr","googleVis","shinydashboard","shinyFiles","shinyjs","shinyBS")
-for(pkg in deps)  if (!pkg %in% installed.packages())  install.packages(pkg,dependencies = TRUE)
+deps <- c("pathview","clusterProfiler","ELMER", "DO.db","GO.db",
+          "ComplexHeatmap","EDASeq", "TCGAbiolinks")
+for(pkg in deps)  
+    if (!pkg %in% installed.packages()) biocLite(pkg, dependencies = TRUE)
+deps <- c("devtools","shape","shiny","readr","googleVis",
+          "shinydashboard","shinyFiles","shinyjs","shinyBS")
+for(pkg in deps)  
+    if (!pkg %in% installed.packages())  install.packages(pkg,dependencies = TRUE)
+devtools::install_github("tiagochst/ELMER")
+devtools::install_github("tiagochst/ELMER.data")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
 ## Docker image
 
-TCGAbiolinksGUI is available as Docker image, which can be easily run on Mac OS, Windows and Linux systems. The image can be obtained from Docker Hub: https://hub.docker.com/r/tiagochst/tcgabiolinksgui/
+TCGAbiolinksGUI is available as Docker image (self-contained environments that contain everything needed to run the software), 
+which can be easily run on Mac OS, Windows and Linux systems. 
 
-Download image:
-```{bash, eval = FALSE}
-docker pull tiagochst/tcgabiolinksgui
-```
+The image can be obtained from Docker Hub: https://hub.docker.com/r/tiagochst/tcgabiolinksgui/
 
-To run R from the command line:
-```{bash, eval = FALSE}
-docker run -ti tiagochst/tcgabiolinksgui R
-```
+For more information please check: https://docs.docker.com/ and https://www.bioconductor.org/help/docker/
 
-To run RStudio Server (user: rstudio, password: rstudio): 
-```{bash, eval = FALSE}
-docker run -p 8787:8787 tiagochst/tcgabiolinksgui
-```
+### Setting up image using graphical user interface (GUI) 
 
-For more information please check: https://docs.docker.com/
+This [PDF](https://drive.google.com/open?id=0B0-8N2fjttG-QXp5LVlPQnVQejg) 
+shows how to install and execute the image using [kitematic](https://kitematic.com/), which
+offers a  graphical user interface (GUI) to control your app containers.
+
+### Setting up image using command-line 
+
+- Download image: docker pull tiagochst/tcgabiolinksgui
+- To run RStudio Server and shiny-server, but the data is not saved if the container is stopped: 
+`sudo docker run --name tcgabiolinksgui -d -P -v /home/$USER/docker:/home/rstudio -p 3333:8787 -p 3334:3838 tiagochst/tcgabiolinksgui`
+1. For more information how data can be saved please read [this wiki](https://github.com/rocker-org/rocker/wiki/How-to-save-data) and see command below 
+
+- To run RStudio Server, shiny-server and save the results in the host machine please use the code below: 
+`sudo docker run --name tcgabiolinksgui -d -P -v /home/$USER/docker:/home/rstudio -p 3333:8787 -p 3334:3838 tiagochst/tcgabiolinksgui`
+ 1. In case Rstudio is not accessible please check if the folder created (docker) has the right permission
+ 2. If your system is windows or macOS you will need to change  `/home/$USER/docker` 
+ to the correct system path. Examples can be found in this [github page](https://github.com/rocker-org/rocker/wiki/Sharing-files-with-host-machine)
+
+- To stop the image:
+1. Run  `sudo docker stop tcgabiolinksgui` to stop it
+
+- To start the image again (after the first time ran with `docker run` and stopped).
+1. Run  `sudo docker start tcgabiolinksgui` 
+
+### Accessing the tools after the image is running:
+
+- TCGAbiolinksGUI will be available at <your local IP>:3334/tcgabiolinksgui
+- RStudio will be available at <your local IP>:3333 (***username: rstudio*** , ***password:rstudio***)
 
 ## Quick start
 
@@ -137,6 +177,15 @@ If you used OncoPrint plot and Heatmap Plot please cite:
 If you used Pathway plot please cite:
 
 * Luo, Weijun, Brouwer and Cory (2013). “Pathview: an R/Bioconductor package for pathway-based data integration and visualization.” Bioinformatics, 29(14), pp. 1830-1831.
+
+# Increasing loaded DLL
+
+If you receive this error message:  `maximal number of DLLs reached...`
+You will need to increase the maximum number of DLL R can load.  R_MAX_NUM_DLLS
+In MACOS just modify the file `/Library/Frameworks/R.framework/Resources/etc/Renviron`
+and add `R_MAX_NUM_DLLS=110` in the end.
+
+For other OS check https://stat.ethz.ch/R-manual/R-patched/library/base/html/Startup.html.
 
 # Session info
 ```{r, include=FALSE}
