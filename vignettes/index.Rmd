@@ -191,8 +191,5 @@ For other OS check https://stat.ethz.ch/R-manual/R-patched/library/base/html/Sta
 ```{r, include=FALSE}
 library(TCGAbiolinksGUI)
 ```
-```{r}
-sessionInfo()
-```
 
 # References
