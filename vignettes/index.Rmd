@@ -126,6 +126,10 @@ For the complete list of videos, please check this [youtube list](https://www.yo
 For each section we created some PDFs with detailing the steps of each section: 
 [Link to folder with PDFs](https://drive.google.com/drive/folders/0B0-8N2fjttG-Q25ldVVmUTVOTk0?usp=sharing)
 
+## Workshops
+
+* Bioc2017 (Boston, MA) - [workshop link](https://bioinformaticsfmrp.github.io/Bioc2017.TCGAbiolinks.ELMER/index.html)
+
 ## Question and issues
 Please use [Github issues](https://github.com/BioinformaticsFMRP/TCGAbiolinksGUI/issues) if you want to file bug reports or feature requests.
 
