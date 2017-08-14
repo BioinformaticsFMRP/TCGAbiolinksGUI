@@ -420,6 +420,12 @@ observeEvent(input$elmerAnalysisBt, {
         return(NULL)
     }
     direction <- isolate({input$elmerdirection})
+    if(length(direction) == 0){
+        closeAlert(session, "elmerAlert")
+        createAlert(session, "elmermessage", "elmerAlert", title = "Direction not set", style =  "danger",
+                    content =   "Please select at least one direction for the step 1", append = TRUE)
+        return(NULL)
+    }
     done <- c()
     group1 <- isolate({input$elmermaesubtype})
     group2 <- isolate({input$elmermaesubtype2})
