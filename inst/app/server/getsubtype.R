@@ -1,7 +1,7 @@
 # Subtype
 observeEvent(input$tcgaSubtypeBt, {
     updateCollapse(session, "collapseTCGASubtype", open = "Subtype data: results")
-    output$tcgaSubtypetbl <- renderDataTable({
+    output$tcgaSubtypetbl <- DT::renderDataTable({
         tbl <- subtype.result()
         tumor <- isolate({input$tcgasubtypeFilter})
         if(!is.null(tbl)) {
@@ -50,30 +50,10 @@ observeEvent(input$tcgaSubtypeBt, {
                             content = paste0(doi[tumor]), append = TRUE)
             }
 
-            return(tbl)
+            createTable(tbl)
         }
 
-    },
-    options = list(pageLength = 10,
-                   scrollX = TRUE,
-                   jQueryUI = TRUE,
-                   pagingType = "full",
-                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                   language.emptyTable = "No results found",
-                   "dom" = 'T<"clear">lfrtip',
-                   "oTableTools" = list(
-                       "sSelectedClass" = "selected",
-                       "sRowSelect" = "os",
-                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                       "aButtons" = list(
-                           list("sExtends" = "collection",
-                                "sButtonText" = "Save",
-                                "aButtons" = c("csv","xls")
-                           )
-                       )
-                   )
-    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )
+    })
 })
 
 subtype.result <-  reactive({

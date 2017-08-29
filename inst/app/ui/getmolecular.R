@@ -13,7 +13,7 @@ tabItem(tabName = "tcgaSearch",
                                               htmltools::div(style = "display:inline-block", plotlyOutput("race", width = 250, height = 250)),
                                               htmltools::div(style = "display:inline-block", plotlyOutput("gender", width = 250, height = 250)),
                                               style = "default"),
-                              bsCollapsePanel("GDC search results: Results", dataTableOutput('queryresutlstable'), style = "default")
+                              bsCollapsePanel("GDC search results: Results", DT::dataTableOutput('queryresutlstable'), style = "default")
                    )),
             column(4,
                    box(title = "Molecular data search",width = NULL,

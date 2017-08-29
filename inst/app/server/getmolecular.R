@@ -169,30 +169,10 @@ observeEvent(input$tcgaSearchBt, {
                               sep = "_"),".rda"))
     updateCollapse(session, "collapseTCGA", open = "GDC search results")
 
-    output$queryresutlstable <- renderDataTable({
+    output$queryresutlstable <- DT::renderDataTable({
         results <- getResults(query.result()[[1]])
-        if(!is.null(results)) return(as.data.frame(results))
-    },
-    options = list(pageLength = 10,
-                   scrollX = TRUE,
-                   jQueryUI = TRUE,
-                   pagingType = "full",
-                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                   language.emptyTable = "No results found",
-                   "dom" = 'T<"clear">lfrtip',
-                   "oTableTools" = list(
-                       "sSelectedClass" = "selected",
-                       "sRowSelect" = "os",
-                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                       "aButtons" = list(
-                           list("sExtends" = "collection",
-                                "sButtonText" = "Save",
-                                "aButtons" = c("csv","xls")
-                           )
-                       )
-                   )
-    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )
+        if(!is.null(results)) createTable(results)
+    })
 
     results <- isolate({getResults(query.result()[[1]])})
 

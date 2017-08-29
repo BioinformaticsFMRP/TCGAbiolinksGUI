@@ -5,7 +5,7 @@ tabItem(tabName = "tcgaSubtype",
                               bsCollapsePanel("Subtype data: Summary",
                                               htmltools::div(style = "display:block;text-align: center;", plotlyOutput("subtypeview", width = 500, height = 500)),
                                               style = "default"),
-                              bsCollapsePanel("Subtype data: results", dataTableOutput('tcgaSubtypetbl'), style = "default")
+                              bsCollapsePanel("Subtype data: results", DT::dataTableOutput('tcgaSubtypetbl'), style = "default")
                    )),
             column(4,
                    box(title = "Subtype data search",width = NULL,

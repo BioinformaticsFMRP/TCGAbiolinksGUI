@@ -41,6 +41,21 @@ getDataCategory <- function(legacy){
     return(data.category.hamonirzed)
 }
 
+createTable <- function(df){
+    DT::datatable(df,
+                  extensions = c('Buttons',"FixedHeader"),
+                  class = 'cell-border stripe',
+                  options = list(dom = 'Blfrtip',
+                                 buttons =  c('copy', 'csv', 'excel', 'pdf', 'print', 'colvis'),
+                                 fixedHeader = TRUE,
+                                 pageLength = 20,
+                                 scrollX = TRUE,
+                                 lengthMenu = list(c(10, 20, -1), c('10', '20', 'All'))
+                  ),
+                  filter = 'top'
+    )
+}
+
 getFileType <-  function(legacy, data.category){
     file.type <- NULL
     if(grepl("Copy number variation",data.category, ignore.case = TRUE) & legacy)
@@ -253,8 +268,8 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
 
     session$onSessionEnded(stopApp)
     server.path <- ifelse(system.file("app", package = "TCGAbiolinksGUI") == "",
-                      "server",
-                      file.path(system.file("app", package = "TCGAbiolinksGUI"),"server"))
+                          "server",
+                          file.path(system.file("app", package = "TCGAbiolinksGUI"),"server"))
 
     source(file.path(server.path, "getmolecular.R"),  local = TRUE)$value
     source(file.path(server.path, "getsubtype.R"),  local = TRUE)$value
