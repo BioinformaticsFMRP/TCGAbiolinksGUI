@@ -13,7 +13,7 @@ pathway.data <- function(){
 
     return(se)
 }
-output$deaSE <- renderDataTable({
+output$deaSE <- DT::renderDataTable({
     data <- pathway.data()
     if(!is.null(data)) createTable(as.data.frame(data))
 })

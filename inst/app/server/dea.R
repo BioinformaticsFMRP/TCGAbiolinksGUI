@@ -122,11 +122,12 @@ observeEvent(input$deaAnalysis , {
 # File selection
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 observe({
-    shinyFileChoose(input, 'deafile',
-                    roots=get.volumes(input$workingDir),
-                    session=session,
-                    restrictions=system.file(package='base'),
-                    filetypes=c('','rda'))
+    shinyFileChoose(input,
+                    'deafile',
+                    roots = get.volumes(input$workingDir),
+                    session = session,
+                    restrictions = system.file(package='base'),
+                    filetypes = c('','rda'))
 })
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 # DATA INPUT

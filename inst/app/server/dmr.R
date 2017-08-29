@@ -131,8 +131,12 @@ observeEvent(input$dmrAnalysis , {
 # File selection
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 observe({
-    shinyFileChoose(input, 'dmrfile', roots=get.volumes(input$workingDir), session=session,
-                    restrictions=system.file(package='base'),filetypes=c('', 'rda'))
+    shinyFileChoose(input,
+                    'dmrfile',
+                    roots = get.volumes(input$workingDir),
+                    session = session,
+                    restrictions = system.file(package='base'),
+                    filetypes = c('', 'rda'))
 })
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
