@@ -106,6 +106,8 @@ starburst <-  reactive({
                                           group1 = group1,
                                           group2 = group2,
                                           color = colors,
+                                          genome = isolate({input$starburstGenome}),
+                                          met.platform = isolate({input$starburstMetPlatform}),
                                           names = names,
                                           names.fill = names.fill,
                                           exp.p.cut = exp.p.cut,
