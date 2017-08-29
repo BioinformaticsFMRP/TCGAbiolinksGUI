@@ -3,7 +3,7 @@ tabItem(tabName = "tcgaClinical",
             column(8, bsAlert("tcgaClinicalmessage"),
                    bsCollapse(id = "collapseTCGAClinical", open = "Description of the data",
                               bsCollapsePanel("Description of the data",  includeHTML("clinical_help.html"), style = "default"),
-                              bsCollapsePanel("Clinical data", dataTableOutput('tcgaClinicaltbl'), style = "default")
+                              bsCollapsePanel("Clinical data", DT::dataTableOutput('tcgaClinicaltbl'), style = "default")
                    )),
             column(4,
                    box(title = "Clinical data search",width = NULL,

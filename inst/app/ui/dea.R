@@ -2,7 +2,7 @@ tabItem(tabName = "dea",
         fluidRow(
             column(8,  bsAlert("deamessage"),
                    bsCollapse(id = "collapsedea", open = "Genes info",
-                              bsCollapsePanel("Genes info", dataTableOutput('deaSE'), style = "default")
+                              bsCollapsePanel("Genes info", DT::dataTableOutput('deaSE'), style = "default")
                    )),
             column(4,
                    box(title = "DEA analysis",width = NULL,

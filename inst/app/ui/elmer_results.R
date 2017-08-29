@@ -2,7 +2,7 @@ tabItem(tabName = "elmerresults",
         fluidRow(
             column(8,  bsAlert("elmermessageresults"),
                    bsCollapse(id = "collapelmerresults", open = "Plots",
-                              bsCollapsePanel("Results table", dataTableOutput('elmerResult'), style = "default"),
+                              bsCollapsePanel("Results table", DT::dataTableOutput('elmerResult'), style = "default"),
                               bsCollapsePanel("Plots", uiOutput("elmerPlot"), style = "default"))),
             column(4,
                    box(title = "Analysis", width = NULL,

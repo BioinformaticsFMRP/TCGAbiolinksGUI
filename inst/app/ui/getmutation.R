@@ -2,7 +2,7 @@ tabItem(tabName = "tcgaMutation",
         fluidRow(
             column(8, bsAlert("tcgaMutationmessage"),
                    bsCollapse(id = "collapseTCGAMutation", open = "Mutation data",
-                              bsCollapsePanel("Mutation data",div(dataTableOutput("tcgaMutationtbl"), style = "font-size: 90%;"), style = "default")
+                              bsCollapsePanel("Mutation data",div(DT::dataTableOutput("tcgaMutationtbl"), style = "font-size: 90%;"), style = "default")
                    )),
             column(4,
                    box(title = "Mutatation data search",width = NULL,

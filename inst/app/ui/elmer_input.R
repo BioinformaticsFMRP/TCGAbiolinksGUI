@@ -3,8 +3,8 @@ tabItem(tabName = "elmerinput",
             column(8,  bsAlert("elmerinputmessage"),
                    bsCollapse(id = "collapseelmerinput", open = "Enhancer Linking by Methylation/Expression Relationship (ELMER) ",
                               bsCollapsePanel("Enhancer Linking by Methylation/Expression Relationship (ELMER) ",  includeHTML("elmer.html"), style = "default"),
-                              bsCollapsePanel("Sample mapping matrix", dataTableOutput('elmerMaeSampleMapping'), style = "default"),
-                              bsCollapsePanel("Sample metadata", dataTableOutput('elmerMaeSampleMetada'), style = "default"))
+                              bsCollapsePanel("Sample mapping matrix", DT::dataTableOutput('elmerMaeSampleMapping'), style = "default"),
+                              bsCollapsePanel("Sample metadata", DT::dataTableOutput('elmerMaeSampleMetada'), style = "default"))
             ),
             column(4,
                    box(title = "Input - Create MAE object", width = NULL,

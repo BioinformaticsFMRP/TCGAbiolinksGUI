@@ -2,9 +2,9 @@ tabItem(tabName = "seedit",
         fluidRow(
             column(8, bsAlert("seeditAlert"),
                    bsCollapse(id = "collapseseeEdit", open = "Description of the data",
-                              bsCollapsePanel("Sample matrix", dataTableOutput('seeditsampletb'), style = "default"),
-                              bsCollapsePanel("Feature matrix", dataTableOutput('seeditfeaturetb'), style = "default"),
-                              bsCollapsePanel("Assay matrix", dataTableOutput('seeditassaytb'), style = "default")
+                              bsCollapsePanel("Sample matrix", DT::dataTableOutput('seeditsampletb'), style = "default"),
+                              bsCollapsePanel("Feature matrix", DT::dataTableOutput('seeditfeaturetb'), style = "default"),
+                              bsCollapsePanel("Assay matrix", DT::dataTableOutput('seeditassaytb'), style = "default")
                    )),
             column(4,
                    box(title = "Editing summarized experiment",width = NULL,

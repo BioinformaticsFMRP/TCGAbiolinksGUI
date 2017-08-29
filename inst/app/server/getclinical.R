@@ -1,7 +1,7 @@
 
 observeEvent(input$tcgaClinicalBt, {
     updateCollapse(session, "collapseTCGAClinical", open = "Clinical data", close = "Description of the data")
-    output$tcgaClinicaltbl <- renderDataTable({
+    output$tcgaClinicaltbl <- DT::renderDataTable({
         closeAlert(session, "tcgaClinicalAlert")
         project <- isolate({input$tcgatumorClinicalFilter})
         type <- isolate({input$tcgaClinicalTypeFilter})
@@ -73,31 +73,11 @@ observeEvent(input$tcgaClinicalBt, {
                 createAlert(session, "tcgaClinicalmessage", "tcgaClinicalAlert", title = "File created", style =  "info",
                             content = save.message, append = TRUE)
             }
-            return(tbl)
+            return(createTable(tbl))
         }
 
-    },
-    options = list(pageLength = 10,
-                   scrollX = TRUE,
-                   jQueryUI = TRUE,
-                   pagingType = "full",
-                   autoWidth = TRUE,
-                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                   language.emptyTable = "No results found",
-                   "dom" = 'T<"clear">lfrtip',
-                   "oTableTools" = list(
-                       "sSelectedClass" = "selected",
-                       "sRowSelect" = "os",
-                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                       "aButtons" = list(
-                           list("sExtends" = "collection",
-                                "sButtonText" = "Save",
-                                "aButtons" = c("csv","xls")
-                           )
-                       )
-                   )
-    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )})
+    })
+})
 
 
 observeEvent(input$tcgaClinicalTypeFilter, {

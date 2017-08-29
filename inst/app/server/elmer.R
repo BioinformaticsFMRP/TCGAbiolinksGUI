@@ -275,53 +275,13 @@ createMae <-  reactive({
 
 observeEvent(input$elmercreatemae, {
     mae <- createMae()
-    output$elmerMaeSampleMapping <- renderDataTable({
-        return(as.data.frame(sampleMap(mae)))
-    },
-    options = list(pageLength = 10,
-                   scrollX = TRUE,
-                   jQueryUI = TRUE,
-                   pagingType = "full",
-                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                   language.emptyTable = "No results found",
-                   "dom" = 'T<"clear">lfrtip',
-                   "oTableTools" = list(
-                       "sSelectedClass" = "selected",
-                       "sRowSelect" = "os",
-                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                       "aButtons" = list(
-                           list("sExtends" = "collection",
-                                "sButtonText" = "Save",
-                                "aButtons" = c("csv","xls")
-                           )
-                       )
-                   )
-    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )
+    output$elmerMaeSampleMapping <- DT::renderDataTable({
+        return(createTable(as.data.frame(sampleMap(mae))))
+    })
 
-    output$elmerMaeSampleMetada <- renderDataTable({
-        return(as.data.frame(colData(mae)))
-    },
-    options = list(pageLength = 10,
-                   scrollX = TRUE,
-                   jQueryUI = TRUE,
-                   pagingType = "full",
-                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                   language.emptyTable = "No results found",
-                   "dom" = 'T<"clear">lfrtip',
-                   "oTableTools" = list(
-                       "sSelectedClass" = "selected",
-                       "sRowSelect" = "os",
-                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                       "aButtons" = list(
-                           list("sExtends" = "collection",
-                                "sButtonText" = "Save",
-                                "aButtons" = c("csv","xls")
-                           )
-                       )
-                   )
-    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )
+    output$elmerMaeSampleMetada <- DT::renderDataTable({
+        return(createTable(as.data.frame(colData(mae))))
+    })
 
 })
 # Input data
@@ -707,40 +667,20 @@ observeEvent(input$elmerPlotBt , {
 # Table
 observeEvent(input$elmerTableType , {
     updateCollapse(session, "collapelmerresults", open = "Results table")
-    output$elmerResult <- renderDataTable({
+    output$elmerResult <- DT::renderDataTable({
         results <- elmer.results.data()
         if(!is.null(results)){
             if(input$elmerTableType == "tf"){
-                as.data.frame(results$TF)
+                createTable(as.data.frame(results$TF))
             } else if(input$elmerTableType == "sigprobes"){
-                as.data.frame(results$Sig.probes)
+                createTable(as.data.frame(results$Sig.probes))
             } else if(input$elmerTableType == "motif"){
-                as.data.frame(results$motif.enrichment)
+                createTable(as.data.frame(results$motif.enrichment))
             } else if(input$elmerTableType == "pair"){
-                as.data.frame(results$pair)
+                createTable(as.data.frame(results$pair))
             }
         }
-    },
-    options = list(pageLength = 10,
-                   scrollX = TRUE,
-                   jQueryUI = TRUE,
-                   pagingType = "full",
-                   lengthMenu = list(c(10, 20, -1), c('10', '20', 'All')),
-                   language.emptyTable = "No results found",
-                   "dom" = 'T<"clear">lfrtip',
-                   "oTableTools" = list(
-                       "sSelectedClass" = "selected",
-                       "sRowSelect" = "os",
-                       "sSwfPath" = paste0("//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls.swf"),
-                       "aButtons" = list(
-                           list("sExtends" = "collection",
-                                "sButtonText" = "Save",
-                                "aButtons" = c("csv","xls")
-                           )
-                       )
-                   )
-    ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
-    )
+    })
 })
 
 

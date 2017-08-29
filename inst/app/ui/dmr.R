@@ -3,7 +3,7 @@ tabItem(tabName = "dmr",
         fluidRow(
             column(8,  bsAlert("dmrmessage"),
                    bsCollapse(id = "collapseDmr", open = "DMR plots",
-                              bsCollapsePanel("Probes info", dataTableOutput('probesSE'), style = "default"))),
+                              bsCollapsePanel("Probes info", DT::dataTableOutput('probesSE'), style = "default"))),
             column(4,
                    box(title = "DMR analysis",width = NULL,
                        status = "danger",
