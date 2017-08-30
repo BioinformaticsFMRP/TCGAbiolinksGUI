@@ -19,7 +19,6 @@ Depends:
     shinydashboard (>= 0.5.3)
 Suggests:
     testthat,
-    DT,
     dplyr,
     knitr,
     roxygen2,
@@ -33,6 +32,7 @@ Imports:
     shiny (>= 0.14.1),
     downloader (>= 0.4),
     grid,
+    DT,
     plotly,
     readr,
     maftools,
