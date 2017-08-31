@@ -312,5 +312,28 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
         return(path)
     })
 
+    observe({
+        output$downloadDataBut <- downloadHandler(
+            filename <-   function() {
+                as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$downloadfile)$datapath)
+            },
+            content <- function(file){
+                file.copy(as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$downloadfile)$datapath),
+                          file)
+            }
+        )
+    })
+    #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
+    # File selection
+    #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
+    observe({
+        shinyFileChoose(input,
+                        'downloadfile',
+                        roots = get.volumes(input$workingDir),
+                        session = session,
+                        restrictions = system.file(package='base'),
+                        filetypes = c('csv', 'rda'))
+    })
+
     hide("loading-content", TRUE, "fade")
 }
