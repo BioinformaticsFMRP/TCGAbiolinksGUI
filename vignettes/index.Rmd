@@ -191,12 +191,4 @@ and add `R_MAX_NUM_DLLS=110` in the end.
 
 For other OS check https://stat.ethz.ch/R-manual/R-patched/library/base/html/Startup.html.
 
-# Session info
-```{r, include=FALSE}
-library(TCGAbiolinksGUI)
-```
-```{r}
-sessionInfo()
-```
-
 # References
