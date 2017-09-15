@@ -910,9 +910,5 @@ In this case, we downloaded DNA methylation and gene expression for TCGA Kidney 
 ```{r, include=FALSE}
 library(TCGAbiolinksGUI)
 ```
-```{r}
-sessionInfo()
-```
-
 
 # References
