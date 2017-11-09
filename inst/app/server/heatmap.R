@@ -262,9 +262,9 @@ observeEvent(input$heatmapPlotBt , {
                 if(isolate({input$heatmap.downGenewsCb})) sig.genes <- c("Downregulated",sig.genes)
                 sig.genes <- paste(sig.genes,"in",group2)
                 # Get hypo methylated and hypermethylated probes
-                genes <- results.data[,"status"] %in% sig.genes
+                genes <-  gsub("[[:punct:]]| ", ".",results.data[,"status"]) %in%  gsub("[[:punct:]]| ", ".",sig.genes)
                 results.data <- results.data[genes,]
-                data <- data[rownames(data) %in% results.data$mRNA ,]
+                data <- data[rownames(data) %in% results.data$mRNA |rownames(data) %in% results.data$Gene_symbol ,]
             } else if(isolate({input$heatmapGenesInputRb}) == "Selection"){
                 data <- data[rownames(data) %in% isolate({input$heatmagenes}) ]
             } else {
