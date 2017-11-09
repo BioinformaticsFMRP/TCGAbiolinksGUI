@@ -130,7 +130,7 @@ observeEvent(input$eaplot , {
                          if(length(grep("NA",ansEA$ResPat)) != ncol(ansEA$ResPat) &  isolate({input$eaPlotPatCB})) ResPat <- ansEA$ResPat
 
                          plots <- table(c(is.null(ResMF),is.null(ResBP),is.null(ResCC),is.null(ResPat)))
-                         if(!"FALSE" %in% names(pltos) > 0){
+                         if(!"FALSE" %in% names(plots) > 0){
                              createAlert(session, "oncomessage", "oncoAlert", title = "Data input error", style =  "danger",
                                          content = paste0("Sorry, no relevant results were found"), append = FALSE)
                          }

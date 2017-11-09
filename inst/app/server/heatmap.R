@@ -17,7 +17,7 @@ observe({
             shinyjs::hide("heatmap.hypoprobesCb")
             shinyjs::hide("heatmaprobes")
             shinyjs::hide("heatmap.hyperprobesCb")
-        } else if(input$heatmapGenesInputRb == "Selection"){
+        } else if(input$heatmapProbesInputRb == "Selection"){
             shinyjs::hide("heatmapProbesTextArea")
             shinyjs::hide("heatmap.hypoprobesCb")
             shinyjs::hide("heatmap.hyperprobesCb")
