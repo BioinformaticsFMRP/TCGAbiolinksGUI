@@ -104,7 +104,7 @@ observeEvent(input$maftoolsPlotBt , {
                         content = "Please select a file", append = TRUE)
             return(NULL)
         }
-        mut = read.maf(maf = mut, removeSilent = TRUE, useAll = FALSE)
+        mut <- read.maf(maf = mut, useAll = FALSE)
         withProgress(message = 'Creating plot',
                      detail = 'This may take a while...', value = 0, {
 
