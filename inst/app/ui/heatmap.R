@@ -67,7 +67,7 @@ tabItem(tabName = "heatmap",
                                           choices = NULL,  multiple = TRUE),
                            checkboxInput("heatmap.show.row.names", "Show row names?", value = FALSE, width = NULL),
                            checkboxInput("heatmap.show.col.names", "Show col names?", value = FALSE, width = NULL)
-                           ),
+                       ),
                        box(title = "Text options",width = NULL,
                            solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                            textInput("heatmapMain", label = "Title", value = "Heatmap"),
@@ -110,7 +110,11 @@ tabItem(tabName = "heatmap",
                                     margin-left: auto;
                                     margin-right: auto;
                                     width: 100%",
-                                    icon = icon("picture-o")))
+                                    icon = icon("picture-o")),
+                       downloadButton('saveheatmappicture', 'Export figure', class = "butt2"),
+                       textInput("heatmapPlot.filename", label = "Filename", value = "heatmap.pdf"),
+                       bsTooltip("heatmapPlot.filename", "Filename (pdf, png, svg)", "left")
+                   )
             )
         )
 )
