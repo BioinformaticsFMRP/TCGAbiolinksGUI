@@ -182,6 +182,7 @@ heatmapdata <-  reactive({
 # Plot
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 heatmap.plot <-  reactive({
+    input$heatmapPlotBt
     file  <- basename(as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$heatmapresultsfile)$datapath))
     if(length(file) > 0){
         file <- unlist(str_split(file,"_"))
