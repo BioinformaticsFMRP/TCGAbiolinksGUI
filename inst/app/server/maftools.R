@@ -78,61 +78,74 @@ mut <-  reactive({
                      } else   if(grepl("\\.csv", file)){
                          ret <- read_csv(file)
                      } else {
-                         ret <-  get(load(file))
+                         ret <- get(load(file))
                      }
                      incProgress(1, detail = paste("Done"))
                  })
+
+    ret <- read.maf(maf = ret, useAll = TRUE)
+
     return(ret)
 })
 
 observe({
     data <- mut()
     updateSelectizeInput(session, 'maftoolstsb', choices = {
-        if(!is.null(data)) as.character(unique(data$Tumor_Sample_Barcode))
+        if(!is.null(data)) as.character(unique(getSampleSummary(data)$Tumor_Sample_Barcode))
     }, server = TRUE)
 })
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 # Plot
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
-observeEvent(input$maftoolsPlotBt , {
+maftools.plot <-  reactive({
+
+    mut <- isolate({mut()})
+
+    if(is.null(mut)){
+        createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
+                    content = "Please select a file", append = TRUE)
+        return(NULL)
+    }
+    input$maftoolsPlotBt
+    withProgress(message = 'Creating plot',
+                 detail = 'This may take a while...', value = 0, {
+
+                     if(isolate({input$maftoolsPlot}) == "plotmafSummary") {
+                         p <- plotmafSummary(maf = mut,
+                                             top = isolate({input$maftoolsTop}),
+                                             rmOutlier = TRUE,
+                                             addStat = 'median',
+                                             dashboard = TRUE)
+                     } else  if(isolate({input$maftoolsPlot}) == "oncoplot") {
+                         p <- oncoplot(maf = mut, top = isolate({input$maftoolsTop}),
+                                       removeNonMutated = isolate({input$maftoolsrmNonMutated}))
+                     } else  if(isolate({input$maftoolsPlot}) == "titv") {
+                         titv <- titv(maf = mut, plot = FALSE, useSyn = TRUE)
+                         p <- plotTiTv(res = titv)
+                         p <- recordPlot()
+                     } else  if(isolate({input$maftoolsPlot}) == "rainfallPlot") {
+                         if(str_length(isolate({input$maftoolstsb})) == 0) {
+                             tsb <- NULL
+                         } else {
+                             tsb <- isolate({input$maftoolstsb})
+                         }
+                         p <- rainfallPlot(maf = mut,
+                                           detectChangePoints = TRUE,
+                                           tsb = tsb,
+                                           fontSize = 12,
+                                           pointSize = isolate({input$rainfallPlotps}) )
+                     } else  if(isolate({input$maftoolsPlot}) == "geneCloud") {
+                         p <- geneCloud(input = mut, minMut = 3)
+                         p <- recordPlot()
+                     }
+                 })
+    p
+})
+
+observeEvent(input$maftoolsPlotBt, {
     closeAlert(session,"maftoolsAlert")
     output$maftoolsploting <- renderPlot({
-        mut <- isolate({mut()})
-
-        if(is.null(mut)){
-            createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
-                        content = "Please select a file", append = TRUE)
-            return(NULL)
-        }
-        mut <- read.maf(maf = mut, useAll = FALSE)
-        withProgress(message = 'Creating plot',
-                     detail = 'This may take a while...', value = 0, {
-
-                         if(isolate({input$maftoolsPlot}) == "plotmafSummary") {
-                             plotmafSummary(maf = mut,top = isolate({input$maftoolsTop}),
-                                            rmOutlier = TRUE,
-                                            addStat = 'median', dashboard = TRUE)
-                         } else  if(isolate({input$maftoolsPlot}) == "oncoplot") {
-                             oncoplot(maf = mut, top = isolate({input$maftoolsTop}),
-                                      removeNonMutated = isolate({input$maftoolsrmNonMutated}))
-                         } else  if(isolate({input$maftoolsPlot}) == "titv") {
-                             titv <- titv(maf = mut, plot = FALSE, useSyn = TRUE)
-                             plotTiTv(res = titv)
-                         } else  if(isolate({input$maftoolsPlot}) == "rainfallPlot") {
-                             if(str_length(isolate({input$maftoolstsb})) == 0) {
-                                 tsb <- NULL
-                             } else {
-                                 tsb <- isolate({input$maftoolstsb})
-                             }
-                             rainfallPlot(maf = mut,
-                                          detectChangePoints = TRUE,
-                                          tsb = tsb,
-                                          fontSize = 12,
-                                          pointSize = isolate({input$rainfallPlotps}) )
-                         } else  if(isolate({input$maftoolsPlot}) == "geneCloud") {
-                             geneCloud(input = mut, minMut = 3)
-                         }
-                     })
+        maftools.plot()
     })
 })
 
@@ -142,3 +155,47 @@ observeEvent(input$maftoolsPlotBt , {
         plotOutput("maftoolsploting", height = "600px")
     })
 })
+
+output$savemafpicture <- downloadHandler(
+    filename = function(){input$mafPlot.filename},
+    content = function(file) {
+        p <- maftools.plot()
+        print(class(p))
+        if(class(p) %in% c("gg","ggplot","list")) {
+            if(tools::file_ext(input$mafPlot.filename) == "png") {
+                device <- function(..., width, height) {
+                    grDevices::png(..., width = 10, height = 10,
+                                   res = 300, units = "in")
+                }
+            } else if(tools::file_ext(input$mafPlot.filename) == "pdf") {
+                device <- function(..., width, height) {
+                    grDevices::pdf(..., width = 10, height = 10)
+                }
+            } else if(tools::file_ext(input$mafPlot.filename) == "svg") {
+                device <- function(..., width, height) {
+                    grDevices::svg(..., width = 10, height = 10)
+                }
+            }
+            if(class(p) == "list") {
+                ggsave(file, plot = p$plot, device = device)
+            } else {
+                ggsave(file, plot = p, device = device)
+            }
+        } else {
+            if(tools::file_ext(file) == "png") {
+                grDevices::png(file, width = 10, height = 10,
+                               res = 300, units = "in")
+            } else if(tools::file_ext(file) == "pdf") {
+                grDevices::pdf(file, width = 10, height = 10)
+            } else if(tools::file_ext(file) == "svg") {
+                grDevices::svg(file, width = 10, height = 10)
+            }
+            print(class(p))
+            if(class(p) == "recordedplot") {
+                print(p)
+            } else {
+                ComplexHeatmap::draw(p)
+            }
+            dev.off()
+        }
+    })

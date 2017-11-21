@@ -41,9 +41,12 @@ tabItem(tabName = "maftools",
                                     margin-left: auto;
                                     margin-right: auto;
                                     width: 100%",
-                                    icon = icon("picture-o")
-                       )
+                                    icon = icon("picture-o")),
+                       downloadButton('savemafpicture', 'Export figure', class = "butt2"),
+                       textInput("mafPlot.filename", label = "Filename", value = "maftools.pdf"),
+                       bsTooltip("mafPlot.filename", "Filename (pdf, png, svg)", "left")
+
                    )
-                   )
-                   )
-                   )
+            )
+        )
+)
