@@ -101,7 +101,7 @@ starburst <-  reactive({
     }
     if(gsub("[[:punct:]]| ", ".", group1) == gsub("[[:punct:]]| ", ".", exp.group1)
        & gsub("[[:punct:]]| ", ".", group2) == gsub("[[:punct:]]| ", ".", exp.group2)){
-        rownames(exp) <- exp$Gene_symbol
+        if(!any(grepl("ENSG",exp[1,]))) rownames(exp) <- exp$Gene_symbol
         result <- TCGAvisualize_starburst(met = met,
                                           exp = exp,
                                           group1 = group1,
