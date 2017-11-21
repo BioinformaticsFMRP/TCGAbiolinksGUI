@@ -395,8 +395,8 @@ observe({
 })
 
 observe({
-    updateSelectizeInput(session, 'tcgaProjectFilter', choices =  getTCGAdisease(), server = TRUE)
-    updateSelectizeInput(session, 'tcgatumorClinicalFilter', choices =  getTCGAdisease(), server = TRUE)
+    updateSelectizeInput(session, 'tcgaProjectFilter', choices =  GDCdisease, server = TRUE)
+    updateSelectizeInput(session, 'tcgatumorClinicalFilter', choices =  GDCdisease, server = TRUE)
 })
 
 observe({

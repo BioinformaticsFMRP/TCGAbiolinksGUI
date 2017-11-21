@@ -160,7 +160,6 @@ output$savemafpicture <- downloadHandler(
     filename = function(){input$mafPlot.filename},
     content = function(file) {
         p <- maftools.plot()
-        print(class(p))
         if(class(p) %in% c("gg","ggplot","list")) {
             if(tools::file_ext(input$mafPlot.filename) == "png") {
                 device <- function(..., width, height) {

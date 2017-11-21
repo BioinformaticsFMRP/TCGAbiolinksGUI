@@ -56,7 +56,10 @@ tabItem(tabName = "ea",
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                    icon = icon("picture-o"))
+                                    icon = icon("picture-o")),
+                       downloadButton('saveeapicture', 'Export figure', class = "butt2"),
+                       textInput("eaPlot.filename", label = "Filename", value = "enrichmentAnalysis.pdf"),
+                       bsTooltip("eaPlot.filename", "Filename (pdf, png, svg)", "left")
                    )
             )
         )
