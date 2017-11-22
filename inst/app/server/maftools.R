@@ -267,3 +267,33 @@ output$savemafpicture <- downloadHandler(
             dev.off()
         }
     })
+
+# Table
+observeEvent(input$maftoolsTableBt , {
+    updateCollapse(session, "collapsemaftools", open = "Survival log rank test table")
+    output$maftoolsSurvivalTbl <- DT::renderDataTable({
+        mut <- isolate({mut()})
+        if(!is.null(mut)){
+            if(nrow(getClinicalData(mut)) > 0) {
+                genes <- getGeneSummary(mut)$Hugo_Symbol[1:isolate({input$maftoolsTopMutated})]
+                tbl <- plyr::adply(genes,1, function(x){
+                    surv = mafSurvival(maf = mut,
+                                       genes = x,
+                                       fn = x,
+                                       time = 'time',
+                                       Status = 'Overall_Survival_Status',
+                                       isTCGA = TRUE)
+                    pvalue <- surv$labels$subtitle
+                    pvalue
+                },.progress = "text")
+                tbl$X1 <- genes
+                colnames(tbl) <- c("gene","pvalue")
+                tbl$pvalue <- gsub("P-value: ","",tbl$pvalue )
+                tbl$pvalue <- as.numeric(tbl$pvalue)
+                tbl <- tbl[order(tbl$pvalue),]
+            }
+        }
+    })
+})
+
+

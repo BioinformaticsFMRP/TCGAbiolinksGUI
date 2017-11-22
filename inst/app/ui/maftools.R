@@ -2,8 +2,8 @@ tabItem(tabName = "maftools",
         fluidRow(
             column(8,  bsAlert("maftoolsmessage"),
                    bsCollapse(id = "collapsemaftools", open = "Plots",
-                              bsCollapsePanel("Plots",
-                                              uiOutput("maftoolsplot"), style = "default")
+                              bsCollapsePanel("Survival log rank test table", DT::dataTableOutput('maftoolsSurvivalTbl'), style = "default"),
+                              bsCollapsePanel("Plots", uiOutput("maftoolsplot"), style = "default")
                    )),
             column(4,
                    box(title = "Maftools Plot",width = NULL,
@@ -53,7 +53,20 @@ tabItem(tabName = "maftools",
                                     icon = icon("picture-o")),
                        downloadButton('savemafpicture', 'Export figure', class = "butt2"),
                        textInput("mafPlot.filename", label = "Filename", value = "maftools.pdf"),
-                       bsTooltip("mafPlot.filename", "Filename (pdf, png, svg)", "left")
+                       bsTooltip("mafPlot.filename", "Filename (pdf, png, svg)", "left"),
+                       box(title = "Table selection",width = NULL,
+                           solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                           numericInput("maftoolsTopMutated", "Evaluate survival for top n mutated genes",
+                                        min = 1, max = 300, value = 10, step = 1),
+                           actionButton("maftoolsTableBt",
+                                        "Calculate",
+                                        style = "background-color: #000080;
+                                        color: #FFFFFF;
+                                        margin-left: auto;
+                                        margin-right: auto;
+                                        width: 100%",
+                                        icon = icon("picture-o"))
+                       )
 
                    )
             )
