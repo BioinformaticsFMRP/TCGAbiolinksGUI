@@ -8,21 +8,25 @@ observeEvent(input$maftoolsPlot, {
     if(isolate({input$maftoolsPlot}) == "plotmafSummary") {
         shinyjs::show("maftoolsTop")
         shinyjs::hide("maftoolstsb")
+        shinyjs::hide("maftoolsgene")
         shinyjs::hide("maftoolsrmNonMutated")
         shinyjs::hide("rainfallPlotps")
     } else  if(isolate({input$maftoolsPlot}) == "oncoplot") {
         shinyjs::show("maftoolsTop")
         shinyjs::hide("maftoolstsb")
+        shinyjs::hide("maftoolsgene")
         shinyjs::show("maftoolsrmNonMutated")
         shinyjs::hide("rainfallPlotps")
     } else  if(isolate({input$maftoolsPlot}) == "titv") {
         shinyjs::hide("maftoolsTop")
         shinyjs::hide("maftoolstsb")
+        shinyjs::hide("maftoolsgene")
         shinyjs::hide("maftoolsrmNonMutated")
         shinyjs::hide("rainfallPlotps")
     } else  if(isolate({input$maftoolsPlot}) == "rainfallPlot") {
         shinyjs::hide("maftoolsTop")
         shinyjs::show("maftoolstsb")
+        shinyjs::hide("maftoolsgene")
         shinyjs::hide("maftoolsrmNonMutated")
         shinyjs::show("rainfallPlotps")
     } else  if(isolate({input$maftoolsPlot}) == "geneCloud") {
@@ -30,6 +34,13 @@ observeEvent(input$maftoolsPlot, {
         shinyjs::hide("maftoolstsb")
         shinyjs::hide("maftoolsrmNonMutated")
         shinyjs::hide("rainfallPlotps")
+        shinyjs::hide("maftoolsgene")
+    } else  if(isolate({input$maftoolsPlot}) == "survivalPlot") {
+        shinyjs::hide("maftoolsTop")
+        shinyjs::hide("maftoolstsb")
+        shinyjs::hide("maftoolsrmNonMutated")
+        shinyjs::hide("rainfallPlotps")
+        shinyjs::show("maftoolsgene")
     }
 })
 
@@ -47,12 +58,14 @@ observeEvent(input$maftoolsPlot, {
 observe({
     shinyFileChoose(input, 'maffile2', roots=get.volumes(input$workingDir), session=session,
                     restrictions=system.file(package='base'), filetypes=c('', "rda",'maf',"csv","maf.gz"))
+    shinyFileChoose(input, 'clinicalmaf', roots=get.volumes(input$workingDir), session=session,
+                    restrictions=system.file(package='base'), filetypes=c('', "rda","csv"))
 })
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 # DATA INPUT
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
-mut <-  reactive({
+mut.read.maf <-  reactive({
     inFile <- parseFilePaths(get.volumes(isolate({input$workingDir})), input$maffile2)
     if (nrow(inFile) == 0) return(NULL)
     file <- as.character(inFile$datapath)
@@ -80,11 +93,56 @@ mut <-  reactive({
                      } else {
                          ret <- get(load(file))
                      }
-                     incProgress(1, detail = paste("Done"))
                  })
+    return(ret)
+})
+mut.read.clinical <-  reactive({
+    inFile <- parseFilePaths(get.volumes(isolate({input$workingDir})), input$clinicalmaf)
+    if (nrow(inFile) == 0) {
+        return(NULL)
+    } else {
+        withProgress(message = 'Reading Clinical file',
+                     detail = 'This may take a while...', value = 0, {
 
-    ret <- read.maf(maf = ret, useAll = TRUE)
+                         file <- as.character(inFile$datapath)
+                         if(grepl("\\.csv", file)){
+                             clinical <- read_csv(file)
+                         } else {
+                             clinical <- get(load(file))
+                         }
+                         if(!"Tumor_Sample_Barcode" %in% colnames(clinical)){ # handling TCGA data
+                             colnames(clinical)[1] <- "Tumor_Sample_Barcode"
+                             clinical$Overall_Survival_Status <- 1
+                             clinical$Overall_Survival_Status[which(clinical$vital_status != "dead")] <- 0
+                             clinical$time <- clinical$days_to_death
+                             clinical$time[is.na(clinical$days_to_death)] <- clinical$days_to_last_follow_up[is.na(clinical$days_to_death)]
 
+                         } else {
+                             if(!"Overall_Survival_Status" %in% colnames(clinical)){
+                                 createAlert(session, "maftoolsmessage", "maftoolsAlert", title = "Error", style =  "danger",
+                                             content = "Please we did not find column Overall_Survival_Status in the file (1 = dead, 0 alive)", append = TRUE)
+                                 return(NULL)
+                             }
+                             if(!"time" %in% colnames(clinical)){
+                                 createAlert(session, "maftoolsmessage", "maftoolsAlert", title = "Error", style =  "danger",
+                                             content = "Please we did not find column time in the file (days to death)", append = TRUE)
+                                 return(NULL)
+                             }
+                         }
+                         incProgress(1, detail = paste("Done"))
+                     })
+    }
+    return(clinical)
+})
+mut <-  reactive({
+    maf <- mut.read.maf()
+    if(is.null(maf)) return(NULL)
+    clinical <- mut.read.clinical()
+    if(is.null(clinical)) {
+        ret <- read.maf(maf = maf)
+    } else {
+        ret <- read.maf(maf = maf, clinicalData = clinical,isTCGA = T)
+    }
     return(ret)
 })
 
@@ -93,20 +151,23 @@ observe({
     updateSelectizeInput(session, 'maftoolstsb', choices = {
         if(!is.null(data)) as.character(unique(getSampleSummary(data)$Tumor_Sample_Barcode))
     }, server = TRUE)
+    updateSelectizeInput(session, 'maftoolsgene', choices = {
+        if(!is.null(data)) as.character(unique(getGeneSummary(data)$Hugo_Symbol))
+    }, server = TRUE)
+
 })
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 # Plot
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 maftools.plot <-  reactive({
-
+    input$maftoolsPlotBt
     mut <- isolate({mut()})
 
     if(is.null(mut)){
-        createAlert(session, "oncomessage", "oncoAlert", title = "Error", style =  "danger",
+        createAlert(session, "maftoolsmessage", "maftoolsAlert", title = "Error", style =  "danger",
                     content = "Please select a file", append = TRUE)
         return(NULL)
     }
-    input$maftoolsPlotBt
     withProgress(message = 'Creating plot',
                  detail = 'This may take a while...', value = 0, {
 
@@ -137,6 +198,15 @@ maftools.plot <-  reactive({
                      } else  if(isolate({input$maftoolsPlot}) == "geneCloud") {
                          p <- geneCloud(input = mut, minMut = 3)
                          p <- recordPlot()
+                     } else  if(isolate({input$maftoolsPlot}) == "survivalPlot") {
+                         genes <- isolate({input$maftoolsgene})
+                         p <- mafSurvival(maf = mut,
+                                          genes = genes,
+                                          fn = genes,
+                                          groupNames = c(paste(genes, "Mutant"),"WT"),
+                                          time = 'time',
+                                          Status = 'Overall_Survival_Status',
+                                          isTCGA = TRUE)
                      }
                  })
     p
@@ -160,7 +230,7 @@ output$savemafpicture <- downloadHandler(
     filename = function(){input$mafPlot.filename},
     content = function(file) {
         p <- maftools.plot()
-        if(class(p) %in% c("gg","ggplot","list")) {
+        if(any(class(p) %in% c("gg","ggplot","list"))) {
             if(tools::file_ext(input$mafPlot.filename) == "png") {
                 device <- function(..., width, height) {
                     grDevices::png(..., width = 10, height = 10,
@@ -189,7 +259,6 @@ output$savemafpicture <- downloadHandler(
             } else if(tools::file_ext(file) == "svg") {
                 grDevices::svg(file, width = 10, height = 10)
             }
-            print(class(p))
             if(class(p) == "recordedplot") {
                 print(p)
             } else {
