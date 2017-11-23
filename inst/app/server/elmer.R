@@ -14,13 +14,11 @@ observeEvent(input$scatter.plot.type, {
         if(scatter.type == "tf"){
             shinyjs::show("scatter.plot.tf")
             shinyjs::show("scatter.plot.motif")
-            shinyjs::hide("elmer.heatmap.annotations")
             shinyjs::hide("scatter.plot.genes")
             shinyjs::hide("scatter.plot.probes")
             shinyjs::hide("scatter.plot.nb.genes")
         } else if(scatter.type == "pair"){
             shinyjs::hide("scatter.plot.tf")
-            shinyjs::hide("elmer.heatmap.annotations")
             shinyjs::hide("scatter.plot.motif")
             shinyjs::show("scatter.plot.genes")
             shinyjs::show("scatter.plot.probes")
@@ -28,7 +26,6 @@ observeEvent(input$scatter.plot.type, {
         } else {
             shinyjs::hide("scatter.plot.tf")
             shinyjs::hide("scatter.plot.motif")
-            shinyjs::hide("elmer.heatmap.annotations")
             shinyjs::hide("scatter.plot.genes")
             shinyjs::show("scatter.plot.probes")
             shinyjs::show("scatter.plot.nb.genes")
@@ -44,6 +41,7 @@ observeEvent(input$elmerPlotType, {
         shinyjs::hide("schematic.plot.probes")
         shinyjs::hide("ranking.plot.motif")
         shinyjs::hide("elmer.heatmap.annotations")
+        shinyjs::hide("motif.enrichment.plot.summary")
         shinyjs::hide("ranking.plot.tf")
         shinyjs::hide("motif.enrichment.plot.or")
         shinyjs::hide("motif.enrichment.plot.loweror")
@@ -78,6 +76,7 @@ observeEvent(input$elmerPlotType, {
         shinyjs::show("schematic.plot.type")
         shinyjs::hide("ranking.plot.motif")
         shinyjs::hide("ranking.plot.tf")
+        shinyjs::hide("motif.enrichment.plot.summary")
         shinyjs::hide("motif.enrichment.plot.or")
         shinyjs::hide("motif.enrichment.plot.loweror")
         type <- isolate({input$schematic.plot.type})
@@ -101,6 +100,7 @@ observeEvent(input$elmerPlotType, {
         shinyjs::hide("schematic.plot.probes")
         shinyjs::show("ranking.plot.motif")
         shinyjs::show("ranking.plot.tf")
+        shinyjs::hide("motif.enrichment.plot.summary")
         shinyjs::hide("motif.enrichment.plot.or")
         shinyjs::hide("motif.enrichment.plot.loweror")
     } else if(type =="motif.enrichment.plot"){
@@ -116,6 +116,7 @@ observeEvent(input$elmerPlotType, {
         shinyjs::hide("schematic.plot.probes")
         shinyjs::hide("ranking.plot.motif")
         shinyjs::hide("ranking.plot.tf")
+        shinyjs::show("motif.enrichment.plot.summary")
         shinyjs::show("motif.enrichment.plot.or")
         shinyjs::show("motif.enrichment.plot.loweror")
     } else if(type =="heatmap.plot"){
@@ -125,6 +126,7 @@ observeEvent(input$elmerPlotType, {
         shinyjs::hide("scatter.plot.genes")
         shinyjs::show("elmer.heatmap.annotations")
         shinyjs::hide("scatter.plot.probes")
+        shinyjs::hide("motif.enrichment.plot.summary")
         shinyjs::hide("scatter.plot.nb.genes")
         shinyjs::hide("schematic.plot.type")
         shinyjs::hide("schematic.plot.genes")
@@ -195,7 +197,7 @@ observe({
     names(choices) <-  c(paste("Probes hypermethylated in", group1,"compared to", group2),
                          paste("Probes hypomethylated in", group1,"compared to", group2))
     updateSelectizeInput(session, 'elmerdirection', choices = {
-          choices
+        choices
     }, server = TRUE)
 })
 
@@ -599,10 +601,10 @@ elmer.plot <- reactive({
                 return(NULL)
             }
             p <- scatter.plot(mae,byTF=list(TF=isolate({input$scatter.plot.tf}),
-                                       probe=results$enriched.motif[[isolate({input$scatter.plot.motif})]]),
-                         category = results$group.col,
-                         save = FALSE,
-                         lm_line = TRUE)
+                                            probe=results$enriched.motif[[isolate({input$scatter.plot.motif})]]),
+                              category = results$group.col,
+                              save = FALSE,
+                              lm_line = TRUE)
         } else if(plot.by == "pair") {
             if(nchar(isolate({input$scatter.plot.probes})) == 0){
                 closeAlert(session, "elmerAlertResults")
@@ -619,8 +621,8 @@ elmer.plot <- reactive({
 
             # case 2
             p <- scatter.plot(mae,byPair=list(probe=isolate({input$scatter.plot.probes}),
-                                         gene=c(isolate({input$scatter.plot.genes}))),
-                         category=results$group.col, save=FALSE,lm_line=TRUE)
+                                              gene=c(isolate({input$scatter.plot.genes}))),
+                              category=results$group.col, save=FALSE,lm_line=TRUE)
         } else {
             # case 3
             if(nchar(isolate({input$scatter.plot.probes})) == 0){
@@ -629,9 +631,9 @@ elmer.plot <- reactive({
                 return(NULL)
             }
             p <- scatter.plot(mae,byProbe=list(probe=isolate({input$scatter.plot.probes}),
-                                          numFlankingGenes=isolate({input$scatter.plot.nb.genes})),
-                         category = results$group.col,
-                         dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
+                                               numFlankingGenes=isolate({input$scatter.plot.nb.genes})),
+                              category = results$group.col,
+                              dir.out ="./ELMER.example/Result/LUSC", save=FALSE)
         }
     } else if (plot.type == "schematic.plot") {
         if(is.null(mae)){
@@ -662,9 +664,10 @@ elmer.plot <- reactive({
         p <- recordPlot()
     } else if(plot.type == "motif.enrichment.plot") {
         p <- motif.enrichment.plot(motif.enrichment=results$motif.enrichment,
-                              significant=list(OR = isolate({input$motif.enrichment.plot.or}),
-                                               lowerOR = isolate({input$motif.enrichment.plot.loweror})),
-                              save=FALSE)
+                                   summary = isolate({input$motif.enrichment.plot.summary}),
+                                   significant=list(OR = isolate({input$motif.enrichment.plot.or}),
+                                                    lowerOR = isolate({input$motif.enrichment.plot.loweror})),
+                                   save=FALSE)
     } else if(plot.type == "ranking.plot"){
         if(nchar(isolate({input$ranking.plot.motif})) == 0){
             createAlert(session, "elmermessageresults", "elmerAlertResults", title = "Motif missing", style =  "success",
@@ -692,12 +695,12 @@ elmer.plot <- reactive({
             return(NULL)
         }
         p <- heatmapPairs(data = mae,
-                     group.col = results$group.col,
-                     group1 = results$group1,
-                     annotation.col = isolate({input$elmer.heatmap.annotations}),
-                     group2 = results$group2,
-                     pairs = results$pair,
-                     filename =  NULL)
+                          group.col = results$group.col,
+                          group1 = results$group1,
+                          annotation.col = isolate({input$elmer.heatmap.annotations}),
+                          group2 = results$group2,
+                          pairs = results$pair,
+                          filename =  NULL)
     }
     p
 })
@@ -707,6 +710,8 @@ observeEvent(input$elmerPlotBt, {
         plot <- elmer.plot()
         if(class(plot) == "list") {
             plot$plot
+        } else if(all(class(plot) %in% c("gtable", "gTree", "grob",   "gDesc"))) {
+            gridExtra::grid.arrange(plot)
         } else {
             plot
         }
@@ -772,7 +777,6 @@ output$saveelmerpicture <- downloadHandler(
     filename = function(){input$elmerPlot.filename},
     content = function(file) {
         p <- elmer.plot()
-        print(class(p))
         if(any(class(p) %in% c("gg","ggplot","list"))) {
             if(tools::file_ext(input$elmerPlot.filename) == "png") {
                 device <- function(..., width, height) {
@@ -804,6 +808,8 @@ output$saveelmerpicture <- downloadHandler(
             }
             if(class(p) == "recordedplot") {
                 print(p)
+            } else if(all(class(p) %in% c("gtable", "gTree", "grob",   "gDesc"))) {
+                gridExtra::grid.arrange(p)
             } else {
                 ComplexHeatmap::draw(p)
             }
