@@ -14,7 +14,8 @@ getMafTumors <- function(){
     return(ret)
 }
 observe({
-    updateSelectizeInput(session, 'tcgaMafTumorFilter', choices =  getMafTumors(), server = TRUE)
+    # Created with getMafTumors
+    updateSelectizeInput(session, 'tcgaMafTumorFilter', choices =  maf.tumor, server = TRUE)
 })
 
 observeEvent(input$tcgaMafSearchBt, {
