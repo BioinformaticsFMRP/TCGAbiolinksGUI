@@ -17,6 +17,8 @@ suppressPackageStartupMessages({
     library(grid)
     library(maftools)
     library(dplyr)
+    load("data/maf.tumor.rda")
+    load("data/GDCdisease.rda")
     options(shiny.maxRequestSize=-1) # Remove limit of upload
     options(shiny.deprecation.messages=FALSE)
     options(warn =-1)
