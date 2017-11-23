@@ -446,8 +446,8 @@ observeEvent(input$elmerAnalysisBt, {
                                       group2 = group2,
                                       Pe = isolate({input$elmergetpairpevalue}),
                                       save = TRUE,
-                                      pvalue = isolate({input$elmergetpairpvalue}),
-                                      permu.size=isolate({input$elmergetpairpermu}),
+                                      raw.pvalue = isolate({input$elmergetpairpvalue}),
+                                      permu.size = isolate({input$elmergetpairpermu}),
                                       minSubgroupFrac = isolate({input$elmergetpairpercentage}),
                                       filter.portion = isolate({input$elmergetpairportion}),
                                       diffExp = isolate({input$elmergetpairdiffExp}))
