@@ -1,10 +1,10 @@
 # A notification ID
 observe({
-shinyDirChoose(input,
-               'IDATfolder',
-               roots = get.volumes(input$workingDir),
-               session = session,
-               restrictions = system.file(package='base'))
+    shinyDirChoose(input,
+                   'IDATfolder',
+                   roots = get.volumes(input$workingDir),
+                   session = session,
+                   restrictions = system.file(package='base'))
 })
 
 
@@ -154,5 +154,37 @@ observe({
             file.copy( isolate({input$idatfilename}),file)
         }
     )
+})
+
+# Glioma classification
+observeEvent(input$idatClassify, {
+    output$idattbl <- DT::renderDataTable({
+        met <- get(load(input$classifyObj))
+        if(is.null(met)) return(NULL)
+
+        df.all <- NULL
+        models <- c("glioma.idhmut.model","glioma.gcimp.model")
+        for(i in models){
+            model <- get(i)
+            # If it is a Summarized Experiment object
+            if(class(met)[1] == "RangedSummarizedExperiment") {
+                aux <- assay(met) %>% as.matrix  %>% t
+            } else {
+                aux <- met %>% as.matrix  %>% t
+            }
+
+            # keep only probes used in the model
+            aux <- aux[,colnames(aux) %in% model$coefnames]
+            pred <- predict(model, aux)
+            df <- data.frame(samples = rownames(aux), groups.classified = pred)
+
+            if(is.null(df.all)) {
+                df.all <- df
+            } else {
+                df.all <- merge(df, df.all, by = "samples")
+            }
+        }
+        return(df.all)
+    })
 })
 

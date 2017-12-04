@@ -21,6 +21,7 @@ suppressPackageStartupMessages({
     load("data/maf.tumor.rda")
     load("data/prob_to_remove.rda")
     load("data/GDCdisease.rda")
+    load("data/glioma.models.rda")
     options(shiny.maxRequestSize=-1) # Remove limit of upload
     options(shiny.deprecation.messages=FALSE)
     options(warn =-1)
