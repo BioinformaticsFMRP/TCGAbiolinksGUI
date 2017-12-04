@@ -66,6 +66,29 @@ devtools::install_github("tiagochst/ELMER.data")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
+### Increasing loaded DLL
+
+<div class="panel panel-danger">
+<div class="panel-heading"> Increasing loaded DLL</div>
+<div class="panel-body">
+
+If you receive this error message:  `maximal number of DLLs reached...`
+You will need to increase the maximum number of DLL R can load wit the
+enriroment variable `R_MAX_NUM_DLLS`.
+
+For MACOS please modify the file `/Library/Frameworks/R.framework/Resources/etc/Renviron`
+and add `R_MAX_NUM_DLLS=120` in the end. Or you can run in R the following command:
+`system(' echo "R_MAX_NUM_DLLS=150" >> /Library/Frameworks/R.framework/Resources/etc/Renviron')`
+
+For UBUNTU please modify the file `/usr/local/lib/R/etc/Renviron` and add `R_MAX_NUM_DLLS=120` in the end.
+Or you can run in R the following command:
+`system(' echo "R_MAX_NUM_DLLS=150" >> /usr/local/lib/R/etc/Renviron')`
+
+For other OS check https://stat.ethz.ch/R-manual/R-patched/library/base/html/Startup.html.
+
+</div>
+</div>
+
 ## Docker image
 
 TCGAbiolinksGUI is available as Docker image (self-contained environments that contain everything needed to run the software), 
@@ -187,13 +210,5 @@ If you used Pathway plot please cite:
 
 * Luo, Weijun, Brouwer and Cory (2013). “Pathview: an R/Bioconductor package for pathway-based data integration and visualization.” Bioinformatics, 29(14), pp. 1830-1831.
 
-# Increasing loaded DLL
-
-If you receive this error message:  `maximal number of DLLs reached...`
-You will need to increase the maximum number of DLL R can load.  R_MAX_NUM_DLLS
-In MACOS just modify the file `/Library/Frameworks/R.framework/Resources/etc/Renviron`
-and add `R_MAX_NUM_DLLS=110` in the end.
-
-For other OS check https://stat.ethz.ch/R-manual/R-patched/library/base/html/Startup.html.
 
 # References

@@ -81,7 +81,7 @@ header$children[[2]]$children <-  tags$a(href='http://bioconductor.org/packages/
 sidebar <-  dashboardSidebar(
     width = 250,
     sidebarMenu(
-        tags$div("GDC Data",
+        tags$div("Data",
                  style= "
                  font-size: 1.5em;
                  margin-top: 6px;
@@ -97,6 +97,9 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Subtype data" , tabName = "tcgaSubtype", icon = icon("database"))
         ),
         menuItem("Manage SummarizedExperiment" , tabName = "seedit", icon = icon("pencil")),
+        menuItem("Processing raw data", icon = icon("cogs"),
+                 menuSubItem("DNA methylation" , tabName = "dnametidat", icon = icon("cog"))
+        ),
         tags$div("Analysis",
                  style = "margin-top: 6px;
                           font-size: 1.5em;
@@ -197,6 +200,7 @@ body <-  dashboardBody(
         source(file.path(ui.path, "index.R"),  local = TRUE)$value,
         source(file.path(ui.path, "getmolecular.R"),  local = TRUE)$value,
         source(file.path(ui.path, "manageSE.R"),  local = TRUE)$value,
+        source(file.path(ui.path, "dnametidat.R"),  local = TRUE)$value,
         source(file.path(ui.path, "getclinical.R"),  local = TRUE)$value,
         source(file.path(ui.path, "getmutation.R"),  local = TRUE)$value,
         source(file.path(ui.path, "getsubtype.R"),  local = TRUE)$value,
