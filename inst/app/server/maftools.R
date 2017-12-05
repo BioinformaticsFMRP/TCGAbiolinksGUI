@@ -291,6 +291,7 @@ observeEvent(input$maftoolsTableBt , {
                 tbl$pvalue <- gsub("P-value: ","",tbl$pvalue )
                 tbl$pvalue <- as.numeric(tbl$pvalue)
                 tbl <- tbl[order(tbl$pvalue),]
+                return(createTable(tbl))
             }
         }
     })

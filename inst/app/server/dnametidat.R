@@ -157,24 +157,52 @@ observe({
 })
 
 # Glioma classification
+
+classifyObj <-  reactive({
+    inFile <- parseFilePaths(get.volumes(isolate({input$workingDir})), input$classifyObj)
+    if (nrow(inFile) == 0) return(NULL)
+    file <- as.character(inFile$datapath)
+    withProgress(message = 'Reading file',
+                 detail = 'This may take a while...', value = 0, {
+                     if(grepl("\\.csv", file)){
+                         ret <- read_csv(file)
+                     } else {
+                         ret <- get(load(file))
+                     }
+                 })
+    return(ret)
+})
+
+observe({
+    shinyFileChoose(input, 'classifyObj', roots=get.volumes(input$workingDir), session=session,
+                    restrictions=system.file(package='base'), filetypes=c('', "rda","csv"))
+})
+
 observeEvent(input$idatClassify, {
     output$idattbl <- DT::renderDataTable({
-        met <- get(load(input$classifyObj))
+        met <- classifyObj()
         if(is.null(met)) return(NULL)
+        if(class(met)[1] == "RangedSummarizedExperiment") {
+            met <- assay(met) %>% as.matrix  %>% t
+        } else {
+            met <- met %>% as.matrix  %>% t
+        }
 
         df.all <- NULL
         models <- c("glioma.idhmut.model","glioma.gcimp.model")
         for(i in models){
             model <- get(i)
             # If it is a Summarized Experiment object
-            if(class(met)[1] == "RangedSummarizedExperiment") {
-                aux <- assay(met) %>% as.matrix  %>% t
-            } else {
-                aux <- met %>% as.matrix  %>% t
-            }
 
             # keep only probes used in the model
-            aux <- aux[,colnames(aux) %in% model$coefnames]
+            aux <- met[,colnames(met) %in% model$coefnames]
+
+            # This should not happen!
+            if(any(apply(aux,2,function(x) all(is.na(x))))) {
+                print("NA columns")
+                aux[,apply(aux,2,function(x) all(is.na(x)))] <- runif(1, 0, 1) # pick a random number between 0 and 1
+            }
+
             pred <- predict(model, aux)
             df <- data.frame(samples = rownames(aux), groups.classified = pred)
 
@@ -184,7 +212,8 @@ observeEvent(input$idatClassify, {
                 df.all <- merge(df, df.all, by = "samples")
             }
         }
-        return(df.all)
+        colnames(df.all) <- c("samples",models)
+        return(createTable(df.all))
     })
 })
 
