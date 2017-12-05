@@ -200,8 +200,17 @@ observeEvent(input$idatClassify, {
             # This should not happen!
             if(any(apply(aux,2,function(x) all(is.na(x))))) {
                 print("NA columns")
-                aux[,apply(aux,2,function(x) all(is.na(x)))] <- runif(1, 0, 1) # pick a random number between 0 and 1
+                aux[,apply(aux,2,function(x) all(is.na(x)))] <- 0.5 # runif(1, 0, 1) # pick a random number between 0 and 1
             }
+            if(any(apply(aux,2,function(x) any(is.na(x))))) {
+                print("NA values")
+                colMedians <- colMedians(aux,na.rm = T)
+                x <- which(is.na(aux),arr.ind = T)
+                for(l in 1:nrow(x)){
+                    aux[x[l,1],x[l,2]] <- colMedians[x[l,2]]
+                }
+            }
+
 
             pred <- predict(model, aux)
             df <- data.frame(samples = rownames(aux), groups.classified = pred)
