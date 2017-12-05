@@ -111,7 +111,7 @@ observeEvent(input$idatnormalize, {
                      incProgress(0.2, detail = "Mask probes as recommended by Zhou et al. 2016")
                      # EPIC has different versions. Later version removed probes we will remove then
                      met <- ELMER:::getInfiniumAnnotation(genome = isolate({input$idatgenome}),plat  = isolate({input$idatmetPlatform}))
-                     mask <- met[met$MASK.mapping,]
+                     mask <- met[met$MASK.general,]
                      # Remove masked probes, besed on the annotation
                      is.na(assays(proc.r)$Beta) <-   is.na(assays(proc.r)$Beta) | rownames(proc.r) %in% names(mask)
 
