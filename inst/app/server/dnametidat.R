@@ -9,7 +9,6 @@ observe({
 
 
 idat <-  reactive({
-    closeAlert(session,"idatAlert")
     inFile <- input$IDATfolder
     if (is.null(inFile)) return(NULL)
     baseDir  <- parseDirPath(get.volumes(input$workingDir), input$IDATfolder)
@@ -20,17 +19,17 @@ idat <-  reactive({
                                             targets = NULL,
                                             force = TRUE,
                                             recursive = T,
-                                            verbose=T)
+                                            verbose = T )
                      }, warning = function(w){
                          print(w)
-                         createAlert(session, "idatmessage", "idatAlert",
+                         createAlert(session, "idatAlert", "idatmessage",
                                      title = "Error",
                                      style =  "danger",
                                      content = paste(w), append = FALSE)
                          return(NULL)
                      },error = function(e){
                          print(e)
-                         createAlert(session, "idatmessage", "idatAlert",
+                         createAlert(session, "idatAlert", "idatmessage",
                                      title = "Error",
                                      style =  "danger",
                                      content = paste(e), append = FALSE)
@@ -46,7 +45,7 @@ observeEvent(input$IDATfolder, {
         if (is.null(idat)) return(NULL)
         df <- as.data.frame(colnames(idat))
         colnames(df) <- "IDAT"
-        df
+        createTable(df)
     })
 })
 
@@ -83,21 +82,21 @@ observeEvent(input$idatnormalize, {
                                         dyeMethod="reference")
                      }, warning = function(w){
                          print(w)
-                         createAlert(session, "idatmessage", "idatAlert",
+                         createAlert(session, "idatAlert", "idatmessage",
                                      title = "Error",
                                      style =  "danger",
                                      content = paste(w), append = FALSE)
                          return(NULL)
                      },error = function(e){
                          print(e)
-                         createAlert(session, "idatmessage", "idatAlert",
+                         createAlert(session, "idatAlert", "idatmessage",
                                      title = "Error",
                                      style =  "danger",
                                      content = paste(e), append = FALSE)
                          return(NULL)
                      })
                      if(is.null(proc)) {
-                         createAlert(session, "idatmessage", "idatAlert",
+                         createAlert(session, "idatAlert", "idatmessage",
                                      title = "Error",
                                      style =  "danger",
                                      content = "Error in preprocessNoob", append = FALSE)
@@ -136,7 +135,7 @@ observeEvent(input$idatnormalize, {
                                      content = "File name has to be .csv or .rda. Saved as Idat.rda", append = FALSE)
                          save(beta,file = "Idat.rda")
                      }
-                     createAlert(session, "idatmessage", "idatAlert", title = "idatnormalized data saved", style =  "success",
+                     createAlert(session, "idatAlert", "idatmessage", title = "Normalized data saved", style =  "success",
                                  content = "Click in the download button", append = FALSE)
                  })
 
@@ -179,9 +178,14 @@ observe({
 })
 
 observeEvent(input$idatClassify, {
+    closeAlert(session,"idatAlert")
     output$idattbl <- DT::renderDataTable({
         met <- classifyObj()
-        if(is.null(met)) return(NULL)
+        if(is.null(met)) {
+            createAlert(session, "idatAlert", "idatmessage", title = "Error", style =  "danger",
+                        content = "Please select a file", append = FALSE)
+            return(NULL)
+        }
         if(class(met)[1] == "RangedSummarizedExperiment") {
             met <- assay(met) %>% as.matrix  %>% t
         } else {
