@@ -189,13 +189,14 @@ observeEvent(input$idatClassify, {
         }
 
         df.all <- NULL
-        models <- c("glioma.idhmut.model","glioma.gcimp.model")
+        models <- c("idh","gcimp","idhwt","idhmut")
+        models <- paste("glioma",models,"model",sep = ".")
         for(i in models){
             model <- get(i)
             # If it is a Summarized Experiment object
 
             # keep only probes used in the model
-            aux <- met[,colnames(met) %in% model$coefnames]
+            aux <- met[,colnames(met) %in% colnames(model$trainingData)]
 
             # This should not happen!
             if(any(apply(aux,2,function(x) all(is.na(x))))) {
@@ -211,17 +212,20 @@ observeEvent(input$idatClassify, {
                 }
             }
 
-
             pred <- predict(model, aux)
             df <- data.frame(samples = rownames(aux), groups.classified = pred)
 
             if(is.null(df.all)) {
                 df.all <- df
             } else {
-                df.all <- merge(df, df.all, by = "samples")
+                df.all <- merge(df.all,df, by = "samples")
             }
         }
         colnames(df.all) <- c("samples",models)
+        df.all[grep("6|5|4",df.all$glioma.idh.model),c("glioma.gcimp.model","glioma.idhmut.model")]  <- NA
+        df.all[grep("3|2|1",df.all$glioma.idh.model),c("glioma.idhwt.model")]  <- NA
+        df.all[grep("3",df.all$glioma.idhmut.model),c("glioma.gcimp.model")]  <- "Codel"
+
         return(createTable(df.all))
     })
 })
