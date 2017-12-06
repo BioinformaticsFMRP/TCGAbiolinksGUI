@@ -111,7 +111,6 @@ sidebar <-  dashboardSidebar(
         menuItem("Clinical analysis", icon = icon("flask"),
                  menuSubItem("Survival plot" , tabName = "tcgasurvival", icon = icon("picture-o"))
         ),
-
         menuItem("Epigenetic analysis", icon = icon("flask"),
                  menuSubItem("Differential methylation analysis" , tabName = "dmr", icon = icon("flask")),
                  menuSubItem("Volcano plot" , tabName = "volcano", icon = icon("picture-o")),
@@ -129,6 +128,9 @@ sidebar <-  dashboardSidebar(
         menuItem("Genomic analysis", icon = icon("flask"),
                  menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o")),
                  menuSubItem("Maftools plot" , tabName = "maftools", icon = icon("picture-o"))
+        ),
+        menuItem("Classifier", icon = icon("tags"),
+                 menuSubItem("Glioma classifier" , tabName = "gliomaclassifier", icon = icon("tag"))
         ),
         tags$div("Integrative analysis",
                  style = "margin-top: 6px;
@@ -207,6 +209,7 @@ body <-  dashboardBody(
         source(file.path(ui.path, "oncoprint.R"),  local = TRUE)$value,
         source(file.path(ui.path, "volcano.R"),  local = TRUE)$value,
         source(file.path(ui.path, "heatmap.R"),  local = TRUE)$value,
+        source(file.path(ui.path, "gliomaclassifier.R"),  local = TRUE)$value,
         source(file.path(ui.path, "dmr.R"),  local = TRUE)$value,
         source(file.path(ui.path, "meanMet.R"),  local = TRUE)$value,
         source(file.path(ui.path, "ea.R"),  local = TRUE)$value,

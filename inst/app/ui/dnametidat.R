@@ -41,23 +41,8 @@ tabItem(tabName = "dnametidat",
                        color: #FFFFFF;
                        margin-left: auto;
                        margin-right: auto;
-                       width: 100%")),
-                   box(title = "Glioma classification",width = NULL,
-                       status = "danger",
-                       solidHeader = FALSE, collapsible = FALSE,
-                       shinyFilesButton(id = 'classifyObj',
-                                        label = 'Select DNA methylation (.rda) file',
-                                        title = 'Please select a DNA methylation (.rda) file',
-                                        multiple = FALSE),
-                       tags$br(),
-                       tags$br(),
-                       actionButton("idatClassify",
-                                    "Classify into gliomas molecular subtypes",
-                                    style = "background-color: #000080;
-                                    color: #FFFFFF;
-                                    margin-left: auto;
-                                    margin-right: auto;
-                                    width: 100%",
-                                    icon = icon("flask"))
-                   )))
+                       width: 100%")
+                   )
+            )
+        )
 )
