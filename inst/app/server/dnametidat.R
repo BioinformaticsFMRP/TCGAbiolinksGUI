@@ -136,8 +136,11 @@ observeEvent(input$idatnormalize, {
                                      content = "File name has to be .csv or .rda. Saved as Idat.rda", append = FALSE)
                          save(beta,file = "Idat.rda")
                      }
+                     getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), isolate({input$workingDir}))
+                     if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+                     filename <- file.path(getPath,fname)
                      createAlert(session, "idatAlert", "idatmessage", title = "Processed data saved", style =  "success",
-                                 content = "Click in the download button", append = FALSE)
+                                 content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
                  })
 
 })
