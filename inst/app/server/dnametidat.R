@@ -136,7 +136,7 @@ observeEvent(input$idatnormalize, {
                                      content = "File name has to be .csv or .rda. Saved as Idat.rda", append = FALSE)
                          save(beta,file = "Idat.rda")
                      }
-                     createAlert(session, "idatAlert", "idatmessage", title = "Normalized data saved", style =  "success",
+                     createAlert(session, "idatAlert", "idatmessage", title = "Processed data saved", style =  "success",
                                  content = "Click in the download button", append = FALSE)
                  })
 
