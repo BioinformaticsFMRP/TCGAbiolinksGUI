@@ -41,6 +41,7 @@ idat <-  reactive({
 })
 observeEvent(input$IDATfolder, {
     output$idattbl <- DT::renderDataTable({
+        closeAlert(session,"idatAlert")
         idat <- idat()
         if (is.null(idat)) return(NULL)
         df <- as.data.frame(colnames(idat))
