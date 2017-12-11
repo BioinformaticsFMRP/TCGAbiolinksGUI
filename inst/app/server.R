@@ -18,13 +18,9 @@ suppressPackageStartupMessages({
     library(maftools)
     library(dplyr)
     library(minfi)
-    load("data/maf.tumor.rda")
-    load("data/prob_to_remove.rda")
-    load("data/GDCdisease.rda")
-    load("data/glioma.models_1.rda")
-    load("data/glioma.models_2.rda")
-    load("data/glioma.models_3.rda")
-    load("data/glioma.models_4.rda")
+    library(TCGAbiolinksGUI.data)
+    data(maf.tumor)
+    data(GDCdisease)
     options(shiny.maxRequestSize=-1) # Remove limit of upload
     options(shiny.deprecation.messages=FALSE)
     options(warn =-1)
@@ -181,17 +177,6 @@ tcga.code <- c("Primary solid Tumor","Recurrent Solid Tumor",
                "Cell Line Derived Xenograft Tissue")
 names(tcga.code) <- c('01','02','03','04','05','06','07','08','09','10',
                       '11','12','13','14','20','40','50','60','61')
-
-# Defining parameters
-#getGDCdisease <- reactive({
-#    projects <- TCGAbiolinks:::getGDCprojects()
-#    projects <- projects[projects$id != "FM-AD",]
-#    disease <-  projects$project_id
-#    idx <- grep("disease_type",colnames(projects))
-#    names(disease) <-  paste0(projects[[idx]], " (",disease,")")
-#    disease <- disease[sort(names(disease))]
-#    return(disease)
-#})
 
 getMatchedPlatform <- function(query){
     matched <- NULL

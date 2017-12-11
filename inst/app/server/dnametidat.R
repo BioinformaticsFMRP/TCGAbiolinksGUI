@@ -63,8 +63,9 @@ observeEvent(input$idatnormalize, {
 
                      # EPIC has different versions. Later version removed probes we will remove then
                      if(isolate({input$idatmetPlatform}) == "EPIC") {
+                         data("prob2rm")
                          incProgress(0.2, detail = "Filter probes based on B4 file from Illumina")
-                         idat <- idat[!rownames(idat) %in% prob_to_remove,]
+                         idat <- idat[!rownames(idat) %in% prob2rm,]
                      }
 
                      incProgress(0.2, detail = "Calculate p-values")

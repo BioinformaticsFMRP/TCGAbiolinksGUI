@@ -38,6 +38,8 @@ observeEvent(input$gliomaClassify, {
         df.all <- NULL
         models <- c("idh","gcimp","idhwt","idhmut")
         models <- paste("glioma",models,"model",sep = ".")
+        data(list = models)
+
         for(i in models){
             model <- get(i)
             # If it is a Summarized Experiment object

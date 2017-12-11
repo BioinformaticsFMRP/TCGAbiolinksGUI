@@ -16,7 +16,8 @@ Description:
 License: GPL (>= 3)
 Depends:
     R (>= 3.3.1),
-    shinydashboard (>= 0.5.3)
+    shinydashboard (>= 0.5.3),
+    TCGAbiolinksGUI.data
 Suggests:
     testthat,
     dplyr,
