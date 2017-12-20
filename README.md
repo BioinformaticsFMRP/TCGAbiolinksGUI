@@ -27,6 +27,7 @@ deps <- c("devtools","shape","shiny","readr","googleVis","shinydashboard","shiny
 for(pkg in deps)  if (!pkg %in% installed.packages())  install.packages(pkg,dependencies = TRUE)
 devtools::install_github("tiagochst/ELMER.data")
 devtools::install_github("tiagochst/ELMER")
+devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI.data",ref = "R_3.4")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
