@@ -19,6 +19,7 @@ suppressPackageStartupMessages({
     library(dplyr)
     library(minfi)
     library(TCGAbiolinksGUI.data)
+    library(caret)
     data(maf.tumor)
     data(GDCdisease)
     options(shiny.maxRequestSize=-1) # Remove limit of upload
