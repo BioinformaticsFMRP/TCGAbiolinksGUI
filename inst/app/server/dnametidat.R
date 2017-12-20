@@ -40,6 +40,7 @@ idat <-  reactive({
     return(idat)
 })
 observeEvent(input$IDATfolder, {
+    closeAlert(session,"idatAlert")
     output$idattbl <- DT::renderDataTable({
         idat <- idat()
         if (is.null(idat)) return(NULL)
