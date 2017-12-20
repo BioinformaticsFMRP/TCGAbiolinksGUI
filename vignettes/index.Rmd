@@ -78,12 +78,12 @@ You will need to increase the maximum number of DLL R can load wit the
 enriroment variable `R_MAX_NUM_DLLS`.
 
 For MACOS please modify the file `/Library/Frameworks/R.framework/Resources/etc/Renviron`
-and add `R_MAX_NUM_DLLS=120` in the end. Or you can run in R the following command:
+and add `R_MAX_NUM_DLLS=150` in the end. Or you can run in R the following command as R administrator:
 `system(' echo "R_MAX_NUM_DLLS=150" >> /Library/Frameworks/R.framework/Resources/etc/Renviron')`
 
-For UBUNTU please modify the file `/usr/local/lib/R/etc/Renviron` and add `R_MAX_NUM_DLLS=120` in the end.
-Or you can run in R the following command:
-`system(' echo "R_MAX_NUM_DLLS=150" >> /usr/local/lib/R/etc/Renviron')`
+For UBUNTU please modify the file `/usr/lib/R/etc/Renviron` and add `R_MAX_NUM_DLLS=150` in the end.
+Or you can run in R the following command as R administrator:
+`system(' echo "R_MAX_NUM_DLLS=150" >> /usr/lib/R/etc/Renviron')`
 
 For other OS check https://stat.ethz.ch/R-manual/R-patched/library/base/html/Startup.html.
 
