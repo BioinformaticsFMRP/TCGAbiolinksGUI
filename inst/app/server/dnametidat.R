@@ -42,6 +42,7 @@ idat <-  reactive({
 observeEvent(input$IDATfolder, {
     closeAlert(session,"idatAlert")
     output$idattbl <- DT::renderDataTable({
+        closeAlert(session,"idatAlert")
         idat <- idat()
         if (is.null(idat)) return(NULL)
         df <- as.data.frame(colnames(idat))
@@ -64,8 +65,9 @@ observeEvent(input$idatnormalize, {
 
                      # EPIC has different versions. Later version removed probes we will remove then
                      if(isolate({input$idatmetPlatform}) == "EPIC") {
+                         data("prob2rm")
                          incProgress(0.2, detail = "Filter probes based on B4 file from Illumina")
-                         idat <- idat[!rownames(idat) %in% prob_to_remove,]
+                         idat <- idat[!rownames(idat) %in% prob2rm,]
                      }
 
                      incProgress(0.2, detail = "Calculate p-values")
@@ -136,8 +138,11 @@ observeEvent(input$idatnormalize, {
                                      content = "File name has to be .csv or .rda. Saved as Idat.rda", append = FALSE)
                          save(beta,file = "Idat.rda")
                      }
-                     createAlert(session, "idatAlert", "idatmessage", title = "Normalized data saved", style =  "success",
-                                 content = "Click in the download button", append = FALSE)
+                     getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), isolate({input$workingDir}))
+                     if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+                     filename <- file.path(getPath,fname)
+                     createAlert(session, "idatAlert", "idatmessage", title = "Processed data saved", style =  "success",
+                                 content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
                  })
 
 })

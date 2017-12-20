@@ -298,5 +298,16 @@ Using the oncoPrint function from the [ComplexHeatmap](http://bioconductor.org/p
 * Show column names? Show patient barcodes?
 * Show barplot annotation on rows? Show right barplot?
 
+# Menu: Classifier
+
+## Sub-menu: Glioma classifier
+
+In this menu, users can select ther processed DNA methylation data from glioma samples and classify them into molecular subtypes as defined by Ceccareli et al. [@Cell] using a RandomForest trained model from the DNA methylation signatures available at (https://tcga-data.nci.nih.gov/docs/publications/lgggbm_2015/).
+
+![Glioma classifier menu:  Predicting molecular subtypes based on DNA methylation using data from GEO (accession GSE61160).](glioma_classifier.png)
+
+For a detailed manual for this section please access this link: [IDAT processing and glioma classifier](https://drive.google.com/open?id=1UWeKrZ9HMxEOwRjLJ_Y0-c1O6SksjxVU)
+
+
 # References
 
