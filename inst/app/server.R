@@ -38,7 +38,7 @@ getDataCategory <- function(legacy){
                                    "Protein expression",
                                    "Gene expression",
                                    "DNA methylation",
-                                   "Raw Microarray Data",
+                                   "Raw microarray data",
                                    # "Structural Rearrangement", # Controlled
                                    "Other"))
     if(legacy) return(data.category.legacy)
