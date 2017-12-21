@@ -2,7 +2,7 @@
 bibliography: bibliography.bib
 date: "`r BiocStyle::doc_date()`"
 vignette: >
-  %\VignetteIndexEntry{"4. Integratice analysis menu"}
+  %\VignetteIndexEntry{"4. Integrative analysis menu"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -55,7 +55,7 @@ The possible highlight controls are:
 
 # Menu: ELMER (Enhancer Linking by Methylation/Expression Relationship)
 
-This sub-menu will help the user to perform an integrative analysis between DNA methylation and Gene expression using the R/Bioconductor ELMER package [@yao2015inferring].
+This sub-menu will help the user to perform an integrative analysis of DNA methylation and Gene expression using the R/Bioconductor ELMER package [@yao2015inferring].
 
 ## Introduction
 
@@ -74,30 +74,23 @@ expression of nearby genes to identify one or more transcriptional
 targets. Transcription factor (TF) binding site analysis of enhancers is
 coupled with expression analysis of all TFs to infer upstream
 regulators. This package can be easily applied to TCGA public available
-cancer data sets and custom DNA methylation and gene expression data
-sets [@yao2015inferring].
+cancer datasets and custom DNA methylation and gene expression datasets [@yao2015inferring].
 
-[ELMER](http://bioconductor.org/packages/ELMER/) analysis has 5 main
+[ELMER](http://bioconductor.org/packages/ELMER/) analysis have 5 main
 steps:
 
-1.  Identify distal enhancer probes on HM450K.
+1. Identify distal probes on HM450K or EPIC.
 
-2.  Identify distal enhancer probes with significantly different DNA
-    methylation level in control group and experiment group.
+2. Identification of distal probes with significant differential DNA methylation (i.e. DMCs) in tumor vs. normal samples.
 
-3.  Identify putative target genes for differentially methylated distal
-    enhancer probes.
+3. Identification of putative target gene(s) for differentially methylated distal probes.
 
-4.  Identify enriched motifs for the distal enhancer probes which are
-    significantly differentially methylated and linked to a putative
-    target gene.
+4. Identification of enriched motifs within a set of probes in significant probe-gene pairs.
 
-5.  Identify regulatory TFs whose expression associate with DNA
-    methylation at motifs.
+5. Identification of master regulator Transcription Factors (TF) for each enriched motif.
 
-## Sub-menu ELMER: analysis
 
-## Data: Create mee 
+## Sub-menu ELMER: Create input data 
 
 The [ELMER](http://bioconductor.org/packages/ELMER/) input is a
 mee object that contains a DNA methylation matrix, a gene expression
@@ -106,46 +99,28 @@ data frame summarizing the data. It should be highlighted that samples
 without both the gene expression and DNA methylation data will be
 removed from the mee object.
 
-By default the function *fetch.mee* that is used to create the mee
-object will separate the samples into two groups, the control group
-(normal samples) and the experiment group (tumor samples), but the user
-can relabel the samples to compare different groups. 
+To perform ELMER analyses, we need to populate a **MultiAssayExperiment** with a DNA methylation matrix or **SummarizedExperiment** object from HM450K or EPIC platform; a gene expression matrix or SummarizedExperiment object for the same samples; a matrix mapping DNA methylation samples to gene expression samples; and a matrix with sample metadata (i.e. clinical data, molecular subtype, etc.). If TCGA data are used, the last two matrices will be automatically generated.
+If using non-TCGA data,  the matrix with sample metadata should be provided with at least a column with a patient identifier and another one identifying its group which will be used for analysis, if samples in the methylation and expression matrices are not ordered and with same names, a matrix mapping for each patient identifier their DNA methylation samples and their gene expression samples should be provided to the *createMAE* function.
+Based on the genome of reference selected, metadata for the DNA methylation probes, such as genomic coordinates, will be added from http://zwdzwd.github.io/InfiniumAnnotation [@zhou2016comprehensive]; 
+and metadata for gene expression and annotation is added from Ensembl database [@yates2015ensembl] using [biomaRt](http://bioconductor.org/packages/biomaRt/) [@durinck2009mapping]. 
 
-The following steps are required:
-
-* Select DNA methylation object: select a summarized Experiment object with the DNA methylation data
-* Select expression object: select a summarized Experiment object with the gene expression data
-* Select group column: Select the columns with the groups. This column will be selected from the Summarized Experiment object.
-* Select Experiment group: Select the columns with the subgroup 1 (experiment)
-* Select Control group: Select the columns with the subgroup 2 (control)
-* Select DNA methylation: Cut-off NA samples (%): By default, for the DNA methylation data will remove probes with NA values in more than 20% samples and remove the annotation data.
-
-Also, for RNA expression data it will
-take the $log_2(expression + 1)$ of the expression matrix in order to
-linearize the relation between DNA methylation and expression.
-
-
-![ELMER menu: Main window.](elmer.png)
+The steps required to create this object and perform ELMER analysis is described in this [tutorial](https://bioinformaticsfmrp.github.io/Bioc2017.TCGAbiolinks.ELMER/analysis_gui.html).
 
 
 
-### Data: Select mee
- Select the R object (rda) file with a mee object created in the previous step.
+###  Sub-menu ELMER: Analysis 
 
-### Analysis parameters
+After preparing the data into a MAE object, we will execute the five
+[ELMER](http://bioconductor.org/packages/ELMER/) steps for  the hypo
+(distal probes hypomethylated in the group2) direction.
 
-After preparing the data into a mee object, we will execute the five
-[ELMER](http://bioconductor.org/packages/ELMER/) steps for both the hypo
-(distal enhancer probes hypomethylated in the experiment group) and hyper
-(distal enhancer probes hypermethylated in the experiment group) direction.
-
-This box has all the available options for ELMER functions. Please see the [ELMER vignette](http://bioconductor.org/packages/release/bioc/vignettes/ELMER/inst/doc/vignettes.pdf). 
+This box has all the available options for ELMER functions. Please see the [ELMER vignette](http://bioconductor.org/packages/3.7/bioc/vignettes/ELMER/inst/doc/index.html). 
 
 Also, a description of the data used by ELMER (such as the distal enhancer probes) is found in the
-[ELMER.data](https://bioconductor.org/packages/release/data/experiment/vignettes/ELMER.data/inst/doc/vignettes.pdf)
+[ELMER.data](https://bioconductor.org/packages/release/data/experiment/vignettes/ELMER.data/inst/doc/vignettes.html)
 vignette.
 
-ELMER Identifies the enriched motifs for the distal enhancer probes
+ELMER Identifies the enriched motifs for the distal probes
 which are significantly differentially methylated and linked to a putative
 target gene, it will plot the Odds Ratio (x axis) for each motif
 found.
@@ -171,14 +146,6 @@ with the necessary data to visualize the results.
 
 ### Data
 
-Select the R object (rda) file with ELMER results created in the analysis step (the one with prefix ELMER_results )
-
-### Plot
-
-Select ELMER plot. To access the plots, both the results and mee object must be selected. Please see  [ELMER vignette](http://bioconductor.org/packages/release/bioc/vignettes/ELMER/inst/doc/vignettes.pdf) for more details. 
-
-
-### Results table
-Select the ELMER results from the table. A results object should be selected.
+Select the R object (rda) file with ELMER results created in the analysis step (the one with prefix ELMER_results)
 
 # References
