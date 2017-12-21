@@ -55,7 +55,7 @@ observeEvent(input$idatnormalize, {
     closeAlert(session,"idatAlert")
     idat <- idat()
     if (is.null(idat)) return(NULL)
-
+    annotation <- as.data.frame(t(minfi::annotation(idat)))
     # Quality control report (Visualization):
     # summary <- shinySummarize(idat)
     # runShinyMethyl(summary)
@@ -64,10 +64,10 @@ observeEvent(input$idatnormalize, {
                  detail = 'This may take a while...', value = 0, {
 
                      # EPIC has different versions. Later version removed probes we will remove then
-                     if(isolate({input$idatmetPlatform}) == "EPIC") {
-                         data("prob2rm")
+                     if(annotation$array == "IlluminaHumanMethylationEPIC") {
+                         data("probes2rm")
                          incProgress(0.2, detail = "Filter probes based on B4 file from Illumina")
-                         idat <- idat[!rownames(idat) %in% prob2rm,]
+                         idat <- idat[!rownames(idat) %in% probes2rm,]
                      }
 
                      incProgress(0.2, detail = "Calculate p-values")
@@ -112,7 +112,11 @@ observeEvent(input$idatnormalize, {
 
                      incProgress(0.2, detail = "Mask probes as recommended by Zhou et al. 2016")
                      # EPIC has different versions. Later version removed probes we will remove then
-                     met <- ELMER:::getInfiniumAnnotation(genome = isolate({input$idatgenome}),plat  = isolate({input$idatmetPlatform}))
+                     plat <- ifelse(annotation$array == "IlluminaHumanMethylation450k","450K",
+                                    ifelse(annotation$array == "IlluminaHumanMethylationEPIC","EPIC","27K"))
+                     genome <- ifelse(grepl("hg19",annotation$annotation),"hg19","hg38")
+
+                     met <- ELMER:::getInfiniumAnnotation(genome = genome,plat  = platform)
                      mask <- met[met$MASK.general,]
                      # Remove masked probes, besed on the annotation
                      is.na(assays(proc.r)$Beta) <-   is.na(assays(proc.r)$Beta) | rownames(proc.r) %in% names(mask)
@@ -129,6 +133,7 @@ observeEvent(input$idatnormalize, {
                          rowRanges <- met[rownames(beta)]
                          colData <- DataFrame(Sample=colnames(beta))
                          met <- SummarizedExperiment(assays = SimpleList(beta),rowRanges = rowRanges, colData=colData)
+                         metadata(met)$annotation <- annotation
                          save(met,file = fname)
                      } else {
                          createAlert(session, "idatmessage",
