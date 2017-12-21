@@ -42,6 +42,7 @@ Imports:
     ggrepel,
     data.table,
     minfi,
+    caret,
     IlluminaHumanMethylation450kanno.ilmn12.hg19,
     IlluminaHumanMethylation450kmanifest,
     IlluminaHumanMethylation27kmanifest,
