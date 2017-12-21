@@ -112,7 +112,7 @@ observeEvent(input$idatnormalize, {
 
                      incProgress(0.2, detail = "Mask probes as recommended by Zhou et al. 2016")
                      # EPIC has different versions. Later version removed probes we will remove then
-                     plat <- ifelse(annotation$array == "IlluminaHumanMethylation450k","450K",
+                     platform <- ifelse(annotation$array == "IlluminaHumanMethylation450k","450K",
                                     ifelse(annotation$array == "IlluminaHumanMethylationEPIC","EPIC","27K"))
                      genome <- ifelse(grepl("hg19",annotation$annotation),"hg19","hg38")
 
