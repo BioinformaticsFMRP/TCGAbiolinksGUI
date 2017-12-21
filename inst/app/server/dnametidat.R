@@ -45,8 +45,7 @@ observeEvent(input$IDATfolder, {
         closeAlert(session,"idatAlert")
         idat <- idat()
         if (is.null(idat)) return(NULL)
-        df <- as.data.frame(colnames(idat))
-        colnames(df) <- "IDAT"
+        df <- data.frame(samples = colnames(idat), t(minfi::annotation(idat)))
         createTable(df)
     })
 })
@@ -73,8 +72,6 @@ observeEvent(input$idatnormalize, {
                      incProgress(0.2, detail = "Calculate p-values")
                      ### Step 1.3: Calculate p-values
                      detP <- detectionP(idat, type = "m+u") #failed positions reporting background signal levels
-                     # table(detP > 0.05)
-
 
                      ### Step 2: Preprocess:
                      incProgress(0.2, detail = "Noob preprocess")
