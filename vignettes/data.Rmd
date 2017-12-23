@@ -262,14 +262,20 @@ For a detailed manual for this section please access this link: [Manage Summariz
 
 ##Sub-menu: DNA methylation
 
-For DNA methylation raw data obtained in the form of Intensity Data (IDAT) files, we provide a pipeline using the R/Bioconductor minfi package (http://bioconductor.org/packages/minfi/) to process the data for downstream analysis \cite{aryee2014minfi} performing a background and dye-bias correction with the  (https://www.bioconductor.org/help/course-materials/2015/BioC2015/methylation450k.html\#preprocessnoob)[preprocessnoob]
+For DNA methylation raw data obtained in the form of Intensity Data (IDAT) files, we provide a pipeline using the R/Bioconductor minfi package (http://bioconductor.org/packages/minfi/) to process the data for downstream analysis [@aryee2014minfi] performing a background and dye-bias correction with the  [preprocessnoob](https://www.bioconductor.org/help/course-materials/2015/BioC2015/methylation450k.html\#preprocessnoob)
  function followed by a detection P-value quality masking (sample specific) [@morris2015analysis] and probes overlapping repeats or single nucleotide polymorphisms masking (non-sample specific) [@zhou2016comprehensive].
 
 ![IDAT normalization menu: Table shows files identified that will be processed. Data retrieved from GEO (accession GSE61160). ](idat.png)
 
 
-### Detailed explanation: Manage SummarizedExperiment menu
+### Detailed explanation: IDAT processing and glioma classifier
 
 For a detailed manual for this section please access this link: [IDAT processing](https://drive.google.com/open?id=1UWeKrZ9HMxEOwRjLJ_Y0-c1O6SksjxVU)
+
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/VSAV7wM7Yeo/maxresdefault.jpg)](http://www.youtube.com/watch?v=VSAV7wM7Yeo  "Tutorial Video: IDAT processing and glioma classifier - (http://www.youtube.com/watch?v=VSAV7wM7Yeo)")
+
+<center>
+**Tutorial Video:** IDAT processing and glioma classifier - (http://www.youtube.com/watch?v=VSAV7wM7Yeo)
+</center>
 
 # References
