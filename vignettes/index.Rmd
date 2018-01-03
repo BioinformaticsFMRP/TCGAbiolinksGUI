@@ -53,16 +53,8 @@ To install the development version of the package via GitHub:
 
 ```{r, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
-deps <- c("pathview","clusterProfiler","ELMER", "DO.db","GO.db",
-          "ComplexHeatmap","EDASeq", "TCGAbiolinks")
-for(pkg in deps)  
-    if (!pkg %in% installed.packages()) biocLite(pkg, dependencies = TRUE)
-deps <- c("devtools","shape","shiny","readr","googleVis",
-          "shinydashboard","shinyFiles","shinyjs","shinyBS")
-for(pkg in deps)  
-    if (!pkg %in% installed.packages())  install.packages(pkg,dependencies = TRUE)
-devtools::install_github("tiagochst/ELMER")
-devtools::install_github("tiagochst/ELMER.data")
+deps <- c("devtools")
+biocLite("devtools", dependencies = TRUE)
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI.data",ref = "R_3.4")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
@@ -77,11 +69,15 @@ If you receive this error message:  `maximal number of DLLs reached...`
 You will need to increase the maximum number of DLL R can load wit the
 enriroment variable `R_MAX_NUM_DLLS`.
 
-For MACOS please modify the file `/Library/Frameworks/R.framework/Resources/etc/Renviron`
+You can check where the Renviron or Renviron.site are located with the following R commnad:
+```dir(Sys.getenv("R_HOME"),recursive = T,full.names = T,pattern = "Renviron")```
+and add `R_MAX_NUM_DLLS=150` in the end.
+
+For example, for MACOS you can modify the file `/Library/Frameworks/R.framework/Resources/etc/Renviron`
 and add `R_MAX_NUM_DLLS=150` in the end. Or you can run in R the following command as R administrator:
 `system(' echo "R_MAX_NUM_DLLS=150" >> /Library/Frameworks/R.framework/Resources/etc/Renviron')`
 
-For UBUNTU please modify the file `/usr/lib/R/etc/Renviron` and add `R_MAX_NUM_DLLS=150` in the end.
+For UBUNTU you modify the file `/usr/lib/R/etc/Renviron` and add `R_MAX_NUM_DLLS=150` in the end.
 Or you can run in R the following command as R administrator:
 `system(' echo "R_MAX_NUM_DLLS=150" >> /usr/lib/R/etc/Renviron')`
 
