@@ -307,10 +307,11 @@ observeEvent(input$tcgaPrepareBt,{
         files <- dir(file.path(getPath,query$project,"legacy/Raw_microarray_data/Raw_intensities/"),full.names = T,recursive = T)
         to <- file.path(getPath,query$project,"legacy/Raw_microarray_data/Raw_intensities/")
         for(from in files){
-            TCGAbiolinks:::move(from,paste0(to,basename(from)))
+            if(basename(dirname(from)) == "Raw_intensities") next
+            tryCatch({TCGAbiolinks:::move(from,paste0(to,basename(from)))})
         }
-        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Error", style =  "danger",
-                    content = paste0("Raw microarray data can only be downloaded to preapre it go to: processing raw data menu<br>"), append = FALSE)
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Raw microarray data", style =  "success",
+                    content = paste0("Downloaded! To process it go to: processing raw data menu<br>"), append = FALSE)
         return(NULL)
     }
     withProgress(message = 'Prepare progress',
