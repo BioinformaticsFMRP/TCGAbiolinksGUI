@@ -72,6 +72,8 @@ getFileType <-  function(legacy, data.category){
         file.type <- c("normalized_results",
                        "results")
 
+    if(data.category == "Raw microarray data") file.type <- c("idat")
+
     return(file.type)
 }
 
@@ -118,6 +120,9 @@ getPlatform <-  function(legacy, data.category){
                                                          "Illumina Hi Seq")
     if(data.category == "DNA Methylation") platform <- c("Illumina Human Methylation 450",
                                                          "Illumina Human Methylation 27")
+
+    if(data.category == "Raw microarray data") platform <- c("Illumina Human Methylation 450",
+                                                             "Illumina Human Methylation 27")
     return(platform)
 }
 
@@ -143,6 +148,8 @@ getDataType <- function(legacy, data.category){
                         "Exon junction quantification",
                         "Exon quantification",
                         "miRNA isoform quantification")
+    if(data.category == "Raw microarray data" & legacy)
+        data.type  <- c("Raw intensities")
 
     return(data.type)
 }
