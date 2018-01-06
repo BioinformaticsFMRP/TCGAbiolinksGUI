@@ -114,7 +114,7 @@ observeEvent(input$idatnormalize, {
                      genome <- ifelse(grepl("hg19",annotation$annotation),"hg19","hg38")
 
                      met <- ELMER:::getInfiniumAnnotation(genome = genome,plat  = platform)
-                     mask <- met[met$MASK.general,]
+                     mask <- met[met$MASK_general,]
                      # Remove masked probes, besed on the annotation
                      is.na(assays(proc.r)$Beta) <-   is.na(assays(proc.r)$Beta) | rownames(proc.r) %in% names(mask)
 
