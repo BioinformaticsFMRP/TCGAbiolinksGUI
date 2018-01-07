@@ -54,6 +54,10 @@ navbar:
         - icon: fa-home fa-lg
           text: "fmrp.usp.br"
           href: http://www.fmrp.usp.br/?lang=en
+        - text: "Université libre de Bruxelles (ULB)"
+        - icon: fa-home fa-lg
+          text: "mlg.ulb.ac.be"
+          href: http://mlg.ulb.ac.be/
         - text: "---------"
         - text: "Fundings"
         - text: "FAPESP (16/10436-9)"
@@ -62,3 +66,5 @@ navbar:
           href: http://bv.fapesp.br/en/pesquisa/?sort=-data_inicio&q2=%28id_pesquisador_exact%3A679917%29+AND+%28%28bolsa_en_exact%3A%22Scholarships+in+Brazil%22+AND+situacao_en_exact%3A%22Ongoing%22%29%29
         - text: "Belgian FNRS PDR T100914F"
           href: http://mlg.ulb.ac.be/GENGISCAN
+        - text: "BridgeIRIS"
+          href: http://mlg.ulb.ac.be/BridgeIRIS
