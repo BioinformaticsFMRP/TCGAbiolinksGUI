@@ -50,14 +50,33 @@ observeEvent(input$IDATfolder, {
     })
 })
 
+observeEvent(input$idatqc, {
+    closeAlert(session,"idatAlert")
+    idat <- idat()
+
+    withProgress(message = 'Creating ShinyMethyl Summary object',
+                 detail = 'This may take a while...', value = 0, {
+                     tryCatch({
+                         summary <- shinyMethyl::shinySummarize(idat)
+                         fname <- isolate({input$idatfilename})
+                         incProgress(1, message = "Saving",detail = paste0("As: ", fname))
+                         save(summary,file = paste0(gsub(".rda","",fname), "_ShinyMethylSummary.rda"))
+                     }, error = function(e){
+                         createAlert(session, "idatAlert", "idatmessage", title = "Error", style =  "error",
+                                     content =  paste0("Erro: ", "<br><ul>", paste(e, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
+                     })
+                 })
+    getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), isolate({input$workingDir}))
+    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+    filename <- file.path(getPath,fname)
+    createAlert(session, "idatAlert", "idatmessage", title = "ShinyMethyl summary data saved", style =  "success",
+                content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
+})
 observeEvent(input$idatnormalize, {
     closeAlert(session,"idatAlert")
     idat <- idat()
     if (is.null(idat)) return(NULL)
     annotation <- as.data.frame(t(minfi::annotation(idat)))
-    # Quality control report (Visualization):
-    # summary <- shinySummarize(idat)
-    # runShinyMethyl(summary)
 
     withProgress(message = 'Normalizing IDAT files',
                  detail = 'This may take a while...', value = 0, {
@@ -110,7 +129,7 @@ observeEvent(input$idatnormalize, {
                      incProgress(0.2, detail = "Mask probes as recommended by Zhou et al. 2016")
                      # EPIC has different versions. Later version removed probes we will remove then
                      platform <- ifelse(annotation$array == "IlluminaHumanMethylation450k","450K",
-                                    ifelse(annotation$array == "IlluminaHumanMethylationEPIC","EPIC","27K"))
+                                        ifelse(annotation$array == "IlluminaHumanMethylationEPIC","EPIC","27K"))
                      genome <- ifelse(grepl("hg19",annotation$annotation),"hg19","hg38")
 
                      met <- ELMER:::getInfiniumAnnotation(genome = genome,plat  = platform)
