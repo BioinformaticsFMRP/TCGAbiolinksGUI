@@ -59,7 +59,6 @@ observeEvent(input$idatqc, {
                      tryCatch({
                          fname <- isolate({input$idatfilename})
                          fname <- gsub(".rda","_ShinyMethylSummary.rda",fname)
-                         print(fname)
                          summary <- shinyMethyl::shinySummarize(idat)
                          incProgress(1, message = "Saving",detail = paste0("As: ", fname))
                          save(summary,file = fname)
