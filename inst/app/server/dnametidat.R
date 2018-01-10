@@ -57,21 +57,23 @@ observeEvent(input$idatqc, {
     withProgress(message = 'Creating ShinyMethyl Summary object',
                  detail = 'This may take a while...', value = 0, {
                      tryCatch({
-                         summary <- shinyMethyl::shinySummarize(idat)
                          fname <- isolate({input$idatfilename})
                          fname <- gsub(".rda","_ShinyMethylSummary.rda",fname)
+                         print(fname)
+                         summary <- shinyMethyl::shinySummarize(idat)
                          incProgress(1, message = "Saving",detail = paste0("As: ", fname))
                          save(summary,file = fname)
+                         getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), isolate({input$workingDir}))
+                         if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
+                         filename <- file.path(getPath,fname)
+                         createAlert(session, "idatAlert", "idatmessage", title = "ShinyMethyl summary data saved", style =  "success",
+                                     content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),
+                                                       "</ul><br>load('",filename,"');shinyMethyl::runShinyMethyl(summary)"), append = FALSE)
                      }, error = function(e){
                          createAlert(session, "idatAlert", "idatmessage", title = "Error", style =  "error",
                                      content =  paste0("Erro: ", "<br><ul>", paste(e, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
                      })
                  })
-    getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), isolate({input$workingDir}))
-    if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
-    filename <- file.path(getPath,fname)
-    createAlert(session, "idatAlert", "idatmessage", title = "ShinyMethyl summary data saved", style =  "success",
-                content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
 })
 observeEvent(input$idatnormalize, {
     closeAlert(session,"idatAlert")
@@ -146,9 +148,9 @@ observeEvent(input$idatnormalize, {
                          write.csv(beta,file = fname,row.names = T)
                      } else  if(tolower(tools::file_ext(fname))  %in% c("rda","rdata")){
                          beta <- DataFrame(beta)
-                         beta <- beta[rownames(beta) %in% names(met),]
+                         beta <- beta[rownames(beta) %in% names(met),,drop=F]
                          rowRanges <- met[rownames(beta)]
-                         colData <- DataFrame(Sample=colnames(beta))
+                         colData <- DataFrame(Sample=colnames(idat))
                          met <- SummarizedExperiment(assays = SimpleList(beta),rowRanges = rowRanges, colData=colData)
                          metadata(met)$annotation <- annotation
                          save(met,file = fname)
