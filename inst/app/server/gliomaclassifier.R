@@ -48,7 +48,7 @@ observeEvent(input$gliomaClassify, {
                                  # If it is a Summarized Experiment object
 
                                  # keep only probes used in the model
-                                 aux <- met[,colnames(met) %in% colnames(model$trainingData)]
+                                 aux <- met[,colnames(met) %in% colnames(model$trainingData),drop=FALSE]
 
                                  # This should not happen!
                                  if(any(apply(aux,2,function(x) all(is.na(x))))) {

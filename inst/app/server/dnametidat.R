@@ -147,11 +147,12 @@ observeEvent(input$idatnormalize, {
                          write.csv(beta,file = fname,row.names = T)
                      } else  if(tolower(tools::file_ext(fname))  %in% c("rda","rdata")){
                          beta <- DataFrame(beta)
+                         colnames(beta) <- colnames(idat)
                          beta <- beta[rownames(beta) %in% names(met),,drop=F]
                          rowRanges <- met[rownames(beta)]
                          colData <- DataFrame(Sample=colnames(idat))
+                         colData <- cbind(colData,annotation)
                          met <- SummarizedExperiment(assays = SimpleList(beta),rowRanges = rowRanges, colData=colData)
-                         metadata(met)$annotation <- annotation
                          save(met,file = fname)
                      } else {
                          createAlert(session, "idatmessage",
