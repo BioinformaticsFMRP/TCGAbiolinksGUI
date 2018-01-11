@@ -66,8 +66,8 @@ observeEvent(input$idatqc, {
                          if (length(getPath) == 0) getPath <- paste0(Sys.getenv("HOME"),"/TCGAbiolinksGUI")
                          filename <- file.path(getPath,fname)
                          createAlert(session, "idatAlert", "idatmessage", title = "ShinyMethyl summary data saved", style =  "success",
-                                     content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),
-                                                       "</ul><br>load('",filename,"');shinyMethyl::runShinyMethyl(summary)"), append = FALSE)
+                                     content =  paste0("Saved in: ", "<br><ul>", paste(filename, collapse = "</ul><ul>"),"</ul>",
+                                                       "<br>To visualize QC plot, please use this R command:<ul>load('",filename,"'); shinyMethyl::runShinyMethyl(summary)</ul>"), append = FALSE)
                      }, error = function(e){
                          createAlert(session, "idatAlert", "idatmessage", title = "Error", style =  "error",
                                      content =  paste0("Erro: ", "<br><ul>", paste(e, collapse = "</ul><ul>"),"</ul>"), append = FALSE)

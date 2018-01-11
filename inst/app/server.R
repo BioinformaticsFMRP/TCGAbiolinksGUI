@@ -46,12 +46,23 @@ getDataCategory <- function(legacy){
     return(data.category.hamonirzed)
 }
 
-createTable <- function(df){
+createTable <- function(df,tableType = "TCGAbiolinks"){
     DT::datatable(df,
                   extensions = c('Buttons',"FixedHeader"),
                   class = 'cell-border stripe',
                   options = list(dom = 'Blfrtip',
-                                 buttons =  c('copy', 'csv', 'excel', 'pdf', 'print', 'colvis'),
+                                 buttons =
+                                     list('colvis', list(
+                                         extend = 'collection',
+                                         buttons = list(list(extend='csv',
+                                                             filename = tableType),
+                                                        list(extend='excel',
+                                                             filename = tableType),
+                                                        list(extend='pdf',
+                                                             title = "",
+                                                             filename= tableType)),
+                                         text = 'Download'
+                                     )),
                                  fixedHeader = TRUE,
                                  pageLength = 20,
                                  scrollX = TRUE,

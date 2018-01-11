@@ -93,7 +93,7 @@ observeEvent(input$gliomaClassify, {
                                          content =  paste0("Erro: ", "<br><ul>", paste(e, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
                          })
                      })
-        return(createTable(df.all))
+        return(createTable(df.all,"Glioma classification"))
     })
 })
 
