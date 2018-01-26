@@ -378,6 +378,11 @@ observe({
     }, server = TRUE)
 
 })
+observeEvent(input$elmermode, {
+    updateNumericInput(session, 'elmermetpercentage', value = ifelse(input$elmermode == "Supervised",1,0.2))
+    updateNumericInput(session, 'elmergetpairpercentage', value = ifelse(input$elmermode == "Supervised",1,0.4))
+    updateNumericInput(session, 'elmergetTFpercentage', value = ifelse(input$elmermode == "Supervised",1,0.4))
+})
 observe({
     updateSelectizeInput(session, 'schematic.plot.genes', choices = {
         results <- elmer.results.data()
@@ -466,6 +471,7 @@ observeEvent(input$elmerAnalysisBt, {
 
                          pair  <- tryCatch({
                              get.pair(data = mae,
+                                      mode =  isolate({input$elmermode}),
                                       nearGenes = nearGenes,
                                       permu.dir = paste0(dir.out,"/permu"),
                                       dir.out = dir.out,
@@ -511,6 +517,7 @@ observeEvent(input$elmerAnalysisBt, {
                                                                   probes = Sig.probes.paired,
                                                                   dir.out = dir.out,
                                                                   label = j,
+                                                                  pvalue = isolate({input$elmergetenrichedmotifFDR}),
                                                                   min.motif.quality = "DS",
                                                                   background.probes = names(distal.probe),
                                                                   lower.OR =  isolate({input$elmergetenrichedmotifLoweOR}),
@@ -526,6 +533,7 @@ observeEvent(input$elmerAnalysisBt, {
                                              detail = paste0(": Identify regulatory TFs whose expression associate with DNA methylation at motifs."), session = getDefaultReactiveDomain())
 
                                  TF <- get.TFs(data = mae,
+                                               mode =  isolate({input$elmermode}),
                                                enriched.motif = enriched.motif,
                                                dir.out = dir.out,
                                                group.col = group.col,
