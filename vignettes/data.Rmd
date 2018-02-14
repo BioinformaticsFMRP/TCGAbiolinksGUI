@@ -113,24 +113,36 @@ The Cancer Genome Atlas (TCGA) Research Network has reported integrated genome-w
 studies of various diseases. We have added some of the subtypes defined by these
 reports in our package.  
 
-- [ACC](doi:10.1016/j.ccell.2016.04.002)[@zheng2016comprehensive]
-- [BRCA](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3465532/)[@cancer2012comprehensive_brca]
-- [COAD](http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html) [@cancer2012comprehensive_colon] 
-- [GBM](http://dx.doi.org/10.1016/j.cell.2015.12.028) [@Cell]
-- [HNSC](http://www.nature.com/nature/journal/v517/n7536/abs/nature14129.html) [@cancer2015comprehensive]
-- [KICH](http://www.sciencedirect.com/science/article/pii/S1535610814003043) [@davis2014somatic]
-- [KIRC](http://www.nature.com/nature/journal/v499/n7456/abs/nature12222.html)[@cancer2013comprehensive] 
-- [KIRP](http://www.nejm.org/doi/full/10.1056/NEJMoa1505917) [@cancer2016comprehensive] 
-- [LGG](http://dx.doi.org/10.1016/j.cell.2015.12.028)[@Cell] 
-- [LUAD](http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html) [@cancer2014comprehensive] 
-- [LUSC](http://www.nature.com/nature/journal/v489/n7417/abs/nature11404.html)[@cancer2012comprehensive_lusc] 
-- [PCPG](http://dx.doi.org/10.1016/j.ccell.2017.01.001)[@fishbein2017comprehensive] 
-- [PRAD](http://www.sciencedirect.com/science/article/pii/S0092867415013392)[@cancer2015molecular_prad] 
-- [READ](http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html) [@cancer2012comprehensive] 
-- [SKCM](http://www.sciencedirect.com/science/article/pii/S0092867415006340) [@cancer2015genomic_skcm] 
-- [STAD](http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html) [@cancer2014comprehensive] 
-- [THCA](http://www.sciencedirect.com/science/article/pii/S0092867414012380) [@cancer2014integrated] 
-- [UCEC](http://www.nature.com/nature/journal/v497/n7447/abs/nature12113.html) [@cancer2013integrated]
+
+| TCGA dataset | Link                                                                 | Paper                                                                                                   | Journal          |
+|--------------|----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|------------------|
+| ACC          | doi:10.1016/j.ccell.2016.04.002                                      | Comprehensive Pan-Genomic Characterization of Adrenocortical Carcinoma.                                 | Cancer cell 2016 |
+| BRCA | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3465532/  | Comprehensive molecular portraits of human breast tumors | Nature 2013 |
+| BLCA	| http://www.cell.com/cell/fulltext/S0092-8674(17)31056-5	| Comprehensive Molecular Characterization of Muscle-Invasive Bladder Cancer	Cell 2017 | 
+| CHOL	| http://www.sciencedirect.com/science/article/pii/S2211124717302140?via%3Dihub	| Integrative Genomic Analysis of Cholangiocarcinoma Identifies Distinct IDH-Mutant Molecular Profiles |	Cell Reports 2017|
+| COAD  | http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html | Comprehensive molecular characterization of human colon and rectal cancer  | Nature 2012      |
+| ESCA  | https://www.nature.com/articles/nature20805 | Integrated genomic characterization of oesophageal carcinoma  | Nature 2017      |
+| GBM          | http://dx.doi.org/10.1016/j.cell.2015.12.028                         | Molecular Profiling Reveals Biologically Discrete Subsets and Pathways of Progression in Diffuse Glioma | Cell 2016        |
+| HNSC         | http://www.nature.com/nature/journal/v517/n7536/abs/nature14129.html | Comprehensive genomic characterization of head and neck squamous cell carcinomas                        | Nature 2015      |
+| KICH         | http://www.sciencedirect.com/science/article/pii/S1535610814003043   | The Somatic Genomic Landscape of Chromophobe Renal Cell Carcinoma                                       | Cancer cell 2014 |
+| KIRC         | http://www.nature.com/nature/journal/v499/n7456/abs/nature12222.html | Comprehensive molecular characterization of clear cell renal cell carcinoma                             | Nature 2013      |
+| KIRP         | http://www.nejm.org/doi/full/10.1056/NEJMoa1505917                   | Comprehensive Molecular Characterization of Papillary Renal-Cell Carcinoma                              | NEJM 2016        |
+| LIHC	| http://linkinghub.elsevier.com/retrieve/pii/S0092-8674(17)30639-6	| Comprehensive and Integrative Genomic Characterization of Hepatocellular Carcinoma |	Cell 2017 | 
+| LGG          | http://dx.doi.org/10.1016/j.cell.2015.12.028                         | Molecular Profiling Reveals Biologically Discrete Subsets and Pathways of Progression in Diffuse Glioma | Cell 2016        |
+| LUAD         | http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html | Comprehensive molecular profiling of lung adenocarcinoma                                                | Nature 2014      |
+| LUSC         | http://www.nature.com/nature/journal/v489/n7417/abs/nature11404.html | Comprehensive genomic characterization of squamous cell lung cancers                                    | Nature 2012      |
+| PAAD	 | http://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30299-4 |	Integrated Genomic Characterization of Pancreatic Ductal Adenocarcinoma |	Cancer Cell 2017 |
+| PCPG         | http://dx.doi.org/10.1016/j.ccell.2017.01.001                        | Comprehensive Molecular Characterization of Pheochromocytoma and Paraganglioma                          | Cancer cell 2017 |
+| PRAD         | http://www.sciencedirect.com/science/article/pii/S0092867415013392   | The Molecular Taxonomy of Primary Prostate Cancer                                                       | Cell 2015        |
+| READ         | http://www.nature.com/nature/journal/v487/n7407/abs/nature11252.html | Comprehensive molecular characterization of human colon and rectal cancer                               | Nature 2012      |
+| SARC	| http://www.cell.com/cell/fulltext/S0092-8674(17)31203-5	| Comprehensive and Integrated Genomic Characterization of Adult Soft Tissue Sarcomas	| Cell 2017| 
+| SKCM         | http://www.sciencedirect.com/science/article/pii/S0092867415006340   | Genomic Classification of Cutaneous Melanoma                                                            | Cell 2015        |
+| STAD         | http://www.nature.com/nature/journal/v511/n7511/abs/nature13385.html | Comprehensive molecular characterization of gastric adenocarcinoma                                      | Nature 2013      |
+| THCA         | http://www.sciencedirect.com/science/article/pii/S0092867414012380   | Integrated Genomic Characterization of Papillary Thyroid Carcinoma                                      | Cell 2014        |
+| UCEC         | http://www.nature.com/nature/journal/v497/n7447/abs/nature12113.html | Integrated genomic characterization of endometrial carcinoma                                            | Nature 2013      |
+| UCS	| http://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30053-3 | 	Integrated Molecular Characterization of Uterine Carcinosarcoma	Cancer |  Cell 2017 | 
+| UVM	| http://www.cell.com/cancer-cell/fulltext/S1535-6108(17)30295-7 |	Integrative Analysis Identifies Four Molecular and Clinical Subsets in Uveal Melanoma	| Cancer Cell 2017 |	
+
 
 The user can visualize the table with the information and save it as CSV or R object (rda) file.
 
@@ -260,7 +272,7 @@ For a detailed manual for this section please access this link: [Manage Summariz
 
 # Menu: Processing raw data
 
-##Sub-menu: DNA methylation
+## Sub-menu: DNA methylation
 
 For DNA methylation raw data obtained in the form of Intensity Data (IDAT) files, we provide a pipeline using the R/Bioconductor minfi package (http://bioconductor.org/packages/minfi/) to process the data for downstream analysis [@aryee2014minfi] performing a background and dye-bias correction with the  [preprocessnoob](https://www.bioconductor.org/help/course-materials/2015/BioC2015/methylation450k.html\#preprocessnoob)
  function followed by a detection P-value quality masking (sample specific) [@morris2015analysis] and probes overlapping repeats or single nucleotide polymorphisms masking (non-sample specific) [@zhou2016comprehensive].
