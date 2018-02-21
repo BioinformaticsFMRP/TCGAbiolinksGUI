@@ -21,7 +21,7 @@ observe({
 })
 
 observeEvent(input$gliomaClassify, {
-    closeAlert(session,"gliomaAlert")
+    closeAlert(session,alertId = "gliomamessage")
     output$gliomatbl <- DT::renderDataTable({
         met <- classifyObj()
         if(is.null(met)) {

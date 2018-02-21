@@ -158,8 +158,9 @@ observeEvent(input$idatnormalize, {
                          met <- SummarizedExperiment(assays = SimpleList(beta),rowRanges = rowRanges, colData=colData)
                          save(met,file = fname)
                      } else {
-                         createAlert(session, "idatmessage",
+                         createAlert(session,
                                      "idatAlert",
+                                     "idatmessage",
                                      title = "Error in saving",
                                      style =  "danger",
                                      content = "File name has to be .csv or .rda. Saved as Idat.rda", append = FALSE)
