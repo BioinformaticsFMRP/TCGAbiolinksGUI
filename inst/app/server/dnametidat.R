@@ -40,9 +40,8 @@ idat <-  reactive({
     return(idat)
 })
 observeEvent(input$IDATfolder, {
-    closeAlert(session,"idatAlert")
+    closeAlert(session,"idatmessage")
     output$idattbl <- DT::renderDataTable({
-        closeAlert(session,"idatAlert")
         idat <- idat()
         if (is.null(idat)) return(NULL)
         df <- data.frame(samples = colnames(idat), t(minfi::annotation(idat)))
@@ -51,7 +50,7 @@ observeEvent(input$IDATfolder, {
 })
 
 observeEvent(input$idatqc, {
-    closeAlert(session,"idatAlert")
+    closeAlert(session,"idatmessage")
     idat <- idat()
 
     withProgress(message = 'Creating ShinyMethyl Summary object',
@@ -75,7 +74,7 @@ observeEvent(input$idatqc, {
                  })
 })
 observeEvent(input$idatnormalize, {
-    closeAlert(session,"idatAlert")
+    closeAlert(session,"idatmessage")
     idat <- idat()
     if (is.null(idat)) return(NULL)
     annotation <- as.data.frame(t(minfi::annotation(idat)))
