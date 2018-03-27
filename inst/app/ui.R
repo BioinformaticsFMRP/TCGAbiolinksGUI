@@ -97,9 +97,6 @@ sidebar <-  dashboardSidebar(
                  menuSubItem("Subtype data" , tabName = "tcgaSubtype", icon = icon("database"))
         ),
         menuItem("Manage SummarizedExperiment" , tabName = "seedit", icon = icon("pencil")),
-        menuItem("Processing raw data", icon = icon("cogs"),
-                 menuSubItem("DNA methylation" , tabName = "dnametidat", icon = icon("cog"))
-        ),
         tags$div("Analysis",
                  style = "margin-top: 6px;
                           font-size: 1.5em;
@@ -128,9 +125,6 @@ sidebar <-  dashboardSidebar(
         menuItem("Genomic analysis", icon = icon("flask"),
                  menuSubItem("OncoPrint plot" , tabName = "tcgaOncoPrint", icon = icon("picture-o")),
                  menuSubItem("Maftools plot" , tabName = "maftools", icon = icon("picture-o"))
-        ),
-        menuItem("Classifier", icon = icon("tags"),
-                 menuSubItem("Glioma classifier" , tabName = "gliomaclassifier", icon = icon("tag"))
         ),
         tags$div("Integrative analysis",
                  style = "margin-top: 6px;
@@ -202,14 +196,12 @@ body <-  dashboardBody(
         source(file.path(ui.path, "index.R"),  local = TRUE)$value,
         source(file.path(ui.path, "getmolecular.R"),  local = TRUE)$value,
         source(file.path(ui.path, "manageSE.R"),  local = TRUE)$value,
-        source(file.path(ui.path, "dnametidat.R"),  local = TRUE)$value,
         source(file.path(ui.path, "getclinical.R"),  local = TRUE)$value,
         source(file.path(ui.path, "getmutation.R"),  local = TRUE)$value,
         source(file.path(ui.path, "getsubtype.R"),  local = TRUE)$value,
         source(file.path(ui.path, "oncoprint.R"),  local = TRUE)$value,
         source(file.path(ui.path, "volcano.R"),  local = TRUE)$value,
         source(file.path(ui.path, "heatmap.R"),  local = TRUE)$value,
-        source(file.path(ui.path, "gliomaclassifier.R"),  local = TRUE)$value,
         source(file.path(ui.path, "dmr.R"),  local = TRUE)$value,
         source(file.path(ui.path, "meanMet.R"),  local = TRUE)$value,
         source(file.path(ui.path, "ea.R"),  local = TRUE)$value,

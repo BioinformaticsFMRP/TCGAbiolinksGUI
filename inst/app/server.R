@@ -17,9 +17,6 @@ suppressPackageStartupMessages({
     library(grid)
     library(maftools)
     library(dplyr)
-    library(minfi)
-    library(TCGAbiolinksGUI.data)
-    library(caret)
     data(maf.tumor)
     data(GDCdisease)
     options(shiny.maxRequestSize=-1) # Remove limit of upload
@@ -288,13 +285,11 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     source(file.path(server.path, "getsubtype.R"),  local = TRUE)$value
     source(file.path(server.path, "getmutation.R"),  local = TRUE)$value
     source(file.path(server.path, "getclinical.R"),  local = TRUE)$value
-    source(file.path(server.path, "dnametidat.R"),  local = TRUE)$value
     source(file.path(server.path, "survival.R"),  local = TRUE)$value
     source(file.path(server.path, "volcano.R"),  local = TRUE)$value
     source(file.path(server.path, "heatmap.R"),  local = TRUE)$value
     source(file.path(server.path, "dmr.R"),  local = TRUE)$value
     source(file.path(server.path, "meanMet.R"),  local = TRUE)$value
-    source(file.path(server.path, "gliomaclassifier.R"),  local = TRUE)$value
     source(file.path(server.path, "dea.R"),  local = TRUE)$value
     source(file.path(server.path, "pathview.R"),  local = TRUE)$value
     source(file.path(server.path, "eaplot.R"),  local = TRUE)$value
