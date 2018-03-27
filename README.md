@@ -3,7 +3,7 @@
 # Introduction
 
 TCGAbiolinksGUI was created to help users without knowledge of programming to search, download and analyze 
-TCGA data. This package offers an graphical user interface to the R/Bioconductor packages [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/)  and [ELMER](http://bioconductor.org/packages/ELMER/) packages.
+TCGA data. This package offers a graphical user interface to the R/Bioconductor packages [TCGAbiolinks]( 	http://bioconductor.org/packages/TCGAbiolinks/)  and [ELMER](http://bioconductor.org/packages/ELMER/) packages.
 Also, some other useful packages from Bioconductor, such as [ComplexHeatmap](http://bioconductor.org/packages/ComplexHeatmap/)  package  has been used for data visualization.
 
 A running version of the GUI is found in [http://tcgabiolinks.fmrp.usp.br:3838/](http://tcgabiolinks.fmrp.usp.br:3838/)
@@ -21,12 +21,10 @@ biocLite("TCGAbiolinksGUI", dependencies = TRUE)
 To install the package development version from Github, please, use the code below.
 ```R
 source("https://bioconductor.org/biocLite.R")
-deps <- c("pathview","clusterProfiler", "DO.db","GO.db", "ComplexHeatmap","EDASeq", "TCGAbiolinks")
+deps <- c("devtools")
 for(pkg in deps)  if (!pkg %in% installed.packages()) biocLite(pkg, dependencies = TRUE)
-deps <- c("devtools","shape","shiny","readr","googleVis","shinydashboard","shinyFiles","shinyjs","shinyBS")
-for(pkg in deps)  if (!pkg %in% installed.packages())  install.packages(pkg,dependencies = TRUE)
 devtools::install_github("tiagochst/ELMER.data")
-devtools::install_github("tiagochst/ELMER")
+devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI.data",ref = "R_3.4")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
 ```
 
@@ -64,7 +62,7 @@ offers a  graphical user interface (GUI) to control your app containers.
 - To start the image again (after the first time ran with `docker run` and stopped).
 1. Run  `sudo docker start tcgabiolinksgui` 
 
-### Accessing tools after image is running:
+### Accessing tools after the image is running:
 
 - TCGAbiolinksGUI will be available at <your local IP>:3334/tcgabiolinksgui
 - RStudio will be available at <your local IP>:3333 (***username: rstudio*** , ***password:rstudio***)
@@ -113,8 +111,8 @@ If you have used  Pathway plot please cite:
 # Increasing loaded DLL
 
 If you receive this error message:  `maximal number of DLLs reached...`
-You will need to increase the maimun number of DLL R can load.  R_MAX_NUM_DLLS
-In MACOS just mofify the file `/Library/Frameworks/R.framework/Resources/etc/Renviron`
+You will need to increase the maximum number of DLL R can load.  R_MAX_NUM_DLLS
+In MACOS just modify the file `/Library/Frameworks/R.framework/Resources/etc/Renviron`
 and add `R_MAX_NUM_DLLS=110` in the end.
 
 For other OS check https://stat.ethz.ch/R-manual/R-patched/library/base/html/Startup.html.

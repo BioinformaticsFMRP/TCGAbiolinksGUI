@@ -25,10 +25,10 @@ observe({
                     restrictions=system.file(package='base'))
 })
 observeEvent(input$pathwaygraphBt , {
-    closeAlert(session,"deaAlert")
+    closeAlert(session,"pathviewAlert")
     data <- pathway.data()
     if(is.null(data)) {
-        createAlert(session, "deamessage", "deaAlert", title = "Data error", style =  "danger",
+        createAlert(session, "pathviewmessage", "pathviewAlert", title = "Data error", style =  "danger",
                     content = "Please upload results", append = FALSE)
         return(NULL)
     }
@@ -58,11 +58,18 @@ observeEvent(input$pathwaygraphBt , {
                  detail = 'This may take a while...', value = 0, {
                      # pathway.id: hsa05214 is the glioma pathway
                      # limit: sets the limit for gene expression legend and color
+                     tryCatch({
                      hsa05214 <- pathview(gene.data  = genelistDEGs,
                                           pathway.id = pathway.id,
                                           species    = "hsa",
                                           kegg.native = kegg.native,
                                           limit      = list(gene=as.integer(max(abs(genelistDEGs)))))
+                     }, error = function(e) {
+                         createAlert(session, "pathviewmessage", "pathviewAlert", title = "Error", style =  "warning",
+                                     content = "I couldn't convert the pdf to png.", append = FALSE)
+                         print(e)
+                     })
+
                      incProgress(1, detail = paste("Done"))
                  })
     getPath <- parseDirPath(get.volumes(isolate({input$workingDir})), input$workingDir)
@@ -74,9 +81,9 @@ observeEvent(input$pathwaygraphBt , {
         extension <- ".pathview.pdf"
     }
     fname <- paste0(pathway.id,extension)
-    TCGAbiolinks:::move(fname,file.path(getPath,fname))
+    if(file.path(getwd(),fname) != file.path(getPath,fname)) TCGAbiolinks:::move(fname,file.path(getPath,fname))
 
-    createAlert(session, "deamessage", "deaAlert", title = "Pathway graph created", style =  "success",
+    createAlert(session, "pathviewmessage", "pathviewAlert", title = "Pathway graph created", style =  "success",
                 content = paste0("Results saved in: ", file.path(getPath,fname)), append = FALSE)
 })
 
@@ -103,7 +110,7 @@ observeEvent(input$pathwaygraphBt , {
                 animation::ani.options('autobrowse'=FALSE)
                 animation::im.convert(file.path(getPath, paste0(pathway.id,conv.extension)), output = outfile, extra.opts="-density 150")
             },  error = function(e) {
-                createAlert(session, "deamessage", "deaAlert", title = "Error", style =  "warning",
+                createAlert(session, "pathviewmessage", "pathviewAlert", title = "Error", style =  "warning",
                             content = "I couldn't convert the pdf to png.", append = FALSE)
                 print(e)
             })

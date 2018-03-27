@@ -1,6 +1,6 @@
 Package: TCGAbiolinksGUI
 Title: "TCGAbiolinksGUI: A Graphical User Interface to analyze cancer molecular and clinical data"
-Version: 1.4.1
+Version: 1.5.6
 Date: 2016-10-28
 Author: Tiago Chedraoui Silva <tiagochst@gmail.com>,
     Antonio Colaprico  <antonio.colaprico@ulb.ac.be>,
@@ -16,7 +16,8 @@ Description:
 License: GPL (>= 3)
 Depends:
     R (>= 3.3.1),
-    shinydashboard (>= 0.5.3)
+    shinydashboard (>= 0.5.3),
+    TCGAbiolinksGUI.data
 Suggests:
     testthat,
     dplyr,
@@ -40,6 +41,14 @@ Imports:
     SummarizedExperiment,
     ggrepel,
     data.table,
+    minfi,
+    caret,
+    IlluminaHumanMethylation450kanno.ilmn12.hg19,
+    IlluminaHumanMethylation450kmanifest,
+    IlluminaHumanMethylation27kmanifest,
+    IlluminaHumanMethylation27kanno.ilmn12.hg19,
+    IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
+    IlluminaHumanMethylationEPICmanifest,
     shinyFiles (>= 0.6.2),
     ggplot2  (>= 2.1.0),
     pathview,

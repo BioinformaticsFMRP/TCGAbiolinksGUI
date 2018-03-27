@@ -176,10 +176,10 @@ observeEvent(input$tcgaSearchBt, {
 
     results <- isolate({getResults(query.result()[[1]])})
 
-    if(any(duplicated(results$cases)))
+    if(any(duplicated(results$cases)) & isolate({input$tcgaDataCategoryFilter}) != "Raw microarray data") {
         createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Warning", style =  "warning",
                     content = "There are more than one file for the same case.", append = FALSE)
-
+    }
 
     if(is.null(results)){
     } else {
@@ -303,6 +303,17 @@ observeEvent(input$tcgaPrepareBt,{
                          return(NULL)
                      })
                  })
+    if(query$data.category == "Raw microarray data") {
+        files <- dir(file.path(getPath,query$project,"legacy/Raw_microarray_data/Raw_intensities/"),full.names = T,recursive = T)
+        to <- file.path(getPath,query$project,"legacy/Raw_microarray_data/Raw_intensities/")
+        for(from in files){
+            if(basename(dirname(from)) == "Raw_intensities") next
+            tryCatch({TCGAbiolinks:::move(from,paste0(to,basename(from)))})
+        }
+        createAlert(session, "tcgasearchmessage", "tcgaAlert", title = "Raw microarray data", style =  "success",
+                    content = paste0("Downloaded! To process it go to: processing raw data menu<br>"), append = FALSE)
+        return(NULL)
+    }
     withProgress(message = 'Prepare progress',
                  detail = 'This may take a while...', value = 0, {
                      trash = tryCatch({
@@ -395,8 +406,8 @@ observe({
 })
 
 observe({
-    updateSelectizeInput(session, 'tcgaProjectFilter', choices =  getTCGAdisease(), server = TRUE)
-    updateSelectizeInput(session, 'tcgatumorClinicalFilter', choices =  getTCGAdisease(), server = TRUE)
+    updateSelectizeInput(session, 'tcgaProjectFilter', choices =  GDCdisease, server = TRUE)
+    updateSelectizeInput(session, 'tcgatumorClinicalFilter', choices =  GDCdisease, server = TRUE)
 })
 
 observe({

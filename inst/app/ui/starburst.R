@@ -33,7 +33,7 @@ tabItem(tabName = "starburst",
                                           label = 'Genome of reference',
                                           choices = c("hg38"="hg38","hg19"="hg19"),
                                           multiple = FALSE)
-                           ),
+                       ),
                        box(title = "Threshold control",width = NULL,
                            solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                            numericInput("starburstexpFC", "Log FC threshold",
@@ -47,11 +47,8 @@ tabItem(tabName = "starburst",
                        box(title = "Highlighting options",width = NULL,
                            solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                            checkboxInput("starburstNames", "Show genes names?", value = FALSE, width = NULL),
-                           checkboxInput("starburstNamesFill", "Boxed names?", value = TRUE, width = NULL),
-                           bsTooltip("starburstCircle", "Circle candidate biologically significant genes",
-                                     "left"),
-                           checkboxInput("starburstCircle", "Circle genes?", value = TRUE, width = NULL)),
-
+                           checkboxInput("starburstNamesFill", "Boxed names?", value = TRUE, width = NULL)
+                       ),
                        box(title = "Colors control",width = NULL,
                            solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                            colourpicker::colourInput("sbcolInsignigicant", "Insignificant", value = "black"),
@@ -77,7 +74,11 @@ tabItem(tabName = "starburst",
                                     margin-left: auto;
                                     margin-right: auto;
                                     width: 100%",
-                                    icon = icon("picture-o")))
+                                    icon = icon("picture-o")),
+                       downloadButton('savestarburstpicture', 'Export figure', class = "butt2"),
+                       textInput("starburstPlot.filename", label = "Filename", value = "volcano.pdf"),
+                       bsTooltip("starburstPlot.filename", "Filename (pdf, png, svg)", "left")
+                       )
             )
         )
 )

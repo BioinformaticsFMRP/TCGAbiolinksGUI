@@ -68,7 +68,11 @@ tabItem(tabName = "volcano",
                                             margin-right: auto;
                                             width: 100%",
                                     icon = icon("picture-o")
-                       ))
+                       ),
+                       downloadButton('savevolvanopicture', 'Export figure', class = "butt2"),
+                       textInput("volcanoPlot.filename", label = "Filename", value = "volcano.pdf"),
+                       bsTooltip("volcanoPlot.filename", "Filename (pdf, png, svg)", "left")
+                   )
             )
         )
 )

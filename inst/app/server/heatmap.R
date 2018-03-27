@@ -17,7 +17,7 @@ observe({
             shinyjs::hide("heatmap.hypoprobesCb")
             shinyjs::hide("heatmaprobes")
             shinyjs::hide("heatmap.hyperprobesCb")
-        } else if(input$heatmapGenesInputRb == "Selection"){
+        } else if(input$heatmapProbesInputRb == "Selection"){
             shinyjs::hide("heatmapProbesTextArea")
             shinyjs::hide("heatmap.hypoprobesCb")
             shinyjs::hide("heatmap.hyperprobesCb")
@@ -181,159 +181,163 @@ heatmapdata <-  reactive({
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 # Plot
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
+heatmap.plot <-  reactive({
+    input$heatmapPlotBt
+    file  <- basename(as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$heatmapresultsfile)$datapath))
+    if(length(file) > 0){
+        file <- unlist(str_split(file,"_"))
+        group1 <- file[4]
+        group2 <- file[5]
+    }
+    data <- isolate({heatmapdata()})
+    results.data <- isolate({heatmapresultdata()})
+
+    colmdata <- isolate({input$colmetadataheatmap})
+    rowmdata <- isolate({input$rowmetadataheatmap})
+    cluster_rows <- isolate({input$heatmap.clusterrows})
+    show_column_names <- isolate({input$heatmap.show.col.names})
+    show_row_names <- isolate({input$heatmap.show.row.names})
+    cluster_columns <- isolate({input$heatmap.clustercol})
+    sortCol <- isolate({input$heatmapSortCol})
+    scale <- isolate({input$heatmapScale})
+    title <-  isolate({input$heatmapMain})
+    values.label <-  isolate({input$heatmapLabel})
+    rownames.size <-  isolate({input$heatmapRownamesSize})
+
+    if(isolate({input$heatmap.colorsCb})) {
+        color.levels <- c(isolate({input$heatmapcolMin}),
+                          isolate({input$heatmapcolMid}),
+                          isolate({input$heatmapcolMax}))
+    } else {
+        color.levels <- NULL
+    }
+    if(isolate({input$heatmap.extremesCb})) {
+        extrems <- c(isolate({input$heatmapExtremeMin}),
+                     isolate({input$heatmapExtremeMid}),
+                     isolate({input$heatmapExtremeMax}))
+    } else {
+        extrems <- NULL
+    }
+    if(isolate({input$heatmapTypeInputRb}) == "met") type <-  "methylation"
+    if(isolate({input$heatmapTypeInputRb}) == "exp") type <-  "expression"
+
+    if(nchar(sortCol) == 0 &  isolate({input$heatmap.sortCb})){
+        createAlert(session, "heatmapmessage", "heatmapAlert", title = "Columns metadata", style =  "danger",
+                    content = paste0("Please select the heatmapSortCol"),append = FALSE)
+        return(NULL)
+    }
+
+    if(isolate({input$heatmapTypeInputRb})=="met"){
+        # ---------------- probes selection
+        if(isolate({input$heatmapProbesInputRb}) == "Status"){
+            sig.probes <- ""
+            if(isolate({input$heatmap.hypoprobesCb})) sig.probes <- c("Hypomethylated")
+            if(isolate({input$heatmap.hyperprobesCb})) sig.probes <- c("Hypermethylated",sig.probes)
+            sig.probes <- paste(sig.probes,"in",group2)
+            # Get hypo methylated and hypermethylated probes
+            group1.col <- gsub("[[:punct:]]| ", ".", group1)
+            group2.col <- gsub("[[:punct:]]| ", ".", group2)
+            idx <- paste("status",group1.col,group2.col, sep=".")
+            probes <- apply(sapply(sig.probes, function(x) {grepl(x,results.data[,idx])}),1,any)
+
+            if(length(probes) == 0){
+                createAlert(session, "heatmapmessage", "heatmapAlert", title = "No significant probes", style =  "danger",
+                            content = paste0("There are no significant probes"),append = FALSE)
+                return(NULL)
+            }
+            data <- data[probes,]
+            results.data <- results.data[probes,]
+        } else if(isolate({input$heatmaprobes}) == "Selection"){
+            data <- data[rownames(data) %in% isolate({input$heatmaprobes}) ]
+        } else {
+            sig.probes <- parse.textarea.input(isolate({input$heatmapProbesTextArea}))
+            data <- data[rownames(data) %in% sig.probes,]
+        }
+    } else {
+        if(isolate({input$heatmapGenesInputRb}) == "Status"){
+            sig.genes <- ""
+            if(isolate({input$heatmap.upGenesCb})) sig.genes <- c("Upregulated")
+            if(isolate({input$heatmap.downGenewsCb})) sig.genes <- c("Downregulated",sig.genes)
+            sig.genes <- paste(sig.genes,"in",group2)
+            # Get hypo methylated and hypermethylated probes
+            genes <-  gsub("[[:punct:]]| ", ".",results.data[,"status"]) %in%  gsub("[[:punct:]]| ", ".",sig.genes)
+            results.data <- results.data[genes,]
+            data <- data[rownames(data) %in% results.data$mRNA |rownames(data) %in% results.data$Gene_symbol ,]
+        } else if(isolate({input$heatmapGenesInputRb}) == "Selection"){
+            data <- data[rownames(data) %in% isolate({input$heatmagenes}) ]
+        } else {
+            sig.genes <- parse.textarea.input(isolate({input$heatmapGenesTextArea}))
+            data <- data[rownames(data) %in% sig.genes]
+        }
+
+    }
+    # ---------------- col.metadata
+    if(!("barcode" %in% colnames(colData(data)))){
+        createAlert(session, "heatmapmessage", "heatmapAlert", title = "Columns metadata", style =  "danger",
+                    content = paste0("Sorry, but I need a barcode column to map the Summarized Experiment object",append = FALSE))
+        return(NULL)
+    }
+
+    col.metadata <- NULL
+    if(!is.null(colmdata)) {
+        if(length(colmdata) > 0) col.metadata <- subset(colData(data), select=c("barcode",colmdata))
+    }
+
+    # ---------------- row.metadata
+    row.metadata <- NULL
+    if(!is.null(rowmdata)) {
+        # We will consider the values in the resutls object, as the main object may not have the results
+        if(length(rowmdata) > 0) row.metadata <- subset(results.data, select=c(rowmdata))
+    }
+    if(isolate({input$heatmaplog2_plus_one})) {
+        assay(data) <- log2(assay(data) + 1) # if there were 0 values the scale was giving bugs
+    }
+
+    withProgress(message = 'Creating plot',
+                 detail = 'This may take a while...', value = 0, {
+                     if(!isolate({input$heatmap.sortCb})) {
+                         p <-  TCGAvisualize_Heatmap(data=assay(data),
+                                                     col.metadata=col.metadata,
+                                                     row.metadata=row.metadata,
+                                                     title = title,
+                                                     color.levels = color.levels,
+                                                     rownames.size = rownames.size,
+                                                     values.label = values.label,
+                                                     filename = NULL,
+                                                     extrems = extrems,
+                                                     cluster_rows = cluster_rows,
+                                                     show_column_names = show_column_names,
+                                                     cluster_columns = cluster_columns,
+                                                     show_row_names = show_row_names,
+                                                     type = type,
+                                                     scale = scale)
+                     } else {
+                         p <-  TCGAvisualize_Heatmap(data=assay(data),
+                                                     col.metadata=col.metadata,
+                                                     row.metadata=row.metadata,
+                                                     title = title,
+                                                     extrems = extrems,
+                                                     color.levels = color.levels,
+                                                     rownames.size = rownames.size,
+                                                     values.label = values.label,
+                                                     filename = NULL,
+                                                     cluster_rows = cluster_rows,
+                                                     show_column_names = show_column_names,
+                                                     cluster_columns = cluster_columns,
+                                                     show_row_names = show_row_names,
+                                                     sortCol = sortCol,
+                                                     type = type,
+                                                     scale = scale)
+                     }
+                     incProgress(1/2)
+                     p
+                 })
+})
 observeEvent(input$heatmapPlotBt , {
     output$heatmap.plotting <- renderPlot({
         closeAlert(session,"heatmapAlert")
         # get information from file
-        file  <- basename(as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$heatmapresultsfile)$datapath))
-        if(length(file) > 0){
-            file <- unlist(str_split(file,"_"))
-            group1 <- file[4]
-            group2 <- file[5]
-        }
-        data <- isolate({heatmapdata()})
-        results.data <- isolate({heatmapresultdata()})
-
-        colmdata <- isolate({input$colmetadataheatmap})
-        rowmdata <- isolate({input$rowmetadataheatmap})
-        cluster_rows <- isolate({input$heatmap.clusterrows})
-        show_column_names <- isolate({input$heatmap.show.col.names})
-        show_row_names <- isolate({input$heatmap.show.row.names})
-        cluster_columns <- isolate({input$heatmap.clustercol})
-        sortCol <- isolate({input$heatmapSortCol})
-        scale <- isolate({input$heatmapScale})
-        title <-  isolate({input$heatmapMain})
-        values.label <-  isolate({input$heatmapLabel})
-        rownames.size <-  isolate({input$heatmapRownamesSize})
-
-        if(isolate({input$heatmap.colorsCb})) {
-            color.levels <- c(isolate({input$heatmapcolMin}),
-                              isolate({input$heatmapcolMid}),
-                              isolate({input$heatmapcolMax}))
-        } else {
-            color.levels <- NULL
-        }
-        if(isolate({input$heatmap.extremesCb})) {
-            extrems <- c(isolate({input$heatmapExtremeMin}),
-                         isolate({input$heatmapExtremeMid}),
-                         isolate({input$heatmapExtremeMax}))
-        } else {
-            extrems <- NULL
-        }
-        if(isolate({input$heatmapTypeInputRb}) == "met") type <-  "methylation"
-        if(isolate({input$heatmapTypeInputRb}) == "exp") type <-  "expression"
-
-        if(nchar(sortCol) == 0 &  isolate({input$heatmap.sortCb})){
-            createAlert(session, "heatmapmessage", "heatmapAlert", title = "Columns metadata", style =  "danger",
-                        content = paste0("Please select the heatmapSortCol"),append = FALSE)
-            return(NULL)
-        }
-
-        if(isolate({input$heatmapTypeInputRb})=="met"){
-            # ---------------- probes selection
-            if(isolate({input$heatmapProbesInputRb}) == "Status"){
-                sig.probes <- ""
-                if(isolate({input$heatmap.hypoprobesCb})) sig.probes <- c("Hypomethylated")
-                if(isolate({input$heatmap.hyperprobesCb})) sig.probes <- c("Hypermethylated",sig.probes)
-                sig.probes <- paste(sig.probes,"in",group2)
-                # Get hypo methylated and hypermethylated probes
-                group1.col <- gsub("[[:punct:]]| ", ".", group1)
-                group2.col <- gsub("[[:punct:]]| ", ".", group2)
-                idx <- paste("status",group1.col,group2.col, sep=".")
-                probes <- apply(sapply(sig.probes, function(x) {grepl(x,results.data[,idx])}),1,any)
-
-                if(length(probes) == 0){
-                    createAlert(session, "heatmapmessage", "heatmapAlert", title = "No significant probes", style =  "danger",
-                                content = paste0("There are no significant probes"),append = FALSE)
-                    return(NULL)
-                }
-                data <- data[probes,]
-                results.data <- results.data[probes,]
-            } else if(isolate({input$heatmaprobes}) == "Selection"){
-                data <- data[rownames(data) %in% isolate({input$heatmaprobes}) ]
-            } else {
-                sig.probes <- parse.textarea.input(isolate({input$heatmapProbesTextArea}))
-                data <- data[rownames(data) %in% sig.probes,]
-            }
-        } else {
-            if(isolate({input$heatmapGenesInputRb}) == "Status"){
-                sig.genes <- ""
-                if(isolate({input$heatmap.upGenesCb})) sig.genes <- c("Upregulated")
-                if(isolate({input$heatmap.downGenewsCb})) sig.genes <- c("Downregulated",sig.genes)
-                sig.genes <- paste(sig.genes,"in",group2)
-                # Get hypo methylated and hypermethylated probes
-                genes <- results.data[,"status"] %in% sig.genes
-                results.data <- results.data[genes,]
-                data <- data[rownames(data) %in% results.data$mRNA ,]
-            } else if(isolate({input$heatmapGenesInputRb}) == "Selection"){
-                data <- data[rownames(data) %in% isolate({input$heatmagenes}) ]
-            } else {
-                sig.genes <- parse.textarea.input(isolate({input$heatmapGenesTextArea}))
-                data <- data[rownames(data) %in% sig.genes]
-            }
-
-        }
-        # ---------------- col.metadata
-        if(!("barcode" %in% colnames(colData(data)))){
-            createAlert(session, "heatmapmessage", "heatmapAlert", title = "Columns metadata", style =  "danger",
-                        content = paste0("Sorry, but I need a barcode column to map the Summarized Experiment object",append = FALSE))
-            return(NULL)
-        }
-
-        col.metadata <- NULL
-        if(!is.null(colmdata)) {
-            if(length(colmdata) > 0) col.metadata <- subset(colData(data), select=c("barcode",colmdata))
-        }
-
-        # ---------------- row.metadata
-        row.metadata <- NULL
-        if(!is.null(rowmdata)) {
-            # We will consider the values in the resutls object, as the main object may not have the results
-            if(length(rowmdata) > 0) row.metadata <- subset(results.data, select=c(rowmdata))
-        }
-        if(isolate({input$heatmaplog2_plus_one})) {
-            assay(data) <- log2(assay(data) + 1) # if there were 0 values the scale was giving bugs
-        }
-
-        withProgress(message = 'Creating plot',
-                     detail = 'This may take a while...', value = 0, {
-                         if(!isolate({input$heatmap.sortCb})) {
-                             p <-  TCGAvisualize_Heatmap(data=assay(data),
-                                                         col.metadata=col.metadata,
-                                                         row.metadata=row.metadata,
-                                                         title = title,
-                                                         color.levels = color.levels,
-                                                         rownames.size = rownames.size,
-                                                         values.label = values.label,
-                                                         filename = NULL,
-                                                         extrems = extrems,
-                                                         cluster_rows = cluster_rows,
-                                                         show_column_names = show_column_names,
-                                                         cluster_columns = cluster_columns,
-                                                         show_row_names = show_row_names,
-                                                         type = type,
-                                                         scale = scale)
-                         } else {
-                             p <-  TCGAvisualize_Heatmap(data=assay(data),
-                                                         col.metadata=col.metadata,
-                                                         row.metadata=row.metadata,
-                                                         title = title,
-                                                         extrems = extrems,
-                                                         color.levels = color.levels,
-                                                         rownames.size = rownames.size,
-                                                         values.label = values.label,
-                                                         filename = NULL,
-                                                         cluster_rows = cluster_rows,
-                                                         show_column_names = show_column_names,
-                                                         cluster_columns = cluster_columns,
-                                                         show_row_names = show_row_names,
-                                                         sortCol = sortCol,
-                                                         type = type,
-                                                         scale = scale)
-                         }
-                         incProgress(1/2)
-                         ComplexHeatmap::draw(p)
-                     })
+        ComplexHeatmap::draw(heatmap.plot())
     })})
 
 observeEvent(input$heatmapPlotBt , {
@@ -343,4 +347,19 @@ observeEvent(input$heatmapPlotBt , {
     })
 })
 
+
+output$saveheatmappicture <- downloadHandler(
+    filename = function(){input$heatmapPlot.filename},
+    content = function(file) {
+        if(tools::file_ext(file) == "png") {
+            grDevices::png(file, width = 10, height = 10,
+                           res = 300, units = "in")
+        } else if(tools::file_ext(file) == "pdf") {
+            grDevices::pdf(file, width = 10, height = 10)
+        } else if(tools::file_ext(file) == "svg") {
+            grDevices::svg(file, width = 10, height = 10)
+        }
+        ComplexHeatmap::draw(heatmap.plot())
+        dev.off()
+    })
 

@@ -51,7 +51,11 @@ tabItem(tabName = "tcgasurvival",
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                    icon = icon("picture-o")))
+                                    icon = icon("picture-o")),
+                       downloadButton('savesurvivalpicture', 'Export figure', class = "butt2"),
+                       textInput("survivalPlot.filename", label = "Filename", value = "survival.pdf"),
+                       bsTooltip("survivalPlot.filename", "Filename (pdf, png, svg)", "left")
+                   )
             )
         )
 )

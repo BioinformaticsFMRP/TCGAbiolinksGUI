@@ -66,7 +66,11 @@ tabItem(tabName = "meanmet",
                                             margin-left: auto;
                                             margin-right: auto;
                                             width: 100%",
-                                    icon = icon("picture-o")))
+                                    icon = icon("picture-o")),
+                       downloadButton('savemeanmetpicture', 'Export figure', class = "butt2"),
+                       textInput("meanmetPlot.filename", label = "Filename", value = "volcano.pdf"),
+                       bsTooltip("meanmetPlot.filename", "Filename (pdf, png, svg)", "left")
+                       )
             )
         )
 )

@@ -116,71 +116,74 @@ observeEvent(input$survivalGene , {
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 # Plot
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
+survival.plot <-  reactive({
+    input$survivalplotBt
+    data <- isolate({survivalplotdata()})
+    clusterCol <-  isolate({input$survivalplotgroup})
+    legend <- isolate({input$survivalplotLegend})
+    main <- isolate({input$survivalplotMain})
+    xlim <- isolate({input$survivalplotLimit})
+    if(xlim == 0) xlim <- NULL
+    pvalue <- isolate({input$survivalplotPvalue})
+    risk.table <- isolate({input$survivalplotRiskTable})
+    conf.int <- isolate({input$survivalplotConfInt})
+
+    # if Summarized Experiment
+    if(isolate(input$survivalbyGene)){
+        aux <- assay(data)[rownames(data) == isolate({input$survivalGene}),]
+        colData(data)$level.group <- "Mid expression"
+        min.cut <- max(sort(aux)[1:(length(aux) * isolate({input$survivalPercent}))])
+        high.cut <- min(sort(aux, decreasing = T)[1:(length(aux) * isolate({input$survivalPercent}))])
+        colData(data)[aux <= min.cut,"level.group"] <- "Low expression"
+        colData(data)[aux >= high.cut,"level.group"] <- "High expression"
+        clusterCol <- "level.group"
+    }
+    if(class(data) !=  class(data.frame())){
+        data <- colData(data)
+    }
+    #---------------------------
+    # Input verification
+    #---------------------------
+    if(is.null(data)){
+        createAlert(session, "survivalmessage", "survivalAlert", title = "Missing data", style =  "danger",
+                    content = paste0("Please select the data"), append = FALSE)
+        return(NULL)
+    }
+
+    if(is.null(clusterCol) || nchar(clusterCol) == 0){
+        createAlert(session, "survivalmessage", "survivalAlert", title = "Missing group", style =  "danger",
+                    content = paste0("Please select group column"), append = FALSE)
+        return(NULL)
+    }
+
+    if(length(unique(data[,clusterCol])) == 1){
+        createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
+                    content = paste0("Sorry, but I'm expecting at least two groups<br>",
+                                     "Only this group found: ", unique(data[,clusterCol])), append = FALSE)
+        return(NULL)
+    }
+    #-=-=-=-=-=-=-=-=--==-=-=-=-=-=-=-=-=
+
+    withProgress(message = 'Creating plot',
+                 detail = 'This may take a while...', value = 0, {
+
+                     TCGAanalyze_survival(data = data,
+                                          clusterCol = clusterCol,
+                                          filename = NULL,
+                                          legend = legend,
+                                          main = main,
+                                          xlim = xlim,
+                                          pvalue = pvalue,
+                                          risk.table=risk.table,
+                                          conf.int=conf.int)
+
+                 })
+})
+
 observeEvent(input$survivalplotBt , {
     output$survival.plotting <- renderPlot({
-
         closeAlert(session, "survivalAlert")
-
-        data <- isolate({survivalplotdata()})
-        legend <- isolate({input$survivalplotLegend})
-        main <- isolate({input$survivalplotMain})
-        clusterCol <-  isolate({input$survivalplotgroup})
-        xlim <- isolate({input$survivalplotLimit})
-        if(xlim == 0) xlim <- NULL
-        pvalue <- isolate({input$survivalplotPvalue})
-        risk.table <- isolate({input$survivalplotRiskTable})
-        conf.int <- isolate({input$survivalplotConfInt})
-
-        # if Summarized Experiment
-        if(isolate(input$survivalbyGene)){
-            aux <- assay(data)[rownames(data) == isolate({input$survivalGene}),]
-            colData(data)$level.group <- "Mid expression"
-            min.cut <- max(sort(aux)[1:(length(aux) * isolate({input$survivalPercent}))])
-            high.cut <- min(sort(aux, decreasing = T)[1:(length(aux) * isolate({input$survivalPercent}))])
-            colData(data)[aux <= min.cut,"level.group"] <- "Low expression"
-            colData(data)[aux >= high.cut,"level.group"] <- "High expression"
-            clusterCol <- "level.group"
-        }
-        if(class(data) !=  class(data.frame())){
-            data <- colData(data)
-        }
-        #---------------------------
-        # Input verification
-        #---------------------------
-        if(is.null(data)){
-            createAlert(session, "survivalmessage", "survivalAlert", title = "Missing data", style =  "danger",
-                        content = paste0("Please select the data"), append = FALSE)
-            return(NULL)
-        }
-
-        if(is.null(clusterCol) || nchar(clusterCol) == 0){
-            createAlert(session, "survivalmessage", "survivalAlert", title = "Missing group", style =  "danger",
-                        content = paste0("Please select group column"), append = FALSE)
-            return(NULL)
-        }
-
-        if(length(unique(data[,clusterCol])) == 1){
-            createAlert(session, "survivalmessage", "survivalAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, but I'm expecting at least two groups<br>",
-                                         "Only this group found: ", unique(data[,clusterCol])), append = FALSE)
-            return(NULL)
-        }
-        #-=-=-=-=-=-=-=-=--==-=-=-=-=-=-=-=-=
-
-        withProgress(message = 'Creating plot',
-                     detail = 'This may take a while...', value = 0, {
-
-                         TCGAanalyze_survival(data = data,
-                                              clusterCol = clusterCol,
-                                              filename = NULL,
-                                              legend = legend,
-                                              main = main,
-                                              xlim = xlim,
-                                              pvalue = pvalue,
-                                              risk.table=risk.table,
-                                              conf.int=conf.int)
-
-                     })
+        survival.plot()
     })
 })
 observeEvent(input$survivalplotBt , {
@@ -200,3 +203,24 @@ observe({
                     restrictions=system.file(package='base'),
                     filetypes=c('', 'csv','rda'))
 })
+
+output$savesurvivalpicture <- downloadHandler(
+    filename = function(){input$survivalPlot.filename},
+    content = function(file) {
+        if(tools::file_ext(input$survivalPlot.filename) == "png") {
+            device <- function(..., width, height) {
+                grDevices::png(..., width = 10, height = 10,
+                               res = 300, units = "in")
+            }
+        } else if(tools::file_ext(input$survivalPlot.filename) == "pdf") {
+            device <- function(..., width, height) {
+                grDevices::pdf(..., width = 10, height = 10)
+            }
+        } else if(tools::file_ext(input$survivalPlot.filename) == "svg") {
+            device <- function(..., width, height) {
+                grDevices::svg(..., width = 10, height = 10)
+            }
+        }
+
+        ggsave(file, plot = print(survival.plot(),newpage = F), device = device)
+    })

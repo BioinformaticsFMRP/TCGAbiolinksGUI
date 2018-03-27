@@ -101,6 +101,9 @@ starburst <-  reactive({
     }
     if(gsub("[[:punct:]]| ", ".", group1) == gsub("[[:punct:]]| ", ".", exp.group1)
        & gsub("[[:punct:]]| ", ".", group2) == gsub("[[:punct:]]| ", ".", exp.group2)){
+        if(any(grepl("ENSG",exp[1,]))) {
+            rownames(exp) <- exp[,grep("ENSG",exp[1,])]
+        }
         result <- TCGAvisualize_starburst(met = met,
                                           exp = exp,
                                           group1 = group1,
@@ -113,7 +116,6 @@ starburst <-  reactive({
                                           exp.p.cut = exp.p.cut,
                                           met.p.cut = met.p.cut,
                                           diffmean.cut = diffmean.cut,
-                                          circle = isolate({input$starburstCircle}),
                                           logFC.cut = logFC.cut,
                                           return.plot = TRUE)
         out.filename <- paste0(paste("Starburst_results", group1, group2,
@@ -164,18 +166,18 @@ result.dea.data <-  reactive({
     } else if(tools::file_ext(file)=="rda"){
         se <- get(load(file))
     }
-    if(all(grepl("ENS", se$Gene_symbol))) {
-        fromType <- "ENSEMBL"
-        # In case we have ENSG
-        eg = as.data.frame(bitr(se$Gene_symbol,
-                                fromType=fromType,
-                                toType="SYMBOL",
-                                OrgDb="org.Hs.eg.db"))
-        eg <- eg[!duplicated(eg[,fromType]),]
-        colnames(se)[grep("Gene_symbol",colnames(se))] <- "Gene"
-        colnames(eg) <- c("Gene","Gene_symbol")
-        se <- merge(se,eg,by = "Gene")
-    }
+    # if(all(grepl("ENS", se$Gene_symbol))) {
+    #     fromType <- "ENSEMBL"
+    #     # In case we have ENSG
+    #     eg = as.data.frame(bitr(se$Gene_symbol,
+    #                             fromType=fromType,
+    #                             toType="SYMBOL",
+    #                             OrgDb="org.Hs.eg.db"))
+    #     eg <- eg[!duplicated(eg[,fromType]),]
+    #     colnames(se)[grep("Gene_symbol",colnames(se))] <- "Gene"
+    #     colnames(eg) <- c("Gene","Gene_symbol")
+    #     se <- merge(se,eg,by = "Gene")
+    # }
 
     if(class(se)!= class(data.frame())){
         createAlert(session, "deamessage", "deaAlert", title = "Data input error", style =  "danger",
@@ -234,3 +236,25 @@ options = list(pageLength = 10,
                )
 ), callback = "function(table) {table.on('click.dt', 'tr', function() {Shiny.onInputChange('allRows',table.rows('.selected').data().toArray());});}"
 )
+
+
+output$savestarburstpicture <- downloadHandler(
+    filename = function(){input$starburstPlot.filename},
+    content = function(file) {
+        if(tools::file_ext(input$starburstPlot.filename) == "png") {
+            device <- function(..., width, height) {
+                grDevices::png(..., width = 10, height = 10,
+                               res = 300, units = "in")
+            }
+        } else if(tools::file_ext(input$starburstPlot.filename) == "pdf") {
+            device <- function(..., width, height) {
+                grDevices::pdf(..., width = 10, height = 10)
+            }
+        } else if(tools::file_ext(input$starburstPlot.filename) == "svg") {
+            device <- function(..., width, height) {
+                grDevices::svg(..., width = 10, height = 10)
+            }
+        }
+
+        ggsave(file, plot =  starburst()$plot, device = device)
+    })

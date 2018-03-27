@@ -17,6 +17,11 @@ suppressPackageStartupMessages({
     library(grid)
     library(maftools)
     library(dplyr)
+    library(minfi)
+    library(TCGAbiolinksGUI.data)
+    library(caret)
+    data(maf.tumor)
+    data(GDCdisease)
     options(shiny.maxRequestSize=-1) # Remove limit of upload
     options(shiny.deprecation.messages=FALSE)
     options(warn =-1)
@@ -34,19 +39,30 @@ getDataCategory <- function(legacy){
                                    "Protein expression",
                                    "Gene expression",
                                    "DNA methylation",
-                                   "Raw Microarray Data",
+                                   "Raw microarray data",
                                    # "Structural Rearrangement", # Controlled
                                    "Other"))
     if(legacy) return(data.category.legacy)
     return(data.category.hamonirzed)
 }
 
-createTable <- function(df){
+createTable <- function(df,tableType = "TCGAbiolinks"){
     DT::datatable(df,
                   extensions = c('Buttons',"FixedHeader"),
                   class = 'cell-border stripe',
                   options = list(dom = 'Blfrtip',
-                                 buttons =  c('copy', 'csv', 'excel', 'pdf', 'print', 'colvis'),
+                                 buttons =
+                                     list('colvis', list(
+                                         extend = 'collection',
+                                         buttons = list(list(extend='csv',
+                                                             filename = tableType),
+                                                        list(extend='excel',
+                                                             filename = tableType),
+                                                        list(extend='pdf',
+                                                             title = "",
+                                                             filename= tableType)),
+                                         text = 'Download'
+                                     )),
                                  fixedHeader = TRUE,
                                  pageLength = 20,
                                  scrollX = TRUE,
@@ -66,6 +82,8 @@ getFileType <-  function(legacy, data.category){
     if(grepl("Gene expression", data.category, ignore.case = TRUE)  & legacy)
         file.type <- c("normalized_results",
                        "results")
+
+    if(data.category == "Raw microarray data") file.type <- c("idat")
 
     return(file.type)
 }
@@ -113,6 +131,9 @@ getPlatform <-  function(legacy, data.category){
                                                          "Illumina Hi Seq")
     if(data.category == "DNA Methylation") platform <- c("Illumina Human Methylation 450",
                                                          "Illumina Human Methylation 27")
+
+    if(data.category == "Raw microarray data") platform <- c("Illumina Human Methylation 450",
+                                                             "Illumina Human Methylation 27")
     return(platform)
 }
 
@@ -138,6 +159,8 @@ getDataType <- function(legacy, data.category){
                         "Exon junction quantification",
                         "Exon quantification",
                         "miRNA isoform quantification")
+    if(data.category == "Raw microarray data" & legacy)
+        data.type  <- c("Raw intensities")
 
     return(data.type)
 }
@@ -173,16 +196,6 @@ tcga.code <- c("Primary solid Tumor","Recurrent Solid Tumor",
                "Cell Line Derived Xenograft Tissue")
 names(tcga.code) <- c('01','02','03','04','05','06','07','08','09','10',
                       '11','12','13','14','20','40','50','60','61')
-
-# Defining parameters
-getTCGAdisease <- function(){
-    projects <- TCGAbiolinks:::getGDCprojects()
-    disease <-  projects$project_id
-    idx <- grep("disease_type",colnames(projects))
-    names(disease) <-  paste0(projects[[idx]], " (",disease,")")
-    disease <- disease[sort(names(disease))]
-    return(disease)
-}
 
 getMatchedPlatform <- function(query){
     matched <- NULL
@@ -275,11 +288,13 @@ TCGAbiolinksGUIServer <- function(input, output, session) {
     source(file.path(server.path, "getsubtype.R"),  local = TRUE)$value
     source(file.path(server.path, "getmutation.R"),  local = TRUE)$value
     source(file.path(server.path, "getclinical.R"),  local = TRUE)$value
+    source(file.path(server.path, "dnametidat.R"),  local = TRUE)$value
     source(file.path(server.path, "survival.R"),  local = TRUE)$value
     source(file.path(server.path, "volcano.R"),  local = TRUE)$value
     source(file.path(server.path, "heatmap.R"),  local = TRUE)$value
     source(file.path(server.path, "dmr.R"),  local = TRUE)$value
     source(file.path(server.path, "meanMet.R"),  local = TRUE)$value
+    source(file.path(server.path, "gliomaclassifier.R"),  local = TRUE)$value
     source(file.path(server.path, "dea.R"),  local = TRUE)$value
     source(file.path(server.path, "pathview.R"),  local = TRUE)$value
     source(file.path(server.path, "eaplot.R"),  local = TRUE)$value

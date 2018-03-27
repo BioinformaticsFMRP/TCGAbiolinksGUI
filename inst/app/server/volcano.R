@@ -355,3 +355,25 @@ observeEvent(input$volcanoPlotBt , {
     output$volcanoPlot <- renderUI({
         plotOutput("volcano.plot", width = paste0(isolate({input$volcanowidth}), "%"), height = isolate({input$volcanoheight}))
     })})
+
+
+output$savevolvanopicture <- downloadHandler(
+    filename = function(){input$volcanoPlot.filename},
+    content = function(file) {
+        if(tools::file_ext(input$volcanoPlot.filename) == "png") {
+            device <- function(..., width, height) {
+                grDevices::png(..., width = 10, height = 10,
+                               res = 300, units = "in")
+            }
+        } else if(tools::file_ext(input$volcanoPlot.filename) == "pdf") {
+            device <- function(..., width, height) {
+                grDevices::pdf(..., width = 10, height = 10)
+            }
+        } else if(tools::file_ext(input$volcanoPlot.filename) == "svg") {
+            device <- function(..., width, height) {
+                grDevices::svg(..., width = 10, height = 10)
+            }
+        }
+
+        ggsave(file, plot = volcano.values()$plot, device = device)
+    })

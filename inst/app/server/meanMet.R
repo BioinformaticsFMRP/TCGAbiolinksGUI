@@ -45,77 +45,82 @@ observe({
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 # Plot
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
-observeEvent(input$meanmetPlot , {
+meanmetPlot <- reactive({
+    input$meanmetPlot
+    closeAlert(session, "meanmetAlert")
+    jitter <- isolate({input$meanmetplotjitter})
+    sort <- NULL
+    if(isolate({input$meanmetSortCB})) sort <- isolate({input$meanmetsort})
+    angle <- isolate({input$meanmetAxisAngle})
+    data <- meandata()
 
+    y.limits <- NULL
+    if(isolate({input$meanmetSetLimits})) y.limits <- c(isolate({input$meanmetylimlow}),isolate({input$meanmetylimup}))
+
+    if(is.null(data)){
+        createAlert(session, "meanmetmessage", "meanmetAlert", title = "Missing data", style =  "danger",
+                    content = paste0("Please select the data"), append = FALSE)
+        return(NULL)
+    }
+
+    if(isolate({input$meanmetgroupCol}) == "") {
+        group <- NULL
+    } else {
+        group <- isolate({input$meanmetgroupCol})
+    }
+
+    if(is.null(group)){
+        createAlert(session, "meanmetmessage", "meanmetAlert", title = "Missing group column", style =  "danger",
+                    content = paste0("Please select group column"), append = FALSE)
+        return(NULL)
+    }
+
+    if(isolate({input$meanmetsubgroupCol}) == "") {
+        subgroup <- NULL
+    } else {
+        subgroup <- isolate({input$meanmetsubgroupCol})
+    }
+
+    legend.position <- isolate({input$meanmetLegendPos})
+    legend.title.position <- isolate({input$meanmetLegendTitlePos})
+    legend.ncols <- isolate({input$meanmetLegendncols})
+    add.axis.x.text <- isolate({input$meanmetXnames})
+    withProgress(message = 'Creating plot',
+                 detail = 'This may take a while...', value = 0, {
+                     if(is.null(sort)){
+                         TCGAvisualize_meanMethylation(data=data,
+                                                       groupCol=group,
+                                                       subgroupCol=subgroup,
+                                                       filename = NULL,
+                                                       y.limits = y.limits,
+                                                       legend.position = legend.position,
+                                                       legend.title.position = legend.title.position,
+                                                       legend.ncols = legend.ncols,
+                                                       add.axis.x.text = add.axis.x.text,
+                                                       plot.jitter = jitter,
+                                                       axis.text.x.angle = angle )
+                     } else {
+                         TCGAvisualize_meanMethylation(data=data,
+                                                       groupCol=group,
+                                                       subgroupCol=subgroup,
+                                                       filename = NULL,
+                                                       legend.position = legend.position,
+                                                       legend.title.position = legend.title.position,
+                                                       legend.ncols = legend.ncols,
+                                                       add.axis.x.text = add.axis.x.text,
+                                                       y.limits = y.limits,
+                                                       plot.jitter = jitter,
+                                                       axis.text.x.angle = angle,
+                                                       sort=sort)
+                     }
+                 })
+
+})
+observeEvent(input$meanmetPlot, {
     output$mean.plotting <- renderPlot({
-        closeAlert(session, "meanmetAlert")
-        jitter <- isolate({input$meanmetplotjitter})
-        sort <- NULL
-        if(isolate({input$meanmetSortCB})) sort <- isolate({input$meanmetsort})
-        angle <- isolate({input$meanmetAxisAngle})
-        data <- meandata()
-
-        y.limits <- NULL
-        if(isolate({input$meanmetSetLimits})) y.limits <- c(isolate({input$meanmetylimlow}),isolate({input$meanmetylimup}))
-
-        if(is.null(data)){
-            createAlert(session, "meanmetmessage", "meanmetAlert", title = "Missing data", style =  "danger",
-                        content = paste0("Please select the data"), append = FALSE)
-            return(NULL)
-        }
-
-        if(isolate({input$meanmetgroupCol}) == "") {
-            group <- NULL
-        } else {
-            group <- isolate({input$meanmetgroupCol})
-        }
-
-        if(is.null(group)){
-            createAlert(session, "meanmetmessage", "meanmetAlert", title = "Missing group column", style =  "danger",
-                        content = paste0("Please select group column"), append = FALSE)
-            return(NULL)
-        }
-
-        if(isolate({input$meanmetsubgroupCol}) == "") {
-            subgroup <- NULL
-        } else {
-            subgroup <- isolate({input$meanmetsubgroupCol})
-        }
-
-        legend.position <- isolate({input$meanmetLegendPos})
-        legend.title.position <- isolate({input$meanmetLegendTitlePos})
-        legend.ncols <- isolate({input$meanmetLegendncols})
-        add.axis.x.text <- isolate({input$meanmetXnames})
-        withProgress(message = 'Creating plot',
-                     detail = 'This may take a while...', value = 0, {
-                         if(is.null(sort)){
-                             TCGAvisualize_meanMethylation(data=data,
-                                                           groupCol=group,
-                                                           subgroupCol=subgroup,
-                                                           filename = NULL,
-                                                           y.limits = y.limits,
-                                                           legend.position = legend.position,
-                                                           legend.title.position = legend.title.position,
-                                                           legend.ncols = legend.ncols,
-                                                           add.axis.x.text = add.axis.x.text,
-                                                           plot.jitter = jitter,
-                                                           axis.text.x.angle = angle )
-                         } else {
-                             TCGAvisualize_meanMethylation(data=data,
-                                                           groupCol=group,
-                                                           subgroupCol=subgroup,
-                                                           filename = NULL,
-                                                           legend.position = legend.position,
-                                                           legend.title.position = legend.title.position,
-                                                           legend.ncols = legend.ncols,
-                                                           add.axis.x.text = add.axis.x.text,
-                                                           y.limits = y.limits,
-                                                           plot.jitter = jitter,
-                                                           axis.text.x.angle = angle,
-                                                           sort=sort)
-                         }
-                     })
-    })})
+        meanmetPlot()
+    })
+})
 
 observeEvent(input$meanmetPlot , {
     updateCollapse(session, "collapsemeanmet", open = "Mean DNA methylation plot")
@@ -160,3 +165,25 @@ meandata <-  reactive({
     }
     return(se)
 })
+
+
+output$savemeanmetpicture <- downloadHandler(
+    filename = function(){input$meanmetPlot.filename},
+    content = function(file) {
+        if(tools::file_ext(input$meanmetPlot.filename) == "png") {
+            device <- function(..., width, height) {
+                grDevices::png(..., width = 10, height = 10,
+                               res = 300, units = "in")
+            }
+        } else if(tools::file_ext(input$meanmetPlot.filename) == "pdf") {
+            device <- function(..., width, height) {
+                grDevices::pdf(..., width = 10, height = 10)
+            }
+        } else if(tools::file_ext(input$meanmetPlot.filename) == "svg") {
+            device <- function(..., width, height) {
+                grDevices::svg(..., width = 10, height = 10)
+            }
+        }
+
+        ggsave(file, plot = meanmetPlot(), device = device)
+    })

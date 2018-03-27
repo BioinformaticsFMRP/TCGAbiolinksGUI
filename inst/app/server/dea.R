@@ -74,8 +74,6 @@ observeEvent(input$deaAnalysis , {
                                             mat2 = dataFilt[,samples.g2],
                                             Cond1type = g1 ,
                                             Cond2type = g2,
-                                            #fdr.cut  = fdr.cut,
-                                            #logFC.cut = logFC.cut,
                                             method = method)
 
                      incProgress(1/5, detail = paste0('Adding information related to DEGs genes from DEA'))
