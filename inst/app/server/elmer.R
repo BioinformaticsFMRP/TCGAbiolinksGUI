@@ -133,6 +133,25 @@ observeEvent(input$elmerPlotType, {
         shinyjs::hide("schematic.plot.probes")
         shinyjs::hide("ranking.plot.motif")
         shinyjs::hide("ranking.plot.tf")
+        shinyjs::hide("motif.enrichment.plot.or")
+        shinyjs::hide("motif.enrichment.plot.loweror")
+    } else if(type =="volcano.plot"){
+        shinyjs::hide("scatter.plot.type")
+        shinyjs::hide("scatter.plot.tf")
+        shinyjs::hide("scatter.plot.motif")
+        shinyjs::hide("scatter.plot.genes")
+        shinyjs::hide("elmer.heatmap.annotations")
+        shinyjs::hide("scatter.plot.probes")
+        shinyjs::hide("motif.enrichment.plot.summary")
+        shinyjs::hide("scatter.plot.nb.genes")
+        shinyjs::hide("schematic.plot.type")
+        shinyjs::hide("schematic.plot.genes")
+        shinyjs::hide("schematic.plot.probes")
+        shinyjs::hide("ranking.plot.motif")
+        shinyjs::hide("ranking.plot.tf")
+        shinyjs::hide("motif.enrichment.plot.or")
+        shinyjs::hide("motif.enrichment.plot.loweror")
+
     }
 })
 
@@ -440,19 +459,26 @@ observeEvent(input$elmerAnalysisBt, {
                          setProgress(value = which(j == direction) * 0.0, message = paste("Step 1-", j, "direction"),
                                      detail = paste("Identify distal probes", j,"methyladed in", group1, "compared to",group2),
                                      session = getDefaultReactiveDomain())
-                         Sig.probes <- get.diff.meth(mae,
+
+                         diff.dir <- j
+                         sig.diff <- isolate({input$elmermetdiff})
+                         met.pvalue <- isolate({input$elmermetpvalue})
+                         Sig.probes <- get.diff.meth(data = mae,
+                                                     sig.dif = sig.diff,
                                                      group.col = group.col,
                                                      group1 = group1,
                                                      group2 = group2,
                                                      cores = isolate({input$elmercores}),
                                                      dir.out = dir.out,
                                                      diff.dir = j,
-                                                     pvalue = isolate({input$elmermetpvalue}))
+                                                     mode =  isolate({input$elmermode}),
+                                                     pvalue = met.pvalue)
                          if(all(is.na(Sig.probes$probe))){
                              createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "error",
                                          content = paste0("No signigicant probes found for ", j ," direction"), append = TRUE)
                              return(NULL)
                          }
+                         all.probes <- readr::read_csv(dir(path = dir.out,pattern = "probes.csv",full.names = T,recursive = T,ignore.case = T))
                          #-------------------------------------------------------------
                          # Step 3.2: Identify significant probe-gene pairs            |
                          #-------------------------------------------------------------
@@ -477,6 +503,7 @@ observeEvent(input$elmerAnalysisBt, {
                                       dir.out = dir.out,
                                       cores = isolate({input$elmercores}),
                                       label = j,
+                                      diff.dir = j,
                                       group.col = group.col,
                                       group1 = group1,
                                       group2 = group2,
@@ -485,8 +512,7 @@ observeEvent(input$elmerAnalysisBt, {
                                       raw.pvalue = isolate({input$elmergetpairpvalue}),
                                       permu.size = isolate({input$elmergetpairpermu}),
                                       minSubgroupFrac = isolate({input$elmergetpairpercentage}),
-                                      filter.portion = isolate({input$elmergetpairportion}),
-                                      diffExp = isolate({input$elmergetpairdiffExp}))
+                                      filter.portion = isolate({input$elmergetpairportion}))
                          }, error = function(e) {
                              createAlert(session, "elmermessage", "elmerAlert", title = "Error", style =  "danger",
                                          content = paste0("Error in get.pair function",e), append = TRUE)
@@ -539,14 +565,32 @@ observeEvent(input$elmerAnalysisBt, {
                                                group.col = group.col,
                                                group1 = group1,
                                                group2 = group2,
+                                               diff.dir = j,
                                                cores = isolate({input$elmercores}),
                                                label = j,
                                                minSubgroupFrac = isolate({input$elmergetTFpercentage}))
                                  TF.meth.cor <- get(load(paste0(dir.out,"/getTF.",j,".TFs.with.motif.pvalue.rda")))
-                                 save(mae, TF, enriched.motif, Sig.probes.paired,
-                                      pair, nearGenes, Sig.probes, motif.enrichment, TF.meth.cor,
-                                      group.col, group1, group2,
-                                      file=paste0(dir.out,"/ELMER_results_",j,".rda"),
+                                 setProgress(value = which(j == direction) * 0.4, message = paste("Saving results - ", j, "direction"),
+                                             detail = paste0("Saving as :", dir.out,"/ELMER_results_",j,".rda"),
+                                             session = getDefaultReactiveDomain())
+
+                                 save(mae,
+                                      TF,
+                                      enriched.motif,
+                                      Sig.probes.paired,
+                                      pair,
+                                      nearGenes,
+                                      sig.diff,
+                                      met.pvalue,
+                                      all.probes,
+                                      diff.dir,
+                                      Sig.probes,
+                                      motif.enrichment,
+                                      TF.meth.cor,
+                                      group.col,
+                                      group1,
+                                      group2,
+                                      file = paste0(dir.out,"/ELMER_results_",j,".rda"),
                                       compress = "xz")
                                  done <- c(done,j)
                              } else {
@@ -709,6 +753,30 @@ elmer.plot <- reactive({
                           group2 = results$group2,
                           pairs = results$pair,
                           filename =  NULL)
+    }  else if(plot.type == "volcano.plot"){
+        if(is.null(mae)){
+            createAlert(session, "elmermessageresults", "elmerAlertResults", title = "mae object missing", style =  "danger",
+                        content =   "Please upload the mae object for this plot", append = TRUE)
+            return(NULL)
+        }
+        ylab <- ifelse(is.na(diff.dir),
+                       " (FDR corrected P-values) [two tailed test]",
+                       " (FDR corrected P-values) [one tailed test]")
+        p <- TCGAbiolinks:::TCGAVisualize_volcano(x = as.data.frame(all.probes)[,grep("Minus",colnames(all.probes),value = T)],
+                                                  y = all.probes$adjust.p,
+                                                  title =  paste0("Volcano plot - Probes ",
+                                                                  ifelse(is.na(diff.dir),"differently ",diff.dir),
+                                                                  "methylated in ", group1, " vs ", group2,"\n"),
+                                                  filename = NULL,
+                                                  label =  c("Not Significant",
+                                                             paste0("Hypermethylated in ",group1),
+                                                             paste0("Hypomethylated in ",group1)),
+                                                  ylab =  bquote(-Log[10] ~ .(ylab)),
+                                                  xlab =  expression(paste(
+                                                      "DNA Methylation difference (",beta,"-values)")
+                                                  ),
+                                                  x.cut = sig.diff,
+                                                  y.cut = met.pvalue)
     }
     p
 })
