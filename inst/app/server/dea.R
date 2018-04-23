@@ -20,10 +20,33 @@ observeEvent(input$deaAnalysis , {
     # read the data from the downloaded path
     # prepare it
     se <- isolate({deadata()})
+    if(is.null(se)) return(NULL)
+
+    groupCol <-  isolate({input$deagroupCol})
+
+    if(stringr::str_length(groupCol) == 0){
+        createAlert(session, "deamessage", "deaAlert", title = "Group input error", style =  "danger",
+                    content = paste0("Please, set groupCol"), append = FALSE)
+        return(NULL)
+    }
 
     g1 <- isolate({input$deagroup1})
     g2 <- isolate({input$deagroup2})
-    groupCol <-  isolate({input$deagroupCol})
+
+    if(stringr::str_length(g1) == 0){
+        createAlert(session, "deamessage", "deaAlert", title = "Group input error", style =  "danger",
+                    content = paste0("Please, set group1"), append = FALSE)
+        return(NULL)
+    }
+
+    if(stringr::str_length(g2) == 0){
+        createAlert(session, "deamessage", "deaAlert", title = "Group input error", style =  "danger",
+                    content = paste0("Please, set group2"), append = FALSE)
+        return(NULL)
+    }
+
+
+
     idx.g1 <- which(colData(se)[,groupCol] == g1)
     samples.g1 <- colData(se)[idx.g1,"barcode"]
     idx.g2 <- which(colData(se)[,groupCol] == g2)
