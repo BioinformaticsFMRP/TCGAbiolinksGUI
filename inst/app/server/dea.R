@@ -56,12 +56,17 @@ observeEvent(input$deaAnalysis , {
     logFC.cut <- isolate({input$deathrsld})
 
 
-    if(length(samples.g1) < 2 || length(samples.g2) < 2 ) {
+    if(length(samples.g1) < 2) {
         createAlert(session, "deamessage", "deaAlert", title = "Error", style =  "danger",
-                    content = "Each group should have at least one sample", append = FALSE)
+                    content = paste0("We don't have enough samples for group ", g1, "(n = ",length(samples.g1)," )"), append = FALSE)
         return(NULL)
     }
 
+    if(length(samples.g2) < 2) {
+        createAlert(session, "deamessage", "deaAlert", title = "Error", style =  "danger",
+                    content = paste0("We don't have enough samples for group ", g2, "(n = ",length(samples.g2)," )"), append = FALSE)
+        return(NULL)
+    }
 
     withProgress(message = 'Differential Expression Analysis in progress',
                  detail = 'This may take a while...', value = 0, {

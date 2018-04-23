@@ -55,12 +55,15 @@ eaGenesByFile <- function(){
     genes <- NULL
     # if a data frame return the column with gene symbols
     if(class(df)==class(data.frame())){
+        if("status" %in% colnames(df)) df <- subset(df,df$status != "Insignificant")
+
         if("mRNA" %in% colnames(df)){
-            df <- subset(df,df$status != "Insignificant")
             aux <- strsplit(df$mRNA,"\\|")
             genes <- unlist(lapply(aux,function(x) x[1]))
         } else if("Gene_symbol" %in% colnames(df)){
             genes <- df$Gene_symbol
+        } else if("external_gene_name" %in% colnames(df)){
+            genes <- df$external_gene_name
         } else {
             createAlert(session, "eamessage", "eaAlert", title = "Data input error", style =  "danger",
                         content = paste0("Sorry, but I'm expecting a column called Gene_symbol "), append = FALSE)
@@ -95,10 +98,11 @@ ea.plot  <-  reactive({
     if(isolate({input$tcgaEaInputRb}) == "text" & !is.null(textarea)){
         genes <- toupper(parse.textarea.input(textarea))
         not.found <- genes[!(genes %in% TCGAbiolinks:::EAGenes$Gene)]
-        if(length(not.found) > 0){
-            closeAlert("eaAlert")
+        l.not.found <- length(not.found)
+        if(l.not.found > 0){
+            if(l.not.found > 10) not.found <- c(sort(not.found[1:10]),"...")
             createAlert(session, "eamessage", "eaAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, I cant't find these genes: ", not.found), append = FALSE)
+                        content = paste0("Sorry, I cant't find ",l.not.found, " genes: ", paste(not.found,collapse = ", ")), append = FALSE)
             genes <-  genes[genes %in% TCGAbiolinks:::EAGenes$Gene]
         }
     } else if(isolate({input$tcgaEaInputRb}) == "Selection"){
@@ -106,9 +110,11 @@ ea.plot  <-  reactive({
     } else{
         genes <- eaGenesByFile()
         not.found <- genes[!(genes %in% TCGAbiolinks:::EAGenes$Gene)]
-        if(length(not.found) > 0){
+        l.not.found <- length(not.found)
+        if(l.not.found > 0){
+            if(l.not.found > 10) not.found <- c(sort(not.found[1:10]),"...")
             createAlert(session, "eamessage", "eaAlert", title = "Data input error", style =  "danger",
-                        content = paste0("Sorry, I cant't find these genes: ", not.found), append = FALSE)
+                        content = paste0("Sorry, I cant't find ",l.not.found, " genes: ", paste(not.found,collapse = ", ")), append = FALSE)
             genes <-  genes[genes %in% TCGAbiolinks:::EAGenes$Gene]
         }
     }
