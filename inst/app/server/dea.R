@@ -26,7 +26,7 @@ observeEvent(input$deaAnalysis , {
 
     if(stringr::str_length(groupCol) == 0){
         createAlert(session, "deamessage", "deaAlert", title = "Group input error", style =  "danger",
-                    content = paste0("Please, set groupCol"), append = FALSE)
+                    content = paste0("Please, select the groupCol argument"), append = FALSE)
         return(NULL)
     }
 
@@ -35,13 +35,13 @@ observeEvent(input$deaAnalysis , {
 
     if(stringr::str_length(g1) == 0){
         createAlert(session, "deamessage", "deaAlert", title = "Group input error", style =  "danger",
-                    content = paste0("Please, set group1"), append = FALSE)
+                    content = paste0("Please, select the group1 argument"), append = FALSE)
         return(NULL)
     }
 
     if(stringr::str_length(g2) == 0){
         createAlert(session, "deamessage", "deaAlert", title = "Group input error", style =  "danger",
-                    content = paste0("Please, set group2"), append = FALSE)
+                    content = paste0("Please, select the group2 argument"), append = FALSE)
         return(NULL)
     }
 
