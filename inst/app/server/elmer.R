@@ -222,7 +222,7 @@ observe({
 
 elmer.exp <-  reactive({
     inFile <- input$elmerexpfile
-    if (is.null(inFile)) return(NULL)
+    if (is.null(inFile) || inFile == 0) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
 
     withProgress(message = 'Loading data',
@@ -250,7 +250,7 @@ elmer.exp <-  reactive({
 })
 elmer.met <-  reactive({
     inFile <- input$elmermetfile
-    if (is.null(inFile)) return(NULL)
+    if (is.null(inFile) || inFile == 0) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
 
     withProgress(message = 'Loading data',
@@ -328,7 +328,7 @@ observeEvent(input$elmercreatemae, {
 # Input data
 elmer.results.data <-  reactive({
     inFile <- input$elmerresultsfile
-    if (is.null(inFile)) return(NULL)
+    if (is.null(inFile) || inFile == 0) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
 
     withProgress(message = 'Loading data',
@@ -341,7 +341,7 @@ elmer.results.data <-  reactive({
 
 maedata <-  reactive({
     inFile <- input$elmermaefile
-    if (is.null(inFile)) return(NULL)
+    if (is.null(inFile) || inFile == 0) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
 
     withProgress(message = 'Loading data',

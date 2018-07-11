@@ -97,7 +97,7 @@ observe({
 observe({
     updateSelectizeInput(session, 'heatmapSortCol', choices = {
         if (class(heatmapdata()) == class(as(SummarizedExperiment(),"RangedSummarizedExperiment"))){
-            if (!is.null(heatmapdata()) & !is.null(input$colmetadataheatmap))
+            if (!is.null(heatmapdata()) & !is.null(input$colmetadataheatmap) & input$colmetadataheatmap != 0)
                 as.character(input$colmetadataheatmap)
         }}, server = TRUE)
 })
@@ -105,7 +105,7 @@ observe({
 # If the user ulpload a DEA results, the type of heatmap should be changed automatically to avoid
 # errors. Should this be visible to the user ?
 observe({
-    if(!is.null(input$heatmapresultsfile)){
+    if(!is.null(input$heatmapresultsfile) & input$heatmapresultsfile != 0){
         file  <- basename(as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$heatmapresultsfile)$datapath))
         selected <- "met"
         if(grepl("DEA",file))  selected <- "exp"
@@ -134,7 +134,7 @@ observe({
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 heatmapresultdata <-  reactive({
     inFile <- input$heatmapresultsfile
-    if (is.null(inFile)) return(NULL)
+    if (is.null(inFile) || inFile == 0) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
     # verify if the file is a csv
     ext <- tools::file_ext(file)
@@ -155,7 +155,7 @@ heatmapresultdata <-  reactive({
 
 heatmapdata <-  reactive({
     inFile <- input$heatmapfile
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$heatmapfile)$datapath)
 
     withProgress(message = 'Loading data',

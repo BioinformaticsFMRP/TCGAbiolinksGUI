@@ -144,7 +144,7 @@ observe({
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 dmrdata <-  reactive({
     inFile <- input$dmrfile
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$dmrfile)$datapath)
 
     withProgress(message = 'Loading data',

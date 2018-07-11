@@ -107,7 +107,7 @@ observe({
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 annotation.maf <- reactive({
     inFile <- input$mafAnnotation
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$mafAnnotation)$datapath)
     if(tools::file_ext(file)=="csv"){
         se <- as.data.frame(read_csv(file)); se$X1 <- NULL
@@ -125,7 +125,7 @@ annotation.maf <- reactive({
 })
 mut.oncoprint <-  reactive({
     inFile <- input$maffile
-    if (is.null(inFile)) return(NULL)
+    if (is.null(inFile) || inFile == 0) return(NULL)
     inFile <- parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)
     if (nrow(inFile) == 0) return(NULL)
     file <- as.character(inFile$datapath)
@@ -160,7 +160,7 @@ mut.oncoprint <-  reactive({
 
 genesByFile <- function(){
     inFile <- input$oncoGenesFiles
-    if (is.null(inFile)) return(NULL)
+    if (is.null(inFile) || inFile == 0) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
     if(tools::file_ext(file) == "csv"){
         se <- read_csv(file);

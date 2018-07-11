@@ -144,7 +144,8 @@ observe({
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 meandata <-  reactive({
     inFile <- input$meanmetfile
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
+
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$meanmetfile)$datapath)
 
     withProgress(message = 'Loading data',

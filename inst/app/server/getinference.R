@@ -69,7 +69,7 @@ observeEvent(input$networkBt , {
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 networkdata <-  reactive({
     inFile <- input$networkfile
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$networkfile)$datapath)
 
     withProgress(message = 'Loading data',

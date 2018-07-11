@@ -10,7 +10,7 @@ observe({
 
 idat <-  reactive({
     inFile <- input$IDATfolder
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     baseDir  <- parseDirPath(get.volumes(input$workingDir), input$IDATfolder)
     withProgress(message = 'Reading IDAT files',
                  detail = 'This may take a while...', value = 0, {

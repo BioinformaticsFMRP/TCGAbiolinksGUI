@@ -159,7 +159,7 @@ observeEvent(input$starburstPlot , {
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 result.dea.data <-  reactive({
     inFile <- input$starburstexpfile
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$starburstexpfile)$datapath)
     if(tools::file_ext(file)=="csv"){
         se <- as.data.frame(read_csv(file)); se$X1 <- NULL

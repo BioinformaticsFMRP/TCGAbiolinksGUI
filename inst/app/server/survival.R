@@ -25,7 +25,7 @@ observeEvent(input$survivalbyGene , {
 survivalplotdata <- function(){
     closeAlert(session, "survivalAlert")
     inFile <- input$survivalplotfile
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
     if(tools::file_ext(file)=="csv"){
         df <- as.data.frame(read_csv(file, col_names = TRUE))
@@ -197,11 +197,12 @@ observeEvent(input$survivalplotBt , {
 # File selection
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 observe({
-    shinyFileChoose(input, 'survivalplotfile',
-                    roots=get.volumes(input$workingDir),
-                    session=session,
-                    restrictions=system.file(package='base'),
-                    filetypes=c('', 'csv','rda'))
+    shinyFileChoose(input = input,
+                    id = 'survivalplotfile',
+                    roots = get.volumes(input$workingDir),
+                    session = session,
+                    restrictions = system.file(package='base'),
+                    filetypes = c('', 'csv','rda'))
 })
 
 output$savesurvivalpicture <- downloadHandler(

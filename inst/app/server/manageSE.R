@@ -6,7 +6,7 @@
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 seeditdata <- reactive({
     inFile <- input$seeditfile
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$seeditfile)$datapath)
     if(tools::file_ext(file)=="rda"){
         se <- get(load(file))
@@ -46,8 +46,7 @@ observeEvent(input$seeditSEbt, {
     data <- seeditdata()
     closeAlert(session,"seeditAlert")
     inFile <- isolate({input$seuploadfile})
-    if (is.null(inFile))
-        return(NULL)
+    if(class(inFile) != "list") return(NULL)
     sample.data <-   read_csv(inFile$datapath,col_names = TRUE)
     sample.data <- DataFrame(sample.data[match(sample.data$row.names,colnames(data)),])
     rownames(sample.data) <- sample.data$row.names

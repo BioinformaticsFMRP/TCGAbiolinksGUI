@@ -160,7 +160,7 @@ observe({
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 deadata <- function(){
     inFile <- input$deafile
-    if (is.null(inFile)) return(NULL)
+    if (is.null(inFile) || inFile == 0) return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$deafile)$datapath)
     se <- get(load(file))
 
@@ -170,6 +170,9 @@ deadata <- function(){
                                      class(se)), append = FALSE)
         return(NULL)
     }
+
+    createAlert(session, "deamessage", "deaAlert", title = "Successful data import", style =  "info",
+                content = paste0("Read file:", file), append = FALSE)
     return(se)
 }
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=

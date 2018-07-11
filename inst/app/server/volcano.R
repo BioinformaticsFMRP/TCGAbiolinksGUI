@@ -55,7 +55,7 @@ observe({
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 volcanodata <-  reactive({
     inFile <- input$volcanofile
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
     # verify if the file is a csv
     ext <- tools::file_ext(file)
@@ -93,7 +93,7 @@ observeEvent(input$volcanofile, {
 })
 # automatically change the type based in the input
 observe({
-    if(!is.null(input$volcanofile)){
+    if(!is.null(input$volcanofile) && input$volcanofile != 0){
         file  <- basename(as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$volcanofile)$datapath))
         selected <- "met"
         if(grepl("DEA",file))  selected <- "exp"

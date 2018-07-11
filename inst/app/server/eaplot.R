@@ -70,6 +70,9 @@ eaGenesByFile <- function(){
             return(NULL)
         }
     }
+    createAlert(session, "eamessage", "eaAlert", title = "Successful data import", style =  "info",
+                content = paste0("Read file:", file), append = FALSE)
+
     return(genes)
 }
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=

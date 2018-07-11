@@ -3,7 +3,7 @@
 #                 DEA Pathview
 pathway.data <- function(){
     inFile <- input$pathewayexpfile
-    if (is.null(inFile)) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$pathewayexpfile)$datapath)
     if(tools::file_ext(file)=="csv"){
         se <- read_csv(file)
