@@ -93,7 +93,8 @@ observeEvent(input$volcanofile, {
 })
 # automatically change the type based in the input
 observe({
-    if(!is.null(input$volcanofile) && input$volcanofile != 0){
+
+    if(class(input$volcanofile) == "list") {
         file  <- basename(as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$volcanofile)$datapath))
         selected <- "met"
         if(grepl("DEA",file))  selected <- "exp"

@@ -160,7 +160,7 @@ observe({
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=
 deadata <- function(){
     inFile <- input$deafile
-    if (is.null(inFile) || inFile == 0) return(NULL)
+    if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), input$deafile)$datapath)
     se <- get(load(file))
 
