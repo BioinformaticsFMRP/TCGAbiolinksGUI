@@ -24,7 +24,7 @@ To install the package development version from Github, please, use the code bel
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
 deps <- c("devtools")
-for(pkg in deps)  if (!pkg %in% installed.packages()) biocLite(pkg, dependencies = TRUE)
+for(pkg in deps)  if (!pkg %in% installed.packages()) BiocManager::install(pkg, dependencies = TRUE)
 devtools::install_github("tiagochst/ELMER.data")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI.data",ref = "R_3.4")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
