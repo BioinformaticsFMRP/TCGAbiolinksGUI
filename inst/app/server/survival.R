@@ -25,6 +25,8 @@ observeEvent(input$survivalbyGene , {
 survivalplotdata <- function(){
     closeAlert(session, "survivalAlert")
     inFile <- input$survivalplotfile
+    print(inFile)
+    print(class(inFile))
     if(class(inFile) != "list") return(NULL)
     file  <- as.character(parseFilePaths(get.volumes(isolate({input$workingDir})), inFile)$datapath)
     if(tools::file_ext(file)=="csv"){
