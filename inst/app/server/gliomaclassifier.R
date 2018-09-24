@@ -77,8 +77,8 @@ observeEvent(input$gliomaClassify, {
                              colnames(df.all) <- c("samples",models)
                              fctr.cols <- sapply(df.all, is.factor)
                              df.all[, fctr.cols] <- sapply(df.all[, fctr.cols], as.character)
-                             df.all[grep("6|5|4",df.all$glioma.idh.model),c("glioma.gcimp.model","glioma.idhmut.model")]  <- NA
-                             df.all[grep("3|2|1",df.all$glioma.idh.model),c("glioma.idhwt.model")]  <- NA
+                             #df.all[grep("6|5|4",df.all$glioma.idh.model),c("glioma.gcimp.model","glioma.idhmut.model")]  <- NA
+                             #df.all[grep("3|2|1",df.all$glioma.idh.model),c("glioma.idhwt.model")]  <- NA
                              df.all[grep("3",df.all$glioma.idhmut.model),c("glioma.gcimp.model")]  <- "Codel"
                              df.all[grep("1",df.all$glioma.idhwt.model),c("glioma.idhwt.model")]  <- "Classic-like"
                              df.all[grep("2",df.all$glioma.idhwt.model),c("glioma.idhwt.model")]  <- "Mesenchymal-like"
