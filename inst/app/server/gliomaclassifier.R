@@ -86,7 +86,7 @@ observeEvent(input$gliomaClassify, {
                              # Final column with results
                              df.all$glioma.DNAmethylation.subtype <- NA
                              df.all$glioma.DNAmethylation.subtype <- df.all$glioma.idhwt.model
-                             idx <- which(is.na(df.all$glioma.DNAmethylation.subtype))
+                             idx <- grep("3|2|1",df.all$glioma.idh.model)
                              df.all$glioma.DNAmethylation.subtype[idx] <- df.all$glioma.gcimp.model[idx]
                          }, error = function(e){
                              createAlert(session, "gliomaAlert", "gliomamessage", title = "Error", style =  "error",
