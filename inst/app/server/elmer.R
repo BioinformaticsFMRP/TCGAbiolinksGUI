@@ -488,7 +488,6 @@ observeEvent(input$elmerAnalysisBt, {
                                      session = getDefaultReactiveDomain())
                          nearGenes <- GetNearGenes(data = mae,
                                                    probes = Sig.probes$probe,
-                                                   cores = isolate({input$elmercores}),
                                                    numFlankingGenes = isolate({input$elmergetpairNumGenes}))
 
                          setProgress(value = which(j == direction) * 0.2, message = paste("Step 3-", j, "direction"),
@@ -759,24 +758,24 @@ elmer.plot <- reactive({
                         content =   "Please upload the mae object for this plot", append = TRUE)
             return(NULL)
         }
-        ylab <- ifelse(is.na(diff.dir),
+        ylab <- ifelse(is.na(results$diff.dir),
                        " (FDR corrected P-values) [two tailed test]",
                        " (FDR corrected P-values) [one tailed test]")
-        p <- TCGAbiolinks:::TCGAVisualize_volcano(x = as.data.frame(all.probes)[,grep("Minus",colnames(all.probes),value = T)],
-                                                  y = all.probes$adjust.p,
+        p <- TCGAbiolinks:::TCGAVisualize_volcano(x = as.data.frame(results$all.probes)[,grep("Minus",colnames(results$all.probes),value = T)],
+                                                  y = results$all.probes$adjust.p,
                                                   title =  paste0("Volcano plot - Probes ",
-                                                                  ifelse(is.na(diff.dir),"differently ",diff.dir),
-                                                                  "methylated in ", group1, " vs ", group2,"\n"),
+                                                                  ifelse(is.na(results$diff.dir),"differently ",results$diff.dir),
+                                                                  "methylated in ", results$group1, " vs ", results$group2, "\n"),
                                                   filename = NULL,
                                                   label =  c("Not Significant",
-                                                             paste0("Hypermethylated in ",group1),
-                                                             paste0("Hypomethylated in ",group1)),
+                                                             paste0("Hypermethylated in ",results$group1),
+                                                             paste0("Hypomethylated in ",results$group2)),
                                                   ylab =  bquote(-Log[10] ~ .(ylab)),
                                                   xlab =  expression(paste(
                                                       "DNA Methylation difference (",beta,"-values)")
                                                   ),
-                                                  x.cut = sig.diff,
-                                                  y.cut = met.pvalue)
+                                                  x.cut = results$sig.diff,
+                                                  y.cut = results$met.pvalue)
     }
     p
 })
