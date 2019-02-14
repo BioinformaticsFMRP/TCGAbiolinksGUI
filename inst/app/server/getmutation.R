@@ -1,7 +1,7 @@
 
 getMafTumors <- function(){
-    root <- "https://gdc-api.nci.nih.gov/data/"
-    maf <- fread("https://gdc-docs.nci.nih.gov/Data/Release_Notes/Manifests/GDC_open_MAFs_manifest.txt",
+    root <- "https://api.gdc.cancer.gov/data/"
+    maf <- fread("https://docs.gdc.cancer.gov/Data/Release_Notes/Manifests/GDC_open_MAFs_manifest.txt",
                  data.table = FALSE, verbose = FALSE, showProgress = FALSE)
     tumor <- unlist(lapply(maf$filename, function(x){unlist(str_split(x,"\\."))[2]}))
     proj <- TCGAbiolinks:::getGDCprojects()

@@ -346,7 +346,7 @@ getClinical.info <-  reactive({
     project <- input$tcgaProjectFilter
     if(is.null(project) || str_length(project) == 0) return(NULL)
 
-    baseURL <- "https://gdc-api.nci.nih.gov/cases/?"
+    baseURL <- "https://api.gdc.cancer.gov/cases/?"
     options.pretty <- "pretty=true"
     options.expand <- "expand=diagnoses,demographic"
     option.size <- paste0("size=", TCGAbiolinks:::getNbCases(project, "Clinical"))
