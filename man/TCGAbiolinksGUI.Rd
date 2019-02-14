@@ -4,7 +4,6 @@
 \name{TCGAbiolinksGUI}
 \alias{TCGAbiolinksGUI}
 \alias{TCGAbiolinksGUI-package}
-\alias{TCGAbiolinksGUI}
 \title{TCGAbiolinksGUI}
 \usage{
 TCGAbiolinksGUI(run = TRUE)

@@ -41,14 +41,7 @@ Imports:
     SummarizedExperiment,
     ggrepel,
     data.table,
-    minfi,
     caret,
-    IlluminaHumanMethylation450kanno.ilmn12.hg19,
-    IlluminaHumanMethylation450kmanifest,
-    IlluminaHumanMethylation27kmanifest,
-    IlluminaHumanMethylation27kanno.ilmn12.hg19,
-    IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
-    IlluminaHumanMethylationEPICmanifest,
     shinyFiles (>= 0.6.2),
     ggplot2  (>= 2.1.0),
     pathview,
@@ -58,6 +51,8 @@ Imports:
     TCGAbiolinks (>= 2.5.5),
     shinyjs (>= 0.7),
     colourpicker,
+    sesame,
+    sesameData,
     shinyBS  (>= 0.61)
 VignetteBuilder: knitr
 biocViews: Genetics,
@@ -73,4 +68,4 @@ biocViews: Genetics,
     Pathways,
     Network,
     DNASeq
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

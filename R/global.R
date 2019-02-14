@@ -14,6 +14,7 @@
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyjs hide show toggle useShinyjs
 #' @importFrom plotly renderPlotly plot_ly layout config plotlyOutput
+#' @importFrom sesame openSesame
 #' @export
 #' @return Open a connection to shiny
 TCGAbiolinksGUI <- function(run = TRUE) {

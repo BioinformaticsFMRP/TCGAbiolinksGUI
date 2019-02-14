@@ -10,19 +10,22 @@ tabItem(tabName = "dnametidat",
                        solidHeader = FALSE, collapsible = FALSE,
                        shinyDirButton('IDATfolder', 'Select idat folder', 'Please select a folder', TRUE),
                        tags$hr(),
-                       textInput("idatfilename", label = "Filename", value = "normalizedIdatSE.rda"),
+                       textInput("idatfilename", label = "Filename", value = "normalizedIdatSE_450K_hg38.rda"),
                        bsTooltip("idatfilename", "Extensions: csv (flat table) or rda (summarized Experiment)",
                                  "left"),
-                       actionButton("idatqc",
-                                    "Create shinyMethylSet object for QC visualization",
-                                    style = "background-color: #000080;
-                                    color: #FFFFFF;
-                                    margin-left: auto;
-                                    margin-right: auto;
-                                    width: 100%",
-                                    icon = icon("flask")),
-                       bsTooltip("idatqc", "Use with shinyMethyl to visualizing the data and qc plots (function: runShinyMethyl)  ",
-                                 "left"),
+                       selectizeInput('IDATplatform',
+                                      'DNA methylation platform',
+                                      c( "450K" = "450K",
+                                         "27K"  = "27K",
+                                         "EPIC" = "EPIC"
+                                      ),
+                                      multiple = FALSE),
+                       selectizeInput('IDATgenome',
+                                      'Genome of reference to annotate probes',
+                                      c( "hg38"  = "hg38",
+                                         "hg19" = "hg19"
+                                      ),
+                                      multiple = FALSE),
                        actionButton("idatnormalize",
                                     "Normalize and save",
                                     style = "background-color: #000080;
