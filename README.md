@@ -14,15 +14,17 @@ To install the package from [Bioconductor devel repository](http://bioconductor.
 
 ```R
 # for the moment it must be devel version of Bioconductor
-source("https://bioconductor.org/biocLite.R")
-biocLite("TCGAbiolinksGUI", dependencies = TRUE)
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("TCGAbiolinksGUI", dependencies = TRUE)
 ```
 
 To install the package development version from Github, please, use the code below.
 ```R
-source("https://bioconductor.org/biocLite.R")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
 deps <- c("devtools")
-for(pkg in deps)  if (!pkg %in% installed.packages()) biocLite(pkg, dependencies = TRUE)
+for(pkg in deps)  if (!pkg %in% installed.packages()) BiocManager::install(pkg, dependencies = TRUE)
 devtools::install_github("tiagochst/ELMER.data")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI.data",ref = "R_3.4")
 devtools::install_github("BioinformaticsFMRP/TCGAbiolinksGUI")
