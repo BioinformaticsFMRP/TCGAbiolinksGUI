@@ -52,7 +52,6 @@ Imports:
     shinyjs (>= 0.7),
     colourpicker,
     sesame,
-    sesameData,
     shinyBS  (>= 0.61)
 VignetteBuilder: knitr
 biocViews: Genetics,
