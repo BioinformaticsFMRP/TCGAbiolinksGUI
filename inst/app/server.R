@@ -107,9 +107,6 @@ getExpStrategy <-  function(legacy, platform){
 
 getWorkFlow <-  function(legacy, data.type){
     workflow <- NULL
-    print("getWorkFlow")
-    print(data.type)
-    print("-=-=-=-=-=-=-=-=-")
     if(missing(data.type)) return(NULL)
     if(data.type == "Gene Expression Quantification"){
         workflow <- c("HTSeq - Counts",
