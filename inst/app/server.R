@@ -105,12 +105,18 @@ getExpStrategy <-  function(legacy, platform){
 }
 
 
-getWorkFlow <-  function(legacy, data.category){
+getWorkFlow <-  function(legacy, data.type){
     workflow <- NULL
-    if(data.category == "Transcriptome Profiling" & !legacy)
+    print("getWorkFlow")
+    print(data.type)
+    print("-=-=-=-=-=-=-=-=-")
+    if(missing(data.type)) return(NULL)
+    if(data.type == "Gene Expression Quantification"){
         workflow <- c("HTSeq - Counts",
                       "HTSeq - FPKM-UQ",
                       "HTSeq - FPKM")
+    }
+
     return(workflow)
 }
 

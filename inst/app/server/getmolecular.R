@@ -388,8 +388,10 @@ observe({
     }
 })
 observe({
-    updateSelectizeInput(session, 'tcgaWorkFlowFilter', choices =  getWorkFlow(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter), server = TRUE)
-    if(is.null(getWorkFlow(as.logical(input$tcgaDatabase),input$tcgaDataCategoryFilter))) {
+    updateSelectizeInput(session, 'tcgaWorkFlowFilter',
+                         choices = getWorkFlow(as.logical(input$tcgaDatabase),input$tcgaDataTypeFilter),
+    server = TRUE)
+    if(is.null(getWorkFlow(as.logical(input$tcgaDatabase),input$tcgaDataTypeFilter))) {
         shinyjs::hide("tcgaWorkFlowFilter")
     } else {
         shinyjs::show("tcgaWorkFlowFilter")
@@ -465,6 +467,14 @@ observeEvent(input$addGistic, {
         shinyjs::show("gisticGenes")
     } else {
         shinyjs::hide("gisticGenes")
+    }
+})
+
+
+observeEvent(input$tcgaDataTypeFilter,{
+    print(input$tcgaDataTypeFilter %in% c( "Isoform Expression Quantification", "miRNA Expression Quantification"))
+    if(input$tcgaDataTypeFilter %in% c( "Isoform Expression Quantification", "miRNA Expression Quantification")){
+        updateRadioButtons(session, 'prepareRb', selected = FALSE)
     }
 })
 
