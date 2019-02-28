@@ -472,8 +472,11 @@ observeEvent(input$addGistic, {
 
 
 observeEvent(input$tcgaDataTypeFilter,{
-    print(input$tcgaDataTypeFilter %in% c( "Isoform Expression Quantification", "miRNA Expression Quantification"))
-    if(input$tcgaDataTypeFilter %in% c( "Isoform Expression Quantification", "miRNA Expression Quantification")){
+    if(input$tcgaDataTypeFilter %in% c( "Isoform Expression Quantification",
+                                        "miRNA Expression Quantification",
+                                        "Copy Number Segment",
+                                        "Masked Copy Number Segment",
+                                        "Gene Level Copy Number Scores")){
         updateRadioButtons(session, 'prepareRb', selected = FALSE)
     }
 })

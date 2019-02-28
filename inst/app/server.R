@@ -150,7 +150,8 @@ getDataType <- function(legacy, data.category){
 
     if(grepl("Copy number variation",data.category, ignore.case = TRUE) & !legacy)
         data.type <- c("Copy Number Segment",
-                       "Masked Copy Number Segment")
+                       "Masked Copy Number Segment",
+                       "Gene Level Copy Number Scores")
 
     if(data.category == "Gene expression" & !legacy)
         data.type <- c("Gene Expression Quantification",
