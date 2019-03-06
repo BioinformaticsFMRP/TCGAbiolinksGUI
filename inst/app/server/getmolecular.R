@@ -326,7 +326,7 @@ observeEvent(input$tcgaPrepareBt,{
                                             directory = getPath,
                                             mut.pipeline = isolate({input$tcgaPrepareMutPipeline}),
                                             add.gistic2.mut = genes)
-                         if(as.logical(isolate({input$prepareRb}))){
+                         if(is(data, "RangedSummarizedExperiment")){
                              aux <- gsub(".rda","_samples_information.csv",filename)
                              write_csv(x = as.data.frame(colData(data)),path  = aux )
                              filename <- c(filename, aux)
@@ -390,7 +390,7 @@ observe({
 observe({
     updateSelectizeInput(session, 'tcgaWorkFlowFilter',
                          choices = getWorkFlow(as.logical(input$tcgaDatabase),input$tcgaDataTypeFilter),
-    server = TRUE)
+                         server = TRUE)
     if(is.null(getWorkFlow(as.logical(input$tcgaDatabase),input$tcgaDataTypeFilter))) {
         shinyjs::hide("tcgaWorkFlowFilter")
     } else {
@@ -478,6 +478,10 @@ observeEvent(input$tcgaDataTypeFilter,{
                                         "Masked Copy Number Segment",
                                         "Gene Level Copy Number Scores")){
         updateRadioButtons(session, 'prepareRb', selected = FALSE)
+        shinyjs::hide("prepareRb")
+    } else {
+        updateRadioButtons(session, 'prepareRb', selected = TRUE)
+        shinyjs::show("prepareRb")
     }
 })
 
