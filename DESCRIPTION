@@ -1,6 +1,6 @@
 Package: TCGAbiolinksGUI
 Title: "TCGAbiolinksGUI: A Graphical User Interface to analyze cancer molecular and clinical data"
-Version: 1.10.0
+Version: 1.11.0
 Date: 2016-10-28
 Author: Tiago Chedraoui Silva <tiagochst@gmail.com>,
     Antonio Colaprico  <antonio.colaprico@ulb.ac.be>,
