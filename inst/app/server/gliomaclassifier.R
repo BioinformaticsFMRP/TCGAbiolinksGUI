@@ -43,7 +43,7 @@ observeEvent(input$gliomaClassify, {
                              models <- paste("glioma",models,"model",sep = ".")
                              data(list = models)
                              for(i in models){
-                                 incProgress(0.2, message = "Classifying into glioma subtypes",detail = paste0("Model: ", models[i]))
+                                 incProgress(0.2, message = "Classifying into glioma subtypes",detail = paste0("Model: ", i))
                                  model <- get(i)
                                  # If it is a Summarized Experiment object
 
@@ -65,12 +65,18 @@ observeEvent(input$gliomaClassify, {
                                  }
 
                                  pred <- predict(model, aux)
-                                 df <- data.frame(samples = rownames(aux), groups.classified = pred,stringsAsFactors = FALSE)
+                                 pred.prob <- predict(model, aux, type = "prob")
+                                 df <- data.frame(samples = rownames(aux),
+                                                  groups.classified = pred,
+                                                  stringsAsFactors = FALSE)
+                                 pred.prob$samples <- rownames(pred.prob)
 
                                  if(is.null(df.all)) {
                                      df.all <- df
+                                     df.prob <- pred.prob
                                  } else {
                                      df.all <- merge(df.all,df, by = "samples")
+                                     df.prob <- merge(df.prob,pred.prob,by = "samples")
                                  }
                              }
                              incProgress(0.2, message = "Classifying into glioma subtypes",detail = paste0("Preparing final table"))
@@ -79,10 +85,14 @@ observeEvent(input$gliomaClassify, {
                              df.all[, fctr.cols] <- sapply(df.all[, fctr.cols], as.character)
                              df.all[grep("6|5|4",df.all$glioma.idh.model),c("glioma.gcimp.model","glioma.idhmut.model")]  <- NA
                              df.all[grep("3|2|1",df.all$glioma.idh.model),c("glioma.idhwt.model")]  <- NA
+
                              df.all[grep("3",df.all$glioma.idhmut.model),c("glioma.gcimp.model")]  <- "Codel"
+
+
                              df.all[grep("1",df.all$glioma.idhwt.model),c("glioma.idhwt.model")]  <- "Classic-like"
                              df.all[grep("2",df.all$glioma.idhwt.model),c("glioma.idhwt.model")]  <- "Mesenchymal-like"
                              df.all[grep("3",df.all$glioma.idhwt.model),c("glioma.idhwt.model")]  <- "PA-like"
+
                              # Final column with results
                              df.all$glioma.DNAmethylation.subtype <- NA
                              df.all$glioma.DNAmethylation.subtype <- df.all$glioma.idhwt.model
@@ -93,7 +103,10 @@ observeEvent(input$gliomaClassify, {
                                          content =  paste0("Erro: ", "<br><ul>", paste(e, collapse = "</ul><ul>"),"</ul>"), append = FALSE)
                          })
                      })
-        return(createTable(df.all,"Glioma classification"))
+        if(isolate({!input$gliomaClassifierProb})){
+            return(createTable(df.all,"Glioma classification"))
+        }
+        return(createTable(df.prob,"Glioma classification probabilities"))
     })
 })
 
