@@ -69,6 +69,7 @@ observeEvent(input$gliomaClassify, {
                                  df <- data.frame(samples = rownames(aux),
                                                   groups.classified = pred,
                                                   stringsAsFactors = FALSE)
+                                 colnames(pred.prob) <- paste0(i,"_", colnames(pred.prob))
                                  pred.prob$samples <- rownames(pred.prob)
 
                                  if(is.null(df.all)) {
