@@ -25,14 +25,7 @@ idat <-  reactive({
                          colnames(betas) <- basename(IDATprefixes)
                          betas <- TCGAbiolinks:::makeSEFromDNAMethylationMatrix(betas,genome = input$IDATgenome,met.platform = input$IDATplatform)
                          betas
-                     }, warning = function(w){
-                         print(w)
-                         createAlert(session, "idatAlert", "idatmessage",
-                                     title = "Error",
-                                     style =  "danger",
-                                     content = paste(w), append = FALSE)
-                         return(NULL)
-                     },error = function(e){
+                     }, error = function(e){
                          print(e)
                          createAlert(session, "idatAlert", "idatmessage",
                                      title = "Error",
