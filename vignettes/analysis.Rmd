@@ -1,4 +1,5 @@
 ---
+title: Analysis menu
 bibliography: bibliography.bib
 date: "`r BiocStyle::doc_date()`"
 vignette: >
